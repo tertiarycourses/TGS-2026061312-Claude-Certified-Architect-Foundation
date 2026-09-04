@@ -2,9 +2,18 @@
 
 **WSQ Course Code:** TGS-2026061312  
 **Duration:** 2 days / 16 hours  
+**Courseware release:** v1.1
 **Provider:** Tertiary Infotech Academy Pte Ltd (UEN 201200696W)
 
 This learner repository accompanies the [Claude Certified Architect Foundation course](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html). It develops the architecture judgment required to build bounded agentic systems, precise tool and MCP integrations, scalable Claude Code workflows, validated structured outputs, and provenance-aware reliability controls.
+
+## Courseware preview
+
+![Claude Certified Architect Foundation courseware cover](screenshot.png)
+
+The v1.1 courseware integrates concepts OCR-derived from the complete instructor reference set into the five certification domains. It uses mechanism-led diagrams, annotated technical visuals, diagnostic matrices, and editable implementation models instead of a standalone screenshot walkthrough.
+
+[Open the published courseware folder](https://drive.google.com/drive/folders/1zW_SFmsMMU9i8Efs8XGUTFhNImthzzz1)
 
 ## Exam-domain alignment
 
@@ -42,4 +51,3 @@ The original lab scenarios were informed by publicly available study projects fr
 This repository contains learner-safe lab material only. Trainer decks, learner-management links, assessment papers, answer keys, reference screenshots, credentials, build tooling, and QA evidence are intentionally excluded.
 
 Course funding support shown on the course page is subject to current eligibility rules and approval.
-
