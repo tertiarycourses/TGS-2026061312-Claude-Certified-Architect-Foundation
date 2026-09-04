@@ -1,0 +1,8 @@
+{
+  "case_id": "CASE-1002",
+  "request": "I was charged too much",
+  "account_active": true,
+  "duplicate_charge": null,
+  "purchase_id": null,
+  "human_approved": false
+}

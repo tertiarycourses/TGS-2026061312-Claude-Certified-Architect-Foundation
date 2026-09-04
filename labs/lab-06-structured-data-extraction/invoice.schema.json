@@ -1,0 +1,43 @@
+{
+  "type": "object",
+  "required": [
+    "source_id",
+    "invoice_id",
+    "subtotal",
+    "tax",
+    "total",
+    "confidence",
+    "review"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string"
+    },
+    "invoice_id": {
+      "type": "string"
+    },
+    "subtotal": {
+      "type": "number",
+      "minimum": 0
+    },
+    "tax": {
+      "type": "number",
+      "minimum": 0
+    },
+    "total": {
+      "type": "number",
+      "minimum": 0
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "review": {
+      "enum": [
+        "auto",
+        "human"
+      ]
+    }
+  }
+}

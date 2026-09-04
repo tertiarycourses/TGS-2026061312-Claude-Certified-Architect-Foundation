@@ -1,0 +1,11 @@
+.DS_Store
+/.env
+/.claude/
+/.codex/
+/assessment/
+/courseware/
+/reference/
+/qa/
+**/__pycache__/
+**/*.pyc
+**/evidence/

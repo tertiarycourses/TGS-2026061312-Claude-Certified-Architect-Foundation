@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "ticketing": {
+      "command": "python3",
+      "args": [
+        "server.py"
+      ],
+      "env": {
+        "TICKETING_TOKEN": "${TICKETING_TOKEN}"
+      }
+    }
+  }
+}

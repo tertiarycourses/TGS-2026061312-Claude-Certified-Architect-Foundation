@@ -1,0 +1,3 @@
+SRC-01|Invoice INV-100|Subtotal 100.00|Tax 9.00|Total 109.00
+SRC-02|Invoice INV-101?|Subtotal 80.00|Tax unclear|Total 87.20
+SRC-03|Invoice INV-102|Subtotal 50.00|Tax 4.50|Total 54.50

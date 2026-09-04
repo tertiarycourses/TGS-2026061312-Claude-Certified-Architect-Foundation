@@ -1,0 +1,8 @@
+{
+  "case_id": "CASE-1001",
+  "request": "Refund my duplicate subscription charge",
+  "account_active": true,
+  "duplicate_charge": true,
+  "purchase_id": "P-7788",
+  "human_approved": false
+}

@@ -1,0 +1,6 @@
+{
+  "files": {
+    "api.py": "def refund(order_id): return gateway.refund(order_id)",
+    "handler.py": "def handle(event): return refund(event['order_id'])"
+  }
+}

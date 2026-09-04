@@ -1,73 +1,45 @@
-# NumPy and SciPy Essential Training
-## by [Tertiary Infotech Pte. Ltd](https://www.tertiarycourses.com.sg/)
+# Claude Certified Architect Foundation
 
-These are the exercise files used for [NumPy and SciPy Essential Training](https://www.tertiarycourses.com.sg/python-numpy-and-scipy-essential-training-in-singapore.html) course. 
+**WSQ Course Code:** TGS-2026061312  
+**Duration:** 2 days / 16 hours  
+**Provider:** Tertiary Infotech Academy Pte Ltd (UEN 201200696W)
 
-The course outline can be found in 
+This learner repository accompanies the [Claude Certified Architect Foundation course](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html). It develops the architecture judgment required to build bounded agentic systems, precise tool and MCP integrations, scalable Claude Code workflows, validated structured outputs, and provenance-aware reliability controls.
 
-https://www.tertiarycourses.com.sg/python-numpy-and-scipy-essential-training-in-singapore.html
-https://www.tertiarycourses.com.my/python-numpy-and-scipy-essential-training-in-malaysia.html
+## Exam-domain alignment
 
-<p><strong>Module 1 Get Ready</strong></p>
-<ul>
-<li>Overview of SciPy Stack</li>
-<li>Installing SciPy Stack</li>
-</ul>
-<p><strong>Module 2 Numpy</strong> </p>
-<ul>
-<li>Array Creation</li>
-<li>Array Operations</li>
-<li>Indexing &amp; Slicing&nbsp;</li>
-<li>Shape Manipulation</li>
-<li>Polynomial</li>
-<li>Linear Algebra</li>
-<li>Statistics</li>
-</ul>
-<p><strong>Module 3 Matplotlib</strong> </p>
-<ul>
-<li>What is Matplotlib</li>
-<li>Gallery</li>
-<li>Create Plots</li>
-<li>Colors, Markers, Line Styles</li>
-<li>Grid Lines</li>
-<li>Axis Labels and Title</li>
-<li>Legend</li>
-<li>Subplots</li>
-<li>Other Plots</li>
-<li>Read and show image</li>
-<li>Pseudocolor</li>
-<li>Grayscale</li>
-</ul>
-<p><strong>Module 4 Scipy for Numerical Analysis</strong> </p>
-<ul>
-<li>SciPy Optimize Module</li>
-<li>Curve Fitting</li>
-<li>Finding Roots</li>
-<li>Interpolation</li>
-<li>Integration</li>
-<li>ODE</li>
-</ul>
-<p><strong>Module 5 SciPy for Linear Algebra</strong> </p>
-<ul>
-<li>SciPy Linear Algebra Module</li>
-<li>Matrix Operations</li>
-<li>Matrix Solve&nbsp;</li>
-<li>Eigenvalues</li>
-<li>Matrix Decomposition</li>
-</ul>
-<p><strong>Module 6 Scipy for Statistics</strong> </p>
-<ul>
-<li>Scipy Stats Module&nbsp;</li>
-<li>Basic Stats</li>
-<li>Probability Distribution Functions</li>
-<li>t-test for one sample</li>
-<li>t-test comparison for 2 samples</li>
-</ul>
-<p><strong>Module 8 Scipy for Signal Processing</strong> </p>
-<ul>
-<li>Scipy Signal Module</li>
-<li>Waveforms</li>
-<li>Fast Fourier Transform (FFT)</li>
-<li>FFT Windowing</li>
-</ul>
-<p><strong>Module 9 Scipy for Image Processing (Optional)</strong></p>
+| Domain | Weight |
+|---|---:|
+| Agentic Architecture & Orchestration | 27% |
+| Tool Design & MCP Integration | 18% |
+| Claude Code Configuration & Workflows | 20% |
+| Prompt Engineering & Structured Output | 20% |
+| Context Management & Reliability | 15% |
+
+## Labs
+
+Each lab is self-contained, offline-first, and includes fixtures, runnable artifacts, acceptance checks, a verifier, and a PDF guide.
+
+1. [Customer Support Resolution Agent](labs/lab-01-customer-support-agent/README.md)
+2. [Claude Code Team Workspace](labs/lab-02-claude-code-workspace/README.md)
+3. [Multi-Agent Research System](labs/lab-03-multi-agent-research/README.md)
+4. [Developer Productivity Agent](labs/lab-04-developer-productivity-agent/README.md)
+5. [Claude Code CI Review](labs/lab-05-claude-code-ci-review/README.md)
+6. [Structured Data Extraction](labs/lab-06-structured-data-extraction/README.md)
+
+Run a lab verifier from its folder:
+
+```bash
+python3 -B verify.py
+```
+
+## Reference acknowledgement
+
+The original lab scenarios were informed by publicly available study projects from [Paul Larionov](https://github.com/paullarionov/claude-certified-architect), [Ade Regil](https://github.com/aderegil/claude-certified-architect), and [Daron Yondem](https://github.com/daronyondem/claude-architect-exam-guide). No assessment or solution content from those repositories is redistributed here.
+
+## Public/private boundary
+
+This repository contains learner-safe lab material only. Trainer decks, learner-management links, assessment papers, answer keys, reference screenshots, credentials, build tooling, and QA evidence are intentionally excluded.
+
+Course funding support shown on the course page is subject to current eligibility rules and approval.
+

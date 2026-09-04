@@ -1,0 +1,5 @@
+claude -p "Review changed files against SECURITY.md. Return only schema-valid findings supported by code evidence." \
++  --output-format json \
++  --json-schema "$(cat finding.schema.json)"
+
+Run once per changed file, then run a separate integration pass over the combined diff. Treat preferences as non-findings unless they violate an explicit repository rule.

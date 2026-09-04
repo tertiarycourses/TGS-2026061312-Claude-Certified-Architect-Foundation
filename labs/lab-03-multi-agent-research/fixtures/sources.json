@@ -1,0 +1,20 @@
+[
+  {
+    "id": "SRC-A",
+    "status": "available",
+    "claim": "Require human approval for production writes",
+    "confidence": 0.96
+  },
+  {
+    "id": "SRC-B",
+    "status": "available",
+    "claim": "Permit automated writes below a reversible threshold",
+    "confidence": 0.78
+  },
+  {
+    "id": "SRC-C",
+    "status": "available",
+    "claim": "Log tool inputs and outputs with redaction",
+    "confidence": 0.91
+  }
+]
