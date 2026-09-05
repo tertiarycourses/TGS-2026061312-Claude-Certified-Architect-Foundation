@@ -1,23 +1,41 @@
 # Claude Certified Architect Foundation
 
-**WSQ Course Code:** TGS-2026061312  
-**Duration:** 2 days / 16 hours  
-**Courseware release:** v1.2<br>
-**Provider:** Tertiary Infotech Academy Pte Ltd (UEN 201200696W)
+Build reliable Claude-based systems with bounded agent loops, precise tool contracts, scoped Claude Code workflows, validated outputs, and evidence-aware reliability controls.
 
-This learner repository accompanies the [Claude Certified Architect Foundation course](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html). It develops the architecture judgment required to build bounded agentic systems, precise tool and MCP integrations, scalable Claude Code workflows, validated structured outputs, and provenance-aware reliability controls.
+| Course detail | Information |
+|---|---|
+| Course code | `TGS-2026061312` |
+| Programme | WSQ |
+| Duration | 2 days / 16 hours |
+| Courseware release | v1.3 |
+| Registration | [View course details and register](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html) |
+| Funding | Up to 70% funding for eligible learners and employers. Eligibility, approval, and current terms apply. |
 
 ## Courseware preview
 
 ![Claude Certified Architect Foundation courseware cover](screenshot.png)
 
-The v1.2 courseware uses a projector-ready dark theme and integrates concepts OCR-derived from the complete instructor reference set into the five certification domains. It rebuilds the source material as editable architecture diagrams, control flows, diagnostic matrices, charts, and implementation models; no source screenshots are pasted into the instructional slides.
+The v1.3 courseware uses a projector-ready dark theme. It accounts for the complete instructor reference folder, semantically maps 342 instructional screenshot frames to the certification blueprint, and adds one editable field-pattern synthesis slide for every official exam task. No source screenshot is pasted into the instructional deck.
 
 [Open the published courseware folder](https://drive.google.com/drive/folders/1zW_SFmsMMU9i8Efs8XGUTFhNImthzzz1)
 
-## Exam-domain alignment
+## About the course
 
-| Domain | Weight |
+This learner repository accompanies the WSQ Claude Certified Architect Foundation course. The programme develops architecture judgement for designing agentic systems with observable stopping conditions, reliable tools and MCP integrations, maintainable Claude Code configuration, structured-output validation, and human escalation backed by provenance.
+
+## Learning outcomes
+
+By the end of the course, learners should be able to:
+
+- Design bounded agentic loops and multi-agent orchestration with explicit handoffs, state, and stop conditions.
+- Engineer reliable tool and MCP integrations with precise schemas, structured errors, and least-privilege tool distribution.
+- Configure Claude Code projects with scoped instructions, reusable skills, rules, plan mode, and CI/CD workflows.
+- Produce validated structured outputs using explicit criteria, examples, batching, and review loops.
+- Manage context, uncertainty, provenance, and human escalation in long-running AI systems.
+
+## Topics covered
+
+| Exam domain | Weight |
 |---|---:|
 | Agentic Architecture & Orchestration | 27% |
 | Tool Design & MCP Integration | 18% |
@@ -42,12 +60,16 @@ Run a lab verifier from its folder:
 python3 -B verify.py
 ```
 
+## Public package
+
+This repository contains the six learner-safe lab folders and their guides. The released trainer slides, learner slide PDF, Learner Guide, and Lesson Plan are available from the linked courseware folder.
+
 ## Reference acknowledgement
 
 The original lab scenarios were informed by publicly available study projects from [Paul Larionov](https://github.com/paullarionov/claude-certified-architect), [Ade Regil](https://github.com/aderegil/claude-certified-architect), and [Daron Yondem](https://github.com/daronyondem/claude-architect-exam-guide). No assessment or solution content from those repositories is redistributed here.
 
-## Public/private boundary
+## Public/private distribution boundary
 
-This repository contains learner-safe lab material only. Trainer decks, learner-management links, assessment papers, answer keys, reference screenshots, credentials, build tooling, and QA evidence are intentionally excluded.
+This public repository contains learner-safe lab material only. Assessment papers, answer keys, instructor reference screenshots, credentials, private build tooling, archives, and QA evidence are intentionally excluded.
 
-Course funding support shown on the course page is subject to current eligibility rules and approval.
+Course content is provided by Tertiary Infotech Academy Pte Ltd (UEN 201200696W).
