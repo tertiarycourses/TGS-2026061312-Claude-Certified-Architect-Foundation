@@ -6,7 +6,7 @@ textColor = "#21201C"
 [server]
 fileWatcherType = "none"
 headless = true
-address = "127.0.0.1"
+address = "localhost"
 [browser]
 gatherUsageStats = false
 [client]

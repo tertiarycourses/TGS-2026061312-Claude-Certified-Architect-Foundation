@@ -89,7 +89,7 @@ def run_steps(n, title, steps, model=None, evidence=(), live=True):
         try:
             for argv in steps:
                 if job.stopped: break
-                job.line("$ uv run " + " ".join(shlex.quote(x) for x in argv[2:]))
+                job.line("$ " + ("uv run " + " ".join(shlex.quote(x) for x in argv[2:]) if argv[0] == sys.executable else " ".join(shlex.quote(x) for x in argv)))
                 job.proc = subprocess.Popen(argv, cwd=sim_dir(n), env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace", bufsize=1, start_new_session=True)
                 killer = threading.Timer(MAX_SECONDS, job.stop); killer.start()
                 for l in job.proc.stdout: job.line(l.rstrip("\n"))
@@ -135,7 +135,7 @@ def evidence_for(n, cmd):
     if script == "explorer.py":
         p = next((x for x in a if x in ("explore", "edit", "fork", "recover")), "explore")
         return ["evidence/fork-a.json", "evidence/fork-b.json"] if p == "fork" else [f"evidence/{p}.json"]
-    if script == "ci_subagents.py": return ["evidence/pr-comment-pass-findings.md", "evidence/pr-comment-lossy.md"]
+    if script == "ci_subagents.py": return ["evidence/pr-comment-lossy.md"] if "--lossy" in a else ["evidence/pr-comment-pass-findings.md"]
     if script == "hook_gate.py": return ["evidence/hook_gate.json"]
     if script == "ci_review.py": return ["evidence/review-integration.json", "evidence/review.json"]
     if script == "extract.py": return ["evidence/accuracy.json", "evidence/batch.json" if "--batch" in a else "evidence/extraction.json"]
@@ -150,6 +150,34 @@ def existing(n, paths): return [p for p in paths if (sim_dir(n) / p).exists()]
 def run_lab(lab_id, model):
     l = LABS[lab_id]
     return run_steps(l["sim"], f"Lab {lab_id}", [to_argv(c) for c in l["cmds"]], model, lab_evidence(l))
+
+LOOK = {"ls", "cat", "head", "tail", "grep", "wc", "pwd"}
+TERMINAL_HELP = "This terminal runs `uv run`, `ls`, `cat`, `head`, `tail`, `grep`, `wc` and `pwd`, inside this simulator's folder."
+
+def typed_command(n, text, model):
+    """The built-in terminal. No shell, and nothing outside this simulator's folder. Returns (job, problem)."""
+    text = text.strip()
+    if not text: return None, "Type a command first."
+    if re.search(r"[;|&<>`$]", text): return None, "One command at a time, please: no pipes or redirects. " + TERMINAL_HELP
+    try: a = shlex.split(text)
+    except ValueError: return None, "Check the quotes in that command."
+    if a[0] == "cd": return None, "No need to change folder. You're already in this simulator's folder."
+    if any(x.startswith(("/", "~")) or ".." in x or ".env" in x for x in a[1:]): return None, "That path is outside this simulator's folder. " + TERMINAL_HELP
+    live = False
+    if a[:2] == ["uv", "run"]:
+        rest = a[2:]
+        if rest[:1] == ["python"]: rest = rest[1:]
+        if rest[:2] == ["-m", "json.tool"]: pass
+        elif not rest or not rest[0].endswith(".py") or not (sim_dir(n) / rest[0]).is_file(): return None, "`uv run` needs a Python file from this folder. Try `ls` to see them."
+        else: live = rest[0] != "verify.py"
+        argv = [sys.executable, "-B"] + rest
+    elif a[0] == "python3" and a[1:3] == ["-m", "json.tool"]:
+        argv = [sys.executable, "-B"] + a[1:]
+    elif a[0] in LOOK:
+        argv = a
+    else:
+        return None, f"`{a[0]}` isn't available here. " + TERMINAL_HELP
+    return run_steps(n, text, [argv], model, evidence_for(n, text) if live else [], live=live), None
 
 def case_choices(n, glob):
     out = []

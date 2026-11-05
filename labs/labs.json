@@ -82,10 +82,9 @@
   "trap": "\"Creative industries\" decomposed into three flavours of visual art.",
   "fix": "Decompose broadly: music, writing, film and visual arts.",
   "cmds": [
-   "uv run research_system.py --narrow",
    "uv run research_system.py"
   ],
-  "see": "The narrow run never searches music, writing or film. The broad run does.",
+  "see": "The broad plan searches music, writing, film and visual arts, and the report names any gap.",
   "id": 3,
   "topic": 1,
   "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
@@ -203,9 +202,9 @@
   "trap": "Synthesis is told to \"summarise the review\" and inherits nothing.",
   "fix": "Paste each reviewer's complete JSON findings into the synthesis prompt.",
   "cmds": [
-   "uv run ci_subagents.py --compare"
+   "uv run ci_subagents.py --pass-findings"
   ],
-  "see": "File paths and failing test names survive with --pass-findings and vanish with --lossy.",
+  "see": "File paths and failing test names survive all the way into the PR comment.",
   "id": 6,
   "topic": 1,
   "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
@@ -332,10 +331,9 @@
   "trap": "A system prompt that says verification is mandatory.",
   "fix": "A prerequisite hook blocks lookup_order and process_refund until get_customer returns an id.",
   "cmds": [
-   "uv run support_agent.py --case CS-03",
-   "uv run support_agent.py --case CS-03 --no-gate --tag nogate"
+   "uv run support_agent.py --case CS-03"
   ],
-  "see": "With the gate on, get_customer always comes first. Compare the two traces.",
+  "see": "get_customer comes first, then the order lookup.",
   "id": 9,
   "topic": 1,
   "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
@@ -454,10 +452,9 @@
   "trap": "A refund limit that lives only in the system prompt.",
   "fix": "A PreToolUse hook denies anything above $500 and redirects to escalation.",
   "cmds": [
-   "uv run support_agent.py --case CS-02",
    "uv run support_agent.py --case CS-02 --prompt prompts/system-noguard.md --tag noguard"
   ],
-  "see": "Without the rule in the prompt the model tries $780. The hook denies it.",
+  "see": "The prompt has lost its $500 rule, so the model tries $780. The hook denies it.",
   "id": 12,
   "topic": 1,
   "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
@@ -1138,10 +1135,9 @@
   "trap": "Root CLAUDE.md, or one copy per folder.",
   "fix": "One rule file with paths frontmatter matching the test patterns.",
   "cmds": [
-   "uv run rules_sim.py D",
-   "uv run rules_sim.py"
+   "uv run rules_sim.py D"
   ],
-  "see": "D loads for the test edit only, one copy. A and B load always. C needs three copies.",
+  "see": "The rule loads for the test edit only, from one copy.",
   "id": 30,
   "topic": 3,
   "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
@@ -1651,11 +1647,10 @@
   "src": "TS",
   "sim": 6,
   "core": 0,
-  "title": "Try tool_choice three ways and read the failures",
+  "title": "Know your tool_choice options, and check what came back",
   "trap": "Assume any forced setting works on every model.",
   "fix": "Know the options, and test against your model.",
   "cmds": [
-   "uv run extract.py --tool-choice any --max-docs 2",
    "uv run extract.py --tool-choice forced --max-docs 2"
   ],
   "see": "The Agent SDK has no tool_choice setting, so the script asks for it in the prompt. Read what Claude did, and the lesson in the evidence.",
@@ -1666,7 +1661,7 @@
   "task_title": "Enforce structured output using tool use and JSON schemas",
   "sim_name": "Structured Data Extraction",
   "dir": "simulator-6-structured-extraction",
-  "pdf": "topic-4-prompt-engineering/lab-42-try-tool-choice-three-ways-and-read-the-failures.pdf",
+  "pdf": "topic-4-prompt-engineering/lab-42-know-your-tool-choice-options-and-check-what-cam.pdf",
   "expected": "",
   "rubric": [],
   "source": "Built from exam guide task statement 4.3 (no practice question covers this angle)",
@@ -1688,9 +1683,7 @@
   "trap": "More required fields, or drop the schema.",
   "fix": "Validate invariants before execution and feed failures back.",
   "cmds": [
-   "uv run backend_tools.py --demo",
-   "uv run support_agent.py --case CS-13",
-   "uv run support_agent.py --case CS-13 --no-validation --tag novalidation"
+   "uv run support_agent.py --case CS-13"
   ],
   "see": "Cash refund is $105. The $8 shipping stays store credit.",
   "id": 43,
@@ -1764,10 +1757,9 @@
   "trap": "Run the whole archive tonight, fix bad rows tomorrow.",
   "fix": "Evaluation set, refined template, rerun, then batch.",
   "cmds": [
-   "uv run triage.py --pilot --template prompts/triage_template_v0.md",
    "uv run triage.py --pilot"
   ],
-  "see": "Weak template: not ready. Real template: ready for the overnight batch.",
+  "see": "The refined template reports it is ready for the overnight batch.",
   "id": 45,
   "topic": 4,
   "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",

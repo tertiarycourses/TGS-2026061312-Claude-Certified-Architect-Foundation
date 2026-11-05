@@ -86,7 +86,7 @@ def console(n):
         elif j.exit == 0: st.success(f"**{j.title}** finished in {secs}s.")
         else: st.warning(f"**{j.title}** finished with exit {j.exit} after {secs}s. Some gates exit 1 on purpose, so read the output.")
         log = "\n".join(j.lines[-250:]) or "Starting..."
-        st.code(log, language=None, height=300)
+        st.code(log, language=None, height=320, wrap_lines=True)
         if re.search(r"not logged in|please run /login|invalid api key", log, re.I): st.error("Claude isn't signed in. In a terminal, run: claude auth login")
         if j.done and SS.get(f"rendered_{n}") != j.id:
             SS[f"rendered_{n}"] = j.id; st.rerun()
@@ -243,45 +243,56 @@ def play(n):
 # ------------------------------------------------------------------ Labs
 def lab_page(n, lid):
     l = engine.LABS[lid]
-    st.subheader(f"Lab {lid}{' ★' if l['core'] else ''}: {l['title']}")
-    st.caption(f"Topic {l['topic']}: {l['topic_name']} · Task {l['task']} · {l['source']}")
-    pdf = engine.HERE / l["pdf"]
-    if pdf.exists():
-        st.download_button("Lab instructions (PDF)", pdf.read_bytes(), file_name=pdf.name, mime="application/pdf", key=f"pdf_{lid}")
-    st.markdown("#### 1. The exam question")
+    st.subheader(f"Lab {lid}: {l['title']}")
+    unofficial = " · Third-party practice question, unofficial" if l["src"].startswith("P") else ""
+    st.caption(f"Topic {l['topic']}: {l['topic_name']} · Task {l['task']} · {'Run in class' if l['core'] else 'Self-practice'}{unofficial}")
+    with st.expander("Lab instructions"):
+        st.markdown(f"**What you're doing:** answering one question about {l['task_title'][0].lower()}{l['task_title'][1:]}, then watching the right answer work on the {l['sim_name']} simulator.")
+        st.markdown("1. Read the question and click the answer you'd choose.\n2. Read why that answer is right or wrong. The page shows you straight away.\n3. Press **Simulate it live**. Each step appears in the output as it happens, usually within a minute or two.\n4. Read what it produced, and compare it with **You should see**.\n5. Short on time or budget? Press **Show the saved run**. It's free.\n6. Want to look closer? Use the built-in terminal under the buttons. You don't need to open anything else.")
+        st.markdown("**The command this lab runs:**")
+        st.code("\n".join(c.split(";")[0] for c in l["cmds"]), language=None)
     st.markdown(l["stem"])
-    lk = f"lock_{lid}"; pick = None
-    if l.get("options"):
-        pick = st.radio("Your answer. Pick one and be ready to say why.", list(l["options"]), format_func=lambda k: f"{k}. {l['options'][k]}", index=None, key=f"pick_{lid}", disabled=bool(SS.get(lk)))
-        if not SS.get(lk) and st.button("Lock in my answer", disabled=pick is None, key=f"lockb_{lid}"): SS[lk] = True; st.rerun()
-    else: SS[lk] = True
-    if not SS.get(lk):
-        st.caption("Lock in an answer first. Committing before you see the result is the whole point."); return
-    st.markdown("#### 2. Simulate the solution")
-    st.markdown("Pressing Simulate will " + " Then it will ".join(what_it_does(n, c) for c in l["cmds"]))
+    pick = st.radio("Pick your answer", list(l["options"]), format_func=lambda k: f"{k}. {l['options'][k]}", index=None, key=f"pick_{lid}")
+    if pick is None:
+        st.caption("Click an answer, and you'll see straight away whether it's right, and why.")
+        return
+    if pick == l["answer"]: st.success(f"**Yes, {pick} is right.** {l['fix']}")
+    else: st.error(f"**Not quite. The answer is {l['answer']}.** {l['fix']}")
+    if l.get("why"): st.markdown(l["why"])
+    if l.get("wrong"):
+        with st.expander("Why the other answers fall short"):
+            for k, v in l["wrong"].items(): st.markdown(f"**{k}.** {v}")
+    st.divider()
+    st.markdown("#### Watch the right answer work")
+    st.markdown("Press Simulate, and this page will " + " Then it will ".join(what_it_does(n, c) for c in l["cmds"]) + f"  \n**You should see:** {l['see']}")
+    where = f"lab{lid}"
     c1, c2 = st.columns(2)
-    if c1.button("Simulate it live", type="primary", key=f"run_{lid}", use_container_width=True): started(n, engine.run_lab(lid, SS.model))
-    if c2.button("Show the saved run (free)", key=f"sv_{lid}", use_container_width=True): SS[f"saved_{lid}"] = True
-    with st.expander("Run this lab in Claude Code or a terminal instead"):
-        st.code(f"# Claude Code, from the labs folder\n/lab {lid}\n\n# Terminal, from labs/simulators/{l['dir']}\n" + "\n".join(l["cmds"]), language=None)
-    console(n)
+    if c1.button("▶ Simulate it live", type="primary", key=f"run_{lid}", use_container_width=True): started(n, engine.run_lab(lid, SS.model), where=where)
+    if c2.button("Show the saved run (free)", key=f"sv_{lid}", use_container_width=True): SS[f"saved_{lid}"] = not SS.get(f"saved_{lid}")
+    terminal(n, lid, where)
+    if SS.get(f"output_at_{n}") == where or engine.active(n): console(n)
     if SS.get(f"saved_{lid}"):
-        st.subheader("The saved run")
+        st.markdown("#### The saved run")
         ps = engine.existing(n, engine.lab_evidence(l))
         for p in ps: show_file(n, p, shipped=True)
-        if not ps: st.info("This lab has no single saved file. Run it live to see the evidence.")
-    st.markdown("#### 3. Were you right?")
-    if st.button("Show me the answer", key=f"ans_{lid}"): SS[f"rev_{lid}"] = True
-    if SS.get(f"rev_{lid}"):
-        if l.get("answer") and pick:
-            (st.success if pick == l["answer"] else st.error)(("You called it. " if pick == l["answer"] else f"You picked {pick}. The answer is {l['answer']}. ") + l["fix"])
-        else: st.success(l["fix"])
-        st.info(f"**What you should see:** {l['see']}")
-        if l.get("why"): st.write(l["why"])
-        if l.get("wrong"):
-            with st.expander("Why the other options fail"):
-                for k, v in l["wrong"].items(): st.markdown(f"**{k}.** {v}")
-        st.markdown(f"**Now change one thing:** {l['try']}")
+        if not ps: st.info("This lab has no saved file. Press Simulate it live to see it run.")
+    st.divider()
+    st.markdown(f"**Try this next:** {l['try']}")
+    st.caption(f"Prefer Claude Code? Open it in the labs folder and type /lab {lid}.")
+
+def terminal(n, lid, where):
+    """A terminal on the page, so nobody has to leave the browser."""
+    l = engine.LABS[lid]
+    with st.form(f"term_{lid}", border=True):
+        st.markdown("**Built-in terminal**, already in this simulator's folder. Change the command, or press Enter to run it.")
+        cmd = st.text_input("Command", value=l["cmds"][0].split(";")[0], key=f"cmd_{lid}", label_visibility="collapsed")
+        go = st.form_submit_button("Run command")
+        st.caption("Try `ls`, `ls evidence`, or `cat` with any file you see.")
+    if go:
+        job, problem = engine.typed_command(n, cmd, SS.model)
+        if problem: st.warning(problem)
+        elif job is None: st.warning("This simulator is still busy. Wait for it to finish, or press Stop above.")
+        else: started(n, job, where=where)
 
 def what_it_does(n, c):
     a = c.split(";")[0].split(); s = next((x for x in a if x.endswith(".py")), "")
@@ -289,11 +300,11 @@ def what_it_does(n, c):
     if "json.tool" in c: return "show the accuracy file." if "accuracy" in c else "show the evidence file."
     if s == "support_agent.py" and len(cs) > 1: return "send tickets " + ", ".join(cs[:-1]) + f" and {cs[-1]} to the agent."
     if s == "support_agent.py" and case:
-        extra = " with the identity gate off" if "--no-gate" in c else " with the $500 rule deleted from the prompt" if "noguard" in c else " with refund validation off" if "--no-validation" in c else ""
+        extra = " with the $500 rule deleted from the prompt, so only the hook can stop it" if "noguard" in c else ""
         return f"send ticket {case} to the agent{extra}."
-    return {"casekit.py": f"set up use case {case} in a temporary copy, run it, and score it." if case else "score the saved run.", "simulator.py": f"run configuration check {a[-1]}.", "research_system.py": f"run the research team on use case {case}." if case else "run the whole research team" + (" with the narrow plan." if "--narrow" in c else "."),
-            "rules_sim.py": "try placements of the same testing rule and check which ones loaded.", "explorer.py": f"run use case {case} against a fresh copy of the repo.", "ci_review.py": "review pull request 418 and report the exit code.", "ci_subagents.py": "run the reviewer team and compare the results.", "hook_gate.py": "try to approve the PR with and without passing tests.",
-            "extract.py": f"run use case {case}." if case else "extract the documents, validate them and route them.", "triage.py": "send the transcripts through the batch workflow." if "--batch" in c else "pilot the prompt template on ten transcripts.", "evaluate.py": "score every saved run.", "backend_tools.py": "call the mock tools directly, with no Claude.", "case_review.py": "run the /case-review skill on a saved case."}.get(s, f"run {c}.")
+    return {"casekit.py": f"set up use case {case} in a temporary copy, run it, and score it." if case else "score the saved run.", "simulator.py": f"run configuration check {a[-1]}.", "research_system.py": f"run the research team on use case {case}." if case else "run the whole research team on a broad plan.",
+            "rules_sim.py": "put the testing rule in one file with path patterns, and check when it loads.", "explorer.py": f"run use case {case} against a fresh copy of the repo.", "ci_review.py": "review pull request 418 and report the exit code.", "ci_subagents.py": "run the reviewer team and pass every finding through to the PR comment.", "hook_gate.py": "try to approve the PR with and without passing tests.",
+            "extract.py": f"run use case {case}." if case else "extract the documents, validate them and route them.", "triage.py": "send the transcripts through the batch workflow." if "--batch" in c else "pilot the refined prompt template on ten transcripts.", "evaluate.py": "score every saved run.", "backend_tools.py": "call the mock tools directly, with no Claude.", "case_review.py": "run the /case-review skill on a saved case."}.get(s, f"run {c}.")
 
 # ------------------------------------------------------------------ pages
 def sim_page(n):
@@ -310,7 +321,7 @@ def sim_page(n):
         if qp and qp.isdigit() and int(qp) in mine and not SS.get(f"qp_{n}_{qp}"):
             SS[f"qp_{n}_{qp}"] = True; SS[f"view_{n}"] = f"Lab {qp}"
         SS.setdefault(f"view_{n}", names[0])
-        st.caption("Lab numbers follow the exam domains in the slides, so each simulator holds its own set. A ★ on the lab means it runs in class.")
+        st.caption("Start here first. Lab numbers match the slides and the Learner Guide.")
         v = st.pills("View", names, key=f"view_{n}", label_visibility="collapsed") or names[0]
         st.divider()
         if v == "Start here": start_here(n)
@@ -324,7 +335,7 @@ def home():
     st.title("Six real systems. 61 labs. Break them on purpose.")
     st.markdown("Each simulator is one official exam scenario, running on this laptop. The customers and data are fake. **Claude is real**, driven by the Claude Agent SDK through your own login.")
     if not ok: st.error("You're not signed in yet. In a terminal, run: claude auth login, then reload this page.")
-    st.markdown("**New here?** Open Simulator 1 and follow Start here. It takes about ten minutes, and most steps are free.\n\nEach simulator holds a set of labs. A lab is one exam question: you answer it, then simulate the solution. Lab numbers follow the exam domains in the slides, the lab PDFs and the Learner Guide.")
+    st.markdown("**New here?** Open Simulator 1 and follow Start here. It takes about ten minutes, and most steps are free.\n\nEach simulator holds a set of labs. In a lab, you pick an answer, see at once why it's right or wrong, then watch the right answer work. Everything happens on this page.")
     cols = st.columns(3)
     for i, (n, s) in enumerate(engine.SIMS.items()):
         with cols[i % 3].container(border=True):
@@ -332,7 +343,7 @@ def home():
             st.markdown(f"**{s['name']}**\n\n{s['tagline']}")
             st.page_link(PAGES[n], label=f"Open Simulator {n}", icon="▶️")
     st.divider()
-    st.markdown("**Prefer Claude Code?** Open it in the `labs` folder and type `/lab 9`.  \n**Prefer a terminal?** From a simulator's folder, run the command under any lab, such as `uv run support_agent.py --case CS-01`.")
+    st.markdown("**Prefer Claude Code?** Open it in the `labs` folder and type `/lab 9`.  \nEvery lab also has a built-in terminal, so you never need to open one yourself.")
     st.caption("© Tertiary Infotech Academy Pte Ltd · UEN 201200696W. Practice-exam questions are third-party and unofficial.")
 
 PAGES = {n: st.Page(sim_page(n), title=f"{n}. {s['name']}", url_path=f"sim{n}") for n, s in engine.SIMS.items()}

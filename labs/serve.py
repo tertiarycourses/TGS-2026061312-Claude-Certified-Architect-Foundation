@@ -14,6 +14,6 @@ def free(p):
 port = next((p for p in range(a.port, a.port + 25) if free(p)), None)
 if port is None: sys.exit(f"No free port near {a.port}. Try: uv run serve.py --port 9000")
 if port != a.port: print(f"Port {a.port} is busy, using {port}.")
-print(f"Six simulators at http://127.0.0.1:{port}  (Ctrl+C to stop)")
+print(f"Six simulators at http://localhost:{port}  (Ctrl+C to stop)")
 os.chdir(Path(__file__).parent)
-sys.exit(subprocess.call([sys.executable, "-m", "streamlit", "run", "app.py", "--server.port", str(port), "--server.address", "127.0.0.1", "--server.headless", "true" if a.no_open else "false"]))
+sys.exit(subprocess.call([sys.executable, "-m", "streamlit", "run", "app.py", "--server.port", str(port), "--server.address", "localhost", "--server.headless", "true" if a.no_open else "false"]))

@@ -1,14 +1,14 @@
 # Claude Certified Architect Foundation: Learner Guide
 
 **TGS Ref No:** TGS-2026061312  
-**Version:** 2.2, 6 November 2026
+**Version:** 2.3, 6 November 2026
 
 
 ## How to Use This Guide
 
 Read a concept, then break it on a simulator. Each topic below follows that rhythm, so keep this guide open beside the simulator website. It is also your open-book reference for both assessment papers.
 
-**A simulator** is one working system from an official exam scenario, running on your laptop against a mock backend. **A lab** is one exam question: you answer it, then simulate the solution on a simulator. There are six simulators and 61 labs. A star (★) marks the 33 labs you run in class. The other 28 are yours for self-practice.
+**A simulator** is one working system from an official exam scenario, running on your laptop against a mock backend. **A lab** is one question: you pick an answer, see at once why it is right or wrong, then watch the right answer work on a simulator. There are six simulators and 61 labs. You run 33 of them in class, and the other 28 are yours for self-practice.
 
 The labs come from three places: all 40 questions of the SkillCertPro Part 1 practice exam, the 7 official sample questions in the exam guide, and 14 labs built from task statements. SkillCertPro is third-party and unofficial, so treat those questions as practice material, never as real exam items.
 
@@ -21,7 +21,8 @@ The labs come from three places: all 40 questions of the SkillCertPro Part 1 pra
 |---|---|---|
 | In the browser | From the `labs` folder, run `uv run serve.py`. Open a simulator and follow Start here. | Class time. Each step appears live, and evidence and checks are drawn for you. |
 | In Claude Code | Open Claude Code in the `labs` folder and type `/lab 9`. | Talking through the evidence with Claude. |
-| In a terminal | From the simulator's folder, run the command shown under each lab. | Changing files and rerunning. |
+
+You don't need to open a terminal. Every lab page has one built in, already in that simulator's folder.
 
 *Diagram: The six simulators page*
 
@@ -32,7 +33,7 @@ Ten minutes here saves every lab later. Every simulator is Python on the Claude 
 
 1. Install `uv` from https://docs.astral.sh/uv/ and sign in to Claude.
 2. From the `labs` folder, install everything with `uv sync`. It fetches Python and the SDK.
-3. Start the simulators. They open at http://127.0.0.1:8765, or the next free port if another app holds that one, and they listen on your laptop only.
+3. Start the simulators. They open at http://localhost:8765, or the next free port if another app holds that one, and they listen on your laptop only.
 4. Check the box in the left sidebar. It should read Signed in to Claude.
 5. Open Simulator 1 and follow Start here. Most of its steps are free.
 
@@ -53,7 +54,7 @@ uv run serve.py
 |---|---|
 | Start here | Read the scenario in plain words and meet the parts. Then follow the steps, with a button for each one. |
 | Play it live | Act in the scenario. Write in as the customer, work as a developer, ask the research team, run the CI reviewer, or paste a document. Each step Claude takes appears as it happens. |
-| Lab buttons | That simulator's labs. Each lab is one exam question: answer it, simulate the solution, read the evidence, then see why the other options fail. The lab's instruction PDF downloads from the same page. |
+| Lab buttons | That simulator's labs. Pick an answer, and the page shows at once why it is right or wrong. Then press Simulate it live and watch the right answer work. Each lab has its instructions in an expandable section, and a built-in terminal. |
 
 Lab numbers follow the exam domains in the slides, so each simulator holds its own set, and they aren't consecutive. Lab 1 runs on Simulator 1, Lab 2 on Simulator 2, Lab 3 on Simulator 3. Lab 9 means the same thing on the slide, on the page, in its PDF and in this guide.
 
@@ -93,19 +94,19 @@ Each simulator is one official exam scenario. Four of the six appear on your exa
 
 Official exam scenario: You are building a customer support resolution agent using the Claude Agent SDK. The agent handles high-ambiguity requests like returns, billing disputes, and account issues. It has access to your backend systems through custom Model Context Protocol (MCP) tools (get_customer, lookup_order, process_refund, escalate_to_human). Your target is 80%+ first-contact resolution while knowing when to escalate. Primary domains: Agentic Architecture, Tool Design & MCP, Context & Reliability.
 
-| Lab | Task | What you find out |
-|---|---|---|
-| 1 ★ | 1.1 | Watch one refund go round the loop |
-| 9 ★ | 1.4 | 12% of cases skip get_customer: fix it with a gate, not a sentence |
-| 12 ★ | 1.5 | The prompt forgot the $500 rule. The hook did not. |
-| 19 ★ | 2.2 | The refund failed. The customer was told it worked. |
-| 20 | 2.2 | Retry the timeout once, then answer from the real record |
-| 29 ★ | 3.2 | Keep a noisy case review out of your main session |
-| 43 ★ | 4.4 | Valid JSON, wrong refund: add business rules |
-| 45 ★ | 4.5 | Prove the template before 35,000 transcripts |
-| 46 | 4.5 | Client tools can't run inside a batch |
-| 51 ★ | 5.1 | Refund amount jumped to the wrong order |
-| 54 ★ | 5.2 | 55% first-contact resolution: calibrate with criteria and examples |
+| Lab | Task | When | What you find out |
+|---|---|---|---|
+| 1 | 1.1 | In class | Watch one refund go round the loop |
+| 9 | 1.4 | In class | 12% of cases skip get_customer: fix it with a gate, not a sentence |
+| 12 | 1.5 | In class | The prompt forgot the $500 rule. The hook did not. |
+| 19 | 2.2 | In class | The refund failed. The customer was told it worked. |
+| 20 | 2.2 | Self-practice | Retry the timeout once, then answer from the real record |
+| 29 | 3.2 | In class | Keep a noisy case review out of your main session |
+| 43 | 4.4 | In class | Valid JSON, wrong refund: add business rules |
+| 45 | 4.5 | In class | Prove the template before 35,000 transcripts |
+| 46 | 4.5 | Self-practice | Client tools can't run inside a batch |
+| 51 | 5.1 | In class | Refund amount jumped to the wrong order |
+| 54 | 5.2 | In class | 55% first-contact resolution: calibrate with criteria and examples |
 
 
 ### Simulator 2: Code Generation with Claude Code
@@ -136,20 +137,20 @@ Official exam scenario: You are building a customer support resolution agent usi
 
 Official exam scenario: You are using Claude Code to accelerate software development. Your team uses it for code generation, refactoring, debugging, and documentation. You need to integrate it into your development workflow with custom slash commands, CLAUDE.md configurations, and understand when to use plan mode vs direct execution. Primary domains: Claude Code Configuration, Context & Reliability.
 
-| Lab | Task | What you find out |
-|---|---|---|
-| 2 | 1.1 | Claude re-asks because the tool_result never came back |
-| 5 ★ | 1.3 | A /parallel-review that can't fan out because Task isn't allowed |
-| 13 | 1.5 | Shrink noisy npm test output before Claude reads it |
-| 16 ★ | 1.7 | Two attempts, one analysis: fork the session, checkpoint the files |
-| 23 ★ | 2.4 | Commit the server, never the token |
-| 27 ★ | 3.1 | Which instructions actually reached Claude? |
-| 28 | 3.2 | A /review command the whole team gets through git |
-| 31 ★ | 3.4 | Replacing the auth layer: nobody agrees on the boundary, so plan |
-| 32 | 3.4 | Plan first, then approve into an editing mode |
-| 33 ★ | 3.4 | One guard clause doesn't need a plan |
-| 40 ★ | 4.2 | "Clean this up" means three things: show which one you mean |
-| 59 | 5.5 | Acceptance looks great. Two fields don't. |
+| Lab | Task | When | What you find out |
+|---|---|---|---|
+| 2 | 1.1 | Self-practice | Claude re-asks because the tool_result never came back |
+| 5 | 1.3 | In class | A /parallel-review that can't fan out because Task isn't allowed |
+| 13 | 1.5 | Self-practice | Shrink noisy npm test output before Claude reads it |
+| 16 | 1.7 | In class | Two attempts, one analysis: fork the session, checkpoint the files |
+| 23 | 2.4 | In class | Commit the server, never the token |
+| 27 | 3.1 | In class | Which instructions actually reached Claude? |
+| 28 | 3.2 | Self-practice | A /review command the whole team gets through git |
+| 31 | 3.4 | In class | Replacing the auth layer: nobody agrees on the boundary, so plan |
+| 32 | 3.4 | Self-practice | Plan first, then approve into an editing mode |
+| 33 | 3.4 | In class | One guard clause doesn't need a plan |
+| 40 | 4.2 | In class | "Clean this up" means three things: show which one you mean |
+| 59 | 5.5 | Self-practice | Acceptance looks great. Two fields don't. |
 
 
 ### Simulator 3: Multi-Agent Research System
@@ -180,21 +181,21 @@ Official exam scenario: You are using Claude Code to accelerate software develop
 
 Official exam scenario: You are building a multi-agent research system using the Claude Agent SDK. A coordinator agent delegates to specialized subagents: one searches the web, one analyzes documents, one synthesizes findings, and one generates reports. The system researches topics and produces comprehensive, cited reports. Primary domains: Agentic Architecture, Tool Design & MCP, Context & Reliability.
 
-| Lab | Task | What you find out |
-|---|---|---|
-| 3 ★ | 1.2 | Every subagent succeeds, and the report still misses half the topic |
-| 7 | 1.3 | Polished report, weak citations: route information, not just tasks |
-| 8 | 1.3 | Later subagents re-run searches the first ones already finished |
-| 22 | 2.3 | Give synthesis one narrow tool, not the whole web |
-| 30 ★ | 3.3 | Testing rules for test files spread across every folder |
-| 35 | 3.5 | Two linked defects go in one detailed request |
-| 39 | 4.1 | Switch off the one noisy category, keep the accurate ones |
-| 41 | 4.3 | Vague passages forced into a category they don't fit |
-| 48 ★ | 4.6 | The author reviewing its own draft misses its own errors |
-| 49 | 4.6 | Source-level passes first, integration second |
-| 53 | 5.1 | Taxonomy drift: write it to a state file |
-| 55 ★ | 5.3 | The search timed out: tell the coordinator everything |
-| 61 ★ | 5.6 | A vendor benchmark isn't a peer-reviewed study |
+| Lab | Task | When | What you find out |
+|---|---|---|---|
+| 3 | 1.2 | In class | Every subagent succeeds, and the report still misses half the topic |
+| 7 | 1.3 | Self-practice | Polished report, weak citations: route information, not just tasks |
+| 8 | 1.3 | Self-practice | Later subagents re-run searches the first ones already finished |
+| 22 | 2.3 | Self-practice | Give synthesis one narrow tool, not the whole web |
+| 30 | 3.3 | In class | Testing rules for test files spread across every folder |
+| 35 | 3.5 | Self-practice | Two linked defects go in one detailed request |
+| 39 | 4.1 | Self-practice | Switch off the one noisy category, keep the accurate ones |
+| 41 | 4.3 | Self-practice | Vague passages forced into a category they don't fit |
+| 48 | 4.6 | In class | The author reviewing its own draft misses its own errors |
+| 49 | 4.6 | Self-practice | Source-level passes first, integration second |
+| 53 | 5.1 | Self-practice | Taxonomy drift: write it to a state file |
+| 55 | 5.3 | In class | The search timed out: tell the coordinator everything |
+| 61 | 5.6 | In class | A vendor benchmark isn't a peer-reviewed study |
 
 
 ### Simulator 4: Developer Productivity with Claude
@@ -225,15 +226,15 @@ Official exam scenario: You are building a multi-agent research system using the
 
 Official exam scenario: You are building developer productivity tools using the Claude Agent SDK. The agent helps engineers explore unfamiliar codebases, understand legacy systems, generate boilerplate code, and automate repetitive tasks. It uses the built-in tools (Read, Write, Bash, Grep, Glob) and integrates with Model Context Protocol (MCP) servers. Primary domains: Tool Design & MCP, Claude Code Configuration, Agentic Architecture.
 
-| Lab | Task | What you find out |
-|---|---|---|
-| 14 | 1.5 | rm -rf meets a hook, not a polite request |
-| 17 | 1.7 | Resume, and say exactly which file changed |
-| 24 | 2.4 | Read the catalogue before opening a single file |
-| 25 ★ | 2.5 | /find-callers needs Grep with a glob, not Bash |
-| 26 | 2.5 | Edit says the anchor isn't unique. Now what? |
-| 56 ★ | 5.4 | Delegate the noisy search, keep a scratchpad |
-| 58 | 5.4 | Crash recovery from a manifest |
+| Lab | Task | When | What you find out |
+|---|---|---|---|
+| 14 | 1.5 | Self-practice | rm -rf meets a hook, not a polite request |
+| 17 | 1.7 | Self-practice | Resume, and say exactly which file changed |
+| 24 | 2.4 | Self-practice | Read the catalogue before opening a single file |
+| 25 | 2.5 | In class | /find-callers needs Grep with a glob, not Bash |
+| 26 | 2.5 | Self-practice | Edit says the anchor isn't unique. Now what? |
+| 56 | 5.4 | In class | Delegate the noisy search, keep a scratchpad |
+| 58 | 5.4 | Self-practice | Crash recovery from a manifest |
 
 
 ### Simulator 5: Claude Code for Continuous Integration
@@ -262,17 +263,17 @@ Official exam scenario: You are building developer productivity tools using the 
 
 Official exam scenario: You are integrating Claude Code into your Continuous Integration/Continuous Deployment (CI/CD) pipeline. The system runs automated code reviews, generates test cases, and provides feedback on pull requests. You need to design prompts that provide actionable feedback and minimize false positives. Primary domains: Claude Code Configuration, Prompt Engineering.
 
-| Lab | Task | What you find out |
-|---|---|---|
-| 6 ★ | 1.3 | Same reviewers, same findings, and the PR comment loses them all |
-| 10 ★ | 1.4 | Approval must never post before the passing test artifact exists |
-| 21 ★ | 2.3 | Review and test generation fight over one Claude call |
-| 34 | 3.5 | Unknown requirements? Let Claude interview you first |
-| 36 ★ | 3.6 | The nightly job hangs because nobody can press Enter |
-| 37 | 3.6 | A shared slash command still needs -p in CI |
-| 38 ★ | 4.1 | "Only high confidence" didn't quiet the reviewer |
-| 50 ★ | 4.6 | 14 files, shallow comments: split the review |
-| 52 | 5.1 | 40-field tool results push the review to its limit |
+| Lab | Task | When | What you find out |
+|---|---|---|---|
+| 6 | 1.3 | In class | Same reviewers, same findings, and the PR comment loses them all |
+| 10 | 1.4 | In class | Approval must never post before the passing test artifact exists |
+| 21 | 2.3 | In class | Review and test generation fight over one Claude call |
+| 34 | 3.5 | Self-practice | Unknown requirements? Let Claude interview you first |
+| 36 | 3.6 | In class | The nightly job hangs because nobody can press Enter |
+| 37 | 3.6 | Self-practice | A shared slash command still needs -p in CI |
+| 38 | 4.1 | In class | "Only high confidence" didn't quiet the reviewer |
+| 50 | 4.6 | In class | 14 files, shallow comments: split the review |
+| 52 | 5.1 | Self-practice | 40-field tool results push the review to its limit |
 
 
 ### Simulator 6: Structured Data Extraction
@@ -301,17 +302,17 @@ Official exam scenario: You are integrating Claude Code into your Continuous Int
 
 Official exam scenario: You are building a structured data extraction system using Claude. The system extracts information from unstructured documents, validates the output using JavaScript Object Notation (JSON) schemas, and maintains high accuracy. It must handle edge cases gracefully and integrate with downstream systems. Primary domains: Prompt Engineering, Context & Reliability.
 
-| Lab | Task | What you find out |
-|---|---|---|
-| 4 | 1.2 | Same brief to every subagent, same findings four times |
-| 11 | 1.4 | Claude guesses a field and submits without validating |
-| 15 ★ | 1.6 | 60-page packets: section passes first, reconcile second |
-| 18 ★ | 2.1 | One analyze_document tool does three jobs badly |
-| 42 | 4.3 | Try tool_choice three ways and read the failures |
-| 44 ★ | 4.4 | Retry when the format is wrong, stop when the data is absent |
-| 47 | 4.5 | Nightly job on Batches, upload flow stays synchronous |
-| 57 | 5.4 | Keep discovery out of the main thread |
-| 60 ★ | 5.5 | The aggregate masks a segment: break it and watch |
+| Lab | Task | When | What you find out |
+|---|---|---|---|
+| 4 | 1.2 | Self-practice | Same brief to every subagent, same findings four times |
+| 11 | 1.4 | Self-practice | Claude guesses a field and submits without validating |
+| 15 | 1.6 | In class | 60-page packets: section passes first, reconcile second |
+| 18 | 2.1 | In class | One analyze_document tool does three jobs badly |
+| 42 | 4.3 | Self-practice | Know your tool_choice options, and check what came back |
+| 44 | 4.4 | In class | Retry when the format is wrong, stop when the data is absent |
+| 47 | 4.5 | Self-practice | Nightly job on Batches, upload flow stays synchronous |
+| 57 | 5.4 | Self-practice | Keep discovery out of the main thread |
+| 60 | 5.5 | In class | The aggregate masks a segment: break it and watch |
 
 
 ## Topic 1: Agentic Architecture & Orchestration
@@ -333,32 +334,32 @@ Claude does not decide when your loop ends. `stop_reason` does. When it reads `t
 - Log decisions, tool calls, observations and the stop reason, so anyone can replay why the agent stopped.
 
 
-#### Lab 1 ★: Watch one refund go round the loop
+#### Lab 1: Watch one refund go round the loop
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. In class, slide 28.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 28.
 
 *Diagram: Lab 1 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 1. Or type `/lab 1` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run support_agent.py --case CS-01` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. get_customer, lookup_order, recommend_refund, process_refund, then end_turn: refund $120.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run support_agent.py --case CS-01` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: get_customer, lookup_order, recommend_refund, process_refund, then end_turn: refund $120.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
 
 #### Lab 2: Claude re-asks because the tool_result never came back
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. Self-practice, slide 29.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 29.
 
 *Diagram: Lab 2 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 2. Or type `/lab 2` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-17` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. You draw the three turns: prompt, tool_use with an id, tool_result with that same id.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-17` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: You draw the three turns: prompt, tool_use with an id, tool_result with that same id.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
@@ -376,32 +377,32 @@ Picture a hub with spokes. The coordinator breaks the job down, picks only the s
 - Read the synthesis for gaps, re-delegate targeted queries, and synthesise again until coverage holds.
 
 
-#### Lab 3 ★: Every subagent succeeds, and the report still misses half the topic
+#### Lab 3: Every subagent succeeds, and the report still misses half the topic
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. In class, slide 31.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 31.
 
 *Diagram: Lab 3 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 3. Or type `/lab 3` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --narrow`, then `uv run research_system.py` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. The narrow run never searches music, writing or film. The broad run does.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: The broad plan searches music, writing, film and visual arts, and the report names any gap.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
 
 #### Lab 4: Same brief to every subagent, same findings four times
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 6. Self-practice, slide 32.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 32.
 
 *Diagram: Lab 4 on the Simulator 6 page*
 
 1. Open Simulator 6, then press Lab 4. Or type `/lab 4` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run extract.py --case UC-36` from `simulators/simulator-6-structured-extraction`.
-4. Check the evidence. Every document lands in exactly one group, and each subagent gets a line-capped deliverable.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run extract.py --case UC-36` from `simulators/simulator-6-structured-extraction`.
+4. Read the result. You should see: Every document lands in exactly one group, and each subagent gets a line-capped deliverable.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.
 
@@ -421,62 +422,62 @@ Two facts carry this task. A coordinator spawns subagents with the Task tool, so
 - `AgentDefinition` sets each subagent's description, system prompt and tool restrictions. Cap depth, fan-out and child count, and have children reply in a typed envelope.
 
 
-#### Lab 5 ★: A /parallel-review that can't fan out because Task isn't allowed
+#### Lab 5: A /parallel-review that can't fan out because Task isn't allowed
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. In class, slide 35.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 35.
 
 *Diagram: Lab 5 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 5. Or type `/lab 5` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-25` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. Delegation disallowed: no reviewer spawns. Allowed: the subagent runs and its answer comes back.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-25` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: Delegation disallowed: no reviewer spawns. Allowed: the subagent runs and its answer comes back.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
 
-#### Lab 6 ★: Same reviewers, same findings, and the PR comment loses them all
+#### Lab 6: Same reviewers, same findings, and the PR comment loses them all
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 5. In class, slide 36.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 36.
 
 *Diagram: Lab 6 on the Simulator 5 page*
 
 1. Open Simulator 5, then press Lab 6. Or type `/lab 6` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run ci_subagents.py --compare` from `simulators/simulator-5-ci-cd`.
-4. Check the evidence. File paths and failing test names survive with --pass-findings and vanish with --lossy.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run ci_subagents.py --pass-findings` from `simulators/simulator-5-ci-cd`.
+4. Read the result. You should see: File paths and failing test names survive all the way into the PR comment.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.
 
 
 #### Lab 7: Polished report, weak citations: route information, not just tasks
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. Self-practice, slide 37.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 37.
 
 *Diagram: Lab 7 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 7. Or type `/lab 7` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --case UC-10` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. The synthesis prompt runs to thousands of characters, with URLs, document names and dates.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py --case UC-10` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: The synthesis prompt runs to thousands of characters, with URLs, document names and dates.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
 
 #### Lab 8: Later subagents re-run searches the first ones already finished
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. Self-practice, slide 38.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 38.
 
 *Diagram: Lab 8 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 8. Or type `/lab 8` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --case UC-35` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. Synthesis and report prompts carry the source links, far smaller than the raw subagent traffic.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py --case UC-35` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: Synthesis and report prompts carry the source links, far smaller than the raw subagent traffic.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
@@ -494,47 +495,47 @@ A prompt that says "verify identity first" fails some of the time. The exam guid
 - Handing off to a human? They cannot see the transcript. Send the customer ID, root cause, refund amount and recommended action.
 
 
-#### Lab 9 ★: 12% of cases skip get_customer: fix it with a gate, not a sentence
+#### Lab 9: 12% of cases skip get_customer: fix it with a gate, not a sentence
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. In class, slide 41.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 41.
 
 *Diagram: Lab 9 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 9. Or type `/lab 9` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run support_agent.py --case CS-03`, then `uv run support_agent.py --case CS-03 --no-gate --tag nogate` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. With the gate on, get_customer always comes first. Compare the two traces.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run support_agent.py --case CS-03` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: get_customer comes first, then the order lookup.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
 
-#### Lab 10 ★: Approval must never post before the passing test artifact exists
+#### Lab 10: Approval must never post before the passing test artifact exists
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 5. In class, slide 42.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 42.
 
 *Diagram: Lab 10 on the Simulator 5 page*
 
 1. Open Simulator 5, then press Lab 10. Or type `/lab 10` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run hook_gate.py` from `simulators/simulator-5-ci-cd`.
-4. Check the evidence. No artifact: exit 2, denied. Tests run first: PR 418 approved and logged.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run hook_gate.py` from `simulators/simulator-5-ci-cd`.
+4. Read the result. You should see: No artifact: exit 2, denied. Tests run first: PR 418 approved and logged.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.
 
 
 #### Lab 11: Claude guesses a field and submits without validating
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 6. Self-practice, slide 43.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 43.
 
 *Diagram: Lab 11 on the Simulator 6 page*
 
 1. Open Simulator 6, then press Lab 11. Or type `/lab 11` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run extract.py --case UC-12` from `simulators/simulator-6-structured-extraction`.
-4. Check the evidence. DOC-07 is blocked at submit_record, nothing submits unvalidated, and a review ticket opens.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run extract.py --case UC-12` from `simulators/simulator-6-structured-extraction`.
+4. Read the result. You should see: DOC-07 is blocked at submit_record, nothing submits unvalidated, and a review ticket opens.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.
 
@@ -553,47 +554,47 @@ Exam task statement: Apply Agent SDK hooks for tool call interception and data n
 Reach for a hook whenever a business rule must hold every time. A prompt gives you probable compliance. A hook gives you a guarantee. When a hook denies a call, the denial is explicit and logged, not hidden in prompt prose, and you keep both the original and the transformed payload.
 
 
-#### Lab 12 ★: The prompt forgot the $500 rule. The hook did not.
+#### Lab 12: The prompt forgot the $500 rule. The hook did not.
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. In class, slide 46.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 46.
 
 *Diagram: Lab 12 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 12. Or type `/lab 12` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run support_agent.py --case CS-02`, then `uv run support_agent.py --case CS-02 --prompt prompts/system-noguard.md --tag noguard` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. Without the rule in the prompt the model tries $780. The hook denies it.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run support_agent.py --case CS-02 --prompt prompts/system-noguard.md --tag noguard` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: The prompt has lost its $500 rule, so the model tries $780. The hook denies it.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
 
 #### Lab 13: Shrink noisy npm test output before Claude reads it
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. Self-practice, slide 47.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 47.
 
 *Diagram: Lab 13 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 13. Or type `/lab 13` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-9` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. The command still runs. Claude reads no npm WARN lines and no absolute paths.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-9` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: The command still runs. Claude reads no npm WARN lines and no absolute paths.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
 
 #### Lab 14: rm -rf meets a hook, not a polite request
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 4. Self-practice, slide 48.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 48.
 
 *Diagram: Lab 14 on the Simulator 4 page*
 
 1. Open Simulator 4, then press Lab 14. Or type `/lab 14` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run explorer.py --case UC-D6` from `simulators/simulator-4-developer-productivity`.
-4. Check the evidence. The hook denies the command, work/tests still exists, and the agent reports the policy.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run explorer.py --case UC-D6` from `simulators/simulator-4-developer-productivity`.
+4. Read the result. You should see: The hook denies the command, work/tests still exists, and the agent reports the policy.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.
 
@@ -611,17 +612,17 @@ Ask one question: can you list the steps before you start? If yes, chain them. I
 - Make every subtask independently checkable and declare what it depends on.
 
 
-#### Lab 15 ★: 60-page packets: section passes first, reconcile second
+#### Lab 15: 60-page packets: section passes first, reconcile second
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 6. In class, slide 50.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 50.
 
 *Diagram: Lab 15 on the Simulator 6 page*
 
 1. Open Simulator 6, then press Lab 15. Or type `/lab 15` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run extract.py --case UC-31` from `simulators/simulator-6-structured-extraction`.
-4. Check the evidence. Single pass: one record for three documents. Section pipeline: one record per section.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run extract.py --case UC-31` from `simulators/simulator-6-structured-extraction`.
+4. Read the result. You should see: Single pass: one record for three documents. Section pipeline: one record per section.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.
 
@@ -642,32 +643,32 @@ Exam task statement: Manage session state, resumption, and forking. A resumed se
 Long runs must also survive a restart. A checkpoint stores stable task state and the last verified transition. A stable idempotency key stops a refund or a ticket firing twice after a resume or a fork.
 
 
-#### Lab 16 ★: Two attempts, one analysis: fork the session, checkpoint the files
+#### Lab 16: Two attempts, one analysis: fork the session, checkpoint the files
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. In class, slide 52.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 52.
 
 *Diagram: Lab 16 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 16. Or type `/lab 16` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-5` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. Three session ids. Attempt B starts from restored files, so attempt A never leaks in.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-5` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: Three session ids. Attempt B starts from restored files, so attempt A never leaks in.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
 
 #### Lab 17: Resume, and say exactly which file changed
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 4. Self-practice, slide 53.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 53.
 
 *Diagram: Lab 17 on the Simulator 4 page*
 
 1. Open Simulator 4, then press Lab 17. Or type `/lab 17` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run explorer.py --case UC-D4` from `simulators/simulator-4-developer-productivity`.
-4. Check the evidence. Same session id, at most two Reads, no Grep, no subagent.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run explorer.py --case UC-D4` from `simulators/simulator-4-developer-productivity`.
+4. Read the result. You should see: Same session id, at most two Reads, no Grep, no subagent.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.
 
@@ -692,17 +693,17 @@ Claude picks a tool by reading what you wrote about it. Write little and it gues
 - Still misrouting? Read the system prompt. A keyword-sensitive instruction can override a well-written description.
 
 
-#### Lab 18 ★: One analyze_document tool does three jobs badly
+#### Lab 18: One analyze_document tool does three jobs badly
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 6. In class, slide 57.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 57.
 
 *Diagram: Lab 18 on the Simulator 6 page*
 
 1. Open Simulator 6, then press Lab 18. Or type `/lab 18` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run extract.py --case UC-11` from `simulators/simulator-6-structured-extraction`.
-4. Check the evidence. The generic tool drifts into summaries. The split set calls extract_invoice with valid fields.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run extract.py --case UC-11` from `simulators/simulator-6-structured-extraction`.
+4. Read the result. You should see: The generic tool drifts into summaries. The split set calls extract_invoice with valid fields.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.
 
@@ -724,32 +725,32 @@ Exam task statement: Implement structured error responses for MCP tools. Name th
 | Query worked, nothing matched | Not an error | No | Report a valid empty result |
 
 
-#### Lab 19 ★: The refund failed. The customer was told it worked.
+#### Lab 19: The refund failed. The customer was told it worked.
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. In class, slide 60.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 60.
 
 *Diagram: Lab 19 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 19. Or type `/lab 19` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run support_agent.py --case CS-11` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. The refund on ORD-5508 is never issued, and the reply never claims it was.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run support_agent.py --case CS-11` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: The refund on ORD-5508 is never issued, and the reply never claims it was.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
 
 #### Lab 20: Retry the timeout once, then answer from the real record
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. Self-practice, slide 61.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. Self-practice, slide 61.
 
 *Diagram: Lab 20 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 20. Or type `/lab 20` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run support_agent.py --case CS-06` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. ORD-5504 times out once, one retry follows, and the reply uses the real order record.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run support_agent.py --case CS-06` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: ORD-5504 times out once, one retry follows, and the reply uses the real order record.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
@@ -773,32 +774,32 @@ Give an agent 18 tools and it chooses worse than with 4 or 5. Give a synthesis a
 | `{"type": "tool", "name": "extract_metadata"}` | Must call that tool | One step has to run first. Handle the rest in follow-up turns |
 
 
-#### Lab 21 ★: Review and test generation fight over one Claude call
+#### Lab 21: Review and test generation fight over one Claude call
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 5. In class, slide 64.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 64.
 
 *Diagram: Lab 21 on the Simulator 5 page*
 
 1. Open Simulator 5, then press Lab 21. Or type `/lab 21` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-15` from `simulators/simulator-5-ci-cd`.
-4. Check the evidence. Review gets read-only tools and the finding schema. Tests get their own. No prose comes back.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-15` from `simulators/simulator-5-ci-cd`.
+4. Read the result. You should see: Review gets read-only tools and the finding schema. Tests get their own. No prose comes back.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.
 
 
 #### Lab 22: Give synthesis one narrow tool, not the whole web
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. Self-practice, slide 65.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 65.
 
 *Diagram: Lab 22 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 22. Or type `/lab 22` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. Synthesis calls verify_fact. No agent uses a tool outside its definition.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: Synthesis calls verify_fact. No agent uses a tool outside its definition.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
@@ -829,32 +830,32 @@ Commit the server. Never commit the token. Project scope goes in `.mcp.json`, sh
 - Expose catalogues (issue summaries, documentation hierarchies, database schemas) as MCP resources, so the agent sees what exists without exploratory calls.
 
 
-#### Lab 23 ★: Commit the server, never the token
+#### Lab 23: Commit the server, never the token
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. In class, slide 67.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 67.
 
 *Diagram: Lab 23 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 23. Or type `/lab 23` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run simulator.py 5` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. .mcp.json holds placeholders only. Your real ~/.claude.json stays untouched.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run simulator.py 5` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: .mcp.json holds placeholders only. Your real ~/.claude.json stays untouched.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
 
 #### Lab 24: Read the catalogue before opening a single file
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 4. Self-practice, slide 68.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 68.
 
 *Diagram: Lab 24 on the Simulator 4 page*
 
 1. Open Simulator 4, then press Lab 24. Or type `/lab 24` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run explorer.py --case UC-D2` from `simulators/simulator-4-developer-productivity`.
-4. Check the evidence. list_catalog first, read_resource docs://runbook next, no Glob over docs/.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run explorer.py --case UC-D2` from `simulators/simulator-4-developer-productivity`.
+4. Read the result. You should see: list_catalog first, read_resource docs://runbook next, no Glob over docs/.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.
 
@@ -877,32 +878,32 @@ Exam task statement: Select and apply built-in tools (Read, Write, Edit, Bash, G
 Don't read everything up front. Grep for the entry point, then Read along the imports. To trace through a wrapper module, list every exported name, then search for each. Edit only once the evidence names the target. Matched paths, a focused diff and a test result are your proof.
 
 
-#### Lab 25 ★: /find-callers needs Grep with a glob, not Bash
+#### Lab 25: /find-callers needs Grep with a glob, not Bash
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 4. In class, slide 71.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. In class, slide 71.
 
 *Diagram: Lab 25 on the Simulator 4 page*
 
 1. Open Simulator 4, then press Lab 25. Or type `/lab 25` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run explorer.py --case UC-37` from `simulators/simulator-4-developer-productivity`.
-4. Check the evidence. One Grep call for calculate_total in *.py, with file, line and match. No Bash grep.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run explorer.py --case UC-37` from `simulators/simulator-4-developer-productivity`.
+4. Read the result. You should see: One Grep call for calculate_total in *.py, with file, line and match. No Bash grep.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.
 
 
 #### Lab 26: Edit says the anchor isn't unique. Now what?
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 4. Self-practice, slide 72.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 72.
 
 *Diagram: Lab 26 on the Simulator 4 page*
 
 1. Open Simulator 4, then press Lab 26. Or type `/lab 26` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run explorer.py --case UC-D1` from `simulators/simulator-4-developer-productivity`.
-4. Check the evidence. return total appears twice. Edit is tried, the fallback or a wider anchor lands, pytest passes.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run explorer.py --case UC-D1` from `simulators/simulator-4-developer-productivity`.
+4. Read the result. You should see: return total appears twice. Edit is tried, the fallback or a wider anchor lands, pytest passes.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.
 
@@ -929,17 +930,17 @@ Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scopi
 - Project CLAUDE.md holds stable cross-repository constraints and how to verify work. Say each thing once: instructions copied across scopes end up contradicting each other.
 
 
-#### Lab 27 ★: Which instructions actually reached Claude?
+#### Lab 27: Which instructions actually reached Claude?
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. In class, slide 77.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 77.
 
 *Diagram: Lab 27 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 27. Or type `/lab 27` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run simulator.py 1` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. Claude quotes the imported standard and names the rule files in context.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run simulator.py 1` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: Claude quotes the imported standard and names the rule files in context.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
@@ -969,30 +970,30 @@ argument-hint: <package path>
 
 #### Lab 28: A /review command the whole team gets through git
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. Self-practice, slide 79.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 79.
 
 *Diagram: Lab 28 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 28. Or type `/lab 28` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run simulator.py 2` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. /review main finds the removed orders:read check and ends with a VERDICT line.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run simulator.py 2` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: /review main finds the removed orders:read check and ends with a VERDICT line.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
 
-#### Lab 29 ★: Keep a noisy case review out of your main session
+#### Lab 29: Keep a noisy case review out of your main session
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. In class, slide 80.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 80.
 
 *Diagram: Lab 29 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 29. Or type `/lab 29` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run case_review.py CS-02` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. The review returns as a summary. The evidence JSON stays out of the session.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run case_review.py CS-02` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: The review returns as a summary. The evidence JSON stays out of the session.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
@@ -1015,17 +1016,17 @@ Use the shared fixtures. Name each test after the behaviour it proves.
 Scope conventions separately: Python rules to Python paths, documentation rules to Markdown paths. Choose a subfolder CLAUDE.md only when a convention really does stop at one folder.
 
 
-#### Lab 30 ★: Testing rules for test files spread across every folder
+#### Lab 30: Testing rules for test files spread across every folder
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. In class, slide 83.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 83.
 
 *Diagram: Lab 30 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 30. Or type `/lab 30` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run rules_sim.py D`, then `uv run rules_sim.py` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. D loads for the test edit only, one copy. A and B load always. C needs three copies.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run rules_sim.py D` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: The rule loads for the test edit only, from one copy.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
@@ -1049,47 +1050,47 @@ Exam task statement: Determine when to use plan mode vs direct execution. A guar
 The deciding factors are ambiguity and blast radius. Plan mode lets you explore safely before you commit to changes, and that prevents costly rework. For a noisy discovery phase, the Explore subagent keeps the output out of your main conversation and hands back a summary.
 
 
-#### Lab 31 ★: Replacing the auth layer: nobody agrees on the boundary, so plan
+#### Lab 31: Replacing the auth layer: nobody agrees on the boundary, so plan
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. In class, slide 86.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 86.
 
 *Diagram: Lab 31 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 31. Or type `/lab 31` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-8` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. Files hash the same before and after: a plan, with no edits.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-8` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: Files hash the same before and after: a plan, with no edits.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
 
 #### Lab 32: Plan first, then approve into an editing mode
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. Self-practice, slide 87.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 87.
 
 *Diagram: Lab 32 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 32. Or type `/lab 32` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-30` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. Plan phase changes nothing. The same session resumes with acceptEdits, and the edits land.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-30` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: Plan phase changes nothing. The same session resumes with acceptEdits, and the edits land.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
 
-#### Lab 33 ★: One guard clause doesn't need a plan
+#### Lab 33: One guard clause doesn't need a plan
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. In class, slide 88.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 88.
 
 *Diagram: Lab 33 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 33. Or type `/lab 33` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-34` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. No plan mode. quantity.js changes, node --test runs, three tests pass.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-34` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: No plan mode. quantity.js changes, node --test runs, three tests pass.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
@@ -1109,30 +1110,30 @@ Exam task statement: Apply iterative refinement techniques for progressive impro
 
 #### Lab 34: Unknown requirements? Let Claude interview you first
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 5. Self-practice, slide 90.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. Self-practice, slide 90.
 
 *Diagram: Lab 34 on the Simulator 5 page*
 
 1. Open Simulator 5, then press Lab 34. Or type `/lab 34` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-14` from `simulators/simulator-5-ci-cd`.
-4. Check the evidence. spec.md holds open questions, interfaces, out-of-scope items and verification.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-14` from `simulators/simulator-5-ci-cd`.
+4. Read the result. You should see: spec.md holds open questions, interfaces, out-of-scope items and verification.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.
 
 
 #### Lab 35: Two linked defects go in one detailed request
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. Self-practice, slide 91.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 91.
 
 *Diagram: Lab 35 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 35. Or type `/lab 35` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --case UC-27` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. You write one plan-mode request: both defects, shared interface, acceptance test.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py --case UC-27` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: You write one plan-mode request: both defects, shared interface, acceptance test.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
@@ -1152,32 +1153,32 @@ CI has no keyboard. Without `-p`, the job waits for an answer nobody will type. 
 - Close the loop. The schema carries severity and evidence, the pipeline saves the artifact, and a severity gate sets an explicit exit status.
 
 
-#### Lab 36 ★: The nightly job hangs because nobody can press Enter
+#### Lab 36: The nightly job hangs because nobody can press Enter
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 5. In class, slide 94.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 94.
 
 *Diagram: Lab 36 on the Simulator 5 page*
 
 1. Open Simulator 5, then press Lab 36. Or type `/lab 36` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-18` from `simulators/simulator-5-ci-cd`.
-4. Check the evidence. One JSON envelope on stdout, and the process exits well inside the job timeout.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-18` from `simulators/simulator-5-ci-cd`.
+4. Read the result. You should see: One JSON envelope on stdout, and the process exits well inside the job timeout.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.
 
 
 #### Lab 37: A shared slash command still needs -p in CI
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 5. Self-practice, slide 95.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. Self-practice, slide 95.
 
 *Diagram: Lab 37 on the Simulator 5 page*
 
 1. Open Simulator 5, then press Lab 37. Or type `/lab 37` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-38` from `simulators/simulator-5-ci-cd`.
-4. Check the evidence. /pr-check runs unattended only because the job calls it through claude -p.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-38` from `simulators/simulator-5-ci-cd`.
+4. Read the result. You should see: /pr-check runs unattended only because the job calls it through claude -p.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.
 
@@ -1202,32 +1203,32 @@ Exam task statement: Design prompts with explicit criteria to improve precision 
 One noisy category teaches developers to ignore the accurate ones. Switch that category off while you repair its prompt, and trust comes back. For extraction, the same discipline means stating the required fields, the exclusions and what success looks like.
 
 
-#### Lab 38 ★: "Only high confidence" didn't quiet the reviewer
+#### Lab 38: "Only high confidence" didn't quiet the reviewer
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 5. In class, slide 99.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 99.
 
 *Diagram: Lab 38 on the Simulator 5 page*
 
 1. Open Simulator 5, then press Lab 38. Or type `/lab 38` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-39` from `simulators/simulator-5-ci-cd`.
-4. Check the evidence. Vague prompt: comments on names. Criteria: the None dereference in getPrice, nothing on naming.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-39` from `simulators/simulator-5-ci-cd`.
+4. Read the result. You should see: Vague prompt: comments on names. Criteria: the None dereference in getPrice, nothing on naming.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.
 
 
 #### Lab 39: Switch off the one noisy category, keep the accurate ones
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. Self-practice, slide 100.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 100.
 
 *Diagram: Lab 39 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 39. Or type `/lab 39` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --case UC-20` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. You write the revised category list and an eval plan with a measurable threshold.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py --case UC-20` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: You write the revised category list and an eval plan with a measurable threshold.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
@@ -1246,17 +1247,17 @@ When detailed instructions still give inconsistent output, two to four targeted 
 - For extraction, show varied structures such as inline citations against bibliographies. That reduces hallucination and empty required fields.
 
 
-#### Lab 40 ★: "Clean this up" means three things: show which one you mean
+#### Lab 40: "Clean this up" means three things: show which one you mean
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. In class, slide 102.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 102.
 
 *Diagram: Lab 40 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 40. Or type `/lab 40` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-23` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. The three ambiguous requests classify as investigate, plan and modify.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-23` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: The three ambiguous requests classify as investigate, plan and modify.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
@@ -1290,30 +1291,30 @@ A recommendation pipeline needs all five of those fields. Without evidence and c
 
 #### Lab 41: Vague passages forced into a category they don't fit
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. Self-practice, slide 105.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 105.
 
 *Diagram: Lab 41 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 41. Or type `/lab 41` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --case UC-28` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. Every value stays in the enum. Vague passages use unclear. Any other carries other_detail.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py --case UC-28` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: Every value stays in the enum. Vague passages use unclear. Any other carries other_detail.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
 
-#### Lab 42: Try tool_choice three ways and read the failures
+#### Lab 42: Know your tool_choice options, and check what came back
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 6. Self-practice, slide 106.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 106.
 
 *Diagram: Lab 42 on the Simulator 6 page*
 
 1. Open Simulator 6, then press Lab 42. Or type `/lab 42` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run extract.py --tool-choice any --max-docs 2`, then `uv run extract.py --tool-choice forced --max-docs 2` from `simulators/simulator-6-structured-extraction`.
-4. Check the evidence. The Agent SDK has no tool_choice setting, so the script asks for it in the prompt. Read what Claude did, and the lesson in the evidence.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run extract.py --tool-choice forced --max-docs 2` from `simulators/simulator-6-structured-extraction`.
+4. Read the result. You should see: The Agent SDK has no tool_choice setting, so the script asks for it in the prompt. Read what Claude did, and the lesson in the evidence.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.
 
@@ -1334,32 +1335,32 @@ Exam task statement: Implement validation, retry, and feedback loops for extract
 A useful retry sends the original document, the failed extraction and the exact validation errors. Cap the retries and aim them at specific fields, and route anything still unresolved to human review. Extract `calculated_total` beside `stated_total` and a `conflict_detected` flag so the record checks itself. Add a `detected_pattern` field to findings, so you can see which constructs developers keep dismissing.
 
 
-#### Lab 43 ★: Valid JSON, wrong refund: add business rules
+#### Lab 43: Valid JSON, wrong refund: add business rules
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. In class, slide 108.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 108.
 
 *Diagram: Lab 43 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 43. Or type `/lab 43` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run backend_tools.py --demo`, then `uv run support_agent.py --case CS-13`, then `uv run support_agent.py --case CS-13 --no-validation --tag novalidation` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. Cash refund is $105. The $8 shipping stays store credit.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run support_agent.py --case CS-13` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: Cash refund is $105. The $8 shipping stays store credit.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
 
-#### Lab 44 ★: Retry when the format is wrong, stop when the data is absent
+#### Lab 44: Retry when the format is wrong, stop when the data is absent
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 6. In class, slide 109.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 109.
 
 *Diagram: Lab 44 on the Simulator 6 page*
 
 1. Open Simulator 6, then press Lab 44. Or type `/lab 44` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run extract.py` from `simulators/simulator-6-structured-extraction`.
-4. Check the evidence. DOC-03 keeps both totals and goes to a human. DOC-07 names what is missing and goes to a human without a retry. A format error gets a retry.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run extract.py` from `simulators/simulator-6-structured-extraction`.
+4. Read the result. You should see: DOC-03 keeps both totals and goes to a human. DOC-07 names what is missing and goes to a human without a retry. A format error gets a retry.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.
 
@@ -1379,47 +1380,47 @@ Three numbers define the Message Batches API: 50% cheaper, up to 24 hours, no la
 - In your own chunked workflows, keep a manifest: stable item IDs, bounded batches and per-item status, so one failure cannot corrupt the ordered result.
 
 
-#### Lab 45 ★: Prove the template before 35,000 transcripts
+#### Lab 45: Prove the template before 35,000 transcripts
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. In class, slide 112.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 112.
 
 *Diagram: Lab 45 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 45. Or type `/lab 45` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run triage.py --pilot --template prompts/triage_template_v0.md`, then `uv run triage.py --pilot` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. Weak template: not ready. Real template: ready for the overnight batch.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run triage.py --pilot` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: The refined template reports it is ready for the overnight batch.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
 
 #### Lab 46: Client tools can't run inside a batch
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. Self-practice, slide 113.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. Self-practice, slide 113.
 
 *Diagram: Lab 46 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 46. Or type `/lab 46` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run triage.py --batch` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. Rows needing a tool stop at stop_reason: tool_use.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run triage.py --batch` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: Rows needing a tool stop at stop_reason: tool_use.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
 
 #### Lab 47: Nightly job on Batches, upload flow stays synchronous
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 6. Self-practice, slide 114.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 114.
 
 *Diagram: Lab 47 on the Simulator 6 page*
 
 1. Open Simulator 6, then press Lab 47. Or type `/lab 47` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run extract.py --case UC-32` from `simulators/simulator-6-structured-extraction`.
-4. Check the evidence. interactive_upload routes to sync, nightly_archive to batch, with a 0.5 cost multiplier.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run extract.py --case UC-32` from `simulators/simulator-6-structured-extraction`.
+4. Read the result. You should see: interactive_upload routes to sync, nightly_archive to batch, with a 0.5 cost multiplier.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.
 
@@ -1437,47 +1438,47 @@ The session that wrote the draft still holds its reasoning, so it defends its ow
 - Give the reviewer an adversarial brief: find unsupported claims. Log disagreements and adjudicate them against evidence. Never average them away.
 
 
-#### Lab 48 ★: The author reviewing its own draft misses its own errors
+#### Lab 48: The author reviewing its own draft misses its own errors
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. In class, slide 117.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 117.
 
 *Diagram: Lab 48 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 48. Or type `/lab 48` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --case UC-06` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. Two or more reviewers launch in one response, and a separate integration pass follows.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py --case UC-06` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: Two or more reviewers launch in one response, and a separate integration pass follows.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
 
 #### Lab 49: Source-level passes first, integration second
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. Self-practice, slide 118.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 118.
 
 *Diagram: Lab 49 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 49. Or type `/lab 49` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --case UC-19` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. Reviewers get bundles smaller than the synthesis, and integration runs last.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py --case UC-19` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: Reviewers get bundles smaller than the synthesis, and integration runs last.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
 
-#### Lab 50 ★: 14 files, shallow comments: split the review
+#### Lab 50: 14 files, shallow comments: split the review
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 5. In class, slide 119.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 119.
 
 *Diagram: Lab 50 on the Simulator 5 page*
 
 1. Open Simulator 5, then press Lab 50. Or type `/lab 50` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run ci_review.py; echo "exit $?"` from `simulators/simulator-5-ci-cd`.
-4. Check the evidence. Only the integration pass finds the jobs.py call with the old signature.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run ci_review.py; echo "exit $?"` from `simulators/simulator-5-ci-cd`.
+4. Read the result. You should see: Only the integration pass finds the jobs.py call with the old signature.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.
 
@@ -1502,47 +1503,47 @@ A summary turns an exact refund into "about $45", and a refund lands on the wron
 - When the next agent has little room, make upstream agents return key facts, citations and relevance scores, not reasoning chains.
 
 
-#### Lab 51 ★: Refund amount jumped to the wrong order
+#### Lab 51: Refund amount jumped to the wrong order
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. In class, slide 124.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 124.
 
 *Diagram: Lab 51 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 51. Or type `/lab 51` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run support_agent.py --case CS-12` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. After three turns the only refund is $45 on ORD-5503.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run support_agent.py --case CS-12` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: After three turns the only refund is $45 on ORD-5503.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
 
 #### Lab 52: 40-field tool results push the review to its limit
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 5. Self-practice, slide 125.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. Self-practice, slide 125.
 
 *Diagram: Lab 52 on the Simulator 5 page*
 
 1. Open Simulator 5, then press Lab 52. Or type `/lab 52` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-13` from `simulators/simulator-5-ci-cd`.
-4. Check the evidence. Verbose payload: tens of kilobytes. Compact payload: a few hundred bytes.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-13` from `simulators/simulator-5-ci-cd`.
+4. Read the result. You should see: Verbose payload: tens of kilobytes. Compact payload: a few hundred bytes.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.
 
 
 #### Lab 53: Taxonomy drift: write it to a state file
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. Self-practice, slide 126.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 126.
 
 *Diagram: Lab 53 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 53. Or type `/lab 53` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --case UC-21` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. research_state.json holds taxonomy and source map, and the synthesis packet quotes it.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py --case UC-21` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: research_state.json holds taxonomy and source map, and the synthesis packet quotes it.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
@@ -1564,17 +1565,17 @@ Exam task statement: Design effective escalation and ambiguity resolution patter
 Sentiment and self-reported confidence don't predict how complex a case is. Put explicit escalation criteria and few-shot examples in the system prompt instead.
 
 
-#### Lab 54 ★: 55% first-contact resolution: calibrate with criteria and examples
+#### Lab 54: 55% first-contact resolution: calibrate with criteria and examples
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 1. In class, slide 129.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 129.
 
 *Diagram: Lab 54 on the Simulator 1 page*
 
 1. Open Simulator 1, then press Lab 54. Or type `/lab 54` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run support_agent.py --case CS-05 --case CS-08 --case CS-09 --case CS-10`, then `uv run evaluate.py` from `simulators/simulator-1-customer-support`.
-4. Check the evidence. Human request and price match escalate. Two names: it asks. Angry but routine: resolved.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run support_agent.py --case CS-05 --case CS-08 --case CS-09 --case CS-10`, then `uv run evaluate.py` from `simulators/simulator-1-customer-support`.
+4. Read the result. You should see: Human request and price match escalate. Two names: it asks. Angry but routine: resolved.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Open Play it live and write the customer's message yourself. Change the switches and see what gets through.
 
@@ -1593,17 +1594,17 @@ Send the coordinator four things: the failure type, what you attempted, the part
 - Annotate the synthesis: which findings are well supported, and which areas have gaps because a source was down.
 
 
-#### Lab 55 ★: The search timed out: tell the coordinator everything
+#### Lab 55: The search timed out: tell the coordinator everything
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. In class, slide 131.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 131.
 
 *Diagram: Lab 55 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 55. Or type `/lab 55` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. The run finishes, and the report names visual arts as a coverage gap.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: The run finishes, and the report names visual arts as a coverage gap.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
@@ -1623,47 +1624,47 @@ When answers drift towards "typical patterns" and away from the classes you foun
 - Use `/compact` when verbose discovery fills the session. Keep the retrieval trace and a durable summary as evidence of what was read.
 
 
-#### Lab 56 ★: Delegate the noisy search, keep a scratchpad
+#### Lab 56: Delegate the noisy search, keep a scratchpad
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 4. In class, slide 133.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. In class, slide 133.
 
 *Diagram: Lab 56 on the Simulator 4 page*
 
 1. Open Simulator 4, then press Lab 56. Or type `/lab 56` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run explorer.py --case UC-D3` from `simulators/simulator-4-developer-productivity`.
-4. Check the evidence. An explore subagent runs, and NOTES.md names calculate_total and report.py.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run explorer.py --case UC-D3` from `simulators/simulator-4-developer-productivity`.
+4. Read the result. You should see: An explore subagent runs, and NOTES.md names calculate_total and report.py.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.
 
 
 #### Lab 57: Keep discovery out of the main thread
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 6. Self-practice, slide 134.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 134.
 
 *Diagram: Lab 57 on the Simulator 6 page*
 
 1. Open Simulator 6, then press Lab 57. Or type `/lab 57` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run extract.py --case UC-22` from `simulators/simulator-6-structured-extraction`.
-4. Check the evidence. Prints the delegation prompt to paste into Claude Code. The main thread stays short.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run extract.py --case UC-22` from `simulators/simulator-6-structured-extraction`.
+4. Read the result. You should see: Prints the delegation prompt to paste into Claude Code. The main thread stays short.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.
 
 
 #### Lab 58: Crash recovery from a manifest
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 4. Self-practice, slide 135.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 135.
 
 *Diagram: Lab 58 on the Simulator 4 page*
 
 1. Open Simulator 4, then press Lab 58. Or type `/lab 58` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run explorer.py --case UC-D5` from `simulators/simulator-4-developer-productivity`.
-4. Check the evidence. Fresh session id, no Grep, no subagent, and the tests pass.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run explorer.py --case UC-D5` from `simulators/simulator-4-developer-productivity`.
+4. Read the result. You should see: Fresh session id, no Grep, no subagent, and the tests pass.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.
 
@@ -1684,30 +1685,30 @@ Exam task statement: Design human review workflows and confidence calibration. S
 
 #### Lab 59: Acceptance looks great. Two fields don't.
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 2. Self-practice, slide 137.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 137.
 
 *Diagram: Lab 59 on the Simulator 2 page*
 
 1. Open Simulator 2, then press Lab 59. Or type `/lab 59` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run casekit.py --case UC-33` from `simulators/simulator-2-code-generation`.
-4. Check the evidence. One confidence per field. Under 0.8 goes to review, as do signatures under 0.95.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run casekit.py --case UC-33` from `simulators/simulator-2-code-generation`.
+4. Read the result. You should see: One confidence per field. Under 0.8 goes to review, as do signatures under 0.95.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Pick another model in the sidebar's Model menu, rerun, and compare the result and the cost line in the evidence.
 
 
-#### Lab 60 ★: The aggregate masks a segment: break it and watch
+#### Lab 60: The aggregate masks a segment: break it and watch
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 6. In class, slide 138.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 138.
 
 *Diagram: Lab 60 on the Simulator 6 page*
 
 1. Open Simulator 6, then press Lab 60. Or type `/lab 60` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run extract.py`, then `uv run python -m json.tool evidence/accuracy.json` from `simulators/simulator-6-structured-extraction`.
-4. Check the evidence. Change one invoice total: only by_document_type.invoice falls.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run extract.py`, then `uv run python -m json.tool evidence/accuracy.json` from `simulators/simulator-6-structured-extraction`.
+4. Read the result. You should see: Change one invoice total: only by_document_type.invoice falls.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.
 
@@ -1728,17 +1729,17 @@ Summaries drop attribution first, so make the source travel with the claim. Have
 - Prove it. Write five acceptance checks anyone can observe, such as every claim has a source ID, or the approval record names a person, a time and a decision.
 
 
-#### Lab 61 ★: A vendor benchmark isn't a peer-reviewed study
+#### Lab 61: A vendor benchmark isn't a peer-reviewed study
 
-**Goal:** answer the exam question, then simulate the solution on Simulator 3. In class, slide 141.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 141.
 
 *Diagram: Lab 61 on the Simulator 3 page*
 
 1. Open Simulator 3, then press Lab 61. Or type `/lab 61` in Claude Code.
-2. Read the exam question, pick your answer, and say why. Press Lock in my answer.
-3. Press Simulate it live, or Show the saved run. It runs `uv run research_system.py --case UC-24` from `simulators/simulator-3-multi-agent-research`.
-4. Check the evidence. Each finding carries document, page, date and method note. 41% and 55% stay side by side.
-5. Press Show me the answer, then read why the other options fail.
+2. Read the question and click your answer. The page shows at once whether it is right, and why.
+3. Press Simulate it live, or Show the saved run. The built-in terminal runs `uv run research_system.py --case UC-24` from `simulators/simulator-3-multi-agent-research`.
+4. Read the result. You should see: Each finding carries document, page, date and method note. 41% and 55% stay side by side.
+5. Open Why the other answers fall short, and read it.
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
