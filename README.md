@@ -7,7 +7,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 | Course code | `TGS-2026061312` |
 | Programme | WSQ |
 | Duration | 2 days / 16 hours |
-| Courseware release | Trainer deck v2.4, Lesson Plan v2.3, Learner Guide v2.3 |
+| Courseware release | Trainer deck v2.5, Lesson Plan v2.4, Learner Guide v2.4 |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html) |
 | Funding | Up to 70% course fee funding for eligible learners and employers. Eligibility and current terms apply. |
 
@@ -55,7 +55,7 @@ uv sync                # first time only
 uv run serve.py        # opens http://localhost:8765, or the next free port
 ```
 
-Each simulator page has **Start here** (the scenario in plain words, then steps to follow), **Play it live** (you act in the scenario and watch each step as it happens) and its **lab buttons**. Live runs use your Claude allowance. Show the saved run is free.
+Each simulator page has **Start here** (the scenario in plain words, then steps to follow), **Play it live** (you act in the scenario and watch each step as it happens) and its **lab buttons**. Live runs use your Claude allowance.
 
 Every lab page has a built-in terminal, so you never need to open one. Prefer Claude Code? Open it in `labs` and type `/lab 9`.
 
@@ -155,9 +155,9 @@ Questions come from the SkillCertPro practice exam Part 1 (40 labs, third-party 
 
 ## In this repository
 
-- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.4.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.4.pdf)
-- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v2.3.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v2.3.pdf)
-- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v2.3.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v2.3.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v2.3.md)
+- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.5.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.5.pdf)
+- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v2.4.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v2.4.pdf)
+- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v2.4.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v2.4.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v2.4.md)
 - [The labs folder](labs/): simulators, lab instructions and saved evidence
 
 ## What isn't here

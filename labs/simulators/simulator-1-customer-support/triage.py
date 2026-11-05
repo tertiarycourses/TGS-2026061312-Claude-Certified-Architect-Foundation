@@ -74,11 +74,12 @@ def load_transcripts():
 
 
 async def ask_sdk(prompt: str) -> dict | None:
-    from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, query
+    from claude_agent_sdk import ResultMessage, query
     out, cost = None, 0.0
-    async for msg in query(prompt=prompt, options=ClaudeAgentOptions(
-            model=MODEL, max_turns=1, allowed_tools=[], permission_mode="bypassPermissions", cwd=str(HERE),
+    async for msg in query(prompt=prompt, options=simkit.options(
+            model=MODEL, max_turns=1, tools=[], allowed_tools=[], permission_mode="bypassPermissions", cwd=str(HERE),
             output_format={"type": "json_schema", "schema": SCHEMA})):
+        simkit.narrate(msg)
         if isinstance(msg, ResultMessage):
             out = msg.structured_output
             if out is None and msg.result:

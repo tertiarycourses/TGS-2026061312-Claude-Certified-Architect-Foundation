@@ -2,7 +2,7 @@
 import importlib, importlib.util, json, sys
 from pathlib import Path
 import simkit
-from claude_agent_sdk import AssistantMessage, ClaudeAgentOptions, ClaudeSDKClient, ResultMessage, TextBlock, ToolResultBlock, ToolUseBlock, UserMessage
+from claude_agent_sdk import AssistantMessage, ClaudeSDKClient, ResultMessage, TextBlock, ToolResultBlock, ToolUseBlock, UserMessage
 import engine
 
 def _load(n, name):
@@ -25,10 +25,10 @@ def _options(s, model):
     if n == 1:
         sa = _load(1, "support_agent"); backend = _load(1, "backend_tools"); sw = s["switches"]
         sa.MODEL = model
-        return ClaudeAgentOptions(model=model, system_prompt=(engine.sim_dir(1) / sw.get("prompt", "prompts/system.md")).read_text(), mcp_servers={"backend": backend.build_server()}, allowed_tools=backend.TOOL_NAMES,
+        return simkit.options(model=model, system_prompt=(engine.sim_dir(1) / sw.get("prompt", "prompts/system.md")).read_text(), mcp_servers={"backend": backend.build_server()}, tools=[], allowed_tools=backend.TOOL_NAMES,
                                   permission_mode="bypassPermissions", max_turns=12, hooks=sa.make_hooks(s["trace"], s["state"], sw.get("gate", True), sw.get("limit", True), sw.get("validation", True)), cwd=str(engine.sim_dir(1)), resume=s["session_id"])
     if n == 2:
-        return ClaudeAgentOptions(model=model, system_prompt=simkit.PRESET, setting_sources=["project", "local"], cwd=str(s["cwd"]), permission_mode="acceptEdits", allowed_tools=["Read", "Grep", "Glob", "Edit", "Write", "Skill", "Agent", "Bash(node *)", "Bash(npm test*)"], max_turns=20, resume=s["session_id"])
+        return simkit.options(model=model, system_prompt=simkit.PRESET, setting_sources=["project", "local"], cwd=str(s["cwd"]), permission_mode="acceptEdits", allowed_tools=["Read", "Grep", "Glob", "Edit", "Write", "Skill", "Agent", "Bash(node *)", "Bash(npm test*)"], max_turns=20, resume=s["session_id"])
     if n == 4:
         ex = _load(4, "explorer"); ex.MODEL = model
         o = ex.options(max_turns=20, resume=s["session_id"]); o.model = model
@@ -75,7 +75,7 @@ async def review_file(job, path, model):
     d = engine.sim_dir(5); schema = json.loads((d / "finding.schema.json").read_text()); criteria = (d / "prompts" / "review-criteria.txt").read_text()
     simkit.ON_EVENT = job.line
     prompt = f"CI review of PR 418, per-file pass for {path}. Apply these criteria:\n\n{criteria}\n\nRead {path} and record findings. Report only what the criteria say to report."
-    opts = ClaudeAgentOptions(model=model, system_prompt=simkit.PRESET, setting_sources=["project", "local"], cwd=str(d / "repo"), permission_mode="dontAsk", allowed_tools=["Read", "Grep", "Glob"], max_turns=6, output_format={"type": "json_schema", "schema": schema})
+    opts = simkit.options(model=model, system_prompt=simkit.PRESET, setting_sources=["project", "local"], cwd=str(d / "repo"), permission_mode="dontAsk", allowed_tools=["Read", "Grep", "Glob"], max_turns=6, output_format={"type": "json_schema", "schema": schema})
     env = await simkit._run(prompt, opts)
     if env.get("is_error") or env.get("structured_output") is None:  # a failed run must never read as a passing gate
         job.line("!! The review didn't finish, so there's no verdict. Run it again.")

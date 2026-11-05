@@ -27,7 +27,7 @@ def model_picker():
     else: st.sidebar.error("Not signed in. In a terminal, run: claude auth login")
     SS.setdefault("model", engine.MODELS[0])
     st.sidebar.selectbox("Model for live runs", engine.MODELS, key="model", help="Sonnet is a sensible default. Haiku spends least. Opus matches the course's saved evidence.")
-    st.sidebar.caption("Live runs use your Claude allowance. Anything marked free makes no Claude call.")
+    st.sidebar.caption("Live runs use your Claude allowance.")
     return ok
 
 # ------------------------------------------------------------------ evidence
@@ -80,13 +80,15 @@ def console(n):
         secs = int((j.ended or time.time()) - j.started)
         if not j.done:
             c1, c2 = st.columns([5, 1])
-            c1.info(f"**{j.title}** is running ({secs}s). Claude is working. Each step appears below as it happens, and a pause of a minute is normal.")
+            c1.info(f"**{j.title}** is running ({secs}s). Each step appears below as it happens.")
             if c2.button("Stop", key=f"stop_{j.id}", use_container_width=True): j.stop()
         elif j.stopped: st.warning(f"**{j.title}** stopped after {secs}s.")
         elif j.exit == 0: st.success(f"**{j.title}** finished in {secs}s.")
         else: st.warning(f"**{j.title}** finished with exit {j.exit} after {secs}s. Some gates exit 1 on purpose, so read the output.")
-        log = "\n".join(j.lines[-250:]) or "Starting..."
-        st.code(log, language=None, height=320, wrap_lines=True)
+        # The box can't scroll itself, so while a run is going show the newest steps. The whole log appears at the end.
+        shown = j.lines[-250:] if j.done else (["..."] + j.lines[-15:] if len(j.lines) > 15 else j.lines)
+        log = "\n".join(shown) or "Starting..."
+        st.code(log, language=None, height=420, wrap_lines=True)
         if re.search(r"not logged in|please run /login|invalid api key", log, re.I): st.error("Claude isn't signed in. In a terminal, run: claude auth login")
         if j.done and SS.get(f"rendered_{n}") != j.id:
             SS[f"rendered_{n}"] = j.id; st.rerun()
@@ -100,7 +102,7 @@ def _frag(body, job):
     st.fragment(body, run_every="1s" if not job.done else None)()
 
 def started(n, job, where=None):
-    if job is None: st.warning("This simulator is busy with another run. Its live output is below, with a Stop button.")
+    if job is None: st.info("This simulator is still on its last run, and its steps are below. Press Stop to cancel it.")
     SS[f"show_job_{n}"] = True; SS[f"output_at_{n}"] = where
     st.rerun()
 
@@ -121,7 +123,7 @@ def start_here(n):
             k = f"st_{n}_{i}"
             kind = act[0]
             if kind in ("file", "saved", "saved2"):
-                lab = "Open it" if kind == "file" else "Open the saved run (free)"
+                lab = "Open it" if kind == "file" else "Open the saved run"
                 if st.button(lab, key=k): SS[k + "_open"] = not SS.get(k + "_open")
                 if SS.get(k + "_open"):
                     for p in act[1:]: show_file(n, p)
@@ -248,7 +250,7 @@ def lab_page(n, lid):
     st.caption(f"Topic {l['topic']}: {l['topic_name']} · Task {l['task']} · {'Run in class' if l['core'] else 'Self-practice'}{unofficial}")
     with st.expander("Lab instructions"):
         st.markdown(f"**What you're doing:** answering one question about {l['task_title'][0].lower()}{l['task_title'][1:]}, then watching the right answer work on the {l['sim_name']} simulator.")
-        st.markdown("1. Read the question and click the answer you'd choose.\n2. Read why that answer is right or wrong. The page shows you straight away.\n3. Press **Simulate it live**. Each step appears in the output as it happens, usually within a minute or two.\n4. Read what it produced, and compare it with **You should see**.\n5. Short on time or budget? Press **Show the saved run**. It's free.\n6. Want to look closer? Use the built-in terminal under the buttons. You don't need to open anything else.")
+        st.markdown("1. Read the question and click the answer you'd choose.\n2. Read why that answer is right or wrong. The page shows you straight away.\n3. Press **Simulate it live**. Each step appears in the output as it happens.\n4. Read what it produced, and compare it with **You should see**.\n5. Want to look closer? Use the built-in terminal under the buttons. You don't need to open anything else.")
         st.markdown("**The command this lab runs:**")
         st.code("\n".join(c.split(";")[0] for c in l["cmds"]), language=None)
     st.markdown(l["stem"])
@@ -266,16 +268,9 @@ def lab_page(n, lid):
     st.markdown("#### Watch the right answer work")
     st.markdown("Press Simulate, and this page will " + " Then it will ".join(what_it_does(n, c) for c in l["cmds"]) + f"  \n**You should see:** {l['see']}")
     where = f"lab{lid}"
-    c1, c2 = st.columns(2)
-    if c1.button("▶ Simulate it live", type="primary", key=f"run_{lid}", use_container_width=True): started(n, engine.run_lab(lid, SS.model), where=where)
-    if c2.button("Show the saved run (free)", key=f"sv_{lid}", use_container_width=True): SS[f"saved_{lid}"] = not SS.get(f"saved_{lid}")
+    if st.button("▶ Simulate it live", type="primary", key=f"run_{lid}", use_container_width=True): started(n, engine.run_lab(lid, SS.model), where=where)
     terminal(n, lid, where)
     if SS.get(f"output_at_{n}") == where or engine.active(n): console(n)
-    if SS.get(f"saved_{lid}"):
-        st.markdown("#### The saved run")
-        ps = engine.existing(n, engine.lab_evidence(l))
-        for p in ps: show_file(n, p, shipped=True)
-        if not ps: st.info("This lab has no saved file. Press Simulate it live to see it run.")
     st.divider()
     st.markdown(f"**Try this next:** {l['try']}")
     st.caption(f"Prefer Claude Code? Open it in the labs folder and type /lab {lid}.")
@@ -291,7 +286,7 @@ def terminal(n, lid, where):
     if go:
         job, problem = engine.typed_command(n, cmd, SS.model)
         if problem: st.warning(problem)
-        elif job is None: st.warning("This simulator is still busy. Wait for it to finish, or press Stop above.")
+        elif job is None: st.info("Your last command is still running, and its steps are below. Press Stop if you'd rather run this one.")
         else: started(n, job, where=where)
 
 def what_it_does(n, c):

@@ -33,7 +33,7 @@ import sys
 from pathlib import Path
 
 from claude_agent_sdk import (
-    AssistantMessage, ClaudeAgentOptions, ClaudeSDKClient, HookMatcher, ResultMessage,
+    AssistantMessage, ClaudeSDKClient, HookMatcher, ResultMessage,
     TextBlock, ToolResultBlock, ToolUseBlock, UserMessage, query,
 )
 
@@ -136,11 +136,12 @@ async def run_case(case: dict, system_prompt: str, gate: bool, limit_hook: bool,
     pending = {}
     contact = ", ".join(f"{k}: {v}" for k, v in case["customer"].items())
     prompt = f"Incoming support message ({contact}):\n\n{case['message']}"
-    options = ClaudeAgentOptions(
+    options = simkit.options(
         model=MODEL,
         system_prompt=system_prompt,
         mcp_servers={"backend": backend.build_server()},
         allowed_tools=backend.TOOL_NAMES,
+        tools=[],
         permission_mode="bypassPermissions",
         max_turns=12,
         max_budget_usd=MAX_BUDGET_USD,
@@ -208,7 +209,7 @@ async def main():
             if h["event"] == "PreToolUse" and h["decision"] == "deny":
                 print(f"  !! hook denied {h['tool']}: {h['reason']}")
         for v in trace["backend_state"].get("validation_log", []):
-            print(f"  ?? recommend_refund {json.dumps(v['recommendation'])[:110]} -> {'validated' if not v['errors'] else v['errors']}")
+            print(f"  refund check: recommend_refund {json.dumps(v['recommendation'])[:110]} -> {'validated' if not v['errors'] else v['errors']}")
         print("  reply:", (trace.get("reply") or "").replace("\n", " | "))
         cost = (trace.get("result") or {}).get("total_cost_usd") or 0
         total += cost

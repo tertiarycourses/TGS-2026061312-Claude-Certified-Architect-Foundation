@@ -177,7 +177,7 @@ BASE_TOOLS = ["Read", "Grep", "Glob", "Bash", "Write", "Edit", "Agent"] + CATALO
 
 def options(**extra) -> ClaudeAgentOptions:
     system = extra.pop("system_prompt", SYSTEM)
-    return ClaudeAgentOptions(
+    return simkit.options(
         model=MODEL, system_prompt=system, cwd=str(WORK), mcp_servers={"orderly-docs": docs},
         allowed_tools=BASE_TOOLS, agents=AGENTS, hooks=HOOKS, permission_mode="acceptEdits",
         max_turns=extra.pop("max_turns", 25), max_budget_usd=BUDGET,

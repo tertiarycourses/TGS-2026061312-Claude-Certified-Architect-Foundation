@@ -10,7 +10,7 @@
   "cmds": [
    "uv run support_agent.py --case CS-01"
   ],
-  "see": "get_customer, lookup_order, recommend_refund, process_refund, then end_turn: refund $120.",
+  "see": "Real stop_reason on every turn: tool_use after get_customer, lookup_order, recommend_refund and process_refund, each result appended, then end_turn stops the loop with a $120 refund.",
   "id": 1,
   "topic": 1,
   "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",

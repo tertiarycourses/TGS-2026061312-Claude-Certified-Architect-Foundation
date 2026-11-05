@@ -93,7 +93,7 @@ def deterministic(case, trace):
 
 
 async def judge(case, trace):
-    from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, query
+    from claude_agent_sdk import ResultMessage, query
     rubric = "\n".join(f"- {k}: {v}" for k, v in case["rubric"].items())
     packet = {
         "customer_message": trace["message"],
@@ -103,7 +103,7 @@ async def judge(case, trace):
     }
     prompt = f"{(HERE / 'prompts' / 'judge.md').read_text()}\n\nRUBRIC (ids and criteria):\n{rubric}\n\nCASE PACKET (JSON):\n{json.dumps(packet, indent=1)}"
     text = ""
-    async for msg in query(prompt=prompt, options=ClaudeAgentOptions(model=MODEL, max_turns=1, allowed_tools=[], permission_mode="bypassPermissions", cwd=str(HERE))):
+    async for msg in query(prompt=prompt, options=simkit.options(model=MODEL, max_turns=1, tools=[], allowed_tools=[], permission_mode="bypassPermissions", cwd=str(HERE))):
         simkit.narrate(msg)
         if isinstance(msg, ResultMessage):
             text = msg.result or ""

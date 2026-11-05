@@ -1,5 +1,6 @@
 """Runs the simulators for the website: background jobs that stream, one per simulator, always stoppable."""
 import asyncio, json, os, re, secrets, shlex, shutil, signal, subprocess, sys, tempfile, threading, time, hashlib
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import simkit
 from guides import BENCH, GUIDES
@@ -59,6 +60,36 @@ def _claim(job):
         ACTIVE[job.sim] = job.id; JOBS[job.id] = job
     return True
 
+SF_DATALESS = 0x40000000  # macOS marks a file this way when only its iCloud placeholder is on disk
+SKIP_FETCH = {"work", ".venv", "__pycache__", "node_modules", ".pristine-evidence"}
+
+def placeholders(root):
+    found = []
+    for dirpath, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d not in SKIP_FETCH]
+        for f in files:
+            p = os.path.join(dirpath, f)
+            try:
+                if getattr(os.stat(p), "st_flags", 0) & SF_DATALESS: found.append(p)
+            except OSError: pass
+    return found
+
+def _touch(p):
+    try:
+        with open(p, "rb") as f: f.read(1)
+    except OSError: pass
+
+def fetch_from_icloud(n, say=print):
+    """If this folder lives in iCloud, bring its evicted files back first, and say so. Otherwise this does nothing."""
+    files = [p for p in (str(x) for x in HERE.glob("*.py")) if getattr(os.stat(p), "st_flags", 0) & SF_DATALESS] + placeholders(sim_dir(n))
+    if not files: return
+    say(f"  iCloud: downloading {len(files)} files this simulator needs...")
+    began = time.time()
+    with ThreadPoolExecutor(8) as pool:
+        for i, _ in enumerate(pool.map(_touch, files), 1):
+            if i % 10 == 0 and i < len(files): say(f"  iCloud: {i} of {len(files)} files")
+    say(f"  iCloud: all {len(files)} files ready in {int(time.time() - began)}s.")
+
 def snapshot(n):
     src, dst = sim_dir(n) / "evidence", sim_dir(n) / ".pristine-evidence"
     if src.exists() and not dst.exists(): shutil.copytree(src, dst)
@@ -80,16 +111,25 @@ def run_steps(n, title, steps, model=None, evidence=(), live=True):
     """Run commands one after another in a background thread, streaming every line."""
     job = Job(n, title); job.evidence = list(evidence)
     if not _claim(job): return None
-    if live: snapshot(n)
     env = dict(os.environ, PYTHONUNBUFFERED="1")
     for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "CLAUDECODE"): env.pop(k, None)
     if model: env["LAB_MODEL"] = model
+    def beat():  # silence reads as broken, so say we're alive
+        while not job.done:
+            time.sleep(1)
+            quiet = int(time.time() - job.last)
+            if live and quiet and quiet % 10 == 0 and not job.done: job.lines.append(f"  ... still working, {quiet}s since the last step")
     def work():
         code = 0
         try:
+            threading.Thread(target=beat, daemon=True).start()
+            if live:
+                fetch_from_icloud(n, job.line)
+                snapshot(n)
             for argv in steps:
                 if job.stopped: break
                 job.line("$ " + ("uv run " + " ".join(shlex.quote(x) for x in argv[2:]) if argv[0] == sys.executable else " ".join(shlex.quote(x) for x in argv)))
+                if live: job.line("  starting Python and loading the simulator...")
                 job.proc = subprocess.Popen(argv, cwd=sim_dir(n), env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace", bufsize=1, start_new_session=True)
                 killer = threading.Timer(MAX_SECONDS, job.stop); killer.start()
                 for l in job.proc.stdout: job.line(l.rstrip("\n"))

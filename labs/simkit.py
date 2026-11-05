@@ -10,8 +10,9 @@ from types import SimpleNamespace
 for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "CLAUDECODE"):
     os.environ.pop(_k, None)
 
-from claude_agent_sdk import (AgentDefinition, AssistantMessage, ClaudeAgentOptions, ResultMessage, TextBlock, ToolResultBlock,
-                              ToolUseBlock, UserMessage, create_sdk_mcp_server, query, tool)
+from claude_agent_sdk import (AgentDefinition, AssistantMessage, ClaudeAgentOptions, ResultMessage, SystemMessage, TextBlock, ThinkingBlock,
+                              ToolResultBlock, ToolUseBlock, UserMessage, create_sdk_mcp_server, query, tool)
+from claude_agent_sdk.types import StreamEvent
 
 MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
 ON_EVENT = None  # the website sets this to stream lines into its console
@@ -29,21 +30,120 @@ def short(v, n=110):
     return s if len(s) <= n else s[: n - 1] + "…"
 
 
+_LOOP = {}          # one entry per agent: which turn it is on, and tool results waiting to print
+_MAX_TURNS = None
+
+
+def options(**kw):
+    """ClaudeAgentOptions for one lab run. Only this lab's tools load: none of your personal connectors, plugins or settings.
+
+    That keeps runs quick, and the same on every laptop. Partial messages carry Claude's real stop_reason."""
+    global _MAX_TURNS
+    _MAX_TURNS = kw.get("max_turns")
+    kw.setdefault("setting_sources", [])
+    kw["include_partial_messages"] = True
+    project_mcp = "project" in kw["setting_sources"] and kw.get("cwd") and (Path(kw["cwd"]) / ".mcp.json").exists()
+    env = {"ENABLE_CLAUDEAI_MCP_SERVERS": "false"}
+    if not project_mcp:  # this lab's own tools are all there is, so nothing needs searching for
+        env["ENABLE_TOOL_SEARCH"] = "false"
+        kw["extra_args"] = {"strict-mcp-config": None, **(kw.get("extra_args") or {})}
+    kw["env"] = {**env, **(kw.get("env") or {})}
+    return ClaudeAgentOptions(**kw)
+
+
+def _state(parent):
+    return _LOOP.setdefault(parent, {"turn": 0, "waiting": [], "open": False, "calls": 0, "resume": False})
+
+
+def _next_turn(parent):
+    s = _state(parent)
+    s["turn"] += 1
+    s["open"] = True
+    who = "Subagent turn" if parent else "Turn"
+    extra = ", with the tool results appended" if s["turn"] > 1 else ""
+    emit(f"{who} {s['turn']}: sending the conversation to Claude{extra}")
+
+
+def _flush(s):
+    for line in s["waiting"]:
+        emit(line)
+    s["waiting"].clear()
+
+
+def _advance(parent):
+    """Once Claude has stopped on tool_use and every tool has answered, the loop goes round again."""
+    s = _state(parent)
+    if s["resume"]:
+        _flush(s)
+        if s["calls"] <= 0:
+            s["resume"] = False
+            if parent or not (_MAX_TURNS and s["turn"] >= int(_MAX_TURNS)):
+                _next_turn(parent)
+
+
+def _text_of(content):
+    if isinstance(content, dict) and "content" in content:  # a tool that wrapped its own answer
+        return _text_of(content["content"])
+    if isinstance(content, list):
+        content = " ".join(c.get("text", "") if isinstance(c, dict) else str(c) for c in content)
+    if isinstance(content, str) and content.startswith('{"content"'):  # a tool that wrapped its own answer
+        try:
+            return _text_of(json.loads(content)["content"])
+        except (ValueError, KeyError):
+            pass
+    return content if content is not None else ""
+
+
 def narrate(msg, seen=None):
-    """Print each step as it happens, so a run is never silent."""
-    if isinstance(msg, AssistantMessage):
-        who = "  (subagent)" if getattr(msg, "parent_tool_use_id", None) else ""
+    """Print every step of the agentic loop as it happens, with Claude's real stop_reason, so a run is never silent."""
+    if isinstance(msg, SystemMessage):
+        if msg.subtype == "init" and not _state(None)["turn"]:
+            names = [n.split("__")[-1] for n in msg.data.get("tools", [])]
+            tools = ", ".join(names) if len(names) <= 8 else f"{len(names)} available"
+            emit(f"  connected: {msg.data.get('model', '')}, tools: {tools or 'none'}")
+            _next_turn(None)
+    elif isinstance(msg, StreamEvent):
+        parent, e = msg.parent_tool_use_id, msg.event
+        s = _state(parent)
+        who = "  (subagent)" if parent else ""
+        if e.get("type") == "message_start":
+            _flush(s)
+            if not s["open"]:
+                _next_turn(parent)
+        elif e.get("type") == "message_delta" and e.get("delta", {}).get("stop_reason"):
+            why = e["delta"]["stop_reason"]
+            s["open"] = False
+            if why == "tool_use":
+                emit(f"  stop_reason: tool_use -> CONTINUE: run the tool, append its result, call Claude again{who}")
+                s["resume"] = True
+                _advance(parent)
+            elif why == "end_turn":
+                emit(f"  stop_reason: end_turn -> STOP: Claude has finished, so the loop ends{who}")
+            else:
+                emit(f"  stop_reason: {why}{who}")
+    elif isinstance(msg, AssistantMessage):
+        parent = msg.parent_tool_use_id
+        who = "  (subagent)" if parent else ""
         for b in msg.content:
             if isinstance(b, ToolUseBlock):
-                if b.name != "ToolSearch":
-                    emit(f"  -> {b.name.split('__')[-1]}({short(b.input)}){who}")
+                _state(parent)["calls"] += 1
+                emit(f"  -> {b.name.split('__')[-1]}({short(b.input)}){who}")
+            elif isinstance(b, ThinkingBlock) and b.thinking.strip():
+                emit(f"  thinking: {short(b.thinking, 160)}{who}")
             elif isinstance(b, TextBlock) and b.text.strip():
                 emit(f"  claude: {short(b.text, 200)}{who}")
     elif isinstance(msg, UserMessage) and isinstance(msg.content, list):
+        parent = getattr(msg, "parent_tool_use_id", None)
+        s = _state(parent)
         for b in msg.content:
-            if isinstance(b, ToolResultBlock) and b.is_error:
-                emit(f"  !! tool error: {short(b.content, 160)}")
+            if isinstance(b, ToolResultBlock):
+                s["calls"] -= 1
+                s["waiting"].append(f"  !! tool error: {short(_text_of(b.content), 160)}" if b.is_error else f"  <- result: {short(_text_of(b.content), 160)}")
+        _advance(parent)
     elif isinstance(msg, ResultMessage):
+        for s in _LOOP.values():
+            _flush(s)
+        _LOOP.clear()
         emit(f"  done: {msg.subtype}, {msg.num_turns} turns, cost ${(msg.total_cost_usd or 0):.4f}")
 
 
@@ -89,7 +189,7 @@ def run_agent(prompt, *, cwd=None, model=None, mode=None, max_turns=None, tools=
     if fork: kw["fork_session"] = True
     if effort: kw["effort"] = effort
     if name: kw["extra_args"] = {"name": name}
-    return asyncio.run(_run(prompt, ClaudeAgentOptions(**kw)))
+    return asyncio.run(_run(prompt, options(**kw)))
 
 
 VARIADIC = {"--allowedTools", "--disallowedTools"}
@@ -169,8 +269,10 @@ async def _one(params):
         kw["allowed_tools"] = [f"mcp__local__{t['name']}" for t in specs]
     content, model, usage, cost = [], kw["model"], {}, 0
     try:
-        async for m in query(prompt=_flatten(params["messages"]), options=ClaudeAgentOptions(**kw)):
-            if isinstance(m, AssistantMessage):
+        async for m in query(prompt=_flatten(params["messages"]), options=options(**kw)):
+            if isinstance(m, StreamEvent) and m.event.get("type") == "message_delta" and m.event.get("delta", {}).get("stop_reason"):
+                emit(f"  stop_reason: {m.event['delta']['stop_reason']}")
+            elif isinstance(m, AssistantMessage):
                 model = m.model or model
                 for b in m.content:
                     if isinstance(b, ToolUseBlock):

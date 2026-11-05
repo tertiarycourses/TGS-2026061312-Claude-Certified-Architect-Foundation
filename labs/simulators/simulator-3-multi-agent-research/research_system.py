@@ -318,7 +318,7 @@ async def run_mode(mode: str, prompt: str) -> dict:
         STATE_FILE.unlink()
     ag = agents(mode)
     allowed = ["Agent", SEARCH, LOAD, VERIFY] + ([SAVE, LOADSTATE] if mode == "state" else [])
-    options = ClaudeAgentOptions(
+    options = simkit.options(
         model=MODEL, system_prompt=system_prompt(mode), mcp_servers={"research": research},
         allowed_tools=allowed, agents=ag, permission_mode="bypassPermissions",
         max_turns=40, max_budget_usd=BUDGET, cwd=str(HERE),

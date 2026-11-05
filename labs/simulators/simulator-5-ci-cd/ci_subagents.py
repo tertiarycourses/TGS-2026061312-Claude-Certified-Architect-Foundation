@@ -28,7 +28,7 @@ import sys
 import time
 from pathlib import Path
 
-from claude_agent_sdk import (AgentDefinition, AssistantMessage, ClaudeAgentOptions, HookMatcher,
+from claude_agent_sdk import (AgentDefinition, AssistantMessage, HookMatcher,
                               ResultMessage, SystemMessage, TextBlock, ToolResultBlock, ToolUseBlock,
                               UserMessage, query)
 
@@ -105,8 +105,8 @@ async def run(mode, budget):
         log(inp.get("agent_type") or agents_by_id.get(inp.get("agent_id"), "subagent"), "SubagentStop")
         return {}
 
-    options = ClaudeAgentOptions(
-        cwd=str(REPO), model=MODEL, permission_mode="dontAsk",
+    options = simkit.options(
+        cwd=str(REPO), model=MODEL, permission_mode="dontAsk", setting_sources=["project", "local"],
         allowed_tools=["Read", "Grep", "Glob", "Agent"], agents=REVIEWERS,
         max_turns=16, max_budget_usd=budget,
         hooks={"SubagentStart": [HookMatcher(hooks=[on_start])], "SubagentStop": [HookMatcher(hooks=[on_stop])]},
