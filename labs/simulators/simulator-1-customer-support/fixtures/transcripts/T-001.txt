@@ -1,0 +1,5 @@
+Customer: Hi, my order ORD-5501 (ceramic lamp) arrived cracked. I attached a photo.
+Agent: Sorry about that. I can see the photo. Would you like a refund or a replacement?
+Customer: Refund please, $120.
+Agent: Done, the refund is on its way to your card within 5 days.
+Customer: Great, thanks.

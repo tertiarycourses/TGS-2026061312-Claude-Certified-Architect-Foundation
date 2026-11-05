@@ -1,0 +1,19 @@
+{
+  "uc": "UC-01",
+  "question": 1,
+  "timestamp": "00:17",
+  "topic": "Evaluation set before the overnight batch",
+  "situation": "A pilot of 30 transcripts through the Message Batches API shows inconsistent dispositions and missing rationale fields. A PM wants to run all 35,000 now and resubmit bad rows tomorrow.",
+  "correct": "C: build a representative evaluation set, refine the templated prompt against clear criteria, rerun, then submit the full batch.",
+  "why": "Batches maximise savings only when first-pass success is high; prompt engineering is an evaluation loop and templates separate fixed instructions from {{transcript}} inputs.",
+  "run": [
+    "python3 -B triage.py --pilot --template prompts/triage_template_v0.md",
+    "python3 -B triage.py --pilot"
+  ],
+  "observe": "evidence/triage-triage_template_v0.json has a lower first-pass rate than evidence/triage-triage_template.json; only the latter reports ready_for_batch true.",
+  "rubric": [
+    "the v1 template fills {{transcript}}, {{transcript_id}} and {{policy_excerpt}}",
+    "first-pass success with v1 is 100% on the ten pilot transcripts",
+    "the learner can state why resubmitting bad rows tomorrow costs more than piloting"
+  ]
+}

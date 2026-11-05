@@ -1,0 +1,55 @@
+{
+  "id": "UC-13",
+  "question_n": 13,
+  "timestamp": "30:17",
+  "title": "Compact, review-specific tool payloads instead of 40-field dumps",
+  "type": "run",
+  "correct": "C",
+  "expected_outcome": "The verbose analysis payload is tens of kilobytes; the compact one is a few hundred bytes. Shaping the tool result is what keeps a long PR review inside the context window.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "shell",
+      "command": "python3 \"<course>/labs/lab-05-claude-code-for-continuous-integration/tools/file_analysis.py\" stock/totals.py --verbose | wc -c | tr -d ' '",
+      "exit_code": 0,
+      "stdout": "37548\n",
+      "stderr": "",
+      "elapsed_s": 1.3
+    },
+    "t2": {
+      "kind": "shell",
+      "command": "python3 \"<course>/labs/lab-05-claude-code-for-continuous-integration/tools/file_analysis.py\" stock/totals.py --compact | wc -c | tr -d ' '",
+      "exit_code": 0,
+      "stdout": "192\n",
+      "stderr": "",
+      "elapsed_s": 0.0
+    },
+    "t3": {
+      "kind": "shell",
+      "command": "python3 \"<course>/labs/lab-05-claude-code-for-continuous-integration/tools/file_analysis.py\" stock/totals.py --compact",
+      "exit_code": 0,
+      "stdout": "{\"path\": \"stock/totals.py\", \"changed_lines\": [10, 12], \"functions\": [\"total_qty\", \"low_stock\"], \"tests_touching\": [\"tests/test_totals.py::test_total_counts_all_items\"], \"owner\": \"stock-team\"}\n",
+      "stderr": "",
+      "elapsed_s": 0.0
+    }
+  },
+  "restores": [],
+  "cost_usd": 0,
+  "evaluation": [
+    {
+      "criterion": "the compact payload is under 5% of the verbose payload",
+      "pass": true,
+      "note": "192/37548"
+    },
+    {
+      "criterion": "the compact payload still carries the fields a reviewer uses (changed lines, functions, tests)",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "learner can say why caching or a bigger max_tokens does not shrink the context the model carries",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    }
+  ]
+}

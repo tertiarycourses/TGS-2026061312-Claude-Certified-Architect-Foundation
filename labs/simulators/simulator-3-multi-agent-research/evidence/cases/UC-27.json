@@ -1,0 +1,29 @@
+{
+  "id": "UC-27",
+  "title": "Plan mode for two linked defects",
+  "source": {
+    "practice_test_question": 27,
+    "timestamp": "66:07",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "discussion",
+  "prompt": "Write the single plan-mode request you would give Claude Code for the duplicated-citation and lost-excerpt defects: symptoms, suspected files (claim-source schema, synthesis prompt, report template), constraints, definition of fixed, and the acceptance test it must run.",
+  "expected_answer": "Option A. One detailed plan-mode request covering both defects, because they share the synthesis-to-report interface; separate sessions would make different assumptions, a Stop hook is a check not a strategy, and skipping planning risks rework.",
+  "rubric": [
+    {
+      "check": "request names both defects and the shared interface",
+      "passed": null,
+      "note": "learner-assessed"
+    },
+    {
+      "check": "includes a verification command (acceptance test)",
+      "passed": null,
+      "note": "learner-assessed"
+    },
+    {
+      "check": "explains why split sessions (D) and no-plan (C) are weaker",
+      "passed": null,
+      "note": "learner-assessed"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "UC-31",
+  "question_number": 31,
+  "timestamp": "76:10",
+  "mode": "runnable",
+  "title": "Local first, global second: section passes then a reconciliation pass",
+  "situation": "Production evaluation shows accuracy drops on 60-page packets with predictable sections such as intake forms, narrative notes, invoices, and attachments. The current single-pass extraction often captures fields within individual sections but produces duplicate entities, inconsistent totals, and occasional schema-valid output with incorrect relationships.",
+  "exam_question": "Which task decomposition strategy should this team use first?",
+  "correct_option": "A",
+  "correct_option_text": "Run section-level extraction passes, then run a reconciliation pass that validates schema, deduplicates entities, and checks cross-section consistency.",
+  "why": "Predictable packets suit a fixed sequential pipeline: extract locally from each known section so the model sees a small evidence set, then reconcile globally (dedupe by invoice_id, compare totals, check relationships). Adaptive decomposition is for exploration where the next step depends on findings; a single expanded prompt or a summary-first pass hides errors behind valid-looking JSON.",
+  "task": "Build a four-section packet from the fixtures (the same invoice appears in the Invoices section and again in Attachments). Run one single-pass extraction over the whole packet, then one extraction per section followed by a code-level reconciliation pass. Compare records found, duplicates removed and conflicts flagged.",
+  "prompt_template": "<document>\n[section: {{section_name}}]\n{{section_text}}\n</document>\nRecord the financial document in this section with the extract_invoice tool.",
+  "command": "python3 -B extract.py --case UC-31",
+  "expected_outcome": "evidence/cases/UC-31.json shows the single pass returning one record for a packet that holds three distinct documents, and the section pipeline returning four section records reconciled to three unique invoice_ids with the duplicate merged and any total mismatch listed.",
+  "rubric": [
+    "Learner states which checks only make sense in the global pass (dedupe, cross-section totals) and why.",
+    "Learner explains why the section pass reduces attention dilution.",
+    "Learner can say when adaptive decomposition would be the better choice instead."
+  ]
+}

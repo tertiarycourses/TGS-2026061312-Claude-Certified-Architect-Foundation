@@ -1,0 +1,19 @@
+PASS - explore: catalogue consulted before any file read
+PASS - explore: a Grep ran before the first main-agent Read
+PASS - explore: discovery delegated to the explore subagent
+PASS - explore: scratchpad records calculate_total and a caller
+PASS - explore: no file in the pristine sample_repo changed
+PASS - edit: same session resumed (edit session id == explore session id)
+PASS - edit: Edit attempted, and a non-unique-anchor failure or Write fallback is visible
+PASS - edit: patched calculate_total quantizes to 2 dp
+PASS - edit: pytest passes on the patched work copy
+PASS - hooks: every tool call was logged by the PostToolUse hook
+PASS - fork: two forks with new session ids, original unchanged
+PASS - recover: fresh session continued from the manifest without Grep or subagents
+PASS - UC-37 /find-callers with Grep, not Glob or Bash grep (3/3)
+PASS - UC-D1 Edit fallback when the anchor is not unique (3/3)
+PASS - UC-D2 Catalogue first, then read (3/3)
+PASS - UC-D3 Delegate the noisy search and keep a scratchpad (3/3)
+PASS - UC-D4 Resume and name what changed (3/3)
+PASS - UC-D5 Crash recovery from a manifest (3/3)
+PASS - UC-D6 Hook blocks a destructive command (3/3)

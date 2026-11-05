@@ -1,0 +1,26 @@
+{
+  "pass-findings": {
+    "paths": 4,
+    "paths_kept": 4,
+    "tests": 10,
+    "tests_kept": 10,
+    "paths_pct": 100,
+    "tests_pct": 100,
+    "comment_chars": 5994,
+    "synthesis_prompt_chars": 9821,
+    "max_parallel_spawn": 3,
+    "max_concurrent_reviewers": 3
+  },
+  "lossy": {
+    "paths": 5,
+    "paths_kept": 3,
+    "tests": 13,
+    "tests_kept": 0,
+    "paths_pct": 60,
+    "tests_pct": 0,
+    "comment_chars": 1654,
+    "synthesis_prompt_chars": 64,
+    "max_parallel_spawn": 3,
+    "max_concurrent_reviewers": 3
+  }
+}

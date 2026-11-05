@@ -1,0 +1,23 @@
+{
+  "case_id": "CS-07",
+  "title": "Return inside the window",
+  "exam_task": "policy lookup before action",
+  "customer": {
+    "email": "sofia@example.com"
+  },
+  "message": "I would like to return the chair mat from ORD-5505, it does not fit my floor.",
+  "expected": {
+    "disposition": "resolved",
+    "must_call": [
+      "get_customer",
+      "lookup_order"
+    ],
+    "must_not_call": [
+      "escalate_to_human"
+    ]
+  },
+  "rubric": {
+    "approved": "reply approves the return of ORD-5505 and states the next step",
+    "no_escalation": "no escalation for a routine return"
+  }
+}

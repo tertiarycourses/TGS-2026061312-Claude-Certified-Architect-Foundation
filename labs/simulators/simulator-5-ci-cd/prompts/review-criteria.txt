@@ -1,0 +1,36 @@
+REVIEW CRITERIA (explicit, categorical; never "be conservative")
+
+Report a finding ONLY when one of these holds:
+- bug: the code's behaviour contradicts the function name, docstring, or an adjacent test.
+- security: untrusted input reaches SQL, shell, file paths or HTML without validation or parameterisation.
+- data-loss: a write, delete or migration can drop or overwrite records without a guard.
+- contract: a public signature, return shape or error code changes without a matching caller update.
+
+Do NOT report:
+- formatting, naming, import order, comment style;
+- a pattern already used elsewhere in the same file or module;
+- missing tests (the test-generation step handles those).
+
+Severity:
+- critical: exploitable security flaw or guaranteed data loss (e.g. f-string SQL with request input).
+- high: wrong result on common input (e.g. off-by-one in a loop boundary used by every request).
+- medium: wrong result on an edge case (e.g. None not handled when the caller can pass None).
+- low: contract drift with no current caller impact.
+
+FEW-SHOT EXAMPLES
+
+Example 1 (report)
+  diff: cursor.execute(f"SELECT * FROM stock WHERE sku = '{sku}'")
+  finding: {"severity": "critical", "category": "security", "detected_pattern": "f-string SQL", "issue": "sku comes from the request body and is interpolated into SQL", "suggested_fix": "cursor.execute('SELECT * FROM stock WHERE sku = %s', (sku,))"}
+
+Example 2 (report)
+  diff: for i in range(1, len(items)): total += items[i].qty
+  finding: {"severity": "high", "category": "bug", "detected_pattern": "range(1, len())", "issue": "first item skipped; test_total_counts_all_items would fail", "suggested_fix": "range(len(items)) or sum(i.qty for i in items)"}
+
+Example 3 (skip)
+  diff: import os, sys  ->  import os\nimport sys
+  decision: no finding. Formatting only.
+
+Example 4 (skip)
+  diff: logger.info("stock synced %s", sku)
+  decision: no finding. Matches the logging pattern used on lines 12 and 40 of the same file.

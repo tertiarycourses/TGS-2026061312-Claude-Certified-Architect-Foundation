@@ -1,0 +1,21 @@
+{
+  "id": "UC-11",
+  "question_number": 11,
+  "timestamp": "24:45",
+  "mode": "runnable",
+  "title": "One generic analyze_document tool versus a few non-overlapping tools",
+  "situation": "The current implementation exposes one client tool named analyze_document with parameters for document text, requested operation, and desired format. In evaluation runs, Claude sometimes uses it to produce summaries when the downstream validator expected extracted fields, and sometimes attempts claim verification without passing the source excerpt needed for validation.",
+  "exam_question": "What redesign best improves tool selection and downstream reliability without creating unnecessary tool sprawl?",
+  "correct_option": "B",
+  "correct_option_text": "Replace analyze_document with a few non-overlapping tools for distinct workflows, each with clear descriptions, JSON Schema inputs, and minimal stable result fields.",
+  "why": "Descriptions and input_schema are what drive tool selection. One catch-all tool hides incompatible workflows behind an operation parameter; one tool per field creates sprawl. A few purpose-specific tools with strong contracts (extract, summarise, verify against a source excerpt) give Claude a clean choice and give the validator a stable payload. strict: true keeps the input schema-conformant; semantic validation is still yours.",
+  "task": "Run the same seven documents twice: first with a single analyze_document tool (operation enum extract|summarize|verify), then with three non-overlapping tools (extract_invoice, summarize_document, verify_claim_against_source). Count how often the downstream validator receives extracted fields.",
+  "prompt_template": "<document>\n{{document}}\n</document>\nProcess this document for the accounts-payable pipeline. The downstream validator expects extracted invoice fields.",
+  "command": "python3 -B extract.py --case UC-11",
+  "expected_outcome": "evidence/cases/UC-11.json shows the generic tool producing summaries or missing fields on some documents, while the split tool set calls extract_invoice with a schema-valid payload on every document.",
+  "rubric": [
+    "Learner can name the three workflows that were hiding behind the operation parameter and explain why they do not overlap.",
+    "Learner points to the description text that says when NOT to use each tool.",
+    "Learner explains why a schema-valid extract_invoice payload still needs the semantic total check."
+  ]
+}

@@ -1,0 +1,357 @@
+{
+  "case_id": "CS-04",
+  "title": "Two concerns in one message",
+  "message": "I was charged twice for ORD-5503, and also when will ORD-5504 arrive?",
+  "customer": {
+    "email": "meilin@example.com"
+  },
+  "tool_calls": [
+    {
+      "tool": "ToolSearch",
+      "input": {
+        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__recommend_refund,mcp__backend__process_refund,mcp__backend__escalate_to_human",
+        "max_results": 5
+      },
+      "result": null,
+      "is_error": false
+    },
+    {
+      "tool": "get_customer",
+      "input": {
+        "email": "meilin@example.com",
+        "name": ""
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"customer_id\": \"C-1001\", \"name\": \"Mei Lin Tan\", \"email\": \"meilin@example.com\", \"tier\": \"standard\", \"created_at\": \"2026-01-01T00:00:00Z\", \"status\": \"pending\"}"
+          }
+        ]
+      },
+      "is_error": false
+    },
+    {
+      "tool": "lookup_order",
+      "input": {
+        "order_id": "ORD-5503",
+        "customer_id": "C-1001"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"order_id\": \"ORD-5503\", \"customer_id\": \"C-1001\", \"amount\": 45.0, \"item\": \"Desk organiser\", \"placed_at\": \"2026-10-24T00:00:00Z\", \"status\": \"delivered\", \"damage_photo\": false, \"charges\": 2, \"shipped\": true, \"eta\": \"2026-10-28\"}"
+          }
+        ]
+      },
+      "is_error": false
+    },
+    {
+      "tool": "lookup_order",
+      "input": {
+        "order_id": "ORD-5504",
+        "customer_id": "C-1001"
+      },
+      "result": "{\"error\": true, \"errorCategory\": \"transient\", \"isRetryable\": true, \"message\": \"Order service timed out after 3000 ms\", \"attempted_query\": \"ORD-5504\"}",
+      "is_error": true
+    },
+    {
+      "tool": "lookup_order",
+      "input": {
+        "order_id": "ORD-5504",
+        "customer_id": "C-1001"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"order_id\": \"ORD-5504\", \"customer_id\": \"C-1001\", \"amount\": 60.0, \"item\": \"Monitor arm\", \"placed_at\": \"2026-10-30T00:00:00Z\", \"status\": \"shipped\", \"damage_photo\": false, \"charges\": 1, \"shipped\": true, \"eta\": \"2026-11-09\"}"
+          }
+        ]
+      },
+      "is_error": false
+    },
+    {
+      "tool": "recommend_refund",
+      "input": {
+        "order_id": "ORD-5503",
+        "item_adjustments": [
+          {
+            "sku": "WHOLE",
+            "amount": 45
+          }
+        ],
+        "shipping_refund": 0,
+        "merchandise_credit": 0,
+        "refund_total": 45,
+        "rationale": "Duplicate charge: lookup_order shows charges = 2 on a $45 order. Refund the one extra charge of $45."
+      },
+      "result": "{\"validated\": true, \"order_id\": \"ORD-5503\", \"cash_refund\": 45.0, \"merchandise_credit\": 0.0, \"message\": \"Recommendation validated. You may call process_refund for the cash amount.\"}",
+      "is_error": false
+    },
+    {
+      "tool": "process_refund",
+      "input": {
+        "order_id": "ORD-5503",
+        "amount": 45,
+        "reason": "Duplicate charge: card charged twice for ORD-5503; refunding the one extra $45 charge."
+      },
+      "result": "{\"refund_id\": \"RF-59368\", \"order_id\": \"ORD-5503\", \"amount\": 45.0, \"reason\": \"Duplicate charge: card charged twice for ORD-5503; refunding the one extra $45 charge.\", \"status\": \"issued\"}",
+      "is_error": false
+    }
+  ],
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "tool": "get_customer",
+      "args": {
+        "email": "meilin@example.com",
+        "name": ""
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "get_customer",
+      "raw": {
+        "customer_id": "C-1001",
+        "name": "Mei Lin Tan",
+        "email": "meilin@example.com",
+        "tier": "standard",
+        "created_at": 1767225600,
+        "status": 1
+      },
+      "normalised": {
+        "customer_id": "C-1001",
+        "name": "Mei Lin Tan",
+        "email": "meilin@example.com",
+        "tier": "standard",
+        "created_at": "2026-01-01T00:00:00Z",
+        "status": "pending"
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "ORD-5503",
+        "customer_id": "C-1001"
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "lookup_order",
+      "raw": {
+        "order_id": "ORD-5503",
+        "customer_id": "C-1001",
+        "amount": 45.0,
+        "item": "Desk organiser",
+        "placed_at": 1792800000,
+        "status": "delivered",
+        "damage_photo": false,
+        "charges": 2,
+        "shipped": true,
+        "eta": "2026-10-28"
+      },
+      "normalised": {
+        "order_id": "ORD-5503",
+        "customer_id": "C-1001",
+        "amount": 45.0,
+        "item": "Desk organiser",
+        "placed_at": "2026-10-24T00:00:00Z",
+        "status": "delivered",
+        "damage_photo": false,
+        "charges": 2,
+        "shipped": true,
+        "eta": "2026-10-28"
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "ORD-5504",
+        "customer_id": "C-1001"
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "lookup_order",
+      "raw": {
+        "error": true,
+        "errorCategory": "transient",
+        "isRetryable": true,
+        "message": "Order service timed out after 3000 ms",
+        "attempted_query": "ORD-5504"
+      },
+      "error": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "ORD-5504",
+        "customer_id": "C-1001"
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "lookup_order",
+      "raw": {
+        "order_id": "ORD-5504",
+        "customer_id": "C-1001",
+        "amount": 60.0,
+        "item": "Monitor arm",
+        "placed_at": 1793318400,
+        "status": 2,
+        "damage_photo": false,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-11-09"
+      },
+      "normalised": {
+        "order_id": "ORD-5504",
+        "customer_id": "C-1001",
+        "amount": 60.0,
+        "item": "Monitor arm",
+        "placed_at": "2026-10-30T00:00:00Z",
+        "status": "shipped",
+        "damage_photo": false,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-11-09"
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "recommend_refund",
+      "args": {
+        "order_id": "ORD-5503",
+        "item_adjustments": [
+          {
+            "sku": "WHOLE",
+            "amount": 45
+          }
+        ],
+        "shipping_refund": 0,
+        "merchandise_credit": 0,
+        "refund_total": 45,
+        "rationale": "Duplicate charge: lookup_order shows charges = 2 on a $45 order. Refund the one extra charge of $45."
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "recommend_refund",
+      "raw": {
+        "validated": true,
+        "order_id": "ORD-5503",
+        "cash_refund": 45.0,
+        "merchandise_credit": 0.0,
+        "message": "Recommendation validated. You may call process_refund for the cash amount."
+      },
+      "normalised": {
+        "validated": true,
+        "order_id": "ORD-5503",
+        "cash_refund": 45.0,
+        "merchandise_credit": 0.0,
+        "message": "Recommendation validated. You may call process_refund for the cash amount."
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "process_refund",
+      "args": {
+        "order_id": "ORD-5503",
+        "amount": 45,
+        "reason": "Duplicate charge: card charged twice for ORD-5503; refunding the one extra $45 charge."
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "process_refund",
+      "raw": {
+        "refund_id": "RF-59368",
+        "order_id": "ORD-5503",
+        "amount": 45.0,
+        "reason": "Duplicate charge: card charged twice for ORD-5503; refunding the one extra $45 charge.",
+        "status": "issued"
+      },
+      "normalised": {
+        "refund_id": "RF-59368",
+        "order_id": "ORD-5503",
+        "amount": 45.0,
+        "reason": "Duplicate charge: card charged twice for ORD-5503; refunding the one extra $45 charge.",
+        "status": "issued"
+      }
+    }
+  ],
+  "assistant_text": [
+    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan)\n- ORD-5503: Desk organiser, $45.00, delivered, charged 2 times\n- Refund: RF-59368, $45.00, issued\n- ORD-5504: Monitor arm, $60.00, shipped, charged once, ETA 2026-11-09\n\nHi Mei Lin, both questions are sorted.\n\n**Double charge on ORD-5503:** You were right, your card was charged twice. I've refunded the extra $45.00 to your original payment method. Your reference is RF-59368.\n\n**ORD-5504 delivery:** Your monitor arm has shipped and is expected to arrive by November 9, 2026."
+  ],
+  "settings": {
+    "model": "claude-opus-5-5",
+    "gate": true,
+    "limit_hook": true
+  },
+  "turn_replies": [
+    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan)\n- ORD-5503: Desk organiser, $45.00, delivered, charged 2 times\n- Refund: RF-59368, $45.00, issued\n- ORD-5504: Monitor arm, $60.00, shipped, charged once, ETA 2026-11-09\n\nHi Mei Lin, both questions are sorted.\n\n**Double charge on ORD-5503:** You were right, your card was charged twice. I've refunded the extra $45.00 to your original payment method. Your reference is RF-59368.\n\n**ORD-5504 delivery:** Your monitor arm has shipped and is expected to arrive by November 9, 2026."
+  ],
+  "result": {
+    "subtype": "success",
+    "stop_reason": "end_turn",
+    "num_turns": 8,
+    "total_cost_usd": 0.41334540000000003,
+    "session_id": "a44b1085-9e4c-48b7-af13-677a3e5d443c",
+    "is_error": false,
+    "terminal_reason": "completed"
+  },
+  "reply": "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan)\n- ORD-5503: Desk organiser, $45.00, delivered, charged 2 times\n- Refund: RF-59368, $45.00, issued\n- ORD-5504: Monitor arm, $60.00, shipped, charged once, ETA 2026-11-09\n\nHi Mei Lin, both questions are sorted.\n\n**Double charge on ORD-5503:** You were right, your card was charged twice. I've refunded the extra $45.00 to your original payment method. Your reference is RF-59368.\n\n**ORD-5504 delivery:** Your monitor arm has shipped and is expected to arrive by November 9, 2026.",
+  "backend_state": {
+    "refunds": [
+      {
+        "refund_id": "RF-59368",
+        "order_id": "ORD-5503",
+        "amount": 45.0,
+        "reason": "Duplicate charge: card charged twice for ORD-5503; refunding the one extra $45 charge.",
+        "status": "issued"
+      }
+    ],
+    "escalations": [],
+    "validated_refunds": {
+      "ORD-5503": {
+        "refund_total": 45.0,
+        "merchandise_credit": 0.0
+      }
+    },
+    "validation_log": [
+      {
+        "recommendation": {
+          "order_id": "ORD-5503",
+          "item_adjustments": [
+            {
+              "sku": "WHOLE",
+              "amount": 45
+            }
+          ],
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "refund_total": 45,
+          "rationale": "Duplicate charge: lookup_order shows charges = 2 on a $45 order. Refund the one extra charge of $45."
+        },
+        "errors": []
+      }
+    ]
+  }
+}

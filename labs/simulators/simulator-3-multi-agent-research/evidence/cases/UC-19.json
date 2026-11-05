@@ -1,0 +1,28 @@
+{
+  "id": "UC-19",
+  "title": "Prompt chain: local review passes then integration",
+  "source": {
+    "practice_test_question": 19,
+    "timestamp": "45:15",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "run",
+  "mode": "review",
+  "prompt": "Research this topic and deliver a cited report: Impact of AI on creative industries. Before the report, run the review chain described in your instructions.",
+  "config_change": "Same review mode as UC-06; here evaluate the chain shape: source-level reviewers receive section-sized bundles (smaller than the full synthesis), and the integration pass receives all reviewer outputs.",
+  "cost_usd": 1.7181997999999994,
+  "rubric": [
+    {
+      "check": "each section-review packet is smaller than the synthesis packet",
+      "passed": true
+    },
+    {
+      "check": "integration pass launched after all section reviews returned",
+      "passed": true
+    },
+    {
+      "check": "final report mentions the integration review",
+      "passed": true
+    }
+  ]
+}

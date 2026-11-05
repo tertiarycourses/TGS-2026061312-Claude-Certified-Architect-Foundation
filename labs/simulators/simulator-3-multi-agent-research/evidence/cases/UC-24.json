@@ -1,0 +1,28 @@
+{
+  "id": "UC-24",
+  "title": "Provenance is an interface contract",
+  "source": {
+    "practice_test_question": 24,
+    "timestamp": "58:39",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "run",
+  "mode": "broad",
+  "prompt": "Research this topic and deliver a cited report: Impact of AI on creative industries.",
+  "config_change": "None. Evaluate the document-analysis subagent's returned JSON: every finding must carry document, page, published and methodology_note.",
+  "cost_usd": 1.099836,
+  "rubric": [
+    {
+      "check": "document-analysis result parses as JSON with a findings list",
+      "passed": true
+    },
+    {
+      "check": "every finding has document, page, published and methodology_note",
+      "passed": true
+    },
+    {
+      "check": "the two SME adoption findings are both present with conflict_with set",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+PASS - documented command uses -p, --output-format json and --json-schema
+PASS - pipeline passed the same flags to the real CLI
+PASS - every per-file and integration output validates against finding.schema.json
+PASS - f-string SQL reported as critical security with a detected_pattern
+PASS - off-by-one loop reported as a bug (high) on totals.py:10
+PASS - style-only imports and established logging lines produce no findings
+PASS - re-run with prior findings in context does not repeat the SQL finding
+PASS - integration pass catches the get_stock arity mismatch in jobs.py
+PASS - test proposals skip the scenario test_total_counts_all_items already covers
+PASS - pre-merge -> synchronous API, overnight and weekly jobs -> Message Batches API
+PASS - review criteria hold 2-4 few-shot examples
+PASS - severity gate fails the job while critical/high findings remain
+PASS - hook_gate.py has run (PreToolUse command hook in repo/.claude/settings.json)
+PASS - approval denied with the hook's stderr reason while the artifact is missing
+PASS - approval posted once ./ci/run_tests.sh wrote the passing artifact
+PASS - hook script exits 2 on the deny path (block + feedback semantics)
+PASS - every practice-test use case has been run (8/8)
+PASS - UC-13 rubric passes
+PASS - UC-14 rubric passes
+PASS - UC-15 rubric passes
+PASS - UC-18 rubric passes
+PASS - UC-2 rubric passes
+PASS - UC-3 rubric passes
+PASS - UC-38 rubric passes
+PASS - UC-39 rubric passes
+model: claude-opus-5-5  calls: 7  cost_usd: 2.5455

@@ -1,0 +1,422 @@
+{
+  "mode": "pilot",
+  "model": "claude-opus-5-5",
+  "template": "triage_template.md",
+  "transcripts": 10,
+  "first_pass_success": 10,
+  "first_pass_rate": 100.0,
+  "disposition_accuracy": 90.0,
+  "refund_total_accuracy": 90.0,
+  "cost_usd": 1.7208,
+  "ready_for_batch": true,
+  "results": [
+    {
+      "transcript_id": "T-001",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-001",
+            "disposition": "resolved",
+            "rationale": "The customer reported ORD-5501 \"arrived cracked\" and asked for a \"Refund please, $120\", and the agent, within its $500 authority, confirmed \"Done, the refund is on its way to your card within 5 days\", which the customer accepted with \"Great, thanks.\"",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [
+                {
+                  "order_id": "ORD-5501",
+                  "amount": 120
+                }
+              ],
+              "refund_total": 120
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-001",
+        "disposition": "resolved",
+        "rationale": "The customer reported ORD-5501 \"arrived cracked\" and asked for a \"Refund please, $120\", and the agent, within its $500 authority, confirmed \"Done, the refund is on its way to your card within 5 days\", which the customer accepted with \"Great, thanks.\"",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [
+            {
+              "order_id": "ORD-5501",
+              "amount": 120
+            }
+          ],
+          "refund_total": 120
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 120.0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-002",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-002",
+            "disposition": "resolved",
+            "rationale": "The agent confirmed the duplicate (\"I see two charges of $45\") and closed the matter within its $500 authority by stating \"one charge of $45 is refunded\", and the customer had nothing further to raise (\"No.\").",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [
+                {
+                  "order_id": "ORD-5503",
+                  "amount": 45
+                }
+              ],
+              "refund_total": 45
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-002",
+        "disposition": "resolved",
+        "rationale": "The agent confirmed the duplicate (\"I see two charges of $45\") and closed the matter within its $500 authority by stating \"one charge of $45 is refunded\", and the customer had nothing further to raise (\"No.\").",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [
+            {
+              "order_id": "ORD-5503",
+              "amount": 45
+            }
+          ],
+          "refund_total": 45
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 45.0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-003",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-003",
+            "disposition": "escalated",
+            "rationale": "The customer demanded \"Human. Now.\" and refused to state the issue, so the agent handed off with \"Transferring you to a colleague\" and no refund was discussed or issued.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-003",
+        "disposition": "escalated",
+        "rationale": "The customer demanded \"Human. Now.\" and refused to state the issue, so the agent handed off with \"Transferring you to a colleague\" and no refund was discussed or issued.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "escalated",
+        "refund_total": 0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-004",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-004",
+            "disposition": "escalated",
+            "rationale": "The agent escalated instead of paying, stating \"Refunds over $500 need a manager, so I have raised this with the team and they will confirm within one business day\" and noting \"full amount $780 recommended\" for ORD-5502, so no money has moved yet and the amounts stay 0.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-004",
+        "disposition": "escalated",
+        "rationale": "The agent escalated instead of paying, stating \"Refunds over $500 need a manager, so I have raised this with the team and they will confirm within one business day\" and noting \"full amount $780 recommended\" for ORD-5502, so no money has moved yet and the amounts stay 0.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "escalated",
+        "refund_total": 780.0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": false
+    },
+    {
+      "transcript_id": "T-005",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-005",
+            "disposition": "escalated",
+            "rationale": "The agent said \"I am not able to confirm competitor matching, so I have passed this to a specialist,\" handing off the $170 versus $210 price-match request on ORD-5507 with no money moved.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-005",
+        "disposition": "escalated",
+        "rationale": "The agent said \"I am not able to confirm competitor matching, so I have passed this to a specialist,\" handing off the $170 versus $210 price-match request on ORD-5507 with no money moved.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "escalated",
+        "refund_total": 0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-006",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-006",
+            "disposition": "unresolved",
+            "rationale": "The agent said ORD-5504 \"shipped and is due 9 November\", but the customer's reply, \"thats not what the app says but ok\", is a grudging acceptance of a discrepancy the agent never investigated or reconciled, and no refund was discussed.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-006",
+        "disposition": "unresolved",
+        "rationale": "The agent said ORD-5504 \"shipped and is due 9 November\", but the customer's reply, \"thats not what the app says but ok\", is a grudging acceptance of a discrepancy the agent never investigated or reconciled, and no refund was discussed.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 0
+      },
+      "disposition_correct": false,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-007",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-007",
+            "disposition": "resolved",
+            "rationale": "The agent closed the request by confirming \"You are within the 30-day window\" and \"I have approved the return, you will get a label by email\", but it quoted no refund amount, so no money is recorded as moved.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-007",
+        "disposition": "resolved",
+        "rationale": "The agent closed the request by confirming \"You are within the 30-day window\" and \"I have approved the return, you will get a label by email\", but it quoted no refund amount, so no money is recorded as moved.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-008",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-008",
+            "disposition": "resolved",
+            "rationale": "The agent closed both requests with a policy-based answer and no money moved, stating \"the 30-day window has closed. I cannot approve a change-of-mind return\" for bookshelf ORD-5508 and \"Shipping on that order was free, so there is nothing to credit.\"",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-008",
+        "disposition": "resolved",
+        "rationale": "The agent closed both requests with a policy-based answer and no money moved, stating \"the 30-day window has closed. I cannot approve a change-of-mind return\" for bookshelf ORD-5508 and \"Shipping on that order was free, so there is nothing to credit.\"",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-009",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-009",
+            "disposition": "resolved",
+            "rationale": "The agent separated the two accounts by asking for the email, then answered the status question directly with \"ORD-5505 was delivered on 29 October\", and no refund was requested or issued.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-009",
+        "disposition": "resolved",
+        "rationale": "The agent separated the two accounts by asking for the email, then answered the status question directly with \"ORD-5505 was delivered on 29 October\", and no refund was requested or issued.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-010",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "T-010",
+            "disposition": "resolved",
+            "rationale": "The agent settled all three issues in one reply (\"Lamp: refund $120 issued. Organiser: duplicate $45 refunded. Monitor arm: shipped, due 9 November.\"), both refunds within the $500 agent limit, and the customer accepted with \"ok good\".",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [
+                {
+                  "order_id": "ORD-5501",
+                  "amount": 120
+                },
+                {
+                  "order_id": "ORD-5503",
+                  "amount": 45
+                }
+              ],
+              "refund_total": 165
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "T-010",
+        "disposition": "resolved",
+        "rationale": "The agent settled all three issues in one reply (\"Lamp: refund $120 issued. Organiser: duplicate $45 refunded. Monitor arm: shipped, due 9 November.\"), both refunds within the $500 agent limit, and the customer accepted with \"ok good\".",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [
+            {
+              "order_id": "ORD-5501",
+              "amount": 120
+            },
+            {
+              "order_id": "ORD-5503",
+              "amount": 45
+            }
+          ],
+          "refund_total": 165
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 165.0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    }
+  ]
+}

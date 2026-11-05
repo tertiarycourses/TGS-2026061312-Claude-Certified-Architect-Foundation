@@ -1,0 +1,22 @@
+PASS - thirteen use cases were run through the live agent · 14 run files
+PASS - evaluation.json exists
+PASS - first-contact resolution meets the 80% target · 100.0%
+PASS - CS-01: get_customer precedes lookup_order and process_refund
+PASS - CS-01: refund of $120 issued
+PASS - CS-01: PostToolUse normalised a unix timestamp to ISO
+PASS - CS-01: reply carries a CASE FACTS block
+PASS - CS-02: PreToolUse hook denied a $780 refund (prompt-guarded or --prompt prompts/system-noguard.md run)
+PASS - CS-02: no refund issued, escalation recorded
+PASS - CS-02: handoff has customer_id, root_cause, recommended_action, refund_amount
+PASS - CS-05: human request escalated without lookup_order
+PASS - CS-06: transient error retried
+PASS - CS-11: no refund issued for the closed return window and no false success claimed
+PASS - CS-12: after three turns the only refund is $45 on ORD-5503
+PASS - CS-12: every turn's reply carries a CASE FACTS block
+PASS - CS-13: recommend_refund validated before process_refund
+PASS - CS-13: cash refund is $105 (lamp + mat) and the $8 is store credit, not shipping cash
+PASS - CS-13: business-rule validation log recorded
+PASS - CS-09: ambiguous name handled by asking, not guessing
+PASS - every loop terminated on end_turn, not an iteration cap
+
+20/20 checks passed

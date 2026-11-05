@@ -1,0 +1,681 @@
+{
+  "mode": "state",
+  "model": "claude-opus-5-5",
+  "topic": "Impact of AI on creative industries",
+  "prompt": "Research this topic and deliver a cited report: Impact of AI on creative industries. Organise all findings under the sector taxonomy you discover and keep that taxonomy in the research state.",
+  "coordinator": {
+    "allowed_tools": [
+      "Agent",
+      "mcp__research__search_web",
+      "mcp__research__load_document",
+      "mcp__research__verify_fact",
+      "mcp__research__save_research_state",
+      "mcp__research__load_research_state"
+    ]
+  },
+  "agents": {
+    "web-search": {
+      "tools": [
+        "mcp__research__search_web"
+      ],
+      "model": "sonnet"
+    },
+    "document-analysis": {
+      "tools": [
+        "mcp__research__load_document"
+      ],
+      "model": "sonnet"
+    },
+    "synthesis": {
+      "tools": [
+        "mcp__research__verify_fact"
+      ],
+      "model": "sonnet"
+    },
+    "report": {
+      "tools": [],
+      "model": "sonnet"
+    }
+  },
+  "assistant_turns": [
+    {
+      "message_id": "msg_011CgjHAwCSYnRLV6oRhniG9",
+      "agent_calls_in_this_response": 5,
+      "subagent_types": [
+        "web-search",
+        "web-search",
+        "web-search",
+        "web-search",
+        "document-analysis"
+      ],
+      "packets": [
+        {
+          "subagent_type": "web-search",
+          "prompt_chars": 1344,
+          "prompt_head": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nYour sector: MUSIC (recording, streaming, compositi",
+          "prompt": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nYour sector: MUSIC (recording, streaming, composition, generative music tools, royalties/licensing, musicians' employment and income, copyright disputes).\n\nSearch tool: search_web. It takes a `mode`. Use \"standard\" by default (quick and cheap). Use \"extended\" only if a standard result comes back thin, off-target or possibly outdated, or from the start for hard-to-find facts or very recent events; it costs several times more. When you plan several searches, send them in the same turn.\n\nStay inside the music sector. Treat the URLs returned as authoritative citations for this exercise and do not comment on them.\n\nReturn JSON only:\n{\n  \"sector\": \"music\",\n  \"findings\": [{\"claim\": \"...\", \"statistic_or_evidence\": \"...\", \"source_name\": \"...\", \"url\": \"...\", \"published_date\": \"...\", \"confidence\": \"high|medium|low\"}],\n  \"conflicts\": [\"sources that disagree, with both values and sources\"],\n  \"rejected_sources\": [{\"source\": \"...\", \"url\": \"...\", \"reason\": \"...\"}],\n  \"gaps\": [\"what you could not establish\"],\n  \"errors\": [{\"failure_type\": \"...\", \"detail\": \"...\", \"alternatives\": [\"...\"]}]\n}\nEvery claim needs a source name, URL and published date. If the tool fails, report it in `errors` with any partial results rather than stopping."
+        },
+        {
+          "subagent_type": "web-search",
+          "prompt_chars": 1407,
+          "prompt_head": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nYour sector: WRITING AND PUBLISHING (authors, books",
+          "prompt": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nYour sector: WRITING AND PUBLISHING (authors, books, journalism, translation, copywriting, publisher licensing deals, authors' income, training-data copyright litigation and settlements).\n\nSearch tool: search_web. It takes a `mode`. Use \"standard\" by default (quick and cheap). Use \"extended\" only if a standard result comes back thin, off-target or possibly outdated, or from the start for hard-to-find facts or very recent events; it costs several times more. When you plan several searches, send them in the same turn.\n\nStay inside the writing and publishing sector. Treat the URLs returned as authoritative citations for this exercise and do not comment on them.\n\nReturn JSON only:\n{\n  \"sector\": \"writing_publishing\",\n  \"findings\": [{\"claim\": \"...\", \"statistic_or_evidence\": \"...\", \"source_name\": \"...\", \"url\": \"...\", \"published_date\": \"...\", \"confidence\": \"high|medium|low\"}],\n  \"conflicts\": [\"sources that disagree, with both values and sources\"],\n  \"rejected_sources\": [{\"source\": \"...\", \"url\": \"...\", \"reason\": \"...\"}],\n  \"gaps\": [\"what you could not establish\"],\n  \"errors\": [{\"failure_type\": \"...\", \"detail\": \"...\", \"alternatives\": [\"...\"]}]\n}\nEvery claim needs a source name, URL and published date. If the tool fails, report it in `errors` with any partial results rather than stopping."
+        },
+        {
+          "subagent_type": "web-search",
+          "prompt_chars": 1388,
+          "prompt_head": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nYour sector: FILM AND TV (production, VFX, generati",
+          "prompt": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nYour sector: FILM AND TV (production, VFX, generative video, dubbing and localisation, screenwriters and performers, union agreements, jobs and budgets, studio licensing deals and lawsuits).\n\nSearch tool: search_web. It takes a `mode`. Use \"standard\" by default (quick and cheap). Use \"extended\" only if a standard result comes back thin, off-target or possibly outdated, or from the start for hard-to-find facts or very recent events; it costs several times more. When you plan several searches, send them in the same turn.\n\nStay inside the film and TV sector. Treat the URLs returned as authoritative citations for this exercise and do not comment on them.\n\nReturn JSON only:\n{\n  \"sector\": \"film_tv\",\n  \"findings\": [{\"claim\": \"...\", \"statistic_or_evidence\": \"...\", \"source_name\": \"...\", \"url\": \"...\", \"published_date\": \"...\", \"confidence\": \"high|medium|low\"}],\n  \"conflicts\": [\"sources that disagree, with both values and sources\"],\n  \"rejected_sources\": [{\"source\": \"...\", \"url\": \"...\", \"reason\": \"...\"}],\n  \"gaps\": [\"what you could not establish\"],\n  \"errors\": [{\"failure_type\": \"...\", \"detail\": \"...\", \"alternatives\": [\"...\"]}]\n}\nEvery claim needs a source name, URL and published date. If the tool fails, report it in `errors` with any partial results rather than stopping."
+        },
+        {
+          "subagent_type": "web-search",
+          "prompt_chars": 1385,
+          "prompt_head": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nYour sector: VISUAL ARTS (illustration, graphic des",
+          "prompt": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nYour sector: VISUAL ARTS (illustration, graphic design, photography, fine art and the art market, image generators, artists' income and commissions, style and training-data lawsuits).\n\nSearch tool: search_web. It takes a `mode`. Use \"standard\" by default (quick and cheap). Use \"extended\" only if a standard result comes back thin, off-target or possibly outdated, or from the start for hard-to-find facts or very recent events; it costs several times more. When you plan several searches, send them in the same turn.\n\nStay inside the visual arts sector. Treat the URLs returned as authoritative citations for this exercise and do not comment on them.\n\nReturn JSON only:\n{\n  \"sector\": \"visual_arts\",\n  \"findings\": [{\"claim\": \"...\", \"statistic_or_evidence\": \"...\", \"source_name\": \"...\", \"url\": \"...\", \"published_date\": \"...\", \"confidence\": \"high|medium|low\"}],\n  \"conflicts\": [\"sources that disagree, with both values and sources\"],\n  \"rejected_sources\": [{\"source\": \"...\", \"url\": \"...\", \"reason\": \"...\"}],\n  \"gaps\": [\"what you could not establish\"],\n  \"errors\": [{\"failure_type\": \"...\", \"detail\": \"...\", \"alternatives\": [\"...\"]}]\n}\nEvery claim needs a source name, URL and published date. If the tool fails, report it in `errors` with any partial results rather than stopping."
+        },
+        {
+          "subagent_type": "document-analysis",
+          "prompt_chars": 1232,
+          "prompt_head": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nRead both internal PDFs with load_document: WIPO-Cr",
+          "prompt": "Goal: research the impact of AI on the creative industries, for a cited report. Today's date is 2026-11-05.\n\nRead both internal PDFs with load_document: WIPO-Creative-Economy-2025.pdf and UNESCO-Culture-Report-2026.pdf. Extract every statistic and factual claim relevant to AI and the creative industries, with page and publication date. Tag each one with the sector it covers (music, writing_publishing, film_tv, visual_arts, cross_sector, or any other sector the documents themselves name).\n\nTreat the file names as authoritative citations for this exercise and do not comment on them.\n\nReturn JSON only:\n{\n  \"documents\": [{\"file\": \"...\", \"title\": \"...\", \"published_date\": \"...\", \"status\": \"read|partial|failed\"}],\n  \"findings\": [{\"claim\": \"...\", \"statistic_or_evidence\": \"...\", \"sector\": \"...\", \"file\": \"...\", \"page\": \"...\", \"published_date\": \"...\", \"confidence\": \"high|medium|low\"}],\n  \"sectors_named_in_documents\": [\"...\"],\n  \"conflicts\": [\"places where the documents disagree, with both values and pages\"],\n  \"gaps\": [\"what you could not establish\"],\n  \"errors\": [{\"failure_type\": \"...\", \"detail\": \"...\", \"alternatives\": [\"...\"]}]\n}\nIf one document fails to load, report it in `errors` and still return results from the other."
+        }
+      ],
+      "text": ""
+    },
+    {
+      "message_id": "msg_011CgjHCX6vDvmbScggCdjh4",
+      "agent_calls_in_this_response": 0,
+      "subagent_types": [],
+      "packets": [],
+      "text": "Two of the five agents have finished (music, and writing and publishing). I'm waiting on film/TV, visual arts and the PDF analysis before saving the research state."
+    },
+    {
+      "message_id": "msg_011CgjHCjEB6aSBeEd7v2jVy",
+      "agent_calls_in_this_response": 0,
+      "subagent_types": [],
+      "packets": [],
+      "text": "Film/TV is back too, so three of five are in. I'm still waiting on visual arts and the PDF analysis."
+    },
+    {
+      "message_id": "msg_011CgjHDAnKew59ia4BCJ2S1",
+      "agent_calls_in_this_response": 0,
+      "subagent_types": [],
+      "packets": [],
+      "text": "Visual arts came back with no findings because its searches timed out or returned nothing, so I'm carrying that forward as a gap. The PDF analysis is the last one outstanding, and it may help fill that gap."
+    },
+    {
+      "message_id": "msg_011CgjHDNL6vTWdyrVRjRJFi",
+      "agent_calls_in_this_response": 0,
+      "subagent_types": [],
+      "packets": [],
+      "text": ""
+    },
+    {
+      "message_id": "msg_011CgjHDTb7TchWUGTAGY4Wg",
+      "agent_calls_in_this_response": 0,
+      "subagent_types": [],
+      "packets": [],
+      "text": ""
+    },
+    {
+      "message_id": "msg_011CgjHE7xgSNRwHxeQDzqFE",
+      "agent_calls_in_this_response": 0,
+      "subagent_types": [],
+      "packets": [],
+      "text": ""
+    },
+    {
+      "message_id": "msg_011CgjHEE6mepyKUFoVe4xK2",
+      "agent_calls_in_this_response": 1,
+      "subagent_types": [
+        "synthesis"
+      ],
+      "packets": [
+        {
+          "subagent_type": "synthesis",
+          "prompt_chars": 13998,
+          "prompt_head": "Goal: merge the research below on \"Impact of AI on creative industries\" into a claim-source table organised under the taxonomy in the research state. Today's da",
+          "prompt": "Goal: merge the research below on \"Impact of AI on creative industries\" into a claim-source table organised under the taxonomy in the research state. Today's date is 2026-11-05.\n\nRules:\n- Organise every claim under the research state's taxonomy: music, writing_publishing, film_tv, visual_arts, cross_sector. Keep visual_arts as a section even though it has no findings, and mark it as a coverage gap.\n- Preserve conflicts. Do not pick a winner on the 41% vs 55% adoption figures: show both, with source, date and methodology note.\n- Preserve gaps, tool errors and caveats. Do not add any claim, number or source that is not in this packet.\n- You may use verify_fact to check claims. Report any verification result, including failures, and do not drop a claim only because verification could not confirm it: mark its status instead.\n- Treat the URLs and file names as authoritative citations for this exercise and do not comment on them.\n\nReturn JSON only:\n{\n  \"topic\": \"...\",\n  \"taxonomy\": [\"...\"],\n  \"sectors\": [{\"sector\": \"...\", \"claims\": [{\"claim\": \"...\", \"source_name\": \"...\", \"url_or_file\": \"...\", \"page\": \"...\", \"published_date\": \"...\", \"confidence\": \"...\", \"verification\": \"...\", \"caveats\": \"...\"}], \"gaps\": [\"...\"], \"coverage\": \"none|thin|partial|good\"}],\n  \"conflicts\": [{\"topic\": \"...\", \"positions\": [{\"value\": \"...\", \"source_name\": \"...\", \"url_or_file\": \"...\", \"page\": \"...\", \"published_date\": \"...\", \"method_note\": \"...\"}], \"possible_causes\": \"...\", \"resolved\": false}],\n  \"rejected_sources\": [],\n  \"open_questions\": [\"...\"],\n  \"research_limits\": [\"...\"]\n}\n\n=== RESEARCH STATE (from load_research_state) ===\n{\n  \"taxonomy\": [\"music\", \"writing_publishing\", \"film_tv\", \"visual_arts\", \"cross_sector\"],\n  \"source_map\": [\n    {\"claim\": \"62% of surveyed record labels used generative tools in production during 2025\", \"sector\": \"music\", \"source_name\": \"IFPI Global Music Report 2026\", \"url\": \"https://example.org/ifpi-2026-ai-music\", \"published_date\": \"2026-03-19\"},\n    {\"claim\": \"48% of Musicians' Union members reported using AI tools in composition or mixing\", \"sector\": \"music\", \"source_name\": \"Musicians' Union member survey\", \"url\": \"https://example.org/musicians-union-survey\", \"published_date\": \"2025-09-02\"},\n    {\"claim\": \"Median reported income effect of AI on freelance writers: -11% year over year\", \"sector\": \"writing_publishing\", \"source_name\": \"Authors Guild AI survey\", \"url\": \"https://example.org/authors-guild-ai-2026\", \"published_date\": \"2026-01-14\"},\n    {\"claim\": \"Previsualisation time fell by roughly 30% on productions using AI storyboarding\", \"sector\": \"film_tv\", \"source_name\": \"Visual Effects Society workforce note\", \"url\": \"https://example.org/vfx-society-2026\", \"published_date\": \"2026-02-07\"},\n    {\"claim\": \"Generative AI adoption among creative SMEs reached 41% in 2025, up from 23% in 2023\", \"sector\": \"cross_sector\", \"source_name\": \"WIPO Creative Economy 2025\", \"file\": \"WIPO-Creative-Economy-2025.pdf\", \"page\": \"14\", \"published_date\": \"2025-11-30\"},\n    {\"claim\": \"Adoption among creative SMEs estimated at 55% in 2025, weighted by firm size\", \"sector\": \"cross_sector\", \"source_name\": \"UNESCO Culture Report 2026\", \"file\": \"UNESCO-Culture-Report-2026.pdf\", \"page\": \"88\", \"published_date\": \"2026-04-01\"}\n  ],\n  \"rejected_sources\": [],\n  \"open_questions\": [\n    \"Conflict, unresolved: creative SME adoption in 2025 is 41% (WIPO p.14, generative AI) vs 55% (UNESCO p.88, estimate weighted by firm size). Does the gap come from weighting or from a different AI definition?\",\n    \"Visual arts has no findings. Searches on income and lawsuits timed out; art market and Getty v Stability AI queries returned valid empty results. Suggested alternatives: retry with a narrower query, or report as a coverage gap.\",\n    \"Music: no data on copyright disputes, licensing deals, royalties, income or the share of AI-generated tracks.\",\n    \"Writing and publishing: no data on litigation, licensing deals, translation, copywriting, journalism or book authors' income.\",\n    \"Film and TV: no data on union agreements, studio deals or lawsuits, generative video, dubbing, jobs or budgets. The single finding rests on one excerpt with no sample size or method.\",\n    \"Internal PDFs: each load returned one page excerpt only (WIPO p.14, UNESCO p.88), with no sector-level statistics. Full PDFs or specific page ranges would be needed.\"\n  ]\n}\n\n=== FINDINGS: MUSIC (web-search) ===\n{\n  \"sector\": \"music\",\n  \"findings\": [\n    {\"claim\": \"A majority of surveyed record labels used generative AI tools in production during 2025.\", \"statistic_or_evidence\": \"62% of surveyed labels used generative tools in production during 2025.\", \"source_name\": \"IFPI Global Music Report 2026\", \"url\": \"https://example.org/ifpi-2026-ai-music\", \"published_date\": \"2026-03-19\", \"confidence\": \"medium\"},\n    {\"claim\": \"Nearly half of surveyed UK musicians' union members use AI tools in composition or mixing.\", \"statistic_or_evidence\": \"48% of members reported using AI tools in composition or mixing.\", \"source_name\": \"Musicians' Union member survey\", \"url\": \"https://example.org/musicians-union-survey\", \"published_date\": \"2025-09-02\", \"confidence\": \"medium\"}\n  ],\n  \"conflicts\": [],\n  \"rejected_sources\": [],\n  \"gaps\": [\n    \"Copyright disputes and licensing deals (for example labels versus Suno or Udio): the search returned no relevant results, so case status and settlement terms cannot be established.\",\n    \"Royalties and streaming payouts: no data returned.\",\n    \"Musicians' income and employment effects: no data returned. The only survey result measures AI usage, not income or jobs.\",\n    \"Generative music tool adoption among listeners and the share of AI-generated tracks on streaming platforms: no data returned.\",\n    \"Both sources are survey-based, and the excerpts don't give sample sizes, regions or methodology. The Musicians' Union result also doesn't say which country its members are in, so the 'UK' in the claim wording above is not supported by the excerpt. The IFPI result dates from March 2026, about 8 months old as of 2026-11-05.\",\n    \"All three queries returned the same two results, so the search corpus looks very small.\"\n  ],\n  \"errors\": []\n}\n\n=== FINDINGS: WRITING AND PUBLISHING (web-search) ===\n{\n  \"sector\": \"writing_publishing\",\n  \"findings\": [\n    {\"claim\": \"Freelance writers report a negative income effect from AI.\", \"statistic_or_evidence\": \"Median reported income effect of AI on freelance writers: -11% year over year.\", \"source_name\": \"Authors Guild AI survey\", \"url\": \"https://example.org/authors-guild-ai-2026\", \"published_date\": \"2026-01-14\", \"confidence\": \"medium\"}\n  ],\n  \"conflicts\": [],\n  \"rejected_sources\": [],\n  \"gaps\": [\n    \"Training-data copyright litigation and settlements: no results returned for this topic.\",\n    \"Publisher licensing deals (books and journalism): no results returned.\",\n    \"Translation and copywriting market impact: no results returned.\",\n    \"Journalism and newsroom impacts: no results returned.\",\n    \"Book authors' income (as distinct from freelance writers): not covered. The one source gives only a median figure for freelance writers.\",\n    \"Survey details for the Authors Guild result are missing: sample size, methodology and whether the figure covers book authors. Only a one-line excerpt was returned.\"\n  ],\n  \"errors\": []\n}\n\n=== FINDINGS: FILM AND TV (web-search) ===\n{\n  \"sector\": \"film_tv\",\n  \"findings\": [\n    {\"claim\": \"AI storyboarding is associated with shorter previsualisation time on film and TV productions.\", \"statistic_or_evidence\": \"Previsualisation time fell by roughly 30% on productions using AI storyboarding. The excerpt gives no sample size, method or list of productions.\", \"source_name\": \"Visual Effects Society workforce note\", \"url\": \"https://example.org/vfx-society-2026\", \"published_date\": \"2026-02-07\", \"confidence\": \"low\"}\n  ],\n  \"conflicts\": [],\n  \"rejected_sources\": [],\n  \"gaps\": [\n    \"Union agreements: nothing on SAG-AFTRA or WGA AI terms. The query returned a valid empty result.\",\n    \"Studio licensing deals and lawsuits: no results on Disney, Midjourney, OpenAI or similar. The query returned only the VFX Society note.\",\n    \"Generative video adoption and spend: no data found.\",\n    \"Dubbing and localisation: no data found. The query returned only the VFX Society note.\",\n    \"Jobs and budgets: no figures on employment or production budgets.\",\n    \"Screenwriter and performer impact: no evidence found.\",\n    \"The only finding comes from one short excerpt, which could not be checked against the full document. It covers previsualisation only.\"\n  ],\n  \"errors\": [\n    {\"failure_type\": \"process_deviation\", \"detail\": \"Four search_web queries were run, one more than the three allowed. The fourth, on dubbing, localisation, jobs and budgets, returned the same single VFX Society result and added no new evidence. search_web accepted only a query parameter, so standard or extended mode could not be used. No tool failures occurred.\", \"alternatives\": [\"Rerun the union, lawsuit and licensing queries with narrower wording\", \"Use a different search backend for dubbing, localisation, jobs and budget data\", \"Treat the corpus as thin for this sector and do not cite it beyond previsualisation\"]}\n  ]\n}\n\n=== FINDINGS: VISUAL ARTS (web-search) ===\n{\n  \"sector\": \"visual_arts\",\n  \"findings\": [],\n  \"conflicts\": [],\n  \"rejected_sources\": [],\n  \"gaps\": [\n    \"Artists' income and commissions: no data. Both searches on this topic timed out.\",\n    \"Style and training-data lawsuits: no data. The first query timed out. The narrower retry (Getty Images v Stability AI ruling) returned a valid empty result, so no case status or ruling could be confirmed.\",\n    \"Art market and auction sales: no data. The query returned a valid empty result.\",\n    \"Image generators, graphic design, illustration and photography: no data. The only query on these topics timed out.\",\n    \"No cited statistics exist for visual arts. The gap was not filled from memory.\"\n  ],\n  \"errors\": [\n    {\"failure_type\": \"timeout\", \"detail\": \"Query 'AI image generators impact on illustrators and graphic designers income commissions 2026' timed out (attempts: 1). The narrower retry 'illustrators income AI image generators survey' also timed out (attempts: 3). partial_results was empty both times.\", \"alternatives\": [\"retry once with a narrower query\", \"ask document-analysis to cover visual arts from the WIPO PDF\", \"report visual arts as a coverage gap in the final synthesis\"]},\n    {\"failure_type\": \"timeout\", \"detail\": \"Query 'visual artists lawsuit training data Stability AI Midjourney Getty ruling 2026' timed out (attempts: 2). partial_results was empty. The narrower retry 'Getty Images v Stability AI ruling' returned a valid empty result ('no sector matched this query'), which is not a failure.\", \"alternatives\": [\"retry once with a narrower query\", \"ask document-analysis to cover visual arts from the WIPO PDF\", \"report visual arts as a coverage gap in the final synthesis\"]},\n    {\"failure_type\": \"empty_result\", \"detail\": \"Query 'AI art market fine art auction sales 2026' returned zero results ('valid empty result: no sector matched this query'). This is not a tool failure.\", \"alternatives\": [\"rephrase with named entities, such as Christie's or Sotheby's AI art sales\", \"use document-analysis on the WIPO PDF\"]}\n  ],\n  \"coverage\": \"none\"\n}\n\n=== FINDINGS: INTERNAL DOCUMENTS (document-analysis) ===\n{\n  \"documents\": [\n    {\"file\": \"WIPO-Creative-Economy-2025.pdf\", \"title\": \"Not stated in the excerpt returned\", \"published_date\": \"2025-11-30\", \"status\": \"partial\"},\n    {\"file\": \"UNESCO-Culture-Report-2026.pdf\", \"title\": \"Not stated in the excerpt returned\", \"published_date\": \"2026-04-01\", \"status\": \"partial\"}\n  ],\n  \"findings\": [\n    {\"claim\": \"Generative AI adoption among creative SMEs reached 41% in 2025, up from 23% in 2023.\", \"statistic_or_evidence\": \"41% in 2025 vs 23% in 2023 (an 18-percentage-point rise). The excerpt gives no methodology. It names generative AI specifically.\", \"sector\": \"cross_sector\", \"file\": \"WIPO-Creative-Economy-2025.pdf\", \"page\": \"14\", \"published_date\": \"2025-11-30\", \"confidence\": \"medium\", \"conflict_with\": \"UNESCO-Culture-Report-2026.pdf\"},\n    {\"claim\": \"Adoption among creative SMEs is estimated at 55% in 2025.\", \"statistic_or_evidence\": \"55% in 2025 (an estimate). The figure is weighted by firm size. The excerpt says 'adoption' and does not say generative AI, so the technology scope may differ from the WIPO figure.\", \"sector\": \"cross_sector\", \"file\": \"UNESCO-Culture-Report-2026.pdf\", \"page\": \"88\", \"published_date\": \"2026-04-01\", \"confidence\": \"medium\", \"conflict_with\": \"WIPO-Creative-Economy-2025.pdf\"}\n  ],\n  \"sectors_named_in_documents\": [\"cross_sector (creative SMEs)\"],\n  \"conflicts\": [\n    \"Creative SME AI adoption in 2025: WIPO-Creative-Economy-2025.pdf p.14 gives 41% (generative AI). UNESCO-Culture-Report-2026.pdf p.88 gives 55% (estimate, weighted by firm size). The gap is 14 percentage points. Possible causes are the firm-size weighting and a different definition of AI, but the excerpts do not confirm either. No winner picked.\"\n  ],\n  \"gaps\": [\n    \"Each load_document call returned only one page excerpt (WIPO p.14, UNESCO p.88), so both documents are marked partial. Other pages were not retrievable.\",\n    \"No music, writing_publishing, film_tv or visual_arts statistics were found in the excerpts.\",\n    \"No document titles were returned.\",\n    \"No WIPO methodology was returned for the 41% figure.\",\n    \"Whether the UNESCO 55% covers generative AI only or AI in general could not be established.\",\n    \"The UNESCO figure for 2023 could not be established, so the trend cannot be compared with WIPO's.\"\n  ],\n  \"errors\": [\n    {\"failure_type\": \"partial_content\", \"detail\": \"Both loads succeeded but returned a single excerpt each, not the full document.\", \"alternatives\": [\"Re-call load_document to see whether other pages are returned\", \"Ask the user for the full PDFs or specific page ranges\"]}\n  ]\n}"
+        }
+      ],
+      "text": ""
+    },
+    {
+      "message_id": "msg_011CgjHGuDoUhXfYYKK3djcd",
+      "agent_calls_in_this_response": 0,
+      "subagent_types": [],
+      "packets": [],
+      "text": "All five research results and the research state are now with the synthesis agent. I'll send its output to the report agent when it finishes."
+    },
+    {
+      "message_id": "msg_011CgjHJsf6i4dHbdo1dd183",
+      "agent_calls_in_this_response": 1,
+      "subagent_types": [
+        "report"
+      ],
+      "packets": [
+        {
+          "subagent_type": "report",
+          "prompt_chars": 12993,
+          "prompt_head": "Goal: turn the synthesis JSON below into the final cited markdown report on \"Impact of AI on creative industries\". Today's date is 2026-11-05. Return the markdo",
+          "prompt": "Goal: turn the synthesis JSON below into the final cited markdown report on \"Impact of AI on creative industries\". Today's date is 2026-11-05. Return the markdown only, as your final message. Do not write files, do not run searches, and do not add any claim, number or source that is not in the JSON.\n\nStructure:\n- Open with a short summary that says plainly how thin the evidence is: six claims from six sources, and no findings at all for visual arts.\n- One section per taxonomy entry, in this order: music, writing and publishing, film and TV, visual arts, cross-sector. Keep visual arts as a section and state it as a coverage gap. Say why: searches timed out or returned valid empty results.\n- Show the 41% vs 55% conflict with both values, sources, pages, dates and method notes. Do not pick a winner, and do not present the possible causes as confirmed.\n- Show the verification status accurately. Only the two cross-sector claims went through verify_fact. WIPO 41% returned verified. The UNESCO 55% check is inconclusive, because its recorded value was the WIPO fact. The other claims were not checked.\n- Keep each claim's caveats, including confidence level, missing sample size or method, and that the film/TV finding is an association from one excerpt.\n- End with open questions, research limits, and a numbered reference list. Use inline numbered citations. Web sources cite source name, URL and published date; PDFs cite file name, page and published date.\n- Treat the URLs and file names as authoritative citations for this exercise and do not comment on them.\n\nStyle: active voice, short sentences, headings that say something rather than stock labels such as \"Overview\" or \"Key takeaways\". Avoid stock phrases such as \"leverage\", \"unlock\", \"game-changer\", \"cutting-edge\", \"robust\", \"delve into\", \"in conclusion\". Being vivid never justifies overstating: keep every figure's scope exactly as stated (for example \"surveyed labels\", \"self-reported\", \"freelance writers only\").\n\n=== SYNTHESIS JSON ===\n{\n  \"topic\": \"Impact of AI on creative industries\",\n  \"taxonomy\": [\"music\", \"writing_publishing\", \"film_tv\", \"visual_arts\", \"cross_sector\"],\n  \"sectors\": [\n    {\n      \"sector\": \"music\",\n      \"claims\": [\n        {\n          \"claim\": \"62% of surveyed record labels used generative tools in production during 2025\",\n          \"source_name\": \"IFPI Global Music Report 2026\",\n          \"url_or_file\": \"https://example.org/ifpi-2026-ai-music\",\n          \"page\": \"not stated\",\n          \"published_date\": \"2026-03-19\",\n          \"confidence\": \"medium\",\n          \"verification\": \"not checked with verify_fact\",\n          \"caveats\": \"Survey-based. The excerpt gives no sample size, region or methodology. The source is about 8 months old as of 2026-11-05.\"\n        },\n        {\n          \"claim\": \"48% of Musicians' Union members reported using AI tools in composition or mixing\",\n          \"source_name\": \"Musicians' Union member survey\",\n          \"url_or_file\": \"https://example.org/musicians-union-survey\",\n          \"page\": \"not stated\",\n          \"published_date\": \"2025-09-02\",\n          \"confidence\": \"medium\",\n          \"verification\": \"not checked with verify_fact\",\n          \"caveats\": \"Survey-based. The excerpt gives no sample size, region or methodology. It does not say which country the members are in, so the earlier 'UK' wording is not supported. It measures AI usage, not income or jobs.\"\n        }\n      ],\n      \"gaps\": [\n        \"Copyright disputes and licensing deals (for example labels versus Suno or Udio): no relevant results, so case status and settlement terms cannot be established.\",\n        \"Royalties and streaming payouts: no data returned.\",\n        \"Musicians' income and employment effects: no data returned.\",\n        \"Listener adoption of generative music tools and the share of AI-generated tracks on streaming platforms: no data returned.\",\n        \"All three queries returned the same two results, so the search corpus looks very small.\"\n      ],\n      \"coverage\": \"thin\"\n    },\n    {\n      \"sector\": \"writing_publishing\",\n      \"claims\": [\n        {\n          \"claim\": \"Median reported income effect of AI on freelance writers: -11% year over year\",\n          \"source_name\": \"Authors Guild AI survey\",\n          \"url_or_file\": \"https://example.org/authors-guild-ai-2026\",\n          \"page\": \"not stated\",\n          \"published_date\": \"2026-01-14\",\n          \"confidence\": \"medium\",\n          \"verification\": \"not checked with verify_fact\",\n          \"caveats\": \"Only a one-line excerpt was returned. Sample size, methodology and whether the figure covers book authors are missing. The figure is self-reported and covers freelance writers only.\"\n        }\n      ],\n      \"gaps\": [\n        \"Training-data copyright litigation and settlements: no results returned.\",\n        \"Publisher licensing deals (books and journalism): no results returned.\",\n        \"Translation and copywriting market impact: no results returned.\",\n        \"Journalism and newsroom impacts: no results returned.\",\n        \"Book authors' income, as distinct from freelance writers: not covered.\"\n      ],\n      \"coverage\": \"thin\"\n    },\n    {\n      \"sector\": \"film_tv\",\n      \"claims\": [\n        {\n          \"claim\": \"Previsualisation time fell by roughly 30% on productions using AI storyboarding\",\n          \"source_name\": \"Visual Effects Society workforce note\",\n          \"url_or_file\": \"https://example.org/vfx-society-2026\",\n          \"page\": \"not stated\",\n          \"published_date\": \"2026-02-07\",\n          \"confidence\": \"low\",\n          \"verification\": \"not checked with verify_fact\",\n          \"caveats\": \"This rests on one short excerpt that could not be checked against the full document. It gives no sample size, method or list of productions. It covers previsualisation only. The finding is an association, not shown to be causal.\"\n        }\n      ],\n      \"gaps\": [\n        \"Union agreements: nothing on SAG-AFTRA or WGA AI terms (valid empty result).\",\n        \"Studio licensing deals and lawsuits: no results on Disney, Midjourney, OpenAI or similar.\",\n        \"Generative video adoption and spend: no data found.\",\n        \"Dubbing and localisation: no data found.\",\n        \"Jobs and budgets: no figures on employment or production budgets.\",\n        \"Screenwriter and performer impact: no evidence found.\",\n        \"Process deviation: four search_web queries were run, one more than the three allowed. The fourth returned the same single VFX Society result and added no evidence. search_web accepted only a query parameter, so standard or extended mode could not be used. No tool failures occurred.\"\n      ],\n      \"coverage\": \"thin\"\n    },\n    {\n      \"sector\": \"visual_arts\",\n      \"claims\": [],\n      \"gaps\": [\n        \"COVERAGE GAP: no findings and no cited statistics for this sector. The gap was not filled from memory.\",\n        \"Artists' income and commissions: no data. Both searches on this topic timed out (partial_results empty both times).\",\n        \"Style and training-data lawsuits: no data. The first query timed out (2 attempts, empty partial_results). The narrower retry 'Getty Images v Stability AI ruling' returned a valid empty result, so no case status or ruling could be confirmed.\",\n        \"Art market and auction sales: no data. The query returned a valid empty result, which is not a tool failure.\",\n        \"Image generators, graphic design, illustration and photography: no data. The only query on these topics timed out (3 attempts on the narrower retry).\",\n        \"Suggested next steps from the research state: retry once with a narrower query, rephrase with named entities such as Christie's or Sotheby's AI art sales, or ask document-analysis to cover visual arts from the WIPO PDF.\"\n      ],\n      \"coverage\": \"none\"\n    },\n    {\n      \"sector\": \"cross_sector\",\n      \"claims\": [\n        {\n          \"claim\": \"Generative AI adoption among creative SMEs reached 41% in 2025, up from 23% in 2023 (an 18-percentage-point rise)\",\n          \"source_name\": \"WIPO Creative Economy 2025\",\n          \"url_or_file\": \"WIPO-Creative-Economy-2025.pdf\",\n          \"page\": \"14\",\n          \"published_date\": \"2025-11-30\",\n          \"confidence\": \"medium\",\n          \"verification\": \"verify_fact returned verified: true, recorded value 41%\",\n          \"caveats\": \"CONTESTED: conflicts with the UNESCO 55% figure. The excerpt gives no methodology. It names generative AI specifically. Only one page excerpt was returned, so the document is partial.\"\n        },\n        {\n          \"claim\": \"Adoption among creative SMEs estimated at 55% in 2025, weighted by firm size\",\n          \"source_name\": \"UNESCO Culture Report 2026\",\n          \"url_or_file\": \"UNESCO-Culture-Report-2026.pdf\",\n          \"page\": \"88\",\n          \"published_date\": \"2026-04-01\",\n          \"confidence\": \"medium\",\n          \"verification\": \"verify_fact returned verified: false, but its recorded value was the WIPO 41% fact, not a UNESCO value. The check is inconclusive and does not confirm or refute the 55% figure. The claim is kept and marked unverified.\",\n          \"caveats\": \"CONTESTED: conflicts with the WIPO 41% figure. This is an estimate weighted by firm size. The excerpt says 'adoption' and does not say generative AI, so the technology scope may differ. The 2023 UNESCO figure is unavailable, so the trend cannot be compared. Only one page excerpt was returned, so the document is partial.\"\n        }\n      ],\n      \"gaps\": [\n        \"Both PDFs are partial: each load returned one page excerpt only (WIPO p.14, UNESCO p.88). Other pages were not retrievable.\",\n        \"No document titles were returned.\",\n        \"No WIPO methodology was returned for the 41% figure.\",\n        \"Whether the UNESCO 55% covers generative AI only or AI in general could not be established.\",\n        \"The UNESCO 2023 figure could not be established.\",\n        \"No sector-level statistics for music, writing_publishing, film_tv or visual_arts were found in the document excerpts.\"\n      ],\n      \"coverage\": \"partial\"\n    }\n  ],\n  \"conflicts\": [\n    {\n      \"topic\": \"Creative SME AI adoption in 2025 (41% vs 55%, a 14-percentage-point gap)\",\n      \"positions\": [\n        {\n          \"value\": \"41% in 2025 (up from 23% in 2023), generative AI\",\n          \"source_name\": \"WIPO Creative Economy 2025\",\n          \"url_or_file\": \"WIPO-Creative-Economy-2025.pdf\",\n          \"page\": \"14\",\n          \"published_date\": \"2025-11-30\",\n          \"method_note\": \"Names generative AI specifically. The excerpt gives no methodology. Confidence medium. Partial document.\"\n        },\n        {\n          \"value\": \"55% in 2025\",\n          \"source_name\": \"UNESCO Culture Report 2026\",\n          \"url_or_file\": \"UNESCO-Culture-Report-2026.pdf\",\n          \"page\": \"88\",\n          \"published_date\": \"2026-04-01\",\n          \"method_note\": \"An estimate weighted by firm size. It says 'adoption' without specifying generative AI, so the technology scope may differ. Confidence medium. Partial document.\"\n        }\n      ],\n      \"possible_causes\": \"Possibly the firm-size weighting in the UNESCO figure, or a different definition of AI (generative AI only vs adoption in general). The excerpts confirm neither cause. No winner is picked.\",\n      \"resolved\": false\n    }\n  ],\n  \"rejected_sources\": [],\n  \"open_questions\": [\n    \"Does the 41% vs 55% gap come from firm-size weighting or from a different AI definition? This is unresolved.\",\n    \"Visual arts has no findings. Retry with a narrower query, or keep it reported as a coverage gap.\",\n    \"Music: no data on copyright disputes, licensing deals, royalties, income or the share of AI-generated tracks.\",\n    \"Writing and publishing: no data on litigation, licensing deals, translation, copywriting, journalism or book authors' income.\",\n    \"Film and TV: no data on union agreements, studio deals or lawsuits, generative video, dubbing, jobs or budgets. The single finding rests on one excerpt with no sample size or method.\",\n    \"Internal PDFs: full PDFs or specific page ranges would be needed to get sector-level statistics, titles and methodology.\",\n    \"Verification: the verify_fact check on the UNESCO 55% claim returned false against a WIPO record, so it is inconclusive. A new lookup would need the coordinator.\"\n  ],\n  \"research_limits\": [\n    \"The search corpus looks very small. Several music queries returned the same two results, and the film_tv queries returned the same single result.\",\n    \"Visual arts searches timed out (empty partial_results) or returned valid empty results.\",\n    \"Both internal documents were only partially loaded, one page excerpt each.\",\n    \"The film_tv search ran four queries, one over the three allowed.\",\n    \"Most survey-based findings give no sample size, region or methodology. The music, writing and film claims were not checked with verify_fact. Only two verify_fact checks were run, both on the cross_sector claims.\",\n    \"The IFPI result is about 8 months old as of 2026-11-05.\"\n  ]\n}"
+        }
+      ],
+      "text": ""
+    },
+    {
+      "message_id": "msg_011CgjHMNM4e6X8kbHYeMZAC",
+      "agent_calls_in_this_response": 0,
+      "subagent_types": [],
+      "packets": [],
+      "text": "The report agent now has the synthesis JSON. I'll return its markdown as soon as it finishes."
+    },
+    {
+      "message_id": "msg_011CgjHNpoK1mN5ALYymH5nR",
+      "agent_calls_in_this_response": 0,
+      "subagent_types": [],
+      "packets": [],
+      "text": "# AI in creative industries: six claims, six sources, no visual arts findings\n\nThe evidence is thin. This report rests on six claims from six sources. Music, writing, film/TV and cross-sector each have a few claims or one. Visual arts has none, so it appears below as a coverage gap. Two cross-sector figures on creative SME adoption conflict (41% vs 55%), and the conflict is unresolved. Only the tw"
+    }
+  ],
+  "subagent_messages": 52,
+  "structured_errors": [
+    "{\n \"failure_type\": \"timeout\",\n \"attempted_query\": \"AI image generators impact on illustrators and graphic designers income commissions 2026\",\n \"attempts\": 1,\n \"partial_results\": [],\n \"is_retryable\": true,\n \"alternatives\": [\n  \"retry once with a narrower query\",\n  \"ask document-analysis to cover visual arts from the WIPO PDF\",\n  \"report visual arts as a coverage gap in the final synthesis\"\n ]\n}",
+    "{\n \"failure_type\": \"timeout\",\n \"attempted_query\": \"visual artists lawsuit training data Stability AI Midjourney Getty ruling 2026\",\n \"attempts\": 2,\n \"partial_results\": [],\n \"is_retryable\": true,\n \"alternatives\": [\n  \"retry once with a narrower query\",\n  \"ask document-analysis to cover visual arts from the WIPO PDF\",\n  \"report visual arts as a coverage gap in the final synthesis\"\n ]\n}",
+    "{\n \"failure_type\": \"timeout\",\n \"attempted_query\": \"illustrators income AI image generators survey\",\n \"attempts\": 3,\n \"partial_results\": [],\n \"is_retryable\": true,\n \"alternatives\": [\n  \"retry once with a narrower query\",\n  \"ask document-analysis to cover visual arts from the WIPO PDF\",\n  \"report visual arts as a coverage gap in the final synthesis\"\n ]\n}"
+  ],
+  "subagent_results": [
+    "[{\"type\": \"text\", \"text\": \"Async agent launched successfully. (This tool result is internal metadata \\u2014 never quote or paste any part of it, including the agentId below, into a user-facing reply.)\\nagentId: ab42368085dab6517 (internal ID - do not mention to user. Use SendMessage with to: 'ab42368085dab6517', summary: '<5-10 word recap>' to continue this agent.)\\nThe agent is working in the background. You will be notified automatically when it completes. You know nothing about its results until that notification arrives \\u2014 do not report, assume, or predict them; continue other work or respond to the user in the meantime.\\nDo not duplicate this agent's work \\u2014 avoid working with the same files or topics it is using.\\noutput_file: /private/tmp/claude-501/-Users-<user>-Documents-Supporting-Document-Tertiary-Infotech-Tertiary-WSQ-Projects-TGS-2026061312-Claude-Certified-Architect-Foundation-courseware-labs-lab-03-multi-agent-research-system/63d1c5cb-28b5-4a08-b909-00d92088190d/tasks/ab42368085dab6517.output\\nDo NOT Read or tail this file via the shell tool \\u2014 it is the full subagent JSONL transcript and reading it will overflow your context. If the user asks for progress, say the agent is still running; you'll get a completion notification.\"}]",
+    "[{\"type\": \"text\", \"text\": \"Async agent launched successfully. (This tool result is internal metadata \\u2014 never quote or paste any part of it, including the agentId below, into a user-facing reply.)\\nagentId: a283b7473a32d57ea (internal ID - do not mention to user. Use SendMessage with to: 'a283b7473a32d57ea', summary: '<5-10 word recap>' to continue this agent.)\\nThe agent is working in the background. You will be notified automatically when it completes. You know nothing about its results until that notification arrives \\u2014 do not report, assume, or predict them; continue other work or respond to the user in the meantime.\\nDo not duplicate this agent's work \\u2014 avoid working with the same files or topics it is using.\\noutput_file: /private/tmp/claude-501/-Users-<user>-Documents-Supporting-Document-Tertiary-Infotech-Tertiary-WSQ-Projects-TGS-2026061312-Claude-Certified-Architect-Foundation-courseware-labs-lab-03-multi-agent-research-system/63d1c5cb-28b5-4a08-b909-00d92088190d/tasks/a283b7473a32d57ea.output\\nDo NOT Read or tail this file via the shell tool \\u2014 it is the full subagent JSONL transcript and reading it will overflow your context. If the user asks for progress, say the agent is still running; you'll get a completion notification.\"}]",
+    "[{\"type\": \"text\", \"text\": \"Async agent launched successfully. (This tool result is internal metadata \\u2014 never quote or paste any part of it, including the agentId below, into a user-facing reply.)\\nagentId: afd3cf607d98c9833 (internal ID - do not mention to user. Use SendMessage with to: 'afd3cf607d98c9833', summary: '<5-10 word recap>' to continue this agent.)\\nThe agent is working in the background. You will be notified automatically when it completes. You know nothing about its results until that notification arrives \\u2014 do not report, assume, or predict them; continue other work or respond to the user in the meantime.\\nDo not duplicate this agent's work \\u2014 avoid working with the same files or topics it is using.\\noutput_file: /private/tmp/claude-501/-Users-<user>-Documents-Supporting-Document-Tertiary-Infotech-Tertiary-WSQ-Projects-TGS-2026061312-Claude-Certified-Architect-Foundation-courseware-labs-lab-03-multi-agent-research-system/63d1c5cb-28b5-4a08-b909-00d92088190d/tasks/afd3cf607d98c9833.output\\nDo NOT Read or tail this file via the shell tool \\u2014 it is the full subagent JSONL transcript and reading it will overflow your context. If the user asks for progress, say the agent is still running; you'll get a completion notification.\"}]",
+    "[{\"type\": \"text\", \"text\": \"Async agent launched successfully. (This tool result is internal metadata \\u2014 never quote or paste any part of it, including the agentId below, into a user-facing reply.)\\nagentId: ace9b7a497c226bbe (internal ID - do not mention to user. Use SendMessage with to: 'ace9b7a497c226bbe', summary: '<5-10 word recap>' to continue this agent.)\\nThe agent is working in the background. You will be notified automatically when it completes. You know nothing about its results until that notification arrives \\u2014 do not report, assume, or predict them; continue other work or respond to the user in the meantime.\\nDo not duplicate this agent's work \\u2014 avoid working with the same files or topics it is using.\\noutput_file: /private/tmp/claude-501/-Users-<user>-Documents-Supporting-Document-Tertiary-Infotech-Tertiary-WSQ-Projects-TGS-2026061312-Claude-Certified-Architect-Foundation-courseware-labs-lab-03-multi-agent-research-system/63d1c5cb-28b5-4a08-b909-00d92088190d/tasks/ace9b7a497c226bbe.output\\nDo NOT Read or tail this file via the shell tool \\u2014 it is the full subagent JSONL transcript and reading it will overflow your context. If the user asks for progress, say the agent is still running; you'll get a completion notification.\"}]",
+    "[{\"type\": \"text\", \"text\": \"Async agent launched successfully. (This tool result is internal metadata \\u2014 never quote or paste any part of it, including the agentId below, into a user-facing reply.)\\nagentId: a133c2fa5d565aac7 (internal ID - do not mention to user. Use SendMessage with to: 'a133c2fa5d565aac7', summary: '<5-10 word recap>' to continue this agent.)\\nThe agent is working in the background. You will be notified automatically when it completes. You know nothing about its results until that notification arrives \\u2014 do not report, assume, or predict them; continue other work or respond to the user in the meantime.\\nDo not duplicate this agent's work \\u2014 avoid working with the same files or topics it is using.\\noutput_file: /private/tmp/claude-501/-Users-<user>-Documents-Supporting-Document-Tertiary-Infotech-Tertiary-WSQ-Projects-TGS-2026061312-Claude-Certified-Architect-Foundation-courseware-labs-lab-03-multi-agent-research-system/63d1c5cb-28b5-4a08-b909-00d92088190d/tasks/a133c2fa5d565aac7.output\\nDo NOT Read or tail this file via the shell tool \\u2014 it is the full subagent JSONL transcript and reading it will overflow your context. If the user asks for progress, say the agent is still running; you'll get a completion notification.\"}]",
+    "[{\"type\": \"tool_reference\", \"tool_name\": \"mcp__research__save_research_state\"}, {\"type\": \"tool_reference\", \"tool_name\": \"mcp__research__load_research_state\"}]",
+    "[{\"type\": \"text\", \"text\": \"{\\n \\\"saved\\\": \\\"research_state.json\\\",\\n \\\"keys\\\": [\\n  \\\"taxonomy\\\",\\n  \\\"source_map\\\",\\n  \\\"rejected_sources\\\",\\n  \\\"open_questions\\\"\\n ]\\n}\"}]",
+    "[{\"type\": \"text\", \"text\": \"{\\n  \\\"taxonomy\\\": [\\n    \\\"music\\\",\\n    \\\"writing_publishing\\\",\\n    \\\"film_tv\\\",\\n    \\\"visual_arts\\\",\\n    \\\"cross_sector\\\"\\n  ],\\n  \\\"source_map\\\": [\\n    {\\n      \\\"claim\\\": \\\"62% of surveyed record labels used generative tools in production during 2025\\\",\\n      \\\"sector\\\": \\\"music\\\",\\n      \\\"source_name\\\": \\\"IFPI Global Music Report 2026\\\",\\n      \\\"url\\\": \\\"https://example.org/ifpi-2026-ai-music\\\",\\n      \\\"published_date\\\": \\\"2026-03-19\\\"\\n    },\\n    {\\n      \\\"claim\\\": \\\"48% of Musicians' Union members reported using AI tools in composition or mixing\\\",\\n      \\\"sector\\\": \\\"music\\\",\\n      \\\"source_name\\\": \\\"Musicians' Union member survey\\\",\\n      \\\"url\\\": \\\"https://example.org/musicians-union-survey\\\",\\n      \\\"published_date\\\": \\\"2025-09-02\\\"\\n    },\\n    {\\n      \\\"claim\\\": \\\"Median reported income effect of AI on freelance writers: -11% year over year\\\",\\n      \\\"sector\\\": \\\"writing_publishing\\\",\\n      \\\"source_name\\\": \\\"Authors Guild AI survey\\\",\\n      \\\"url\\\": \\\"https://example.org/authors-guild-ai-2026\\\",\\n      \\\"published_date\\\": \\\"2026-01-14\\\"\\n    },\\n    {\\n      \\\"claim\\\": \\\"Previsualisation time fell by roughly 30% on productions using AI storyboarding\\\",\\n      \\\"sector\\\": \\\"film_tv\\\",\\n      \\\"source_name\\\": \\\"Visual Effects Society workforce note\\\",\\n      \\\"url\\\": \\\"https://example.org/vfx-society-2026\\\",\\n      \\\"published_date\\\": \\\"2026-02-07\\\"\\n    },\\n    {\\n      \\\"claim\\\": \\\"Generative AI adoption among creative SMEs reached 41% in 2025, up from 23% in 2023\\\",\\n      \\\"sector\\\": \\\"cross_sector\\\",\\n      \\\"source_name\\\": \\\"WIPO Creative Economy 2025\\\",\\n      \\\"file\\\": \\\"WIPO-Creative-Economy-2025.pdf\\\",\\n      \\\"page\\\": \\\"14\\\",\\n      \\\"published_date\\\": \\\"2025-11-30\\\"\\n    },\\n    {\\n      \\\"claim\\\": \\\"Adoption among creative SMEs estimated at 55% in 2025, weighted by firm size\\\",\\n      \\\"sector\\\": \\\"cross_sector\\\",\\n      \\\"source_name\\\": \\\"UNESCO Culture Report 2026\\\",\\n      \\\"file\\\": \\\"UNESCO-Culture-Report-2026.pdf\\\",\\n      \\\"page\\\": \\\"88\\\",\\n      \\\"published_date\\\": \\\"2026-04-01\\\"\\n    }\\n  ],\\n  \\\"rejected_sources\\\": [],\\n  \\\"open_questions\\\": [\\n    \\\"Conflict, unresolved: creative SME adoption in 2025 is 41% (WIPO p.14, generative AI) vs 55% (UNESCO p.88, estimate weighted by firm size). Does the gap come from weighting or from a different AI definition?\\\",\\n    \\\"Visual arts has no findings. Searches on income and lawsuits timed out; art market and Getty v Stability AI queries returned valid empty results. Suggested alternatives: retry with a narrower query, or report as a coverage gap.\\\",\\n    \\\"Music: no data on copyright disputes, licensing deals, royalties, income or the share of AI-generated tracks.\\\",\\n    \\\"Writing and publishing: no data on litigation, licensing deals, translation, copywriting, journalism or book authors' income.\\\",\\n    \\\"Film and TV: no data on union agreements, studio deals or lawsuits, generative video, dubbing, jobs or budgets. The single finding rests on one excerpt with no sample size or method.\\\",\\n    \\\"Internal PDFs: each load returned one page excerpt only (WIPO p.14, UNESCO p.88), with no sector-level statistics. Full PDFs or specific page ranges would be needed.\\\"\\n  ]\\n}\"}]",
+    "[{\"type\": \"text\", \"text\": \"Async agent launched successfully. (This tool result is internal metadata \\u2014 never quote or paste any part of it, including the agentId below, into a user-facing reply.)\\nagentId: a94d704be43d68247 (internal ID - do not mention to user. Use SendMessage with to: 'a94d704be43d68247', summary: '<5-10 word recap>' to continue this agent.)\\nThe agent is working in the background. You will be notified automatically when it completes. You know nothing about its results until that notification arrives \\u2014 do not report, assume, or predict them; continue other work or respond to the user in the meantime.\\nDo not duplicate this agent's work \\u2014 avoid working with the same files or topics it is using.\\noutput_file: /private/tmp/claude-501/-Users-<user>-Documents-Supporting-Document-Tertiary-Infotech-Tertiary-WSQ-Projects-TGS-2026061312-Claude-Certified-Architect-Foundation-courseware-labs-lab-03-multi-agent-research-system/63d1c5cb-28b5-4a08-b909-00d92088190d/tasks/a94d704be43d68247.output\\nDo NOT Read or tail this file via the shell tool \\u2014 it is the full subagent JSONL transcript and reading it will overflow your context. If the user asks for progress, say the agent is still running; you'll get a completion notification.\"}]",
+    "[{\"type\": \"text\", \"text\": \"Async agent launched successfully. (This tool result is internal metadata \\u2014 never quote or paste any part of it, including the agentId below, into a user-facing reply.)\\nagentId: ae3ef0111d06aa5c1 (internal ID - do not mention to user. Use SendMessage with to: 'ae3ef0111d06aa5c1', summary: '<5-10 word recap>' to continue this agent.)\\nThe agent is working in the background. You will be notified automatically when it completes. You know nothing about its results until that notification arrives \\u2014 do not report, assume, or predict them; continue other work or respond to the user in the meantime.\\nDo not duplicate this agent's work \\u2014 avoid working with the same files or topics it is using.\\noutput_file: /private/tmp/claude-501/-Users-<user>-Documents-Supporting-Document-Tertiary-Infotech-Tertiary-WSQ-Projects-TGS-2026061312-Claude-Certified-Architect-Foundation-courseware-labs-lab-03-multi-agent-research-system/63d1c5cb-28b5-4a08-b909-00d92088190d/tasks/ae3ef0111d06aa5c1.output\\nDo NOT Read or tail this file via the shell tool \\u2014 it is the full subagent JSONL transcript and reading it will overflow your context. If the user asks for progress, say the agent is still running; you'll get a completion notification.\"}]"
+  ],
+  "tool_calls": [
+    {
+      "tool": "search_web",
+      "query": "AI adoption in music production and generative music tools 2026",
+      "t": 1793858821.181895
+    },
+    {
+      "tool": "search_web",
+      "query": "AI music copyright disputes licensing royalties labels Suno Udio 2026",
+      "t": 1793858821.573815
+    },
+    {
+      "tool": "search_web",
+      "query": "AI impact on musicians' income and employment streaming 2026",
+      "t": 1793858822.169291
+    },
+    {
+      "tool": "search_web",
+      "query": "AI training data copyright litigation settlements authors publishers 2026",
+      "t": 1793858824.931202
+    },
+    {
+      "tool": "search_web",
+      "query": "authors' income AI impact survey writing and publishing 2026",
+      "t": 1793858825.287571
+    },
+    {
+      "tool": "search_web",
+      "query": "publisher AI licensing deals journalism translation copywriting 2026",
+      "t": 1793858825.864807
+    },
+    {
+      "tool": "search_web",
+      "query": "AI in film and TV production, VFX and generative video 2026",
+      "t": 1793858829.1989918
+    },
+    {
+      "tool": "search_web",
+      "query": "SAG-AFTRA WGA AI union agreement 2026 screenwriters performers",
+      "t": 1793858829.555696
+    },
+    {
+      "tool": "search_web",
+      "query": "studio AI licensing deals and lawsuits Disney Midjourney OpenAI film TV 2026",
+      "t": 1793858830.1834722
+    },
+    {
+      "tool": "search_web",
+      "query": "film TV AI dubbing localisation jobs budgets 2026",
+      "t": 1793858831.560438
+    },
+    {
+      "tool": "search_web",
+      "query": "AI image generators impact on illustrators and graphic designers income commissions 2026",
+      "t": 1793858833.4504828
+    },
+    {
+      "tool": "search_web",
+      "query": "AI art market fine art auction sales 2026",
+      "t": 1793858833.611455
+    },
+    {
+      "tool": "search_web",
+      "query": "visual artists lawsuit training data Stability AI Midjourney Getty ruling 2026",
+      "t": 1793858834.150933
+    },
+    {
+      "tool": "load_document",
+      "doc_id": "WIPO-Creative-Economy-2025.pdf",
+      "t": 1793858836.8987079
+    },
+    {
+      "tool": "load_document",
+      "doc_id": "UNESCO-Culture-Report-2026.pdf",
+      "t": 1793858837.4840488
+    },
+    {
+      "tool": "search_web",
+      "query": "illustrators income AI image generators survey",
+      "t": 1793858837.5820968
+    },
+    {
+      "tool": "search_web",
+      "query": "Getty Images v Stability AI ruling",
+      "t": 1793858837.754667
+    },
+    {
+      "tool": "save_research_state",
+      "t": 1793858857.084507
+    },
+    {
+      "tool": "load_research_state",
+      "t": 1793858858.597248
+    },
+    {
+      "tool": "verify_fact",
+      "claim": "WIPO Creative Economy 2025 page 14 reports 41% generative AI adoption among creative SMEs in 2025, published 2025-11-30",
+      "t": 1793858897.016928
+    },
+    {
+      "tool": "verify_fact",
+      "claim": "UNESCO Culture Report 2026 page 88 reports 55% creative SME adoption in 2025, published 2026-04-01",
+      "t": 1793858897.4422631
+    }
+  ],
+  "init_tools": [
+    "Task",
+    "Bash",
+    "CronCreate",
+    "CronDelete",
+    "CronList",
+    "DesignSync",
+    "Edit",
+    "EnterWorktree",
+    "ExitWorktree",
+    "ListAgents",
+    "ListMcpResourcesTool",
+    "LSP",
+    "Monitor",
+    "NotebookEdit",
+    "PushNotification",
+    "Read",
+    "ReadMcpResourceDirTool",
+    "ReadMcpResourceTool",
+    "RemoteTrigger",
+    "ReportFindings",
+    "ScheduleWakeup",
+    "SendMessage",
+    "Skill",
+    "TaskStop",
+    "ToolSearch",
+    "WebFetch",
+    "WebSearch",
+    "Workflow",
+    "Write",
+    "mcp__claude_ai_Claude_Docs__batch",
+    "mcp__claude_ai_Claude_Docs__create",
+    "mcp__claude_ai_Claude_Docs__delete",
+    "mcp__claude_ai_Claude_Docs__export",
+    "mcp__claude_ai_Claude_Docs__guide",
+    "mcp__claude_ai_Claude_Docs__query",
+    "mcp__claude_ai_Claude_Docs__read",
+    "mcp__claude_ai_Claude_Docs__update",
+    "mcp__claude_ai_Firecrawl__firecrawl_developer_search",
+    "mcp__claude_ai_Firecrawl__firecrawl_find_tools",
+    "mcp__claude_ai_Firecrawl__firecrawl_gov_search",
+    "mcp__claude_ai_Firecrawl__firecrawl_research_inspect_paper",
+    "mcp__claude_ai_Firecrawl__firecrawl_research_read_paper",
+    "mcp__claude_ai_Firecrawl__firecrawl_research_related_papers",
+    "mcp__claude_ai_Firecrawl__firecrawl_research_search_papers",
+    "mcp__claude_ai_Firecrawl__firecrawl_scrape",
+    "mcp__claude_ai_Firecrawl__firecrawl_search",
+    "mcp__claude_ai_Firecrawl__firecrawl_search_feedback",
+    "mcp__claude_ai_Gmail__apply_sensitive_message_label",
+    "mcp__claude_ai_Gmail__apply_sensitive_thread_label",
+    "mcp__claude_ai_Gmail__create_draft",
+    "mcp__claude_ai_Gmail__create_label",
+    "mcp__claude_ai_Gmail__delete_draft",
+    "mcp__claude_ai_Gmail__delete_label",
+    "mcp__claude_ai_Gmail__forward",
+    "mcp__claude_ai_Gmail__get_draft",
+    "mcp__claude_ai_Gmail__get_message",
+    "mcp__claude_ai_Gmail__get_thread",
+    "mcp__claude_ai_Gmail__label_message",
+    "mcp__claude_ai_Gmail__label_thread",
+    "mcp__claude_ai_Gmail__list_drafts",
+    "mcp__claude_ai_Gmail__list_labels",
+    "mcp__claude_ai_Gmail__mark_message_spam",
+    "mcp__claude_ai_Gmail__mark_thread_spam",
+    "mcp__claude_ai_Gmail__reply",
+    "mcp__claude_ai_Gmail__search_threads",
+    "mcp__claude_ai_Gmail__send_message",
+    "mcp__claude_ai_Gmail__trash_message",
+    "mcp__claude_ai_Gmail__trash_thread",
+    "mcp__claude_ai_Gmail__unlabel_message",
+    "mcp__claude_ai_Gmail__unlabel_thread",
+    "mcp__claude_ai_Gmail__unmark_message_spam",
+    "mcp__claude_ai_Gmail__unmark_thread_spam",
+    "mcp__claude_ai_Gmail__untrash_message",
+    "mcp__claude_ai_Gmail__untrash_thread",
+    "mcp__claude_ai_Gmail__update_draft",
+    "mcp__claude_ai_Gmail__update_label",
+    "mcp__claude_ai_Gmail__update_message_labels",
+    "mcp__claude_ai_Google_Calendar__create_event",
+    "mcp__claude_ai_Google_Calendar__delete_event",
+    "mcp__claude_ai_Google_Calendar__get_event",
+    "mcp__claude_ai_Google_Calendar__list_calendars",
+    "mcp__claude_ai_Google_Calendar__list_events",
+    "mcp__claude_ai_Google_Calendar__respond_to_event",
+    "mcp__claude_ai_Google_Calendar__search_events",
+    "mcp__claude_ai_Google_Calendar__suggest_time",
+    "mcp__claude_ai_Google_Calendar__update_event",
+    "mcp__claude_ai_Google_Drive__copy_file",
+    "mcp__claude_ai_Google_Drive__create_file",
+    "mcp__claude_ai_Google_Drive__download_file_content",
+    "mcp__claude_ai_Google_Drive__get_file_metadata",
+    "mcp__claude_ai_Google_Drive__get_file_permissions",
+    "mcp__claude_ai_Google_Drive__list_recent_files",
+    "mcp__claude_ai_Google_Drive__read_file_content",
+    "mcp__claude_ai_Google_Drive__search_files",
+    "mcp__claude_ai_Google_Drive__share_file",
+    "mcp__claude_ai_Google_Drive__trash_file",
+    "mcp__claude_ai_Google_Drive__update_file",
+    "mcp__claude_ai_Microsoft_365__chat_message_search",
+    "mcp__claude_ai_Microsoft_365__find_meeting_availability",
+    "mcp__claude_ai_Microsoft_365__get_granted_scopes",
+    "mcp__claude_ai_Microsoft_365__get_me",
+    "mcp__claude_ai_Microsoft_365__outlook_batch_delete_messages",
+    "mcp__claude_ai_Microsoft_365__outlook_batch_modify_labels",
+    "mcp__claude_ai_Microsoft_365__outlook_calendar_search",
+    "mcp__claude_ai_Microsoft_365__outlook_create_draft",
+    "mcp__claude_ai_Microsoft_365__outlook_create_event",
+    "mcp__claude_ai_Microsoft_365__outlook_create_filter",
+    "mcp__claude_ai_Microsoft_365__outlook_create_label",
+    "mcp__claude_ai_Microsoft_365__outlook_create_reply_all_draft",
+    "mcp__claude_ai_Microsoft_365__outlook_create_reply_draft",
+    "mcp__claude_ai_Microsoft_365__outlook_delete_draft",
+    "mcp__claude_ai_Microsoft_365__outlook_delete_event",
+    "mcp__claude_ai_Microsoft_365__outlook_delete_filter",
+    "mcp__claude_ai_Microsoft_365__outlook_delete_label",
+    "mcp__claude_ai_Microsoft_365__outlook_email_search",
+    "mcp__claude_ai_Microsoft_365__outlook_find_available_time",
+    "mcp__claude_ai_Microsoft_365__outlook_forward_mail",
+    "mcp__claude_ai_Microsoft_365__outlook_modify_labels",
+    "mcp__claude_ai_Microsoft_365__outlook_modify_thread_labels",
+    "mcp__claude_ai_Microsoft_365__outlook_respond_to_event",
+    "mcp__claude_ai_Microsoft_365__outlook_send_draft",
+    "mcp__claude_ai_Microsoft_365__outlook_send_mail",
+    "mcp__claude_ai_Microsoft_365__outlook_set_vacation",
+    "mcp__claude_ai_Microsoft_365__outlook_trash_thread",
+    "mcp__claude_ai_Microsoft_365__outlook_untrash_thread",
+    "mcp__claude_ai_Microsoft_365__outlook_update_draft",
+    "mcp__claude_ai_Microsoft_365__outlook_update_event",
+    "mcp__claude_ai_Microsoft_365__outlook_update_label",
+    "mcp__claude_ai_Microsoft_365__read_resource",
+    "mcp__claude_ai_Microsoft_365__search_people",
+    "mcp__claude_ai_Microsoft_365__sharepoint_copy_item",
+    "mcp__claude_ai_Microsoft_365__sharepoint_create_folder",
+    "mcp__claude_ai_Microsoft_365__sharepoint_delete_item",
+    "mcp__claude_ai_Microsoft_365__sharepoint_folder_search",
+    "mcp__claude_ai_Microsoft_365__sharepoint_move_item",
+    "mcp__claude_ai_Microsoft_365__sharepoint_rename_item",
+    "mcp__claude_ai_Microsoft_365__sharepoint_search",
+    "mcp__claude_ai_Microsoft_365__sharepoint_update_file",
+    "mcp__claude_ai_Microsoft_365__sharepoint_upload_file",
+    "mcp__claude_ai_Microsoft_365__teams_create_chat",
+    "mcp__claude_ai_Microsoft_365__teams_list_channel_messages",
+    "mcp__claude_ai_Microsoft_365__teams_list_channels",
+    "mcp__claude_ai_Microsoft_365__teams_list_chats",
+    "mcp__claude_ai_Microsoft_365__teams_list_teams",
+    "mcp__claude_ai_Microsoft_365__teams_reply_channel_message",
+    "mcp__claude_ai_Microsoft_365__teams_send_channel_message",
+    "mcp__claude_ai_Microsoft_365__teams_send_chat_message",
+    "mcp__claude_ai_Notion__notion-calendar-cancel-events",
+    "mcp__claude_ai_Notion__notion-calendar-create-events",
+    "mcp__claude_ai_Notion__notion-calendar-list-calendar-resources",
+    "mcp__claude_ai_Notion__notion-calendar-list-calendars",
+    "mcp__claude_ai_Notion__notion-calendar-list-contacts",
+    "mcp__claude_ai_Notion__notion-calendar-list-coworkers-events",
+    "mcp__claude_ai_Notion__notion-calendar-list-events",
+    "mcp__claude_ai_Notion__notion-calendar-update-events",
+    "mcp__claude_ai_Notion__notion-complete-mcp-setup",
+    "mcp__claude_ai_Notion__notion-convert-page-to-skill",
+    "mcp__claude_ai_Notion__notion-convert-to-meetings-database",
+    "mcp__claude_ai_Notion__notion-create-attachment",
+    "mcp__claude_ai_Notion__notion-create-comment",
+    "mcp__claude_ai_Notion__notion-create-database",
+    "mcp__claude_ai_Notion__notion-create-file-upload",
+    "mcp__claude_ai_Notion__notion-create-folder",
+    "mcp__claude_ai_Notion__notion-create-meeting-note",
+    "mcp__claude_ai_Notion__notion-create-pages",
+    "mcp__claude_ai_Notion__notion-create-suggested-edit",
+    "mcp__claude_ai_Notion__notion-create-view",
+    "mcp__claude_ai_Notion__notion-delete-comment",
+    "mcp__claude_ai_Notion__notion-delete-databases",
+    "mcp__claude_ai_Notion__notion-delete-pages",
+    "mcp__claude_ai_Notion__notion-download-attachment",
+    "mcp__claude_ai_Notion__notion-download-skill",
+    "mcp__claude_ai_Notion__notion-duplicate-page",
+    "mcp__claude_ai_Notion__notion-fetch",
+    "mcp__claude_ai_Notion__notion-get-async-task",
+    "mcp__claude_ai_Notion__notion-get-comments",
+    "mcp__claude_ai_Notion__notion-get-enabled-skills",
+    "mcp__claude_ai_Notion__notion-get-file-download-urls",
+    "mcp__claude_ai_Notion__notion-get-groups",
+    "mcp__claude_ai_Notion__notion-get-self",
+    "mcp__claude_ai_Notion__notion-get-session-status",
+    "mcp__claude_ai_Notion__notion-get-setup-guide",
+    "mcp__claude_ai_Notion__notion-get-sidebar-tabs",
+    "mcp__claude_ai_Notion__notion-get-suggested-edit",
+    "mcp__claude_ai_Notion__notion-get-teams",
+    "mcp__claude_ai_Notion__notion-get-tool-access",
+    "mcp__claude_ai_Notion__notion-get-users",
+    "mcp__claude_ai_Notion__notion-get-version-changes",
+    "mcp__claude_ai_Notion__notion-link-meeting-note-to-calendar-event",
+    "mcp__claude_ai_Notion__notion-list-favorite-pages",
+    "mcp__claude_ai_Notion__notion-list-page-backlinks",
+    "mcp__claude_ai_Notion__notion-list-private-pages",
+    "mcp__claude_ai_Notion__notion-list-recent-pages",
+    "mcp__claude_ai_Notion__notion-list-session-events",
+    "mcp__claude_ai_Notion__notion-list-shared-pages",
+    "mcp__claude_ai_Notion__notion-memory-search",
+    "mcp__claude_ai_Notion__notion-move-pages",
+    "mcp__claude_ai_Notion__notion-query-data-sources",
+    "mcp__claude_ai_Notion__notion-query-meeting-notes",
+    "mcp__claude_ai_Notion__notion-query-multiple-data-sources",
+    "mcp__claude_ai_Notion__notion-query-sessions",
+    "mcp__claude_ai_Notion__notion-read-session-event",
+    "mcp__claude_ai_Notion__notion-resolve-suggested-edit",
+    "mcp__claude_ai_Notion__notion-restore-pages",
+    "mcp__claude_ai_Notion__notion-restore-version",
+    "mcp__claude_ai_Notion__notion-search",
+    "mcp__claude_ai_Notion__notion-search-agents",
+    "mcp__claude_ai_Notion__notion-search-sessions",
+    "mcp__claude_ai_Notion__notion-send-message-to-session",
+    "mcp__claude_ai_Notion__notion-set-comment-reaction",
+    "mcp__claude_ai_Notion__notion-set-discussion-resolved",
+    "mcp__claude_ai_Notion__notion-spawn-session",
+    "mcp__claude_ai_Notion__notion-stop-session",
+    "mcp__claude_ai_Notion__notion-update-comment",
+    "mcp__claude_ai_Notion__notion-update-data-source",
+    "mcp__claude_ai_Notion__notion-update-folder",
+    "mcp__claude_ai_Notion__notion-update-page",
+    "mcp__claude_ai_Notion__notion-update-page-favorites",
+    "mcp__claude_ai_Notion__notion-update-sidebar-tabs",
+    "mcp__claude_ai_Notion__notion-update-skill-settings",
+    "mcp__claude_ai_Notion__notion-update-view",
+    "mcp__claude_ai_Notion__notion-upload-skill",
+    "mcp__claude_ai_Notion__notion-view-version",
+    "mcp__claude_ai_Notion__notion-wait-session",
+    "mcp__claude_ai_Tavily__tavily_crawl",
+    "mcp__claude_ai_Tavily__tavily_extract",
+    "mcp__claude_ai_Tavily__tavily_map",
+    "mcp__claude_ai_Tavily__tavily_research",
+    "mcp__claude_ai_Tavily__tavily_search",
+    "mcp__playwright__browser_click",
+    "mcp__playwright__browser_close",
+    "mcp__playwright__browser_console_messages",
+    "mcp__playwright__browser_drag",
+    "mcp__playwright__browser_drop",
+    "mcp__playwright__browser_emulate_media",
+    "mcp__playwright__browser_evaluate",
+    "mcp__playwright__browser_file_upload",
+    "mcp__playwright__browser_fill_form",
+    "mcp__playwright__browser_find",
+    "mcp__playwright__browser_handle_dialog",
+    "mcp__playwright__browser_hover",
+    "mcp__playwright__browser_navigate",
+    "mcp__playwright__browser_navigate_back",
+    "mcp__playwright__browser_network_request",
+    "mcp__playwright__browser_network_requests",
+    "mcp__playwright__browser_press_key",
+    "mcp__playwright__browser_resize",
+    "mcp__playwright__browser_run_code_unsafe",
+    "mcp__playwright__browser_select_option",
+    "mcp__playwright__browser_snapshot",
+    "mcp__playwright__browser_tabs",
+    "mcp__playwright__browser_take_screenshot",
+    "mcp__playwright__browser_type",
+    "mcp__playwright__browser_wait_for",
+    "mcp__plugin_small-business_shopify__add-to-collection",
+    "mcp__plugin_small-business_shopify__bulk-update-product-status",
+    "mcp__plugin_small-business_shopify__create-collection",
+    "mcp__plugin_small-business_shopify__create-digital-product",
+    "mcp__plugin_small-business_shopify__create-digital-product-from-link",
+    "mcp__plugin_small-business_shopify__create-discount",
+    "mcp__plugin_small-business_shopify__create-product",
+    "mcp__plugin_small-business_shopify__find-mock-shop-catalogs",
+    "mcp__plugin_small-business_shopify__find-sample-product",
+    "mcp__plugin_small-business_shopify__generate-business-names",
+    "mcp__plugin_small-business_shopify__generate-domain-names",
+    "mcp__plugin_small-business_shopify__get_uploaded_files",
+    "mcp__plugin_small-business_shopify__get-collection",
+    "mcp__plugin_small-business_shopify__get-digital-product",
+    "mcp__plugin_small-business_shopify__get-inventory-levels",
+    "mcp__plugin_small-business_shopify__get-new-store-previews",
+    "mcp__plugin_small-business_shopify__get-order",
+    "mcp__plugin_small-business_shopify__get-product",
+    "mcp__plugin_small-business_shopify__get-shop-info",
+    "mcp__plugin_small-business_shopify__graphql_mutation",
+    "mcp__plugin_small-business_shopify__graphql_query",
+    "mcp__plugin_small-business_shopify__graphql_schema",
+    "mcp__plugin_small-business_shopify__import-mock-shop-catalog",
+    "mcp__plugin_small-business_shopify__list-customers",
+    "mcp__plugin_small-business_shopify__list-orders",
+    "mcp__plugin_small-business_shopify__open-digital-products-install",
+    "mcp__plugin_small-business_shopify__publish-digital-product",
+    "mcp__plugin_small-business_shopify__run-analytics-query",
+    "mcp__plugin_small-business_shopify__search_collections",
+    "mcp__plugin_small-business_shopify__search_docs_chunks",
+    "mcp__plugin_small-business_shopify__search_products",
+    "mcp__plugin_small-business_shopify__search-collective-product-candidates",
+    "mcp__plugin_small-business_shopify__set-inventory",
+    "mcp__plugin_small-business_shopify__show-collective-products",
+    "mcp__plugin_small-business_shopify__switch-shop",
+    "mcp__plugin_small-business_shopify__test-digital-products-connection",
+    "mcp__plugin_small-business_shopify__update-collection",
+    "mcp__plugin_small-business_shopify__update-product",
+    "mcp__plugin_small-business_shopify__upload_file",
+    "mcp__plugin_small-business_shopify__upload-digital-product-file",
+    "mcp__plugin_small-business_shopify__upload-digital-product-media",
+    "mcp__plugin_small-business_shopify__validate_graphql_codeblocks",
+    "mcp__research__load_document",
+    "mcp__research__load_research_state",
+    "mcp__research__save_research_state",
+    "mcp__research__search_web",
+    "mcp__research__verify_fact"
+  ],
+  "result": {
+    "subtype": "success",
+    "num_turns": 1,
+    "total_cost_usd": 1.3895955,
+    "session_id": "63d1c5cb-28b5-4a08-b909-00d92088190d",
+    "duration_ms": 24851
+  },
+  "max_parallel_spawns": 5,
+  "report_markdown": "# AI in creative industries: six claims, six sources, no visual arts findings\n\nThe evidence is thin. This report rests on six claims from six sources. Music, writing, film/TV and cross-sector each have a few claims or one. Visual arts has none, so it appears below as a coverage gap. Two cross-sector figures on creative SME adoption conflict (41% vs 55%), and the conflict is unresolved. Only the two cross-sector claims went through verify_fact. The other four were not checked.\n\n## Established findings\n\nNo finding here is verified beyond a single source. Each rests on one excerpt, and all are medium or low confidence.\n\n- **Music: labels and musicians report AI use.** In the IFPI report, 62% of surveyed record labels used generative tools in production during 2025 [1]. In a Musicians' Union member survey, 48% of members reported using AI tools in composition or mixing [2]. Neither excerpt gives a sample size, region or methodology. The union source does not say which country its members are in, and it measures AI usage, not income or jobs. The IFPI source is about 8 months old as of 2026-11-05. Neither claim was checked with verify_fact.\n- **Writing and publishing: a self-reported income drop.** The Authors Guild survey reports a median income effect of AI on freelance writers of -11% year over year [3]. The figure is self-reported and covers freelance writers only. It does not cover book authors. Only a one-line excerpt came back, with no sample size or method. It was not checked with verify_fact.\n- **Film and TV: shorter previsualisation, as an association.** The Visual Effects Society note reports that previsualisation time fell by roughly 30% on productions using AI storyboarding [4]. Confidence is low. The finding rests on one short excerpt that could not be checked against the full document. It gives no sample size, method or list of productions. It covers previsualisation only. It is an association and is not shown to be causal. It was not checked with verify_fact.\n- **Cross-sector: WIPO's 41% figure is verified.** WIPO reports generative AI adoption among creative SMEs reached 41% in 2025, up from 23% in 2023 (an 18-percentage-point rise) [5]. verify_fact returned verified: true, with recorded value 41%. The excerpt gives no methodology, and only one page was returned. This figure is contested (see below).\n\n## Contested findings\n\nTwo sources give different 2025 adoption figures for creative SMEs. The gap is 14 percentage points. Neither source is declared the winner.\n\n| | WIPO Creative Economy 2025 [5] | UNESCO Culture Report 2026 [6] |\n|---|---|---|\n| Value | 41% in 2025 (up from 23% in 2023), generative AI | 55% in 2025 |\n| File and page | WIPO-Creative-Economy-2025.pdf, p. 14 | UNESCO-Culture-Report-2026.pdf, p. 88 |\n| Published | 2025-11-30 | 2026-04-01 |\n| Method note | Names generative AI specifically. No methodology in the excerpt. Medium confidence. Partial document. | An estimate weighted by firm size. Says \"adoption\" without specifying generative AI, so the technology scope may differ. Medium confidence. Partial document. |\n| Verification | verify_fact: verified true, recorded value 41% | verify_fact: returned false, but the recorded value was the WIPO 41% fact, so the check is inconclusive |\n\nThe check on the UNESCO figure neither confirms nor refutes it. The claim is kept and marked unverified. The 2023 UNESCO figure is unavailable, so the trends cannot be compared.\n\nThe gap might come from the firm-size weighting in the UNESCO figure. It might also come from a different definition of AI (generative AI only vs adoption in general). The excerpts confirm neither cause. The conflict is unresolved.\n\n## Coverage gaps\n\n### Music: two survey claims, most topics empty\n\nAll three queries returned the same two results, so the search corpus looks very small. Nothing came back on:\n- copyright disputes and licensing deals (for example labels versus Suno or Udio), so case status and settlement terms cannot be established;\n- royalties and streaming payouts;\n- musicians' income and employment effects;\n- listener adoption of generative music tools, and the share of AI-generated tracks on streaming platforms.\n\n### Writing and publishing: one claim, five blanks\n\nNothing came back on:\n- training-data copyright litigation and settlements;\n- publisher licensing deals (books and journalism);\n- translation and copywriting market impact;\n- journalism and newsroom impacts.\n\nBook authors' income, as distinct from freelance writers, is not covered.\n\n### Film and TV: one low-confidence claim\n\nNothing was found on:\n- union agreements, including SAG-AFTRA or WGA AI terms (valid empty result);\n- studio licensing deals and lawsuits (Disney, Midjourney, OpenAI or similar);\n- generative video adoption and spend;\n- dubbing and localisation;\n- employment and production budgets;\n- screenwriter and performer impact.\n\nProcess deviation: four search_web queries ran, one more than the three allowed. The fourth returned the same single VFX Society result and added no evidence. search_web accepted only a query parameter, so standard or extended mode could not be used. No tool failures occurred.\n\n### Visual arts: no findings, no statistics\n\nThis is a coverage gap. The section has no findings and no cited statistics, and the gap was not filled from memory. The searches either timed out or returned valid empty results.\n\n- Artists' income and commissions: no data. Both searches timed out, with empty partial_results both times.\n- Style and training-data lawsuits: no data. The first query timed out (2 attempts, empty partial_results). The narrower retry, \"Getty Images v Stability AI ruling\", returned a valid empty result, so no case status or ruling could be confirmed.\n- Art market and auction sales: no data. The query returned a valid empty result, which is not a tool failure.\n- Image generators, graphic design, illustration and photography: no data. The only query on these topics timed out (3 attempts on the narrower retry).\n\nSuggested next steps from the research state:\n- Retry once with a narrower query.\n- Rephrase with named entities, such as Christie's or Sotheby's AI art sales.\n- Ask document-analysis to cover visual arts from the WIPO PDF.\n\n### Cross-sector: two partial PDFs\n\nEach PDF load returned one page excerpt only (WIPO p. 14, UNESCO p. 88). Other pages were not retrievable.\n- No document titles were returned.\n- No WIPO methodology was returned for the 41% figure.\n- It could not be established whether the UNESCO 55% covers generative AI only or AI in general.\n- The UNESCO 2023 figure could not be established.\n- The document excerpts held no sector-level statistics for music, writing and publishing, film and TV, or visual arts.\n\n## Statistics table\n\n| Claim | Value | Source | Published |\n|---|---|---|---|\n| Surveyed record labels using generative tools in production, 2025 (medium confidence; not verified) | 62% | IFPI Global Music Report 2026, https://example.org/ifpi-2026-ai-music [1] | 2026-03-19 |\n| Musicians' Union members reporting AI use in composition or mixing (medium confidence; not verified) | 48% | Musicians' Union member survey, https://example.org/musicians-union-survey [2] | 2025-09-02 |\n| Median reported income effect of AI on freelance writers, self-reported, year over year (medium confidence; not verified) | -11% | Authors Guild AI survey, https://example.org/authors-guild-ai-2026 [3] | 2026-01-14 |\n| Fall in previsualisation time on productions using AI storyboarding, association only (low confidence; not verified) | roughly 30% | Visual Effects Society workforce note, https://example.org/vfx-society-2026 [4] | 2026-02-07 |\n| Generative AI adoption among creative SMEs, 2025; 23% in 2023, +18 points (contested; verified) | 41% | WIPO-Creative-Economy-2025.pdf, p. 14 [5] | 2025-11-30 |\n| Adoption among creative SMEs, 2025, weighted by firm size (contested; verification inconclusive) | 55% | UNESCO-Culture-Report-2026.pdf, p. 88 [6] | 2026-04-01 |\n\n## Open questions\n\n- Does the 41% vs 55% gap come from firm-size weighting or from a different AI definition? This is unresolved.\n- Can visual arts be covered? Retry with a narrower query, or keep reporting it as a coverage gap.\n- Music: what are the facts on copyright disputes, licensing deals, royalties, income and the share of AI-generated tracks?\n- Writing and publishing: what are the facts on litigation, licensing deals, translation, copywriting, journalism and book authors' income?\n- Film and TV: what are the facts on union agreements, studio deals or lawsuits, generative video, dubbing, jobs and budgets? The single finding rests on one excerpt with no sample size or method.\n- Internal PDFs: sector-level statistics, titles and methodology would need full PDFs or specific page ranges.\n- Verification: the verify_fact check on the UNESCO 55% claim returned false against a WIPO record, so it is inconclusive. A new lookup would need the coordinator.\n\n## Research limits\n\n- The search corpus looks very small. Several music queries returned the same two results, and the film/TV queries returned the same single result.\n- Visual arts searches timed out (empty partial_results) or returned valid empty results.\n- Both internal documents loaded only partially, one page excerpt each.\n- The film/TV search ran four queries, one over the three allowed.\n- Most survey-based findings give no sample size, region or methodology.\n- Only two verify_fact checks ran, both on the cross-sector claims. The music, writing and film claims were not checked.\n- The IFPI result is about 8 months old as of 2026-11-05.\n\n## References\n\n1. IFPI Global Music Report 2026. https://example.org/ifpi-2026-ai-music. Published 2026-03-19. Page not stated.\n2. Musicians' Union member survey. https://example.org/musicians-union-survey. Published 2025-09-02. Page not stated.\n3. Authors Guild AI survey. https://example.org/authors-guild-ai-2026. Published 2026-01-14. Page not stated.\n4. Visual Effects Society workforce note. https://example.org/vfx-society-2026. Published 2026-02-07. Page not stated.\n5. WIPO Creative Economy 2025. WIPO-Creative-Economy-2025.pdf, page 14. Published 2025-11-30.\n6. UNESCO Culture Report 2026. UNESCO-Culture-Report-2026.pdf, page 88. Published 2026-04-01.",
+  "report_markdown_chars": 10274,
+  "research_state": {
+    "taxonomy": [
+      "music",
+      "writing_publishing",
+      "film_tv",
+      "visual_arts",
+      "cross_sector"
+    ],
+    "source_map": [
+      {
+        "claim": "62% of surveyed record labels used generative tools in production during 2025",
+        "sector": "music",
+        "source_name": "IFPI Global Music Report 2026",
+        "url": "https://example.org/ifpi-2026-ai-music",
+        "published_date": "2026-03-19"
+      },
+      {
+        "claim": "48% of Musicians' Union members reported using AI tools in composition or mixing",
+        "sector": "music",
+        "source_name": "Musicians' Union member survey",
+        "url": "https://example.org/musicians-union-survey",
+        "published_date": "2025-09-02"
+      },
+      {
+        "claim": "Median reported income effect of AI on freelance writers: -11% year over year",
+        "sector": "writing_publishing",
+        "source_name": "Authors Guild AI survey",
+        "url": "https://example.org/authors-guild-ai-2026",
+        "published_date": "2026-01-14"
+      },
+      {
+        "claim": "Previsualisation time fell by roughly 30% on productions using AI storyboarding",
+        "sector": "film_tv",
+        "source_name": "Visual Effects Society workforce note",
+        "url": "https://example.org/vfx-society-2026",
+        "published_date": "2026-02-07"
+      },
+      {
+        "claim": "Generative AI adoption among creative SMEs reached 41% in 2025, up from 23% in 2023",
+        "sector": "cross_sector",
+        "source_name": "WIPO Creative Economy 2025",
+        "file": "WIPO-Creative-Economy-2025.pdf",
+        "page": "14",
+        "published_date": "2025-11-30"
+      },
+      {
+        "claim": "Adoption among creative SMEs estimated at 55% in 2025, weighted by firm size",
+        "sector": "cross_sector",
+        "source_name": "UNESCO Culture Report 2026",
+        "file": "UNESCO-Culture-Report-2026.pdf",
+        "page": "88",
+        "published_date": "2026-04-01"
+      }
+    ],
+    "rejected_sources": [],
+    "open_questions": [
+      "Conflict, unresolved: creative SME adoption in 2025 is 41% (WIPO p.14, generative AI) vs 55% (UNESCO p.88, estimate weighted by firm size). Does the gap come from weighting or from a different AI definition?",
+      "Visual arts has no findings. Searches on income and lawsuits timed out; art market and Getty v Stability AI queries returned valid empty results. Suggested alternatives: retry with a narrower query, or report as a coverage gap.",
+      "Music: no data on copyright disputes, licensing deals, royalties, income or the share of AI-generated tracks.",
+      "Writing and publishing: no data on litigation, licensing deals, translation, copywriting, journalism or book authors' income.",
+      "Film and TV: no data on union agreements, studio deals or lawsuits, generative video, dubbing, jobs or budgets. The single finding rests on one excerpt with no sample size or method.",
+      "Internal PDFs: each load returned one page excerpt only (WIPO p.14, UNESCO p.88), with no sector-level statistics. Full PDFs or specific page ranges would be needed."
+    ]
+  }
+}

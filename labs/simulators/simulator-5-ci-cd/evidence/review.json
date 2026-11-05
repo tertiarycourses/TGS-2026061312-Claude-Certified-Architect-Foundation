@@ -1,0 +1,176 @@
+{
+  "pr": 418,
+  "model": "claude-opus-5-5",
+  "cli_flags": [
+    "-p",
+    "--output-format json",
+    "--json-schema",
+    "--permission-mode dontAsk",
+    "--allowedTools",
+    "--max-turns"
+  ],
+  "per_file_findings": [
+    {
+      "file": "stock/repository.py",
+      "line": 11,
+      "severity": "critical",
+      "category": "security",
+      "detected_pattern": "f-string SQL",
+      "issue": "sku and warehouse are interpolated directly into the SQL string with no validation or parameterisation, so a value such as ' OR '1'='1 rewrites the query and allows SQL injection through either argument of fetch() (and through fetch_many(), which forwards to it).",
+      "suggested_fix": "cursor.execute('SELECT qty FROM stock WHERE sku = %s AND warehouse = %s', (sku, warehouse))",
+      "confidence": 0.97
+    },
+    {
+      "file": "stock/totals.py",
+      "line": 10,
+      "severity": "high",
+      "category": "bug",
+      "detected_pattern": "range(1, len())",
+      "issue": "The loop starts at index 1, so items[0] is never added. This contradicts the total_qty docstring, \"Sum the qty of every item in the list\", and returns a wrong total for every non-empty list.",
+      "suggested_fix": "for i in range(len(items)): or replace the loop with total = sum(item.qty for item in items)",
+      "confidence": 0.99
+    }
+  ],
+  "integration_findings": [
+    {
+      "file": "stock/jobs.py",
+      "line": 12,
+      "severity": "high",
+      "category": "contract",
+      "detected_pattern": "api.get_stock(sku) called with one argument after PR 418 added a required warehouse parameter at stock/api.py:5",
+      "issue": "PR 418 added a required warehouse parameter with no default to api.get_stock, but jobs.sync still calls api.get_stock(sku). Every call raises TypeError: get_stock() missing 1 required positional argument: 'warehouse'. Any non-empty skus list therefore crashes the nightly sync on its first SKU, and it returns nothing.",
+      "suggested_fix": "Pass the warehouse through from the job: def sync(skus: list[str], warehouse: str) -> list[dict], then stock = api.get_stock(sku, warehouse). No caller of sync exists in this repo, but update the scheduler entry point outside it. If the job must cover every warehouse, loop over the warehouse list here instead.",
+      "confidence": 0.99
+    }
+  ],
+  "rerun_with_prior": {
+    "prior": [
+      {
+        "file": "stock/repository.py",
+        "line": 11,
+        "detected_pattern": "f-string SQL"
+      }
+    ],
+    "findings": [],
+    "repeated_prior": []
+  },
+  "test_proposals": {
+    "proposed": [
+      {
+        "test_name": "tests/test_repository.py::test_fetch_treats_quote_in_sku_as_literal_value",
+        "target": "stock/repository.py::fetch",
+        "scenario": "With a cursor backed by a seeded in-memory table, fetching SKU `x' OR '1'='1` returns qty 0 instead of another SKU's quantity."
+      },
+      {
+        "test_name": "tests/test_repository.py::test_fetch_returns_quantity_for_requested_warehouse",
+        "target": "stock/repository.py::fetch",
+        "scenario": "When a seeded in-memory table holds SKU A1 in both north and south warehouses with different quantities, fetching A1 from south returns only the south quantity."
+      },
+      {
+        "test_name": "tests/test_repository.py::test_fetch_unknown_sku_returns_zero_qty",
+        "target": "stock/repository.py::fetch",
+        "scenario": "When the cursor finds no row, fetch returns the requested SKU and warehouse with qty 0."
+      },
+      {
+        "test_name": "tests/test_totals.py::test_total_of_single_item_is_its_qty",
+        "target": "stock/totals.py::total_qty",
+        "scenario": "A one-item list made from `sample_stock[:1]` totals 3, the quantity of its only item."
+      },
+      {
+        "test_name": "tests/test_totals.py::test_total_of_empty_stock_is_zero",
+        "target": "stock/totals.py::total_qty",
+        "scenario": "The `empty_stock` fixture totals 0 without raising an error."
+      },
+      {
+        "test_name": "tests/test_api.py::test_get_stock_returns_row_for_requested_warehouse",
+        "target": "stock/api.py::get_stock",
+        "scenario": "With a stubbed cursor returning (7,), `get_stock(\"A1\", \"north\")` returns `{\"sku\": \"A1\", \"warehouse\": \"north\", \"qty\": 7}`."
+      },
+      {
+        "test_name": "tests/test_jobs.py::test_sync_returns_one_row_per_sku",
+        "target": "stock/jobs.py::sync",
+        "scenario": "With a stubbed cursor, `sync([\"A1\", \"B2\"])` returns one stock row per SKU in input order instead of raising TypeError from the outdated `api.get_stock(sku)` call."
+      }
+    ],
+    "skipped_as_duplicate": [
+      {
+        "scenario": "total_qty includes the first item when summing a multi-item list, so `sample_stock` totals 12.",
+        "existing_test": "tests/test_totals.py::test_total_counts_all_items"
+      },
+      {
+        "scenario": "fetch returns the database quantity for a known SKU in a warehouse.",
+        "existing_test": "tests/test_repository.py::test_fetch_known_sku"
+      }
+    ]
+  },
+  "api_routing": [
+    {
+      "workload": "pre-merge review",
+      "api": "synchronous Messages API (developer waits; Batches has no latency SLA)"
+    },
+    {
+      "workload": "technical debt report",
+      "api": "Message Batches API (50% cheaper, up to 24 h, correlate by custom_id, resubmit failures by custom_id)"
+    },
+    {
+      "workload": "weekly test-gap audit",
+      "api": "Message Batches API (50% cheaper, up to 24 h, correlate by custom_id, resubmit failures by custom_id)"
+    }
+  ],
+  "gate": {
+    "blocking_findings": 3,
+    "exit_code": 1
+  },
+  "runs": {
+    "per-file:stock/repository.py": {
+      "session_id": "9252ec47-87d4-44bc-9cb7-5787f6e4f90a",
+      "cost_usd": 0.3332084,
+      "num_turns": 3,
+      "elapsed_s": 8.2
+    },
+    "per-file:stock/totals.py": {
+      "session_id": "3bb6d559-8baf-44f8-86ac-09b74df10aa1",
+      "cost_usd": 0.332142,
+      "num_turns": 3,
+      "elapsed_s": 7.7
+    },
+    "per-file:stock/api.py": {
+      "session_id": "37c39c81-5771-4806-aae3-9ba1bdaa9f69",
+      "cost_usd": 0.3331641,
+      "num_turns": 3,
+      "elapsed_s": 8.1
+    },
+    "per-file:stock/jobs.py": {
+      "session_id": "8523fbce-dc3e-4f50-b1e2-8d762287fa2a",
+      "cost_usd": 0.32955520000000005,
+      "num_turns": 3,
+      "elapsed_s": 9.0
+    },
+    "integration": {
+      "session_id": "3cc3447a-a36f-4f18-a846-cc3e77c39054",
+      "cost_usd": 0.4324222,
+      "num_turns": 11,
+      "elapsed_s": 30.3
+    },
+    "rerun-with-prior": {
+      "session_id": "06c2beb1-ec24-4cea-b49b-0ea11d356297",
+      "cost_usd": 0.33224619999999994,
+      "num_turns": 3,
+      "elapsed_s": 7.6
+    },
+    "test-generation": {
+      "session_id": "4bda72a8-7ca2-46f5-b9cf-7a365011aa6d",
+      "cost_usd": 0.4527624,
+      "num_turns": 12,
+      "elapsed_s": 41.3
+    }
+  },
+  "cost_usd": 2.5455,
+  "calls": 7,
+  "approval_gate": {
+    "status": "holds",
+    "hook": "repo/hooks/require-passing-tests.sh",
+    "denied_without_artifact": true,
+    "approved_with_artifact": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "UC-38",
+  "question_n": 38,
+  "timestamp": "93:35",
+  "title": "A shared slash command still needs -p to run in CI",
+  "type": "run",
+  "correct": "D",
+  "expected_outcome": "The team's /pr-check command runs non-interactively only because the job invokes it through claude -p; the command file alone does not change the execution mode.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 11.7,
+      "exit_code": 0,
+      "command": "claude -p /pr-check 418 --model claude-opus-5-5 --output-format json --max-turns 4 --permission-mode dontAsk --allowedTools Read Grep Glob",
+      "subtype": "success",
+      "result": "**Files inspected:** `stock/api.py`, `stock/jobs.py`.\n**Most serious finding:** `stock/jobs.py:12` still calls `api.get_stock(sku)`, but PR 418 made `warehouse` a required parameter (`stock/api.py:5`). Every nightly `sync` with a non-empty SKU list will raise `TypeError`, so the job fails.\n**Fix:** pass a warehouse through `sync` to this call, or give `warehouse` a default if that's safe.\n**Limits:** `prompts/review-criteria.txt` isn't in the repo, so I couldn't apply it. I also couldn't fetch the PR diff because Bash was denied, so this comes from the two files and their PR 418 comments, and I ran nothing.",
+      "session_id": "7533778a-fc71-4269-950d-6356517a6d22",
+      "total_cost_usd": 0.3613342,
+      "num_turns": 5,
+      "structured_output": null,
+      "permission_denials": [
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_01E3wGWVQmM2unpgMAE2gir4",
+          "tool_input": {
+            "command": "ls -la; gh pr diff 418 2>&1 | head -200",
+            "description": "List repo contents and fetch PR 418 diff"
+          }
+        }
+      ],
+      "is_error": false
+    }
+  },
+  "restores": [],
+  "cost_usd": 0.3613,
+  "evaluation": [
+    {
+      "criterion": "the slash command executed under -p and returned",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the envelope carries a session id and exit was clean",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "learner can state that plan mode, a command file or a CLAUDE.md note cannot stop an interactive session from waiting",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    }
+  ]
+}

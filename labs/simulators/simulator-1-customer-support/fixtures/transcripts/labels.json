@@ -1,0 +1,42 @@
+{
+  "T-001": {
+    "disposition": "resolved",
+    "refund_total": 120.0
+  },
+  "T-002": {
+    "disposition": "resolved",
+    "refund_total": 45.0
+  },
+  "T-003": {
+    "disposition": "escalated",
+    "refund_total": 0
+  },
+  "T-004": {
+    "disposition": "escalated",
+    "refund_total": 780.0
+  },
+  "T-005": {
+    "disposition": "escalated",
+    "refund_total": 0
+  },
+  "T-006": {
+    "disposition": "resolved",
+    "refund_total": 0
+  },
+  "T-007": {
+    "disposition": "resolved",
+    "refund_total": 0
+  },
+  "T-008": {
+    "disposition": "resolved",
+    "refund_total": 0
+  },
+  "T-009": {
+    "disposition": "resolved",
+    "refund_total": 0
+  },
+  "T-010": {
+    "disposition": "resolved",
+    "refund_total": 165.0
+  }
+}

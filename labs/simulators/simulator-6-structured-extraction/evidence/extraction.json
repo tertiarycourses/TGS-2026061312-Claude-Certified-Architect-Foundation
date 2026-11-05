@@ -1,0 +1,400 @@
+{
+  "model": "claude-opus-5-5",
+  "mode": "sync",
+  "engine": "Claude Agent SDK, one model turn per call",
+  "tool_choice": {
+    "requested": "auto",
+    "sent": {
+      "type": "auto"
+    },
+    "outcome": "accepted"
+  },
+  "tool": {
+    "name": "extract_invoice",
+    "strict": true
+  },
+  "routing_summary": {
+    "auto_accept": [
+      "DOC-01",
+      "DOC-02",
+      "DOC-04",
+      "DOC-05",
+      "DOC-06"
+    ],
+    "human_review": [
+      "DOC-03",
+      "DOC-07"
+    ]
+  },
+  "results": [
+    {
+      "custom_id": "DOC-01",
+      "document_type": "invoice",
+      "tool": "extract_invoice",
+      "extraction": {
+        "invoice_id": "INV-2041",
+        "vendor": "Harbour Office Supplies Pte Ltd",
+        "issue_date": "2026-10-03",
+        "due_date": "2026-11-02",
+        "currency": "SGD",
+        "currency_detail": null,
+        "document_type": "invoice",
+        "category": "office_supplies",
+        "category_detail": null,
+        "stated_total": 160,
+        "calculated_total": 160.0,
+        "conflict_detected": false,
+        "line_items": [
+          {
+            "description": "1 x A4 paper (10 reams)",
+            "amount": 48
+          },
+          {
+            "description": "1 x Toner cartridge",
+            "amount": 112
+          }
+        ],
+        "missing_information": null,
+        "confidence": {
+          "vendor": 1,
+          "stated_total": 1,
+          "due_date": 1,
+          "line_items": 1
+        }
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "model": "claude-opus-5-5",
+          "stop_reason": "tool_use",
+          "tokens": {
+            "in": 2,
+            "out": 529
+          },
+          "errors": []
+        }
+      ],
+      "final_errors": [],
+      "routing": "auto_accept",
+      "routing_reasons": [],
+      "low_confidence_fields": []
+    },
+    {
+      "custom_id": "DOC-02",
+      "document_type": "invoice",
+      "tool": "extract_invoice",
+      "extraction": {
+        "invoice_id": "INV-2042",
+        "vendor": "Meridian Catering",
+        "issue_date": "2026-10-05",
+        "due_date": null,
+        "currency": "SGD",
+        "currency_detail": null,
+        "document_type": "invoice",
+        "category": "catering",
+        "category_detail": null,
+        "stated_total": 279,
+        "calculated_total": 279.0,
+        "conflict_detected": false,
+        "line_items": [
+          {
+            "description": "lunch boxes 24 pax",
+            "amount": 264
+          },
+          {
+            "description": "delivery",
+            "amount": 15
+          }
+        ],
+        "missing_information": null,
+        "confidence": {
+          "vendor": 1,
+          "stated_total": 1,
+          "due_date": 0.8,
+          "line_items": 1
+        }
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "model": "claude-opus-5-5",
+          "stop_reason": "tool_use",
+          "tokens": {
+            "in": 2,
+            "out": 501
+          },
+          "errors": []
+        }
+      ],
+      "final_errors": [],
+      "routing": "auto_accept",
+      "routing_reasons": [],
+      "low_confidence_fields": []
+    },
+    {
+      "custom_id": "DOC-03",
+      "document_type": "receipt",
+      "tool": "extract_invoice",
+      "extraction": {
+        "invoice_id": "R-7781",
+        "vendor": "Lumen Coworking",
+        "issue_date": "2026-10-07",
+        "due_date": null,
+        "currency": "SGD",
+        "currency_detail": null,
+        "document_type": "receipt",
+        "category": "workspace",
+        "category_detail": null,
+        "stated_total": 38,
+        "calculated_total": 35.0,
+        "conflict_detected": true,
+        "line_items": [
+          {
+            "description": "Day pass",
+            "amount": 35
+          }
+        ],
+        "missing_information": null,
+        "confidence": {
+          "vendor": 0.98,
+          "stated_total": 0.9,
+          "due_date": 0.95,
+          "line_items": 0.95
+        }
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "model": "claude-opus-5-5",
+          "stop_reason": "tool_use",
+          "tokens": {
+            "in": 2,
+            "out": 732
+          },
+          "errors": [
+            {
+              "kind": "semantic",
+              "field": "stated_total",
+              "message": "line items sum to 35.0 but stated_total is 38"
+            }
+          ],
+          "retry_decision": "stop: arithmetic conflict is real data (tax or rounding not itemised); keep conflict_detected and route to a human"
+        }
+      ],
+      "final_errors": [
+        {
+          "kind": "semantic",
+          "field": "stated_total",
+          "message": "line items sum to 35.0 but stated_total is 38"
+        }
+      ],
+      "routing": "human_review",
+      "routing_reasons": [
+        "conflict_detected",
+        "unresolved validation errors"
+      ],
+      "low_confidence_fields": []
+    },
+    {
+      "custom_id": "DOC-04",
+      "document_type": "invoice",
+      "tool": "extract_invoice",
+      "extraction": {
+        "invoice_id": "INV-2043",
+        "vendor": "Northgate Logistics",
+        "issue_date": "2026-10-09",
+        "due_date": "2026-11-08",
+        "currency": "unclear",
+        "currency_detail": null,
+        "document_type": "invoice",
+        "category": "logistics",
+        "category_detail": null,
+        "stated_total": 456,
+        "calculated_total": 456.0,
+        "conflict_detected": false,
+        "line_items": [
+          {
+            "description": "Freight Singapore->Johor",
+            "amount": 420
+          },
+          {
+            "description": "Fuel surcharge",
+            "amount": 36
+          }
+        ],
+        "missing_information": null,
+        "confidence": {
+          "vendor": 1,
+          "stated_total": 1,
+          "due_date": 1,
+          "line_items": 1
+        }
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "model": "claude-opus-5-5",
+          "stop_reason": "tool_use",
+          "tokens": {
+            "in": 2,
+            "out": 513
+          },
+          "errors": []
+        }
+      ],
+      "final_errors": [],
+      "routing": "auto_accept",
+      "routing_reasons": [],
+      "low_confidence_fields": []
+    },
+    {
+      "custom_id": "DOC-05",
+      "document_type": "credit_note",
+      "tool": "extract_invoice",
+      "extraction": {
+        "invoice_id": "CN-118",
+        "vendor": "Harbour Office Supplies",
+        "issue_date": "2026-10-10",
+        "due_date": null,
+        "currency": "unclear",
+        "currency_detail": null,
+        "document_type": "credit_note",
+        "category": "office_supplies",
+        "category_detail": null,
+        "stated_total": -78,
+        "calculated_total": -78.0,
+        "conflict_detected": false,
+        "line_items": [
+          {
+            "description": "Returned: 2 x Desk lamp",
+            "amount": -78
+          }
+        ],
+        "missing_information": null,
+        "confidence": {
+          "vendor": 1,
+          "stated_total": 1,
+          "due_date": 1,
+          "line_items": 1
+        }
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "model": "claude-opus-5-5",
+          "stop_reason": "tool_use",
+          "tokens": {
+            "in": 2,
+            "out": 493
+          },
+          "errors": []
+        }
+      ],
+      "final_errors": [],
+      "routing": "auto_accept",
+      "routing_reasons": [],
+      "low_confidence_fields": []
+    },
+    {
+      "custom_id": "DOC-06",
+      "document_type": "invoice",
+      "tool": "extract_invoice",
+      "extraction": {
+        "invoice_id": "INV-2044",
+        "vendor": "Pacific Print Works",
+        "issue_date": "2026-10-12",
+        "due_date": "2026-11-11",
+        "currency": "other",
+        "currency_detail": "THB",
+        "document_type": "invoice",
+        "category": "printing",
+        "category_detail": null,
+        "stated_total": 2400,
+        "calculated_total": 2400.0,
+        "conflict_detected": false,
+        "line_items": [
+          {
+            "description": "Banners 3 pcs",
+            "amount": 2400
+          }
+        ],
+        "missing_information": null,
+        "confidence": {
+          "vendor": 0.98,
+          "stated_total": 0.99,
+          "due_date": 0.97,
+          "line_items": 0.97
+        }
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "model": "claude-opus-5-5",
+          "stop_reason": "tool_use",
+          "tokens": {
+            "in": 2,
+            "out": 488
+          },
+          "errors": []
+        }
+      ],
+      "final_errors": [],
+      "routing": "auto_accept",
+      "routing_reasons": [],
+      "low_confidence_fields": []
+    },
+    {
+      "custom_id": "DOC-07",
+      "document_type": "invoice",
+      "tool": "extract_invoice",
+      "extraction": {
+        "invoice_id": "INV-2045",
+        "vendor": "Kaya Software Pte Ltd",
+        "issue_date": "2026-10-14",
+        "due_date": "2026-11-13",
+        "currency": "SGD",
+        "currency_detail": null,
+        "document_type": "invoice",
+        "category": "software",
+        "category_detail": null,
+        "stated_total": 1200,
+        "calculated_total": 1200.0,
+        "conflict_detected": false,
+        "line_items": [
+          {
+            "description": "Annual licence (see attached schedule A for line detail)",
+            "amount": 1200
+          }
+        ],
+        "missing_information": "Line detail in attached schedule A; the attachment is not included in the document, so the single line amount is taken from the stated total",
+        "confidence": {
+          "vendor": 1,
+          "stated_total": 1,
+          "due_date": 1,
+          "line_items": 0.4
+        }
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "model": "claude-opus-5-5",
+          "stop_reason": "tool_use",
+          "tokens": {
+            "in": 2,
+            "out": 538
+          },
+          "errors": []
+        }
+      ],
+      "final_errors": [],
+      "routing": "human_review",
+      "routing_reasons": [
+        "low confidence: line_items",
+        "missing information: Line detail in attached schedule A; the attachment is not included in the document, so the single line amount is taken from the stated total"
+      ],
+      "low_confidence_fields": [
+        "line_items"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "policy": {
+    "refund_auto_limit": 500,
+    "return_window_days": 30,
+    "price_match": "own-site price drops within 14 days only; competitor price matching is not covered"
+  },
+  "customers": {
+    "C-1001": {
+      "customer_id": "C-1001",
+      "name": "Mei Lin Tan",
+      "email": "meilin@example.com",
+      "tier": "standard",
+      "created_at": 1767225600,
+      "status": 1
+    },
+    "C-1002": {
+      "customer_id": "C-1002",
+      "name": "Arjun Rao",
+      "email": "arjun@example.com",
+      "tier": "plus",
+      "created_at": "2023-11-02T08:15:00Z",
+      "status": "active"
+    },
+    "C-1003": {
+      "customer_id": "C-1003",
+      "name": "Sofia Alvarez",
+      "email": "sofia@example.com",
+      "tier": "standard",
+      "created_at": 1782864000,
+      "status": 2
+    },
+    "C-1004": {
+      "customer_id": "C-1004",
+      "name": "Sofia Alvarez",
+      "email": "sofia.alvarez@example.org",
+      "tier": "standard",
+      "created_at": 1785542400,
+      "status": 1
+    }
+  },
+  "orders": {
+    "ORD-5501": {
+      "order_id": "ORD-5501",
+      "customer_id": "C-1001",
+      "amount": 120.0,
+      "item": "Ceramic table lamp",
+      "placed_at": 1790812800,
+      "status": 3,
+      "damage_photo": true,
+      "charges": 1,
+      "shipped": true,
+      "eta": "2026-10-06"
+    },
+    "ORD-5502": {
+      "order_id": "ORD-5502",
+      "customer_id": "C-1002",
+      "amount": 780.0,
+      "item": "Standing desk",
+      "placed_at": "2026-10-20T10:00:00Z",
+      "status": "delivered",
+      "damage_photo": true,
+      "charges": 1,
+      "shipped": true,
+      "eta": "2026-10-25"
+    },
+    "ORD-5503": {
+      "order_id": "ORD-5503",
+      "customer_id": "C-1001",
+      "amount": 45.0,
+      "item": "Desk organiser",
+      "placed_at": 1792800000,
+      "status": "delivered",
+      "damage_photo": false,
+      "charges": 2,
+      "shipped": true,
+      "eta": "2026-10-28"
+    },
+    "ORD-5504": {
+      "order_id": "ORD-5504",
+      "customer_id": "C-1001",
+      "amount": 60.0,
+      "item": "Monitor arm",
+      "placed_at": 1793318400,
+      "status": 2,
+      "damage_photo": false,
+      "charges": 1,
+      "shipped": true,
+      "eta": "2026-11-09"
+    },
+    "ORD-5505": {
+      "order_id": "ORD-5505",
+      "customer_id": "C-1003",
+      "amount": 95.0,
+      "item": "Office chair mat",
+      "placed_at": 1792800000,
+      "status": "delivered",
+      "damage_photo": false,
+      "charges": 1,
+      "shipped": true,
+      "eta": "2026-10-29",
+      "return_window_open": true
+    },
+    "ORD-5506": {
+      "order_id": "ORD-5506",
+      "customer_id": "C-1002",
+      "amount": 30.0,
+      "item": "Cable tray",
+      "placed_at": 1793491200,
+      "status": 1,
+      "damage_photo": false,
+      "charges": 1,
+      "shipped": false,
+      "eta": "2026-11-12"
+    },
+    "ORD-5507": {
+      "order_id": "ORD-5507",
+      "customer_id": "C-1002",
+      "amount": 210.0,
+      "item": "Ergonomic keyboard",
+      "placed_at": 1792800000,
+      "status": "delivered",
+      "damage_photo": false,
+      "charges": 1,
+      "shipped": true,
+      "eta": "2026-10-28",
+      "competitor_price": 170.0
+    },
+    "ORD-5508": {
+      "order_id": "ORD-5508",
+      "customer_id": "C-1003",
+      "amount": 140.0,
+      "item": "Bookshelf",
+      "placed_at": 1785888000,
+      "status": "delivered",
+      "damage_photo": false,
+      "charges": 1,
+      "shipped": true,
+      "eta": "2026-08-10",
+      "return_window_open": false
+    },
+    "ORD-5509": {
+      "order_id": "ORD-5509",
+      "customer_id": "C-1002",
+      "amount": 138.0,
+      "item": "Desk set (3 items)",
+      "placed_at": "2026-10-26T09:30:00Z",
+      "status": "delivered",
+      "damage_photo": true,
+      "charges": 1,
+      "shipped": true,
+      "eta": "2026-10-30",
+      "shipping_fee": 8.0,
+      "line_items": [
+        {
+          "sku": "LAMP-S",
+          "name": "Small desk lamp",
+          "price": 55.0
+        },
+        {
+          "sku": "TRAY",
+          "name": "Pen tray",
+          "price": 25.0
+        },
+        {
+          "sku": "MAT",
+          "name": "Desk mat",
+          "price": 50.0
+        }
+      ]
+    }
+  },
+  "status_codes": {
+    "1": "pending",
+    "2": "shipped",
+    "3": "delivered"
+  },
+  "flaky_orders": {
+    "ORD-5504": 1
+  }
+}

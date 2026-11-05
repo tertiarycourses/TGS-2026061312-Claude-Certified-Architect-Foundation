@@ -1,0 +1,28 @@
+{
+  "id": "UC-06",
+  "title": "Separate generation from review",
+  "source": {
+    "practice_test_question": 6,
+    "timestamp": "12:27",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "run",
+  "mode": "review",
+  "prompt": "Research this topic and deliver a cited report: Impact of AI on creative industries. Before the report, run the review chain described in your instructions.",
+  "config_change": "Add a `reviewer` AgentDefinition (tools: none) and change the coordinator prompt: after synthesis, spawn one reviewer per section in ONE response with that section's claim-source bundle, then spawn one integration reviewer over all review outputs, then report.",
+  "cost_usd": 1.7181997999999994,
+  "rubric": [
+    {
+      "check": "reviewer agents spawned >=2 in one response",
+      "passed": true
+    },
+    {
+      "check": "an integration reviewer runs after the section reviewers",
+      "passed": true
+    },
+    {
+      "check": "report still includes the coverage gap and contested findings",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "UC-D1",
+  "title": "Edit fallback when the anchor is not unique",
+  "source": {
+    "task_statement": "2.5 Select and apply built-in tools",
+    "scenario": "Developer Productivity with Claude"
+  },
+  "situation": "`return total` appears twice in src/billing/invoice.py. The developer asks for a change at only the second occurrence.",
+  "question": "What should the agent do when Edit rejects a non-unique anchor?",
+  "correct": "Read the file, then Write it back whole (or widen the anchor until it is unique); never guess which occurrence.",
+  "why": "Edit matches unique text; on ambiguity the reliable fallback is Read plus Write.",
+  "task": {
+    "type": "run",
+    "prompt_template": "In src/billing/invoice.py, make calculate_total return the total quantized to Decimal('0.01') with ROUND_HALF_UP. Try Edit with the smallest anchor first; if it fails because the anchor is not unique, fall back to Read + Write. Then run python3 -m pytest -q.",
+    "fresh_workdir": true
+  },
+  "expected_outcome": "Edit attempted; either a non-unique failure followed by Write, or a widened unique Edit; pytest passes.",
+  "rubric": [
+    "Edit attempted on invoice.py",
+    "after an Edit failure a Write (or a second unique Edit) lands the change",
+    "pytest exits 0 and quantize present"
+  ]
+}

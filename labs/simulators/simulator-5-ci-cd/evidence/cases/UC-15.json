@@ -1,0 +1,92 @@
+{
+  "id": "UC-15",
+  "question_n": 15,
+  "timestamp": "35:10",
+  "title": "Separate review and test-generation steps with role-specific tools and a forced output contract",
+  "type": "run",
+  "correct": "D",
+  "expected_outcome": "The review step gets read-only tools and the finding schema; the test step gets its own schema. Each returns structured output, never prose. In the Messages API the same guarantee is tool_choice {type: tool, name: report_findings}.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 14.5,
+      "exit_code": 0,
+      "command": "claude -p REVIEW STEP ONLY. Read stock/totals.py. REVIEW CRITERIA (explicit, \u2026 --model claude-opus-5-5 --output-format json --max-turns 4 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"title\": \"CI review findings\", \"type\": \"object\", \"required\": [\"pas\u2026",
+      "subtype": "success",
+      "result": "{\"pass\":\"per-file\",\"findings\":[{\"file\":\"stock/totals.py\",\"line\":10,\"severity\":\"high\",\"category\":\"bug\",\"detected_pattern\":\"for i in range(1, len(items)) starting the summation loop at index 1 (commented 'PR 418 change')\",\"issue\":\"total_qty skips the first item because the loop starts at index 1, which contradicts its name, its docstring ('Sum the qty of every item in the list') and the adjacent test test_total_counts_all_items. Every non-empty list is under-counted by items[0].qty: sample_stock (qty 3, 0, 9) returns 9 instead of the 12 the test expects, and a single-item list always returns 0.\",\"suggested_fix\":\"Iterate over every item, e.g. `for item in items: total += item.qty`, or `range(len(items))` to keep the indexed form.\",\"confidence\":0.99}]}",
+      "session_id": "6d88ff25-1bd1-47e6-919e-34a7d0be26b6",
+      "total_cost_usd": 0.389178,
+      "num_turns": 9,
+      "structured_output": {
+        "pass": "per-file",
+        "findings": [
+          {
+            "file": "stock/totals.py",
+            "line": 10,
+            "severity": "high",
+            "category": "bug",
+            "detected_pattern": "for i in range(1, len(items)) starting the summation loop at index 1 (commented 'PR 418 change')",
+            "issue": "total_qty skips the first item because the loop starts at index 1, which contradicts its name, its docstring ('Sum the qty of every item in the list') and the adjacent test test_total_counts_all_items. Every non-empty list is under-counted by items[0].qty: sample_stock (qty 3, 0, 9) returns 9 instead of the 12 the test expects, and a single-item list always returns 0.",
+            "suggested_fix": "Iterate over every item, e.g. `for item in items: total += item.qty`, or `range(len(items))` to keep the indexed form.",
+            "confidence": 0.99
+          }
+        ]
+      },
+      "permission_denials": [],
+      "is_error": false
+    },
+    "t2": {
+      "kind": "claude",
+      "elapsed_s": 15.6,
+      "exit_code": 0,
+      "command": "claude -p TEST GENERATION STEP ONLY. Read tests/ and stock/totals.py. Propose\u2026 --model claude-opus-5-5 --output-format json --max-turns 4 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pro\u2026",
+      "subtype": "success",
+      "result": "{\"proposed\":[{\"test_name\":\"test_total_single_item_returns_its_qty\",\"target\":\"stock.totals.total_qty (tests/test_totals.py)\",\"scenario\":\"A stock list holding one item, e.g. [SimpleNamespace(sku=\\\"A1\\\", qty=4)], should total 4. As written, the PR 418 loop starts at index 1, skips the only item and returns 0, so a SKU's whole quantity disappears from the total.\"},{\"test_name\":\"test_total_empty_stock_is_zero\",\"target\":\"stock.totals.total_qty (tests/test_totals.py)\",\"scenario\":\"Using the empty_stock fixture, total_qty should return 0 and not raise. This should pass today, and it guards the empty-warehouse case when the loop is fixed, for example against a rewrite that indexes items[0].\"}],\"skipped_as_duplicate\":[{\"scenario\":\"Summing several items across sample_stock, including the first item (3 + 0 + 9 = 12)\",\"existing_test\":\"tests/test_totals.py::test_total_counts_all_items\"}]}",
+      "session_id": "33833f00-77e3-491a-950b-aa2264f0c213",
+      "total_cost_usd": 0.38328660000000003,
+      "num_turns": 7,
+      "structured_output": {
+        "proposed": [
+          {
+            "test_name": "test_total_single_item_returns_its_qty",
+            "target": "stock.totals.total_qty (tests/test_totals.py)",
+            "scenario": "A stock list holding one item, e.g. [SimpleNamespace(sku=\"A1\", qty=4)], should total 4. As written, the PR 418 loop starts at index 1, skips the only item and returns 0, so a SKU's whole quantity disappears from the total."
+          },
+          {
+            "test_name": "test_total_empty_stock_is_zero",
+            "target": "stock.totals.total_qty (tests/test_totals.py)",
+            "scenario": "Using the empty_stock fixture, total_qty should return 0 and not raise. This should pass today, and it guards the empty-warehouse case when the loop is fixed, for example against a rewrite that indexes items[0]."
+          }
+        ],
+        "skipped_as_duplicate": [
+          {
+            "scenario": "Summing several items across sample_stock, including the first item (3 + 0 + 9 = 12)",
+            "existing_test": "tests/test_totals.py::test_total_counts_all_items"
+          }
+        ]
+      },
+      "permission_denials": [],
+      "is_error": false
+    }
+  },
+  "restores": [],
+  "cost_usd": 0.7725,
+  "evaluation": [
+    {
+      "criterion": "the review step returned a schema-valid finding object, not prose",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the review step reported the loop bug and nothing about tests",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the test step returned its own contract with the duplicate skipped",
+      "pass": true,
+      "note": ""
+    }
+  ]
+}

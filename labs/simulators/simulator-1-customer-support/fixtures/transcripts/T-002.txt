@@ -1,0 +1,5 @@
+Customer: I was charged twice for the desk organiser, ORD-5503.
+Agent: Let me check. I see two charges of $45.
+Customer: So you will refund one?
+Agent: Yes, one charge of $45 is refunded. Anything else?
+Customer: No.

@@ -1,0 +1,22 @@
+{
+  "case_id": "CS-06",
+  "title": "Transient backend timeout",
+  "exam_task": "2.2 structured errors, retryable vs not",
+  "customer": {
+    "email": "meilin@example.com"
+  },
+  "message": "Where is ORD-5504? It has been a week.",
+  "expected": {
+    "disposition": "resolved",
+    "must_call": [
+      "get_customer",
+      "lookup_order"
+    ],
+    "retry_expected": "lookup_order",
+    "min_lookup_calls": 2
+  },
+  "rubric": {
+    "retried": "lookup_order was called again after the transient error",
+    "no_fabrication": "reply reports the real shipped status and eta, not a guess"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "UC-36",
+  "question_number": 36,
+  "timestamp": "88:26",
+  "mode": "discussion",
+  "title": "Partition the investigation: one document group or concern per subagent",
+  "situation": "During evaluation, the team asks Claude Code to use subagents to investigate extraction errors across 600 vendor invoices, intake forms, and contracts. The current approach gives each subagent the same instruction, \"find causes of schema validation failures across all documents\", producing repeated observations and a large synthesis context.",
+  "exam_question": "What change best partitions the investigation while preserving synthesis quality?",
+  "correct_option": "A",
+  "correct_option_text": "Assign each subagent a distinct document group or extraction concern, provide needed context, and require concise findings for synthesis.",
+  "why": "Subagents have isolated context, but their final reports still land in the caller's context. Non-overlapping scope (by document family, schema section or failure mode) removes repeated observations; a compact deliverable format keeps the synthesis step small. Giving every subagent the full corpus or overlapping subsets produces redundancy, not coverage.",
+  "task": "Discussion plus a partition plan. The case run groups the seven fixture documents into non-overlapping assignments (by document type and by failure concern) and renders one delegation prompt per subagent from the template. Paste them into Claude Code as parallel Agent calls if you want to see the synthesis.",
+  "prompt_template": "You are subagent {{agent_name}}. Scope: ONLY documents {{document_ids}} ({{group}}). Concern: {{concern}}. Context you need: the extract_invoice schema is strict, absent fields must be null, calculated_total is the sum of line_items. Deliverable: at most 8 lines, one finding per line as `doc_id | field | cause | fix`. Do not inspect documents outside your scope.",
+  "command": "python3 -B extract.py --case UC-36",
+  "expected_outcome": "evidence/cases/UC-36.json holds a partition where every document appears in exactly one group, one rendered prompt per subagent with a line-capped deliverable, and the expected answer.",
+  "rubric": [
+    "Learner's partition has no overlapping document ids and names the concern per group.",
+    "Learner caps the deliverable and explains why isolated context does not make returned output free.",
+    "Learner states what context each subagent must be given because it inherits none."
+  ]
+}

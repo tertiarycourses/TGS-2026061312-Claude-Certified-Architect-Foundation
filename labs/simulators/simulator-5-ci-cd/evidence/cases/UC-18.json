@@ -1,0 +1,45 @@
+{
+  "id": "UC-18",
+  "question_n": 18,
+  "timestamp": "42:58",
+  "title": "Print mode is what lets a CI job finish",
+  "type": "run",
+  "correct": "A",
+  "expected_outcome": "claude -p processes the prompt, writes one JSON envelope to stdout and exits well inside the job timeout; no terminal is ever waited on.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 6.7,
+      "exit_code": 0,
+      "command": "claude -p Nightly support triage check: read only stock/jobs.py and answer in\u2026 --model claude-opus-5-5 --output-format json --max-turns 5 --permission-mode dontAsk --allowedTools Read Grep Glob",
+      "subtype": "success",
+      "result": "Yes, potentially: `sync` calls `api.get_stock(sku)` with no `try/except` (`stock/jobs.py:12`), so any exception for an unknown SKU would propagate and abort the whole job.\nWhether it actually raises depends on `api.get_stock`, which I didn't read per your scope, though the inline comment says this caller wasn't updated in PR 418, so check that.",
+      "session_id": "fba492df-bbb8-4e9e-a1f0-02af80c2f55b",
+      "total_cost_usd": 0.3439632,
+      "num_turns": 2,
+      "structured_output": null,
+      "permission_denials": [],
+      "is_error": false
+    }
+  },
+  "restores": [],
+  "cost_usd": 0.344,
+  "evaluation": [
+    {
+      "criterion": "the job exited on its own with a JSON envelope (session_id present)",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "it returned inside a CI-friendly time budget",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "learner can explain why timeouts, retries or 'please exit' instructions do not change the execution mode",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+[
+ {
+  "n": 1,
+  "name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "tagline": "Your agent has refund powers. Prove it knows when not to use them.",
+  "surface": "Claude Agent SDK",
+  "flow": [
+   "Customer message",
+   "Agent SDK loop",
+   "Hooks: gate, limit, validate",
+   "Mock MCP backend",
+   "Evaluator + judge"
+  ],
+  "domains": "Agentic Architecture, Tool Design & MCP, Context & Reliability",
+  "color": "#C9603A",
+  "claude_cwd": ".",
+  "open_first": [
+   "fixtures/backend.json",
+   "prompts/system.md"
+  ],
+  "scenario": "You are building a customer support resolution agent using the Claude Agent SDK. The agent handles high-ambiguity requests like returns, billing disputes, and account issues. It has access to your backend systems through custom Model Context Protocol (MCP) tools (get_customer, lookup_order, process_refund, escalate_to_human). Your target is 80%+ first-contact resolution while knowing when to escalate."
+ },
+ {
+  "n": 2,
+  "name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "tagline": "Claude Code, configured so the whole team gets the same teammate.",
+  "surface": "Claude Agent SDK, Claude Code engine",
+  "flow": [
+   "CLAUDE.md + rules",
+   "/review + skill",
+   "Plan or direct",
+   "Resume + fork"
+  ],
+  "domains": "Claude Code Configuration, Context & Reliability",
+  "color": "#2F6F6D",
+  "claude_cwd": "workspace",
+  "open_first": [
+   "tasks.json",
+   "workspace/CLAUDE.md"
+  ],
+  "scenario": "You are using Claude Code to accelerate software development. Your team uses it for code generation, refactoring, debugging, and documentation. You need to integrate it into your development workflow with custom slash commands, CLAUDE.md configurations, and understand when to use plan mode vs direct execution."
+ },
+ {
+  "n": 3,
+  "name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "tagline": "One coordinator, four specialists, zero invented citations.",
+  "surface": "Claude Agent SDK",
+  "flow": [
+   "Coordinator",
+   "Task: 4 subagents",
+   "Structured errors",
+   "Cited report"
+  ],
+  "domains": "Agentic Architecture, Tool Design & MCP, Context & Reliability",
+  "color": "#6B5B95",
+  "claude_cwd": ".",
+  "open_first": [
+   "evidence/report.md"
+  ],
+  "scenario": "You are building a multi-agent research system using the Claude Agent SDK. A coordinator agent delegates to specialized subagents: one searches the web, one analyzes documents, one synthesizes findings, and one generates reports. The system researches topics and produces comprehensive, cited reports."
+ },
+ {
+  "n": 4,
+  "name": "Developer Productivity with Claude",
+  "dir": "simulator-4-developer-productivity",
+  "tagline": "Find your way around a legacy repo without drowning in it.",
+  "surface": "Claude Agent SDK",
+  "flow": [
+   "MCP catalogue",
+   "Grep, then Read",
+   "Explore + scratchpad",
+   "Manifest recovery"
+  ],
+  "domains": "Tool Design & MCP, Claude Code Configuration, Agentic Architecture",
+  "color": "#A06A12",
+  "claude_cwd": "sample_repo",
+  "open_first": [
+   "mcp_resources.json"
+  ],
+  "scenario": "You are building developer productivity tools using the Claude Agent SDK. The agent helps engineers explore unfamiliar codebases, understand legacy systems, generate boilerplate code, and automate repetitive tasks. It uses the built-in tools (Read, Write, Bash, Grep, Glob) and integrates with Model Context Protocol (MCP) servers."
+ },
+ {
+  "n": 5,
+  "name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "tagline": "A reviewer in the pipeline that developers don't learn to ignore.",
+  "surface": "Claude Agent SDK, Claude Code engine",
+  "flow": [
+   "claude -p + schema",
+   "Per-file + integration",
+   "Subagents + synthesis",
+   "Hook gate on approval"
+  ],
+  "domains": "Claude Code Configuration, Prompt Engineering",
+  "color": "#A84F2E",
+  "claude_cwd": "repo",
+  "open_first": [
+   "finding.schema.json",
+   "CLAUDE.md"
+  ],
+  "scenario": "You are integrating Claude Code into your Continuous Integration/Continuous Deployment (CI/CD) pipeline. The system runs automated code reviews, generates test cases, and provides feedback on pull requests. You need to design prompts that provide actionable feedback and minimize false positives."
+ },
+ {
+  "n": 6,
+  "name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "tagline": "Messy documents in, trustworthy records out.",
+  "surface": "Claude Agent SDK",
+  "flow": [
+   "Strict extraction tool",
+   "Validate + retry",
+   "Confidence routing",
+   "Message Batches"
+  ],
+  "domains": "Prompt Engineering, Context & Reliability",
+  "color": "#A93F32",
+  "claude_cwd": ".",
+  "open_first": [
+   "fixtures/invoices.txt",
+   "invoice.schema.json"
+  ],
+  "scenario": "You are building a structured data extraction system using Claude. The system extracts information from unstructured documents, validates the output using JavaScript Object Notation (JSON) schemas, and maintains high accuracy. It must handle edge cases gracefully and integrate with downstream systems."
+ }
+]

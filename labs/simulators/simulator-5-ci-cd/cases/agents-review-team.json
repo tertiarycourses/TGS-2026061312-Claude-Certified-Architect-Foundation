@@ -1,0 +1,5 @@
+{
+  "security-reviewer": {"description": "Security review of changed Python files", "prompt": "Review the files you are given for security flaws only (SQL/shell injection, unsafe deserialisation, authz gaps). Return a JSON array of findings; each has file, line, severity, category, detected_pattern, issue, suggested_fix, confidence.", "tools": ["Read", "Grep"], "model": "sonnet"},
+  "test-coverage-reviewer": {"description": "Test coverage review of changed Python files", "prompt": "Read tests/ and the changed files. Return a JSON array naming, per changed function, the existing test ids that cover it and the failing or missing test names; same finding fields as the security reviewer.", "tools": ["Read", "Grep", "Glob"], "model": "sonnet"},
+  "review-synthesis": {"description": "Writes the final PR review comment from the findings it is given", "prompt": "You write the final pull-request comment in markdown from the findings supplied in your prompt. You have no other context. Keep every file path, line number, test name and evidence snippet you are given.", "tools": [], "model": "sonnet"}
+}

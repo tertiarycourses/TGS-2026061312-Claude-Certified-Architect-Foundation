@@ -1,0 +1,62 @@
+{
+  "id": "UC-37",
+  "question_n": 37,
+  "timestamp": "91:14",
+  "scenario": "Code Generation with Claude Code",
+  "title": "/find-callers with Grep scoped to TypeScript",
+  "situation": "A payments platform's developer productivity team is adding a /find-callers command that should locate every reference to a renamed helper function, limit the search to TypeScript source files, and return enough context for a developer to jump directly to each match.",
+  "question": "Which Claude Code built-in tool configuration should the command use?",
+  "options": {
+    "A": "Use Glob with pattern **/<helper-name>.ts, sort the returned paths, and treat matching file names as caller locations.",
+    "B": "Use Glob with pattern **/*.ts, then Read each file and load all contents into the conversation for scanning.",
+    "C": "Use Bash to run grep -r <helper-name> --include=*.ts, then parse stdout as caller locations.",
+    "D": "Use Grep with the helper name as pattern, scope with glob **/*.ts, and set output_mode: content for matching lines."
+  },
+  "correct": "D",
+  "why": "Grep is the Claude Code built-in tool intended for searching file contents such as function names, error messages, and import statements. References to a renamed helper function are content inside source files, so the search should be expressed as a Grep pattern rather than a file-name lookup. Glob is the right tool when the goal is to find files by path or file-name pattern, for example **/*.test.ts. For developer navigation, Grep with output_mode: content returns matching lines with file and line number, and the tool can scope content searches with a glob filter such as **/*.ts. Avoid confusing the built-in Grep tool with invoking the shell command grep through Bash; the built-in tool has documented behavior and configuration surfaces in Claude Code, while shell commands are handled separately through Bash permissions. (Docs: Claude Code tools reference, permissions.)",
+  "type": "run",
+  "concrete_task": "claude -p \"/find-callers formatDate\" --allowedTools Grep (command in workspace/.claude/commands/find-callers.md)",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Grep"
+      ],
+      "max_turns": 3,
+      "prompt": "/find-callers formatDate"
+    }
+  ],
+  "expected_outcome": "The command returns path:line locations for formatDate inside .ts files only, using the built-in Grep tool with a glob filter and output_mode content.",
+  "rubric": [
+    {
+      "criterion": "TypeScript callers come back as path:line",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "pattern": "src/services/invoice\\.ts:\\d+"
+      }
+    },
+    {
+      "criterion": "both .ts callers are listed",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "pattern": "report\\.ts:\\d+"
+      }
+    },
+    {
+      "criterion": "JavaScript callers are excluded by the glob",
+      "check": {
+        "type": "not_regex",
+        "task": "t1",
+        "pattern": "orders\\.js:\\d+"
+      }
+    }
+  ]
+}

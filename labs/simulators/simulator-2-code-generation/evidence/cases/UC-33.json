@@ -1,0 +1,77 @@
+{
+  "id": "UC-33",
+  "question_n": 33,
+  "timestamp": "81:11",
+  "title": "Field-level confidence before reducing human review of generated docs",
+  "type": "run",
+  "correct": "B",
+  "expected_outcome": "The documentation update returns one confidence per field. The runner routes fields under 0.8 (and every signature or migration warning under 0.95) to human review instead of trusting a file-level score.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 47.9,
+      "exit_code": 0,
+      "command": "claude -p Update the README API reference for formatDate after its null fix (\u2026 --model claude-opus-5-5 --output-format json --max-turns 4 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"fie\u2026",
+      "subtype": "success",
+      "result": "{\"fields\":[{\"name\":\"signature\",\"value\":\"formatDate(date) \u2014 takes a Date, returns a string formatted YYYY-MM-DD (UTC, via toISOString). Unchanged from the current code; a future fix may widen the accepted or returned types.\",\"confidence\":0.93},{\"name\":\"behaviour_on_null\",\"value\":\"Current code: throws TypeError (\\\"Cannot read properties of null (reading 'toISOString')\\\"). The described null fix is not present, so no post-fix behaviour can be documented, and the existing README line 'Throws on null' remains accurate.\",\"confidence\":0.95},{\"name\":\"migration_warning\",\"value\":\"None to publish: behaviour has not changed, and the codebase does not identify a release for the fix. Once a fix ships, a note may be needed depending on its null return value (for example, API shippedAt becoming null, or 'due null' in invoice headers).\",\"confidence\":0.8},{\"name\":\"example\",\"value\":\"formatDate(new Date(\\\"2026-03-04T09:12:00Z\\\")) // \\\"2026-03-04\\\"\\nformatDate(null) // throws TypeError (current behaviour, not yet fixed)\",\"confidence\":0.93}]}",
+      "session_id": "9aa7ccb6-bcff-45ab-813c-23952779cea9",
+      "total_cost_usd": 0.6502856,
+      "num_turns": 15,
+      "structured_output": {
+        "fields": [
+          {
+            "name": "signature",
+            "value": "formatDate(date) \u2014 takes a Date, returns a string formatted YYYY-MM-DD (UTC, via toISOString). Unchanged from the current code; a future fix may widen the accepted or returned types.",
+            "confidence": 0.93
+          },
+          {
+            "name": "behaviour_on_null",
+            "value": "Current code: throws TypeError (\"Cannot read properties of null (reading 'toISOString')\"). The described null fix is not present, so no post-fix behaviour can be documented, and the existing README line 'Throws on null' remains accurate.",
+            "confidence": 0.95
+          },
+          {
+            "name": "migration_warning",
+            "value": "None to publish: behaviour has not changed, and the codebase does not identify a release for the fix. Once a fix ships, a note may be needed depending on its null return value (for example, API shippedAt becoming null, or 'due null' in invoice headers).",
+            "confidence": 0.8
+          },
+          {
+            "name": "example",
+            "value": "formatDate(new Date(\"2026-03-04T09:12:00Z\")) // \"2026-03-04\"\nformatDate(null) // throws TypeError (current behaviour, not yet fixed)",
+            "confidence": 0.93
+          }
+        ]
+      },
+      "permission_denials": [
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_01Bbv6WULWTpQVf9Bn4Evxor",
+          "tool_input": {
+            "command": "git branch -a && git stash list && git tag && git log --all --oneline && git status --short && git worktree list; cat > <course>/UC-33-4-g6j3k6-workspace/9aa7ccb6-bcff-45ab-813c-23952779cea9/scratchpad/probe.mjs <<EOF\nimport { formatDate } from \"$PWD/src/utils/formatDate.js\";\nfor (const v of [new Date(\"2026-11-05T12:00:00Z\"), null, undefined, \"2026-11-05\"]) {\n  try { console.log(JSON.stringify(v), \"=>\", JSON.stringify(formatDate(v))); }\n  catch (e) { console.log(JSON.stringify(v), \"=> THROWS\", e.name + \":\", e.message); }\n}\nEOF\nnode <course>/UC-33-4-g6j3k6-workspace/9aa7ccb6-bcff-45ab-813c-23952779cea9/scratchpad/probe.mjs",
+            "description": "Check other refs for the fix and probe formatDate at runtime"
+          }
+        }
+      ],
+      "is_error": false
+    }
+  },
+  "restores": [],
+  "cost_usd": 0.6503,
+  "evaluation": [
+    {
+      "criterion": "every field carries a confidence in [0,1]",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the signature field is present for calibration against labelled examples",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "learner explains why a file-level threshold or aggregate acceptance rate hides field errors",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    }
+  ]
+}

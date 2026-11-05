@@ -1,0 +1,55 @@
+{
+  "id": "UC-2",
+  "question_n": 2,
+  "timestamp": "03:07",
+  "title": "Subagent findings must be pasted into the synthesis subagent's prompt",
+  "type": "run",
+  "correct": "C",
+  "expected_outcome": "ci_subagents.py --pass-findings keeps the file paths, line numbers and test names in the final PR comment; --lossy drops most of them. The evaluate step prints the preservation percentages.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "shell",
+      "command": "python3 -B \"<course>/labs/lab-05-claude-code-for-continuous-integration/ci_subagents.py\" --pass-findings --evaluate-only-if-cached || python3 -B \"<course>/labs/lab-05-claude-code-for-continuous-integration/ci_subagents.py\" --pass-findings",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_s": 2.7
+    },
+    "t2": {
+      "kind": "shell",
+      "command": "python3 -B \"<course>/labs/lab-05-claude-code-for-continuous-integration/ci_subagents.py\" --lossy --evaluate-only-if-cached || python3 -B \"<course>/labs/lab-05-claude-code-for-continuous-integration/ci_subagents.py\" --lossy",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_s": 0.3
+    },
+    "t3": {
+      "kind": "shell",
+      "command": "python3 -B \"<course>/labs/lab-05-claude-code-for-continuous-integration/ci_subagents.py\" --compare",
+      "exit_code": 0,
+      "stdout": "mode             paths kept   tests kept   synthesis prompt   comment\npass-findings    4/4   paths 100%   10/10  tests 100%      9821 chars    5994 chars\nlossy            3/5   paths  60%    0/13  tests   0%        64 chars    1654 chars\nparallel spawn: 3 reviewers running concurrently (3 Agent call(s) in the largest single coordinator message)\nVERDICT: pass-findings keeps more of the evidence\n",
+      "stderr": "",
+      "elapsed_s": 27.0
+    }
+  },
+  "restores": [],
+  "cost_usd": 0,
+  "evaluation": [
+    {
+      "criterion": "pass-findings mode preserves at least 80% of the file paths the reviewers reported",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "lossy mode preserves fewer paths and test names than pass-findings mode",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the coordinator spawned the three reviewers in one response (parallel Agent calls)",
+      "pass": true,
+      "note": ""
+    }
+  ]
+}

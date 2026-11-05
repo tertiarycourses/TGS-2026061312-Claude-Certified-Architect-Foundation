@@ -1,0 +1,30 @@
+{
+  "case_id": "CS-13",
+  "title": "Partial refund with store credit: shape is not meaning",
+  "exam_task": "4.3/4.4 business-rule validation before refund execution \u00b7 practice test Q4",
+  "practice_test": {
+    "question": 4,
+    "timestamp": "07:38"
+  },
+  "customer": {
+    "email": "arjun@example.com"
+  },
+  "message": "Two of the three items in ORD-5509 arrived broken: the small desk lamp and the desk mat, photos attached. The pen tray is fine. Please refund the two broken items to my card, and give me store credit for the $8 shipping since half the parcel was ruined.",
+  "expected": {
+    "disposition": "resolved",
+    "must_call": [
+      "get_customer",
+      "lookup_order",
+      "recommend_refund",
+      "process_refund"
+    ],
+    "refund_issued": 105.0,
+    "validated_before_refund": true,
+    "merchandise_credit": 8.0
+  },
+  "rubric": {
+    "itemised": "recommend_refund lists LAMP-S 55 and MAT 50, not TRAY",
+    "credit_not_cash": "the $8 is merchandise_credit, shipping_refund is 0 and refund_total is 105",
+    "validated_first": "process_refund ran only after recommend_refund returned validated:true, for exactly $105"
+  }
+}

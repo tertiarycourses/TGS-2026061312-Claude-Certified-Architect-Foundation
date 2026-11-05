@@ -1,0 +1,18 @@
+{
+  "uc": "UC-29",
+  "question": 29,
+  "timestamp": "71:09",
+  "topic": "isError true with structured failure details",
+  "situation": "A refund fails because the order is outside the return window, but the agent tells the customer it was completed.",
+  "correct": "A: return a CallToolResult with isError true and structured failure details in the content.",
+  "why": "Protocol success is not business success; a structured error lets the agent explain, correct or escalate instead of claiming success.",
+  "run": [
+    "grep -n 'isError' backend_tools.py",
+    "python3 -B support_agent.py --case CS-11"
+  ],
+  "observe": "evidence/runs/CS-11.json shows process_refund returning errorCategory business, isRetryable false, and a reply that does not claim a refund.",
+  "rubric": [
+    "the error carries errorCategory, isRetryable and a customer_message",
+    "the reply explains the closed window instead of claiming success"
+  ]
+}

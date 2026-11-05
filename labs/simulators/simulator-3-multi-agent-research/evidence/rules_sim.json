@@ -1,0 +1,98 @@
+{
+  "model": "claude-opus-5-5",
+  "token": "TESTING-GUIDANCE-LOADED",
+  "variants": {
+    "A": {
+      "guidance_copies": 1,
+      "runs": {
+        "test": {
+          "result": "TESTING-GUIDANCE-LOADED, from `.claude/rules/testing.md`.\nI added the `'music'` assertion and its one-line comment to the existing test at `orchestration/orchestrator.test.ts:6`.\nNot run, and I didn't read `orchestrator.ts`, so `plan()` returning `'music'` first is unconfirmed.",
+          "cost_usd": 0.5209206,
+          "turns": 3,
+          "subtype": "success",
+          "is_error": false,
+          "token_seen": true,
+          "inconclusive": false
+        },
+        "impl": {
+          "result": "TESTING-GUIDANCE-LOADED, from `.claude/rules/testing.md`.\n`report-rendering/renderer.ts:2` now reads `| Claim | Value | Source | Date |`; I ran nothing, as you asked.\nA search of this folder found no other uses of \"Published\", so no tests needed changing.",
+          "cost_usd": 0.3673539,
+          "turns": 4,
+          "subtype": "success",
+          "is_error": false,
+          "token_seen": true,
+          "inconclusive": false
+        }
+      }
+    },
+    "B": {
+      "guidance_copies": 1,
+      "runs": {
+        "test": {
+          "result": "TESTING-GUIDANCE-LOADED, from `repo-rules/CLAUDE.md`.\nAdded `expect(plan('AI')[0]).toContain('music');` plus its one-line behaviour comment to the existing test in `orchestration/orchestrator.test.ts:5-6`.\nNot run, as instructed; by reading `orchestrator.ts`, the first item is `'AI: music'`, so it should pass.",
+          "cost_usd": 0.37187269999999994,
+          "turns": 5,
+          "subtype": "success",
+          "is_error": false,
+          "token_seen": true,
+          "inconclusive": false
+        },
+        "impl": {
+          "result": "TESTING-GUIDANCE-LOADED, from `repo-rules/CLAUDE.md`.\nThe header's last column in `report-rendering/renderer.ts:2` now reads `Date`; I ran no commands, so the tests haven't been run.\n`renderer.test.ts` only checks for `| Claim |`, so it needed no change.",
+          "cost_usd": 0.37215419999999994,
+          "turns": 6,
+          "subtype": "success",
+          "is_error": false,
+          "token_seen": true,
+          "inconclusive": false
+        }
+      }
+    },
+    "C": {
+      "guidance_copies": 3,
+      "runs": {
+        "test": {
+          "result": "TESTING-GUIDANCE-LOADED, from `orchestration/CLAUDE.md`.\nAdded `expect(plan('AI')[0]).toContain('music');` with its one-line behaviour comment at `orchestration/orchestrator.test.ts:5`, inside the existing test.\nNot run, as instructed; by reading `orchestrator.ts`, the first item is `AI: music`, so it should pass.",
+          "cost_usd": 0.3736128,
+          "turns": 5,
+          "subtype": "success",
+          "is_error": false,
+          "token_seen": true,
+          "inconclusive": false
+        },
+        "impl": {
+          "result": "TESTING-GUIDANCE-LOADED \u2014 from `report-rendering/CLAUDE.md`.\n`report-rendering/renderer.ts:2` now reads `| Claim | Value | Source | Date |`.\nNo \"Published\" references remain in the repo; I ran no commands or tests.",
+          "cost_usd": 0.383081,
+          "turns": 6,
+          "subtype": "success",
+          "is_error": false,
+          "token_seen": true,
+          "inconclusive": false
+        }
+      }
+    },
+    "D": {
+      "guidance_copies": 1,
+      "runs": {
+        "test": {
+          "result": "TESTING-GUIDANCE-LOADED, from `.claude/rules/testing.md`.\nAdded `expect(plan('AI')[0]).toContain('music');` with a one-line behaviour comment to the existing test in `orchestration/orchestrator.test.ts:5-6`.\nNothing was run, but `plan` currently returns `'AI: music'` first, so the assertion should pass.",
+          "cost_usd": 0.3615749,
+          "turns": 4,
+          "subtype": "success",
+          "is_error": false,
+          "token_seen": true,
+          "inconclusive": false
+        },
+        "impl": {
+          "result": "The header at `report-rendering/renderer.ts:2` now reads `| Claim | Value | Source | Date |`.\nI ran no commands, so nothing has been tested.",
+          "cost_usd": 0.35915319999999995,
+          "turns": 4,
+          "subtype": "success",
+          "is_error": false,
+          "token_seen": false,
+          "inconclusive": false
+        }
+      }
+    }
+  }
+}

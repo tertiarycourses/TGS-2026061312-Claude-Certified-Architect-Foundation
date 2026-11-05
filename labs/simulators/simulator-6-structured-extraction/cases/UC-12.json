@@ -1,0 +1,21 @@
+{
+  "id": "UC-12",
+  "question_number": 12,
+  "timestamp": "27:41",
+  "mode": "runnable",
+  "title": "Application-level gate: no submit_record without a successful validate_record",
+  "situation": "The system exposes client-executed tools named extract_fields, validate_record, submit_record, and create_review_ticket. Production logs show that when a required field is ambiguous, Claude sometimes guesses a value and emits submit_record without a successful validate_record result. The application then executes the requested tool call and downstream systems receive records that should have gone to review.",
+  "exam_question": "What change would most effectively enforce the required workflow?",
+  "correct_option": "C",
+  "correct_option_text": "Add an application-level gate that blocks submit_record unless validate_record has succeeded for the same record.",
+  "why": "Claude only emits a tool_use request; the application executes it. That boundary is where business-critical ordering is enforced deterministically. Prompt wording and tool_choice steer behaviour but cannot prove a prerequisite was met; stopping the loop on phrases like 'ready to submit' is the anti-pattern the exam warns about.",
+  "task": "Run a manual agent loop (stop_reason == tool_use) over the four tools. The gate refuses submit_record for any record_id without a prior validate_record success and returns a tool_result with is_error: true, so Claude has to validate and, for the ambiguous document, open a review ticket instead.",
+  "prompt_template": "<document>\n{{document}}\n</document>\nExtract this document's fields, validate the record, then submit it. Record id: {{record_id}}. If a required field is ambiguous, open a review ticket instead of guessing.",
+  "command": "python3 -B extract.py --case UC-12",
+  "expected_outcome": "evidence/cases/UC-12.json lists at least one blocked submit_record (DOC-07), zero submits executed without a prior validation success, and a review ticket for the ambiguous document. The loop ends on end_turn, never on text matching.",
+  "rubric": [
+    "Learner can point to the line in the gate that checks validated[record_id] before executing submit_record.",
+    "Learner explains why the gate returns is_error: true rather than silently dropping the call.",
+    "Learner states why tool_choice: tool for validate_record would not have been sufficient."
+  ]
+}

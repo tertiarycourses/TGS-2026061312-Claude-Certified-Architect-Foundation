@@ -1,0 +1,15 @@
+{
+  "pass": "per-file",
+  "findings": [
+    {
+      "file": "stock/repository.py",
+      "line": 11,
+      "severity": "critical",
+      "category": "security",
+      "detected_pattern": "f-string SQL",
+      "issue": "sku and warehouse are interpolated directly into the SQL string with no validation or parameterisation, so a value such as ' OR '1'='1 rewrites the query and allows SQL injection through either argument of fetch() (and through fetch_many(), which forwards to it).",
+      "suggested_fix": "cursor.execute('SELECT qty FROM stock WHERE sku = %s AND warehouse = %s', (sku, warehouse))",
+      "confidence": 0.97
+    }
+  ]
+}

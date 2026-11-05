@@ -1,0 +1,31 @@
+{
+  "source": {
+    "practice_test_question": 28,
+    "timestamp": "68:51",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "The document analysis subagent extracts an evidence_type field using a JSON Schema enum of experiment, survey, expert_interview, and market_report. In testing, vague passages are often forced into a specific category, while new source types sometimes produce values outside the schema and fail downstream validation.",
+  "question": "What change best improves the schema design while preserving reliable categorization?",
+  "options": {
+    "A": "Add \"unclear\" and \"other\" enum values plus an other_detail field, and instruct when to use each.",
+    "B": "Remove the enum constraint from evidence_type and ask each subagent to write the best category label.",
+    "C": "Keep the current enum list and instruct the model to select the closest category for every passage.",
+    "D": "Make evidence_type required and retry whenever validation fails until a listed category is returned."
+  },
+  "correct": "A",
+  "why": "A robust structured extraction schema should constrain predictable values while still representing edge cases honestly. JSON Schema enum is useful for categorical fields because it limits outputs to known values, but a taxonomy that lacks valid categories for ambiguous or novel inputs can push the model toward false precision. Adding application-defined values such as \"unclear\" and \"other\" is a schema design pattern, not a special Anthropic requirement. \"unclear\" gives the model a valid way to report insufficient evidence, while \"other\" plus an other_detail field lets downstream systems preserve information about emerging categories without accepting arbitrary strings in the primary field. Anthropic documents structured output mechanisms through structured outputs, including JSON Schema-based outputs and strict tool use, and also shows JSON Schema enum usage in tool input schemas. (Docs: structured outputs, implement tool use.)",
+  "id": "UC-28",
+  "title": "Enum with unclear and other",
+  "task": {
+    "type": "run",
+    "mode": "enum",
+    "config_change": "Change the document-analysis prompt so each finding carries `evidence_type` from [experiment, survey, expert_interview, market_report, unclear, other] plus `other_detail` when `other` is used, with instructions on when to pick unclear.",
+    "prompt_template": "Research this topic and deliver a cited report: {{topic}}. Classify every document finding's evidence type."
+  },
+  "expected_outcome": "All evidence_type values are inside the enum; vague passages use `unclear`; any `other` carries other_detail.",
+  "rubric": [
+    "every evidence_type is a member of the six-value enum",
+    "no finding is forced into a specific category when the text is vague (at least one unclear or other, or a justification)",
+    "every other has a non-empty other_detail"
+  ]
+}

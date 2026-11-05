@@ -1,0 +1,100 @@
+{
+  "id": "UC-33",
+  "question_n": 33,
+  "timestamp": "81:11",
+  "scenario": "Code Generation with Claude Code",
+  "title": "Field-level confidence before reducing human review of generated docs",
+  "situation": "The team has a custom documentation skill / slash command that updates README sections, API references, and migration notes after refactors. The command's overall acceptance rate is high, but review data shows that incorrect outputs are concentrated in a few fields, especially function signatures and migration warnings.",
+  "question": "What should the team do before reducing human review?",
+  "options": {
+    "A": "Approve documentation changes when the command's file-level confidence exceeds a fixed threshold.",
+    "B": "Require field-level confidence outputs and calibrate review thresholds using labeled validation examples.",
+    "C": "Switch the command to plan mode for all documentation updates before applying changes.",
+    "D": "Use aggregate acceptance rate as the release gate and sample merged outputs weekly."
+  },
+  "correct": "B",
+  "why": "For reliability-sensitive generated documentation, a useful unit of review is often the field, not the whole file. A README update may be mostly correct while still containing a wrong function signature or an unsafe migration note, so a single aggregate metric can create a false sense of readiness. The stronger pattern is to have Claude output field-level confidence alongside the generated values and compare those confidence scores against a labeled validation set. Calibration turns confidence from a model self-report into an operational routing signal, for example sending low-confidence function signatures and ambiguous migration warnings to human review while allowing well-calibrated low-risk fields to proceed. This is a human-review workflow design problem, not just a prompting-mode problem. Claude Code features such as planning, skills, and repository context help with development workflows, but they do not replace segmented validation and calibrated thresholds. (Docs: Claude Code overview, define success criteria.)",
+  "type": "run",
+  "concrete_task": "claude -p \"update the README section...\" --json-schema '{fields:[{name,value,confidence}]}' then route low-confidence fields to review.",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fields"
+        ],
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "value",
+                "confidence"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "confidence": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "max_turns": 4,
+      "prompt": "Update the README API reference for formatDate after its null fix (read src/utils/formatDate.js and README.md). Return fields: 'signature', 'behaviour_on_null', 'migration_warning', 'example'. Give each a value and your calibrated confidence (0-1) that the value is exactly correct for this codebase."
+    }
+  ],
+  "expected_outcome": "The documentation update returns one confidence per field. The runner routes fields under 0.8 (and every signature or migration warning under 0.95) to human review instead of trusting a file-level score.",
+  "rubric": [
+    {
+      "criterion": "every field carries a confidence in [0,1]",
+      "check": {
+        "type": "all_in_range",
+        "task": "t1",
+        "list": "fields",
+        "key": "confidence",
+        "lo": 0,
+        "hi": 1
+      }
+    },
+    {
+      "criterion": "the signature field is present for calibration against labelled examples",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "field": "structured_output",
+        "pattern": "\"name\": \"signature\""
+      }
+    },
+    {
+      "criterion": "learner explains why a file-level threshold or aggregate acceptance rate hides field errors",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

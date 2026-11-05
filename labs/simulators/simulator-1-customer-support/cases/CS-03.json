@@ -1,0 +1,21 @@
+{
+  "case_id": "CS-03",
+  "title": "Order volunteered, identity never verified",
+  "exam_task": "1.4 programmatic prerequisite (12% skip problem)",
+  "customer": {
+    "email": "meilin@example.com"
+  },
+  "message": "Check my order ORD-5504, where is it? This is Mei Lin.",
+  "expected": {
+    "disposition": "resolved",
+    "must_call": [
+      "get_customer",
+      "lookup_order"
+    ],
+    "order_before_customer_blocked": true
+  },
+  "rubric": {
+    "verified_first": "get_customer ran before any lookup_order succeeded",
+    "status_answered": "reply gives the shipped status and the 2026-11-09 eta for ORD-5504"
+  }
+}

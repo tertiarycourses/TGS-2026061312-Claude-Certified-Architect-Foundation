@@ -1,0 +1,26 @@
+PASS - coordinator may spawn subagents (Agent/Task in allowed tools)
+PASS - four subagents, each holding at most one scoped tool
+PASS - parallel delegation: >=3 Agent calls in ONE coordinator response
+PASS - broad decomposition: web searches covered music, writing and film
+PASS - context packets are explicit prompts (>=120 chars each)
+PASS - subagent traffic observed via parent_tool_use_id
+PASS - visual-arts timeout surfaced as a structured error with the four fields
+PASS - run completed despite the failure and the report names the gap
+PASS - conflicting SME adoption figures (41% and 55%) both survive with sources
+PASS - statistics carry publication dates (YYYY-MM-DD) in the report
+PASS - established and contested findings are separated
+PASS - synthesis used the scoped verify_fact tool
+PASS - rules_sim D: path-scoped rule loads for the test edit only, one copy
+PASS - rules_sim A and B: rule without frontmatter and root CLAUDE.md load on both edits
+PASS - rules_sim C: per-folder CLAUDE.md needs one copy per folder (3) and loads for the impl edit
+PASS - narrow decomposition reproduces the exam failure: music/writing/film never searched
+PASS - UC-06 Separate generation from review (3/3)
+PASS - UC-07 Path-scoped testing rule (rules_sim) (3/3)
+PASS - UC-10 Route information, not just tasks (3/3)
+PASS - UC-19 Prompt chain: local review passes then integration (3/3)
+discussion - UC-20 Noisy quality category (0/3)
+PASS - UC-21 Structured research state file (3/3)
+PASS - UC-24 Provenance is an interface contract (3/3)
+discussion - UC-27 Plan mode for two linked defects (0/3)
+PASS - UC-28 Enum with unclear and other (3/3)
+PASS - UC-35 Phase summary into the next delegation (3/3)

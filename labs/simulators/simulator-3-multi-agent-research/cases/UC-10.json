@@ -1,0 +1,31 @@
+{
+  "source": {
+    "practice_test_question": 10,
+    "timestamp": "21:53",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "After several runs, the final reports contain polished summaries but weak citation coverage. The web and document subagents return useful source details to the coordinator, but the synthesis subagent is invoked later with only a brief instruction to produce themes and recommendations.",
+  "question": "What change would best improve the orchestration design?",
+  "options": {
+    "A": "Include the relevant findings and source metadata directly in the synthesis subagent's Agent prompt.",
+    "B": "Allow research subagents to communicate directly so they can share source details before synthesis.",
+    "C": "Broaden the synthesis subagent's description so automatic routing selects it after research completes.",
+    "D": "Convert the workflow to independent agent team sessions with a shared task list for every report."
+  },
+  "correct": "A",
+  "why": "In a coordinator-to-worker design, the coordinator is responsible for routing information, not just routing tasks. Subagents are useful because they have their own context windows and can keep intermediate search, log, or file output from flooding the parent conversation, but that isolation also means the coordinator must explicitly provide the context needed for downstream work. A synthesis subagent cannot rely on having seen what the web search or document analysis subagent saw. The parent-to-subagent channel is the Agent tool prompt string, so source excerpts, URLs, document names, publication dates, and any claim-to-source mapping should be included there when the synthesis task depends on them. This preserves provenance through the hub-and-spoke flow without switching orchestration patterns. Changing the subagent description helps Claude decide when to delegate automatically, but it does not transfer prior research findings. Direct worker-to-worker communication is not how documented subagents operate; the documentation describes subagents as specialized assistants with separate context that return results to the main conversation, and distinguishes them from agent teams with independent sessions and inter-agent messaging. (Docs: subagents, agent teams.)",
+  "id": "UC-10",
+  "title": "Route information, not just tasks",
+  "task": {
+    "type": "run",
+    "mode": "broad",
+    "prompt_template": "Research this topic and deliver a cited report: {{topic}}.",
+    "config_change": "None. Inspect the synthesis packet the coordinator built: it must carry the research findings and source metadata, because the synthesis subagent starts with an empty context."
+  },
+  "expected_outcome": "The Agent prompt sent to synthesis is large (thousands of characters) and contains URLs, document names and dates from the research phase.",
+  "rubric": [
+    "synthesis packet >= 2000 characters",
+    "synthesis packet contains at least 3 source URLs or document names",
+    "synthesis packet contains publication dates"
+  ]
+}

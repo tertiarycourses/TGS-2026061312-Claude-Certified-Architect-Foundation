@@ -1,0 +1,131 @@
+[coordinator] response hbTfxn now holds 1 Agent call(s): ['web-search']
+[coordinator] response hbTfxn now holds 2 Agent call(s): ['web-search', 'web-search']
+[coordinator] response hbTfxn now holds 3 Agent call(s): ['web-search', 'web-search', 'web-search']
+[coordinator] response hbTfxn now holds 4 Agent call(s): ['web-search', 'web-search', 'web-search', 'web-search']
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "generative AI impact on illustrators and designers income c
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI art copyright lawsuit artists Getty Images Stability AI 
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI art market auction sales and artist opt-out tools Glaze 
+[coordinator] response hbTfxn now holds 5 Agent call(s): ['web-search', 'web-search', 'web-search', 'web-search', 'document-analysis']
+[result] success turns=6 cost=$0.5000
+[result] success turns=1 cost=$0.5499
+[coordinator] response ks7W64 now holds 1 Agent call(s): ['synthesis']
+[coordinator] response 7swJ3M now holds 1 Agent call(s): ['report']
+[result] success turns=3 cost=$1.1073
+[evidence] evidence/run.json, evidence/report.md
+[coordinator] response 2NKvqq now holds 1 Agent call(s): ['web-search']
+[coordinator] response 2NKvqq now holds 2 Agent call(s): ['web-search', 'web-search']
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI art illustrators income commissions auction gallery 2025
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI in graphic design 2026 Adobe Firefly Canva Figma adoptio
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI impact on graphic designer jobs freelance rates 2025",  
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "brand backlash AI-generated design campaign controversy",  
+[coordinator] response 2NKvqq now holds 3 Agent call(s): ['web-search', 'web-search', 'web-search']
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI art illustrators income 2025",  "attempts": 5,  "partial
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI in photography 2026 editing tools Lightroom Generative R
+[result] success turns=4 cost=$0.3941
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI stock photography Getty Images Shutterstock Getty v. Sta
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "photography contests AI authenticity Content Credentials C2
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI in graphic design 2026",  "attempts": 9,  "partial_resul
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI in photography 2026",  "attempts": 10,  "partial_results
+[coordinator] response MF6vDz now holds 1 Agent call(s): ['document-analysis']
+[result] success turns=4 cost=$0.5954
+[coordinator] response 8LvGKa now holds 1 Agent call(s): ['synthesis']
+[coordinator] response 7djuKt now holds 1 Agent call(s): ['report']
+[result] success turns=3 cost=$0.9296
+[evidence] evidence/run-narrow.json, evidence/report-narrow.md
+[UC-06] running mode=review
+[coordinator] response k4jSaB now holds 1 Agent call(s): ['web-search']
+[coordinator] response k4jSaB now holds 2 Agent call(s): ['web-search', 'web-search']
+[coordinator] response k4jSaB now holds 3 Agent call(s): ['web-search', 'web-search', 'web-search']
+[coordinator] response k4jSaB now holds 4 Agent call(s): ['web-search', 'web-search', 'web-search', 'web-search']
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI impact on illustrators, photographers and designers inco
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI image generator copyright lawsuits artists opt-out prote
+[coordinator] response k4jSaB now holds 5 Agent call(s): ['web-search', 'web-search', 'web-search', 'web-search', 'document-analysis']
+[result] success turns=6 cost=$0.5331
+[result] success turns=1 cost=$0.6064
+[coordinator] response gyAFPh now holds 1 Agent call(s): ['synthesis']
+[coordinator] response i7GGaQ now holds 1 Agent call(s): ['reviewer']
+[coordinator] response i7GGaQ now holds 2 Agent call(s): ['reviewer', 'reviewer']
+[coordinator] response i7GGaQ now holds 3 Agent call(s): ['reviewer', 'reviewer', 'reviewer']
+[coordinator] response i7GGaQ now holds 4 Agent call(s): ['reviewer', 'reviewer', 'reviewer', 'reviewer']
+[result] success turns=6 cost=$1.0534
+[coordinator] response eiQi2R now holds 1 Agent call(s): ['reviewer']
+[coordinator] response QcAXRn now holds 1 Agent call(s): ['report']
+[result] success turns=3 cost=$1.7182
+[evidence] evidence/run-review.json, evidence/report-review.md
+  PASS - reviewer agents spawned >=2 in one response
+  PASS - an integration reviewer runs after the section reviewers
+  PASS - report still includes the coverage gap and contested findings
+[UC-07] discussion use case. Prompt:
+  Write `.claude/rules/testing.md` for the research repo with `paths:` frontmatter that matches `**/*.test.ts` and `**/__tests__/**`, and explain why a root CLAUDE.md or per-folder CLAUDE.md files are worse here.
+  Expected: Option D. One rule file with YAML `paths:` globs loads only when Claude Code edits a matching test file, wherever it sits in the tree. Root CLAUDE.md loads alwa...
+  ---- - frontmatter has paths: with at least one glob
+  ---- - guidance sits below the frontmatter
+  ---- - answer names why B and C duplicate or over-load context
+[UC-10] reusing evidence/run.json (pass --fresh to rerun)
+  PASS - synthesis packet >= 2000 characters
+  PASS - synthesis packet contains at least 3 source URLs or document names
+  PASS - synthesis packet contains publication dates
+[UC-19] reusing evidence/run-review.json (pass --fresh to rerun)
+  PASS - each section-review packet is smaller than the synthesis packet
+  PASS - integration pass launched after all section reviews returned
+  PASS - final report mentions the integration review
+[UC-20] discussion use case. Prompt:
+  Given a quality-gate prompt with categories [missing citation, source conflict, unsupported market claim], rewrite it to omit the noisy category for now and draft the eval plan (examples, definition, precision/recall) that earns it back.
+  Expected: Option A. Keep the categories that engineers trust, drop `unsupported market claim` from the active list, and rebuild it as a classification problem with positi...
+  ---- - noisy category removed from the active prompt only
+  ---- - accurate categories remain enabled
+  ---- - re-enable gate is precision/recall on labelled examples, not schema compliance
+[UC-21] running mode=state
+[coordinator] response RhniG9 now holds 1 Agent call(s): ['web-search']
+[coordinator] response RhniG9 now holds 2 Agent call(s): ['web-search', 'web-search']
+[coordinator] response RhniG9 now holds 3 Agent call(s): ['web-search', 'web-search', 'web-search']
+[coordinator] response RhniG9 now holds 4 Agent call(s): ['web-search', 'web-search', 'web-search', 'web-search']
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI image generators impact on illustrators and graphic desi
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "visual artists lawsuit training data Stability AI Midjourne
+[coordinator] response RhniG9 now holds 5 Agent call(s): ['web-search', 'web-search', 'web-search', 'web-search', 'document-analysis']
+[result] success turns=6 cost=$0.5204
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "illustrators income AI image generators survey",  "attempts
+[result] success turns=1 cost=$0.5760
+[result] success turns=1 cost=$0.6222
+[coordinator] response Ve4xK2 now holds 1 Agent call(s): ['synthesis']
+[result] success turns=5 cost=$0.9303
+[coordinator] response 1dd183 now holds 1 Agent call(s): ['report']
+[result] success turns=2 cost=$1.2099
+[result] success turns=1 cost=$1.3896
+[evidence] evidence/run-state.json, evidence/report-state.md
+  PASS - save_research_state called before load_research_state
+  PASS - research_state.json holds a taxonomy with >=3 sectors and a source map
+  PASS - synthesis packet contains the taxonomy sector names
+[UC-24] reusing evidence/run.json (pass --fresh to rerun)
+  FAIL - document-analysis result parses as JSON with a findings list
+  FAIL - every finding has document, page, published and methodology_note
+  FAIL - the two SME adoption findings are both present with conflict_with set
+[UC-27] discussion use case. Prompt:
+  Write the single plan-mode request you would give Claude Code for the duplicated-citation and lost-excerpt defects: symptoms, suspected files (claim-source schema, synthesis prompt, report template), constraints, definition of fixed, and the acceptance test it must run.
+  Expected: Option A. One detailed plan-mode request covering both defects, because they share the synthesis-to-report interface; separate sessions would make different ass...
+  ---- - request names both defects and the shared interface
+  ---- - includes a verification command (acceptance test)
+  ---- - explains why split sessions (D) and no-plan (C) are weaker
+[UC-28] running mode=enum
+[coordinator] response oqARfT now holds 1 Agent call(s): ['web-search']
+[coordinator] response oqARfT now holds 2 Agent call(s): ['web-search', 'web-search']
+[coordinator] response oqARfT now holds 3 Agent call(s): ['web-search', 'web-search', 'web-search']
+[coordinator] response oqARfT now holds 4 Agent call(s): ['web-search', 'web-search', 'web-search', 'web-search']
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI impact on illustrators income and commissions visual art
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI image generator adoption among designers and photographe
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "illustrators income AI",  "attempts": 3,  "partial_results"
+[tool] structured error observed: {  "failure_type": "timeout",  "attempted_query": "AI image generators designers adoption",  "attempts": 4,  "
+[coordinator] response oqARfT now holds 5 Agent call(s): ['web-search', 'web-search', 'web-search', 'web-search', 'document-analysis']
+[result] success turns=6 cost=$0.5562
+[result] success turns=1 cost=$0.6121
+[coordinator] response ipohjH now holds 1 Agent call(s): ['synthesis']
+[coordinator] response tDroaz now holds 1 Agent call(s): ['report']
+[result] success turns=3 cost=$1.3068
+[evidence] evidence/run-enum.json, evidence/report-enum.md
+  FAIL - every evidence_type is a member of the six-value enum
+  FAIL - no finding is forced into a specific category when the text is vague
+  PASS - every other has a non-empty other_detail
+[UC-35] reusing evidence/run.json (pass --fresh to rerun)
+  PASS - synthesis packet contains >=3 source links/doc names from phase 1
+  PASS - report packet contains the synthesis output (>=1500 chars)
+  PASS - no packet exceeds 60000 characters (no full transcripts)

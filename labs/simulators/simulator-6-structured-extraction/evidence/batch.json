@@ -1,0 +1,24 @@
+{
+  "batch_id": "local_batch_1",
+  "submitted": [
+    "DOC-01",
+    "DOC-02",
+    "DOC-03",
+    "DOC-04",
+    "DOC-05",
+    "DOC-06",
+    "DOC-07"
+  ],
+  "succeeded": [
+    "DOC-01",
+    "DOC-02",
+    "DOC-03",
+    "DOC-04",
+    "DOC-05",
+    "DOC-06",
+    "DOC-07"
+  ],
+  "failed": [],
+  "resubmission": null,
+  "note": "The Batches API cannot run a tool loop inside one request; validation retries happen on the sync path afterwards."
+}

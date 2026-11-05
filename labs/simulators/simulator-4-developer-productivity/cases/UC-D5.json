@@ -1,0 +1,23 @@
+{
+  "id": "UC-D5",
+  "title": "Crash recovery from a manifest",
+  "source": {
+    "task_statement": "5.4 Structured state persistence for crash recovery",
+    "scenario": "Developer Productivity with Claude"
+  },
+  "situation": "The coordinator process died after exploration. A manifest with phase, findings and next step was exported.",
+  "question": "How does the next session continue without re-exploring?",
+  "correct": "Load the manifest into the new session's prompt and continue from next_step.",
+  "why": "Structured state exports make recovery deterministic; the session does not need to rediscover the codebase.",
+  "task": {
+    "type": "run",
+    "manifest": true,
+    "prompt_template": "The previous session crashed. Continue from this manifest without re-exploring: read only the file named in next_step, apply the fix if missing, run python3 -m pytest -q.\n\n{{manifest}}"
+  },
+  "expected_outcome": "Fresh session id; no Grep, no subagent; tests pass.",
+  "rubric": [
+    "new session id",
+    "no Grep and no Agent call",
+    "pytest exits 0"
+  ]
+}

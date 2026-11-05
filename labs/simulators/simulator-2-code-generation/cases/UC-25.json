@@ -1,0 +1,91 @@
+{
+  "id": "UC-25",
+  "question_n": 25,
+  "timestamp": "61:17",
+  "scenario": "Code Generation with Claude Code",
+  "title": "Delegation tool must be auto-approved for a fan-out command",
+  "situation": "A custom /parallel-review command starts an SDK run in a repository pinned to a pre-v2.1.63 Claude Code configuration, where subagent delegation is performed with Task. It should fan out across specialized review subagents. The current SDK options auto-approve only Read, Grep, and Glob, and each run pauses at the first attempted subagent delegation with an interactive permission prompt.",
+  "question": "What should the team change?",
+  "options": {
+    "A": "Add Task to the coordinator SDK run's allowedTools / allowed_tools list.",
+    "B": "Remove delegation tools from allowed tools and rely on permission prompts.",
+    "C": "Add Agent only to worker subagents' tools list for nested calls.",
+    "D": "Add Task delegation guidance to CLAUDE.md for the project repository."
+  },
+  "correct": "A",
+  "why": "For the legacy configuration described in the stem, subagent delegation is performed through Task, so the coordinator SDK run needs that delegation tool in allowedTools (TypeScript) or allowed_tools (Python). The practical issue is not that the subagents are undefined; it is that the first delegation attempt is not auto-approved and therefore falls into interactive permission handling. Current Claude Code documentation describes the renamed Agent tool for spawning subagents and notes that Task was renamed to Agent in Claude Code version 2.1.63. That version distinction matters: current configurations should generally use Agent, while a pinned legacy configuration that delegates with Task must auto-approve Task. Also remember that allowedTools is not a hard allowlist by itself; it auto-approves listed tools while unlisted tools can still fall through to permission mode or a permission callback unless separately denied or locked down. (Docs: subagents, Agent SDK subagents, Agent SDK permissions.)",
+  "type": "run",
+  "concrete_task": "claude -p ... --agents cases/agents-review.json with and without Agent in --allowedTools (legacy pinned configs need Task).",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "disallowed": [
+        "Agent"
+      ],
+      "agents": "cases/agents-review.json",
+      "max_turns": 3,
+      "prompt": "Use the style-reviewer agent to review src/utils/quantity.js and report its one-line verdict verbatim. If you cannot delegate, say exactly: DELEGATION BLOCKED."
+    },
+    {
+      "id": "t2",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Agent"
+      ],
+      "agents": "cases/agents-review.json",
+      "max_turns": 4,
+      "prompt": "Use the style-reviewer agent to review src/utils/quantity.js and report its one-line verdict verbatim. If you cannot delegate, say exactly: DELEGATION BLOCKED."
+    }
+  ],
+  "expected_outcome": "With the delegation tool disallowed the coordinator cannot spawn the reviewer; with Agent allowed the subagent runs and its answer comes back.",
+  "rubric": [
+    {
+      "criterion": "without the delegation tool the fan-out cannot happen",
+      "check": {
+        "type": "any_of",
+        "checks": [
+          {
+            "type": "regex",
+            "task": "t1",
+            "pattern": "DELEGATION BLOCKED"
+          },
+          {
+            "type": "regex",
+            "task": "t1",
+            "field": "permission_denials",
+            "pattern": "Agent|Task"
+          }
+        ]
+      }
+    },
+    {
+      "criterion": "with Agent (Task before v2.1.63) in the allowed list the reviewer's verdict comes back",
+      "check": {
+        "type": "regex",
+        "task": "t2",
+        "pattern": "VERDICT"
+      }
+    },
+    {
+      "criterion": "learner can state that allowedTools auto-approves and is not a hard allowlist",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

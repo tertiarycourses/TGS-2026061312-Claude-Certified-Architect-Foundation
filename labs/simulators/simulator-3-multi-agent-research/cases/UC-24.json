@@ -1,0 +1,31 @@
+{
+  "source": {
+    "practice_test_question": 24,
+    "timestamp": "58:39",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "During evaluation, the final report cites sources but sometimes treats a peer-reviewed study, a vendor benchmark, and an internal survey as equivalent evidence for the same claim. The search and document analysis subagents currently return concise finding summaries plus a general list of sources consulted.",
+  "question": "What change best supports accurate downstream synthesis?",
+  "options": {
+    "A": "Add a report generation pass that expands the final narrative with a separate bibliography and citation appendix.",
+    "B": "Require each subagent to return structured claim records with source location, publication date, evidence excerpt, and methodology notes.",
+    "C": "Ask the coordinator to retain full subagent transcripts and have the synthesizer infer provenance from prior work.",
+    "D": "Give each subagent broader tool access so it can inspect all available sources before summarizing its findings."
+  },
+  "correct": "B",
+  "why": "In a multi-agent research system, provenance is an interface contract. A subagent may perform a rich investigation, but downstream agents can only depend on the information explicitly returned in its summary or handoff. If the returned output says only that a source supports a finding, the synthesizer may lose the distinction between evidence types, time periods, source locations, and methods. Claude Code subagents are designed for context management: they handle work in their own context and return a summary to the main conversation. The official subagents documentation notes that non-fork subagents start with a fresh, isolated context and do not automatically share the parent conversation history, which makes explicit handoff content essential. The reliable pattern is to require structured claim records, for example claim, evidence excerpt, source URL or document location, publication or collection date, and methodology notes. This prevents the synthesis agent from treating incomparable evidence as interchangeable. Anthropic's tool-use guidance also emphasizes returning high-signal fields rather than bloated responses, which supports concise but complete provenance handoffs. (Docs: Claude Code subagents, implement tool use.)",
+  "id": "UC-24",
+  "title": "Provenance is an interface contract",
+  "task": {
+    "type": "run",
+    "mode": "broad",
+    "prompt_template": "Research this topic and deliver a cited report: {{topic}}.",
+    "config_change": "None. Evaluate the document-analysis subagent's returned JSON: every finding must carry document, page, published and methodology_note."
+  },
+  "expected_outcome": "Structured claim records, not prose summaries, come back from document-analysis.",
+  "rubric": [
+    "document-analysis result parses as JSON with a findings list",
+    "every finding has document, page, published and methodology_note",
+    "the two SME adoption findings are both present with conflict_with set"
+  ]
+}

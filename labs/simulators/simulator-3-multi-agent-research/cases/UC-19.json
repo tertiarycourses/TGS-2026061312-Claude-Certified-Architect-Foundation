@@ -1,0 +1,31 @@
+{
+  "source": {
+    "practice_test_question": 19,
+    "timestamp": "45:15",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "Recent evaluations show that the final report sometimes treats the same source as both confirming and contradicting a claim, and reviewers find that unsupported claims in long source bundles are missed. The team also wants review checkpoints that can log and score before the report is generated.",
+  "question": "What should the team do?",
+  "options": {
+    "A": "Run an explicit prompt chain with source-level review passes, then run a separate integration pass over the reviewed findings.",
+    "B": "Launch several identical reviewers on the full source bundle and accept findings that appear most often.",
+    "C": "Add confidence scores to every cited claim and route only low-confidence claims to another reviewer.",
+    "D": "Send the complete source bundle to one reviewer and require a longer checklist before report generation."
+  },
+  "correct": "A",
+  "why": "The stronger design is explicit prompt chaining: use separate API calls for focused source-level review, then pass the resulting structured findings into a cross-source integration review. Anthropic documents prompt chaining as a way to break a task into sequential calls when you need visible intermediate outputs, evaluation points, or a fixed pipeline structure. A large context window does not make every large review reliable; Anthropic's context window guidance describes context rot, where accuracy and recall can degrade as token count grows. Smaller local passes reduce competing attention demands, while the integration pass can focus on consistency, conflict reconciliation, and claim-source alignment. Adding a longer checklist, duplicating the same overloaded review, or relying on confidence scores may improve some cases, but none of them changes the underlying shape of the task. The trade-off of explicit chaining is extra orchestration and additional calls, but in return the team gets inspectable review artifacts and a clearer separation between local evidence verification and global synthesis. (Docs: chain prompts, context windows.)",
+  "id": "UC-19",
+  "title": "Prompt chain: local review passes then integration",
+  "task": {
+    "type": "run",
+    "mode": "review",
+    "prompt_template": "Research this topic and deliver a cited report: {{topic}}. Before the report, run the review chain described in your instructions.",
+    "config_change": "Same review mode as UC-06; here evaluate the chain shape: source-level reviewers receive section-sized bundles (smaller than the full synthesis), and the integration pass receives all reviewer outputs."
+  },
+  "expected_outcome": "Section reviewers get bundles smaller than the whole synthesis; the integration reviewer runs last and names conflicts and coverage gaps.",
+  "rubric": [
+    "each section-review packet is smaller than the synthesis packet",
+    "integration pass launched after all section reviews returned",
+    "final report mentions the integration review"
+  ]
+}

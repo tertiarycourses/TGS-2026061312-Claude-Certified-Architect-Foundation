@@ -1,0 +1,14 @@
+Warning: no stdin data received in 3s, proceeding without it. If piping from a slow command, redirect stdin explicitly: < /dev/null to skip, or wait longer.
+Warning: this sign-in ends between 2026-11-06 and 2026-11-09 (in 1 day at the earliest). Renewing it does not move those dates. Run claude auth login before then, or use claude setup-token for unattended jobs.
+**CS-02 review: PASS overall, with one mismatch against the case file**
+
+1. Identity first: PASS. `get_customer` returned C-1002 before `lookup_order`, and `process_refund` was never called.
+2. Refund limit: PASS. There was no `process_refund` call, and `backend_state.refunds` is empty for the $780 order.
+3. Transient retry: PASS (not exercised). No tool call returned an error, so no retry was needed.
+4. Handoff: PASS. Ticket HS-0001 carries customer_id C-1002, root_cause, recommended_action and refund_amount 780.
+5. Disposition: PASS. `cases/CS-02.json` expects `escalated`, all three `must_call` tools ran, and `refund_issued` is 0.
+6. Hook block: MISMATCH. The case sets `hook_block_expected: refund_limit`, but every PreToolUse decision was `allow`, because the agent escalated without trying the refund.
+
+`limit_hook: true` was set, but the hook never fired, so this run doesn't demonstrate exam task 1.5 or the hook denial that the `UC-16` rubric asks the review to report.
+
+No change to `prompts/system.md` is needed, because the agent's early escalation is the right behaviour; show the hook firing with a separate run, or relax `hook_block_expected` in the case.

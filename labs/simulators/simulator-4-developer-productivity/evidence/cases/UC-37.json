@@ -1,0 +1,28 @@
+{
+  "id": "UC-37",
+  "title": "/find-callers with Grep, not Glob or Bash grep",
+  "source": {
+    "practice_test_question": 37,
+    "timestamp": "91:14",
+    "scenario": "Code Generation with Claude Code"
+  },
+  "prompt": "Implement what a /find-callers command would do: locate every reference to the renamed helper `calculate_total` in Python source files only, and give me file:line plus the matching line so I can jump to each. Do not read whole files.",
+  "session_id": "521c12cf-09d1-427c-bbf5-686df377c860",
+  "cost_usd": 0.46694759999999996,
+  "expected_outcome": "One Grep call with pattern calculate_total, glob *.py and output_mode content; no Glob-then-Read-everything and no Bash grep.",
+  "rubric": [
+    {
+      "check": "Grep used with pattern == helper name",
+      "passed": true
+    },
+    {
+      "check": "Grep scoped with a *.py glob and output_mode content",
+      "passed": true
+    },
+    {
+      "check": "no Bash grep and fewer than 3 Read calls",
+      "passed": true
+    }
+  ],
+  "result": "`calculate_total` appears 7 times across 4 Python files: 1 definition, 3 imports and 3 calls. I searched with a single Grep through the `explore` subagent, and no whole files were read.\n\n**`src/billing/invoice.py`**\n```\nsrc/billing/invoice.py:12: def calculate_total(lines, discount=Decimal(\"0\")):\n```\n\n**`src/billing/validation.py`**\n```\nsrc/billing/validation.py:2: from .invoice import calculate_total\nsrc/billing/validation.py:6:     computed = calculate_total(lines)\n```\n\n**`src/legacy/report.py`**\n```\nsrc/legacy/report.py:1: from src.billing.invoice import calculate_total\nsrc/legacy/report.py:5:     return {inv_id: calculate_total(lines) for inv_id, lines in invoices.items()}\n```\n\n**`tests/test_invoice.py`**\n```\ntests/test_invoice.py:2: from src.billing.invoice import calculate_total\ntests/test_invoice.py:6:     assert calculate_total([(2, \"10.00\")]) == Decimal(\"21.80\")\n```\n\nThere are no aliases, comments, docstrings or string references such as `getattr` or `mock.patch` targets. No longer names like `calculate_totals` turned up either.\n\n**Limits of this search:**\n- **Line text:** Indentation may be approximate, because the subagent said Grep may have trimmed leading whitespace. The line numbers are unaffected.\n- **Hidden directories:** I can't confirm folders like `.venv` were searched. Any matches there would be vendored code, not your callers.\n- **Old name:** You called this a renamed helper, and `calculate_total` is the name currently defined. I only searched for that na"
+}

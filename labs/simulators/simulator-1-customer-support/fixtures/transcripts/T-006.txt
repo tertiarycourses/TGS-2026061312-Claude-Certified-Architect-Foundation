@@ -1,0 +1,3 @@
+Customer: ORD-5504 where is it?? a WEEK
+Agent: It shipped and is due 9 November.
+Customer: thats not what the app says but ok

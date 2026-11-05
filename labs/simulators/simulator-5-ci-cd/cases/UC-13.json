@@ -1,0 +1,66 @@
+{
+  "id": "UC-13",
+  "question_n": 13,
+  "timestamp": "30:17",
+  "scenario": "Claude Code for Continuous Integration",
+  "title": "Compact, review-specific tool payloads instead of 40-field dumps",
+  "situation": "Long pull requests are causing the review step to run near the context limit. The trace shows each file-analysis tool call appends a large tool result payload with build metadata, ownership data, full lint output, historical CI runs, and dependency details, even though the reviewer uses only a small subset of those fields.",
+  "question": "What change best addresses the reliability issue?",
+  "options": {
+    "A": "Increase max_tokens for the review response and instruct Claude to ignore irrelevant tool result fields.",
+    "B": "Enable context editing to clear old tool results after the request crosses a configured threshold.",
+    "C": "Change the tool wrapper to return compact, review-specific tool result payloads with only the fields needed.",
+    "D": "Apply prompt caching to the tool definitions and repeated review prefix to reduce context window pressure."
+  },
+  "correct": "C",
+  "why": "Tool-heavy review agents often fail because tool results become part of the conversation context. Anthropic documents that tool definitions and accumulated tool_result blocks can exhaust context in long-running agents, and the context window includes messages, tool results, tool definitions, and generated output. Every field returned by a tool is something Claude must carry forward if it remains in messages; a 40-field payload is not harmless just because the prompt says only a few fields matter. The most reliable fix is to shape the tool output before creating the tool result, returning only the review-relevant evidence needed for the next reasoning step. Other mechanisms solve different problems: prompt caching can reduce billing and latency for repeated prefixes, but cached tokens still count toward the context window; context editing can clear older tool results, but it is not a substitute for designing compact current tool outputs. Tool results are returned inside normal user messages rather than a separate tool role. (Docs: manage tool context, context windows, handle tool calls.)",
+  "type": "run",
+  "concrete_task": "python3 tools/file_analysis.py stock/totals.py --verbose | wc -c  versus  --compact",
+  "setup": {
+    "workdir": "repo"
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "shell",
+      "cmd": "python3 \"{{lab}}/tools/file_analysis.py\" stock/totals.py --verbose | wc -c | tr -d ' '"
+    },
+    {
+      "id": "t2",
+      "kind": "shell",
+      "cmd": "python3 \"{{lab}}/tools/file_analysis.py\" stock/totals.py --compact | wc -c | tr -d ' '"
+    },
+    {
+      "id": "t3",
+      "kind": "shell",
+      "cmd": "python3 \"{{lab}}/tools/file_analysis.py\" stock/totals.py --compact"
+    }
+  ],
+  "expected_outcome": "The verbose analysis payload is tens of kilobytes; the compact one is a few hundred bytes. Shaping the tool result is what keeps a long PR review inside the context window.",
+  "rubric": [
+    {
+      "criterion": "the compact payload is under 5% of the verbose payload",
+      "check": {
+        "type": "ratio_lt",
+        "a": "t2",
+        "b": "t1",
+        "ratio": 0.05
+      }
+    },
+    {
+      "criterion": "the compact payload still carries the fields a reviewer uses (changed lines, functions, tests)",
+      "check": {
+        "type": "regex",
+        "task": "t3",
+        "field": "stdout",
+        "pattern": "changed_lines.*functions.*tests_touching"
+      }
+    },
+    {
+      "criterion": "learner can say why caching or a bigger max_tokens does not shrink the context the model carries",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

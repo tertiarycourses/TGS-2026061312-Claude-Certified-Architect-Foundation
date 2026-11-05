@@ -1,0 +1,107 @@
+{
+  "id": "UC-39",
+  "question_n": 39,
+  "timestamp": "95:06",
+  "title": "Testable report/skip rules beat 'report only high-confidence issues'",
+  "type": "run",
+  "correct": "A",
+  "expected_outcome": "On stock/pricing.py the vague prompt may comment on names and style; the categorical criteria return the None dereference in getPrice and nothing about naming.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 40.6,
+      "exit_code": 0,
+      "command": "claude -p Review stock/pricing.py (added in PR 418). Report only issues you a\u2026 --model claude-opus-5-5 --output-format json --max-turns 4 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"title\": \"CI review findings\", \"type\": \"object\", \"required\": [\"pas\u2026",
+      "subtype": "success",
+      "result": "{\"pass\":\"per-file\",\"findings\":[{\"file\":\"stock/pricing.py\",\"line\":12,\"severity\":\"high\",\"category\":\"bug\",\"detected_pattern\":\"CATALOG.get(sku) result subscripted without a None check: p[\\\"amount\\\"]\",\"issue\":\"getPrice crashes on any SKU not in CATALOG. CATALOG.get(sku) returns None, so p[\\\"amount\\\"] raises TypeError: 'NoneType' object is not subscriptable, which tells the caller nothing about which SKU failed. total_price inherits this, so one unknown SKU fails the whole total. The inline comment shows the None case is known but unhandled. An unknown SKU is ordinary input for a stock API, although nothing in the repo calls this module yet.\",\"suggested_fix\":\"Handle the missing SKU explicitly, for example `if p is None: raise UnknownSkuError(sku)` using a dedicated exception (a KeyError subclass would also work), so the API layer can map it to a not-found response. Do not return 0 as a default, because that would silently under-charge in total_price.\",\"confidence\":0.97},{\"file\":\"stock/pricing.py\",\"line\":8,\"severity\":\"low\",\"category\":\"naming\",\"detected_pattern\":\"Public functions named getPrice (camelCase, line 8) and Apply_Discount (Capitalized_Snake, line 15) beside total_price\",\"issue\":\"The module's three public functions use three naming styles, and getPrice and Apply_Discount break the snake_case convention used across the rest of the package (get_stock, fetch_many, total_qty, low_stock). Nothing outside this file calls them yet, so renaming is cheapest before this API is adopted.\",\"suggested_fix\":\"Rename getPrice to get_price and Apply_Discount to apply_discount, and update the call at line 24.\",\"confidence\":0.92},{\"file\":\"stock/pricing.py\",\"line\":1,\"severity\":\"medium\",\"category\":\"test-coverage\",\"detected_pattern\":\"New module stock/pricing.py with no tests/test_pricing.py and no reference to pricing anywhere under tests/\",\"issue\":\"PR 418 adds this module without the per-module test file that the CLAUDE.md testing standards require. The unknown-SKU crash at line 12 is the kind of user-visible failure a test would have caught.\",\"suggested_fix\":\"Add tests/test_pricing.py covering: a known SKU returns its catalogue amount (A1 gives 12.5); an unknown SKU raises the chosen error; total_price sums several SKUs (A1 + B2 gives 15.5) and returns 0 for an empty list; Apply_Discount(100, 10) gives 90.\",\"confidence\":0.9}]}",
+      "session_id": "9d2ac1fa-7053-40c2-b063-e3b8cc369f57",
+      "total_cost_usd": 0.6112628,
+      "num_turns": 11,
+      "structured_output": {
+        "pass": "per-file",
+        "findings": [
+          {
+            "file": "stock/pricing.py",
+            "line": 12,
+            "severity": "high",
+            "category": "bug",
+            "detected_pattern": "CATALOG.get(sku) result subscripted without a None check: p[\"amount\"]",
+            "issue": "getPrice crashes on any SKU not in CATALOG. CATALOG.get(sku) returns None, so p[\"amount\"] raises TypeError: 'NoneType' object is not subscriptable, which tells the caller nothing about which SKU failed. total_price inherits this, so one unknown SKU fails the whole total. The inline comment shows the None case is known but unhandled. An unknown SKU is ordinary input for a stock API, although nothing in the repo calls this module yet.",
+            "suggested_fix": "Handle the missing SKU explicitly, for example `if p is None: raise UnknownSkuError(sku)` using a dedicated exception (a KeyError subclass would also work), so the API layer can map it to a not-found response. Do not return 0 as a default, because that would silently under-charge in total_price.",
+            "confidence": 0.97
+          },
+          {
+            "file": "stock/pricing.py",
+            "line": 8,
+            "severity": "low",
+            "category": "naming",
+            "detected_pattern": "Public functions named getPrice (camelCase, line 8) and Apply_Discount (Capitalized_Snake, line 15) beside total_price",
+            "issue": "The module's three public functions use three naming styles, and getPrice and Apply_Discount break the snake_case convention used across the rest of the package (get_stock, fetch_many, total_qty, low_stock). Nothing outside this file calls them yet, so renaming is cheapest before this API is adopted.",
+            "suggested_fix": "Rename getPrice to get_price and Apply_Discount to apply_discount, and update the call at line 24.",
+            "confidence": 0.92
+          },
+          {
+            "file": "stock/pricing.py",
+            "line": 1,
+            "severity": "medium",
+            "category": "test-coverage",
+            "detected_pattern": "New module stock/pricing.py with no tests/test_pricing.py and no reference to pricing anywhere under tests/",
+            "issue": "PR 418 adds this module without the per-module test file that the CLAUDE.md testing standards require. The unknown-SKU crash at line 12 is the kind of user-visible failure a test would have caught.",
+            "suggested_fix": "Add tests/test_pricing.py covering: a known SKU returns its catalogue amount (A1 gives 12.5); an unknown SKU raises the chosen error; total_price sums several SKUs (A1 + B2 gives 15.5) and returns 0 for an empty list; Apply_Discount(100, 10) gives 90.",
+            "confidence": 0.9
+          }
+        ]
+      },
+      "permission_denials": [],
+      "is_error": false
+    },
+    "t2": {
+      "kind": "claude",
+      "elapsed_s": 29.1,
+      "exit_code": 0,
+      "command": "claude -p Review stock/pricing.py (added in PR 418).\nREVIEW CRITERIA (explici\u2026 --model claude-opus-5-5 --output-format json --max-turns 4 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"title\": \"CI review findings\", \"type\": \"object\", \"required\": [\"pas\u2026",
+      "subtype": "success",
+      "result": "{\"pass\":\"per-file\",\"findings\":[{\"file\":\"stock/pricing.py\",\"line\":12,\"severity\":\"medium\",\"category\":\"bug\",\"detected_pattern\":\"CATALOG.get(sku) result subscripted without a None check\",\"issue\":\"getPrice's docstring promises the catalogue price for a SKU, but CATALOG.get(sku) returns None for an unknown SKU, so p[\\\"amount\\\"] raises TypeError: 'NoneType' object is not subscriptable. total_price also calls getPrice on each SKU with no guard, so one unknown SKU (for example \\\"C3\\\", which is in the test fixtures but not in CATALOG) fails the whole total with the same unhelpful error.\",\"suggested_fix\":\"Check for the missing entry and raise a clear, documented error: p = CATALOG.get(sku); if p is None: raise KeyError(f\\\"unknown SKU: {sku}\\\"). Then state in the getPrice and total_price docstrings that unknown SKUs raise KeyError.\",\"confidence\":0.9}]}",
+      "session_id": "0d9579e4-d746-4673-b304-ded207440da5",
+      "total_cost_usd": 0.42699750000000003,
+      "num_turns": 11,
+      "structured_output": {
+        "pass": "per-file",
+        "findings": [
+          {
+            "file": "stock/pricing.py",
+            "line": 12,
+            "severity": "medium",
+            "category": "bug",
+            "detected_pattern": "CATALOG.get(sku) result subscripted without a None check",
+            "issue": "getPrice's docstring promises the catalogue price for a SKU, but CATALOG.get(sku) returns None for an unknown SKU, so p[\"amount\"] raises TypeError: 'NoneType' object is not subscriptable. total_price also calls getPrice on each SKU with no guard, so one unknown SKU (for example \"C3\", which is in the test fixtures but not in CATALOG) fails the whole total with the same unhelpful error.",
+            "suggested_fix": "Check for the missing entry and raise a clear, documented error: p = CATALOG.get(sku); if p is None: raise KeyError(f\"unknown SKU: {sku}\"). Then state in the getPrice and total_price docstrings that unknown SKUs raise KeyError.",
+            "confidence": 0.9
+          }
+        ]
+      },
+      "permission_denials": [],
+      "is_error": false
+    }
+  },
+  "restores": [],
+  "cost_usd": 1.0383,
+  "evaluation": [
+    {
+      "criterion": "with categorical criteria the None dereference in getPrice is reported as a bug",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "with categorical criteria no naming or style comment appears",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "compare both outputs: the vague prompt is allowed to return style/naming categories and usually does",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    }
+  ]
+}

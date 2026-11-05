@@ -1,0 +1,272 @@
+{
+  "case_id": "CS-01",
+  "title": "Damaged item with photo, under the limit",
+  "message": "My ceramic table lamp from order ORD-5501 arrived cracked. Photo attached. I want a refund.",
+  "customer": {
+    "email": "meilin@example.com"
+  },
+  "tool_calls": [
+    {
+      "tool": "ToolSearch",
+      "input": {
+        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__recommend_refund,mcp__backend__process_refund,mcp__backend__escalate_to_human",
+        "max_results": 5
+      },
+      "result": null,
+      "is_error": false
+    },
+    {
+      "tool": "get_customer",
+      "input": {
+        "email": "meilin@example.com",
+        "name": ""
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"customer_id\": \"C-1001\", \"name\": \"Mei Lin Tan\", \"email\": \"meilin@example.com\", \"tier\": \"standard\", \"created_at\": \"2026-01-01T00:00:00Z\", \"status\": \"pending\"}"
+          }
+        ]
+      },
+      "is_error": false
+    },
+    {
+      "tool": "lookup_order",
+      "input": {
+        "order_id": "ORD-5501",
+        "customer_id": "C-1001"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"order_id\": \"ORD-5501\", \"customer_id\": \"C-1001\", \"amount\": 120.0, \"item\": \"Ceramic table lamp\", \"placed_at\": \"2026-10-01T00:00:00Z\", \"status\": \"delivered\", \"damage_photo\": true, \"charges\": 1, \"shipped\": true, \"eta\": \"2026-10-06\"}"
+          }
+        ]
+      },
+      "is_error": false
+    },
+    {
+      "tool": "recommend_refund",
+      "input": {
+        "order_id": "ORD-5501",
+        "item_adjustments": [
+          {
+            "sku": "WHOLE",
+            "amount": 120
+          }
+        ],
+        "shipping_refund": 0,
+        "merchandise_credit": 0,
+        "refund_total": 120,
+        "rationale": "Ceramic table lamp arrived cracked; damage_photo is true on the order record and the $120 order amount is within the $500 auto-approval limit."
+      },
+      "result": "{\"validated\": true, \"order_id\": \"ORD-5501\", \"cash_refund\": 120.0, \"merchandise_credit\": 0.0, \"message\": \"Recommendation validated. You may call process_refund for the cash amount.\"}",
+      "is_error": false
+    },
+    {
+      "tool": "process_refund",
+      "input": {
+        "order_id": "ORD-5501",
+        "amount": 120,
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; within auto-approval limit."
+      },
+      "result": "{\"refund_id\": \"RF-59354\", \"order_id\": \"ORD-5501\", \"amount\": 120.0, \"reason\": \"Ceramic table lamp arrived cracked; damage photo on file; within auto-approval limit.\", \"status\": \"issued\"}",
+      "is_error": false
+    }
+  ],
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "tool": "get_customer",
+      "args": {
+        "email": "meilin@example.com",
+        "name": ""
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "get_customer",
+      "raw": {
+        "customer_id": "C-1001",
+        "name": "Mei Lin Tan",
+        "email": "meilin@example.com",
+        "tier": "standard",
+        "created_at": 1767225600,
+        "status": 1
+      },
+      "normalised": {
+        "customer_id": "C-1001",
+        "name": "Mei Lin Tan",
+        "email": "meilin@example.com",
+        "tier": "standard",
+        "created_at": "2026-01-01T00:00:00Z",
+        "status": "pending"
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "ORD-5501",
+        "customer_id": "C-1001"
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "lookup_order",
+      "raw": {
+        "order_id": "ORD-5501",
+        "customer_id": "C-1001",
+        "amount": 120.0,
+        "item": "Ceramic table lamp",
+        "placed_at": 1790812800,
+        "status": 3,
+        "damage_photo": true,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-10-06"
+      },
+      "normalised": {
+        "order_id": "ORD-5501",
+        "customer_id": "C-1001",
+        "amount": 120.0,
+        "item": "Ceramic table lamp",
+        "placed_at": "2026-10-01T00:00:00Z",
+        "status": "delivered",
+        "damage_photo": true,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-10-06"
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "recommend_refund",
+      "args": {
+        "order_id": "ORD-5501",
+        "item_adjustments": [
+          {
+            "sku": "WHOLE",
+            "amount": 120
+          }
+        ],
+        "shipping_refund": 0,
+        "merchandise_credit": 0,
+        "refund_total": 120,
+        "rationale": "Ceramic table lamp arrived cracked; damage_photo is true on the order record and the $120 order amount is within the $500 auto-approval limit."
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "recommend_refund",
+      "raw": {
+        "validated": true,
+        "order_id": "ORD-5501",
+        "cash_refund": 120.0,
+        "merchandise_credit": 0.0,
+        "message": "Recommendation validated. You may call process_refund for the cash amount."
+      },
+      "normalised": {
+        "validated": true,
+        "order_id": "ORD-5501",
+        "cash_refund": 120.0,
+        "merchandise_credit": 0.0,
+        "message": "Recommendation validated. You may call process_refund for the cash amount."
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "process_refund",
+      "args": {
+        "order_id": "ORD-5501",
+        "amount": 120,
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; within auto-approval limit."
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "process_refund",
+      "raw": {
+        "refund_id": "RF-59354",
+        "order_id": "ORD-5501",
+        "amount": 120.0,
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; within auto-approval limit.",
+        "status": "issued"
+      },
+      "normalised": {
+        "refund_id": "RF-59354",
+        "order_id": "ORD-5501",
+        "amount": 120.0,
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; within auto-approval limit.",
+        "status": "issued"
+      }
+    }
+  ],
+  "assistant_text": [
+    "**CASE FACTS**\n- Customer: C-1001 (Mei Lin Tan)\n- Order: ORD-5501, Ceramic table lamp\n- Amount: $120.00, charged once\n- Status: delivered; placed 2026-10-01\n- Damage photo: on file\n- Refund: RF-59354, $120.00, issued\n\nHi Mei Lin, I'm sorry your lamp arrived cracked. I've checked your photo record and issued a full refund of $120.00 to your original payment method. Your refund reference is RF-59354, so keep it handy if you need to contact us about this refund."
+  ],
+  "settings": {
+    "model": "claude-opus-5-5",
+    "gate": true,
+    "limit_hook": true
+  },
+  "turn_replies": [
+    "**CASE FACTS**\n- Customer: C-1001 (Mei Lin Tan)\n- Order: ORD-5501, Ceramic table lamp\n- Amount: $120.00, charged once\n- Status: delivered; placed 2026-10-01\n- Damage photo: on file\n- Refund: RF-59354, $120.00, issued\n\nHi Mei Lin, I'm sorry your lamp arrived cracked. I've checked your photo record and issued a full refund of $120.00 to your original payment method. Your refund reference is RF-59354, so keep it handy if you need to contact us about this refund."
+  ],
+  "result": {
+    "subtype": "success",
+    "stop_reason": "end_turn",
+    "num_turns": 6,
+    "total_cost_usd": 0.41623410000000005,
+    "session_id": "d0e05eb2-a2ba-4f25-8714-7036856e3088",
+    "is_error": false,
+    "terminal_reason": "completed"
+  },
+  "reply": "**CASE FACTS**\n- Customer: C-1001 (Mei Lin Tan)\n- Order: ORD-5501, Ceramic table lamp\n- Amount: $120.00, charged once\n- Status: delivered; placed 2026-10-01\n- Damage photo: on file\n- Refund: RF-59354, $120.00, issued\n\nHi Mei Lin, I'm sorry your lamp arrived cracked. I've checked your photo record and issued a full refund of $120.00 to your original payment method. Your refund reference is RF-59354, so keep it handy if you need to contact us about this refund.",
+  "backend_state": {
+    "refunds": [
+      {
+        "refund_id": "RF-59354",
+        "order_id": "ORD-5501",
+        "amount": 120.0,
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; within auto-approval limit.",
+        "status": "issued"
+      }
+    ],
+    "escalations": [],
+    "validated_refunds": {
+      "ORD-5501": {
+        "refund_total": 120.0,
+        "merchandise_credit": 0.0
+      }
+    },
+    "validation_log": [
+      {
+        "recommendation": {
+          "order_id": "ORD-5501",
+          "item_adjustments": [
+            {
+              "sku": "WHOLE",
+              "amount": 120
+            }
+          ],
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "refund_total": 120,
+          "rationale": "Ceramic table lamp arrived cracked; damage_photo is true on the order record and the $120 order amount is within the $500 auto-approval limit."
+        },
+        "errors": []
+      }
+    ]
+  }
+}

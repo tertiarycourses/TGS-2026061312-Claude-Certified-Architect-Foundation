@@ -1,0 +1,51 @@
+{
+  "id": "UC-32",
+  "question_number": 32,
+  "timestamp": "78:52",
+  "mode": "runnable",
+  "title": "Route nightly reprocessing to the Batches API, keep the upload flow synchronous",
+  "exam_question": "What should the architect recommend?",
+  "correct_option": "A",
+  "correct_option_text": "Route the nightly archive reprocessing through the Message Batches API and keep interactive validation on synchronous Messages API calls.",
+  "why": "Batches cost 50% of standard prices but may take up to 24 hours and carry no latency guarantee. Latency-tolerant work (nightly archive, audits, next-day reports) goes to batch; a user waiting to correct and submit a document stays on synchronous calls. 'Most batches finish within an hour' is not a service level.",
+  "rubric": [
+    "Learner justifies each route by who is waiting and by when the result is needed.",
+    "Learner states the two batch trade-offs (price, processing window) without quoting the 1-hour figure as a guarantee.",
+    "Learner explains why the SLA for a nightly job still needs a submission cut-off time."
+  ],
+  "task": "Run the two workloads from the case file through the routing rule: the interactive upload (one document, user waiting) goes through the synchronous path and is timed; the nightly archive (all documents, reviewed next day) goes through the Message Batches API. Record the routing table and the cost ratio.",
+  "prompt_template": "Workload: {{workload_name}} · blocking: {{blocking}} · deadline: {{deadline}} · documents: {{document_count}} -> route to {{route}}",
+  "routing": [
+    {
+      "workload_name": "interactive_upload",
+      "blocking": true,
+      "deadline": "user is waiting (seconds)",
+      "document_count": 1,
+      "route": "sync Messages API",
+      "cost_multiplier": 1.0,
+      "decision_line": "Workload: interactive_upload · blocking: True · deadline: user is waiting (seconds) · documents: 1 -> route to sync Messages API",
+      "result": {
+        "custom_id": "DOC-01",
+        "routing": "auto_accept",
+        "latency_seconds": 7.89
+      }
+    },
+    {
+      "workload_name": "nightly_archive",
+      "blocking": false,
+      "deadline": "next business day 09:00",
+      "document_count": 7,
+      "route": "Message Batches API",
+      "cost_multiplier": 0.5,
+      "decision_line": "Workload: nightly_archive · blocking: False · deadline: next business day 09:00 · documents: 7 -> route to Message Batches API",
+      "result": {
+        "batch_id": "local_batch_1",
+        "succeeded": 7,
+        "failed": [],
+        "resubmitted": [],
+        "note": "results reviewed next day; up to 24 h processing window, no latency guarantee"
+      }
+    }
+  ],
+  "rule": "blocking user flow -> synchronous; latency-tolerant volume -> batch at 50% price"
+}

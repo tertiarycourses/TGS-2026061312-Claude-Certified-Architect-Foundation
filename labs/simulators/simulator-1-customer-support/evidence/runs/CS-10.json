@@ -1,0 +1,146 @@
+{
+  "case_id": "CS-10",
+  "title": "Frustrated customer, routine case",
+  "message": "This is ridiculous. ORD-5501 shows delivered but I am not sure the tracking is right. Sort it out.",
+  "customer": {
+    "email": "meilin@example.com"
+  },
+  "tool_calls": [
+    {
+      "tool": "ToolSearch",
+      "input": {
+        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__escalate_to_human,mcp__backend__process_refund",
+        "max_results": 4
+      },
+      "result": null,
+      "is_error": false
+    },
+    {
+      "tool": "get_customer",
+      "input": {
+        "email": "meilin@example.com",
+        "name": ""
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"customer_id\": \"C-1001\", \"name\": \"Mei Lin Tan\", \"email\": \"meilin@example.com\", \"tier\": \"standard\", \"created_at\": \"2026-01-01T00:00:00Z\", \"status\": \"pending\"}"
+          }
+        ]
+      },
+      "is_error": false
+    },
+    {
+      "tool": "lookup_order",
+      "input": {
+        "order_id": "ORD-5501",
+        "customer_id": "C-1001"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"order_id\": \"ORD-5501\", \"customer_id\": \"C-1001\", \"amount\": 120.0, \"item\": \"Ceramic table lamp\", \"placed_at\": \"2026-10-01T00:00:00Z\", \"status\": \"delivered\", \"damage_photo\": true, \"charges\": 1, \"shipped\": true, \"eta\": \"2026-10-06\"}"
+          }
+        ]
+      },
+      "is_error": false
+    }
+  ],
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "tool": "get_customer",
+      "args": {
+        "email": "meilin@example.com",
+        "name": ""
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "get_customer",
+      "raw": {
+        "customer_id": "C-1001",
+        "name": "Mei Lin Tan",
+        "email": "meilin@example.com",
+        "tier": "standard",
+        "created_at": 1767225600,
+        "status": 1
+      },
+      "normalised": {
+        "customer_id": "C-1001",
+        "name": "Mei Lin Tan",
+        "email": "meilin@example.com",
+        "tier": "standard",
+        "created_at": "2026-01-01T00:00:00Z",
+        "status": "pending"
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "ORD-5501",
+        "customer_id": "C-1001"
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "lookup_order",
+      "raw": {
+        "order_id": "ORD-5501",
+        "customer_id": "C-1001",
+        "amount": 120.0,
+        "item": "Ceramic table lamp",
+        "placed_at": 1790812800,
+        "status": 3,
+        "damage_photo": true,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-10-06"
+      },
+      "normalised": {
+        "order_id": "ORD-5501",
+        "customer_id": "C-1001",
+        "amount": 120.0,
+        "item": "Ceramic table lamp",
+        "placed_at": "2026-10-01T00:00:00Z",
+        "status": "delivered",
+        "damage_photo": true,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-10-06"
+      }
+    }
+  ],
+  "assistant_text": [
+    "**CASE FACTS**\n- Customer: C-1001 (Mei Lin Tan)\n- Order: ORD-5501, ceramic table lamp, $120.00\n- Status: delivered, shipped\n- Placed: 2026-10-01; ETA: 2026-10-06\n- Charges: 1\n- Damage photo on file: yes\n\nI'm sorry about the frustration, Mei Lin. Our record shows ORD-5501 as delivered. It only shows the 6 October ETA, not a confirmed delivery date or carrier tracking details, so I can't independently confirm the tracking from here.\n\nTo sort this out, please tell me which applies:\n- **The lamp never arrived:** I'll pass this to a specialist to investigate the delivery.\n- **The lamp arrived damaged:** we have a damage photo on file, so confirm this and I'll refund the $120 right away.\n- **The lamp arrived fine:** there's nothing to fix, and the record is correct."
+  ],
+  "settings": {
+    "model": "claude-opus-5-5",
+    "gate": true,
+    "limit_hook": true
+  },
+  "turn_replies": [
+    "**CASE FACTS**\n- Customer: C-1001 (Mei Lin Tan)\n- Order: ORD-5501, ceramic table lamp, $120.00\n- Status: delivered, shipped\n- Placed: 2026-10-01; ETA: 2026-10-06\n- Charges: 1\n- Damage photo on file: yes\n\nI'm sorry about the frustration, Mei Lin. Our record shows ORD-5501 as delivered. It only shows the 6 October ETA, not a confirmed delivery date or carrier tracking details, so I can't independently confirm the tracking from here.\n\nTo sort this out, please tell me which applies:\n- **The lamp never arrived:** I'll pass this to a specialist to investigate the delivery.\n- **The lamp arrived damaged:** we have a damage photo on file, so confirm this and I'll refund the $120 right away.\n- **The lamp arrived fine:** there's nothing to fix, and the record is correct."
+  ],
+  "result": {
+    "subtype": "success",
+    "stop_reason": "end_turn",
+    "num_turns": 4,
+    "total_cost_usd": 0.22668950000000002,
+    "session_id": "cfacf366-30a1-4f3e-ba59-abbc56314cc3",
+    "is_error": false,
+    "terminal_reason": "completed"
+  },
+  "reply": "**CASE FACTS**\n- Customer: C-1001 (Mei Lin Tan)\n- Order: ORD-5501, ceramic table lamp, $120.00\n- Status: delivered, shipped\n- Placed: 2026-10-01; ETA: 2026-10-06\n- Charges: 1\n- Damage photo on file: yes\n\nI'm sorry about the frustration, Mei Lin. Our record shows ORD-5501 as delivered. It only shows the 6 October ETA, not a confirmed delivery date or carrier tracking details, so I can't independently confirm the tracking from here.\n\nTo sort this out, please tell me which applies:\n- **The lamp never arrived:** I'll pass this to a specialist to investigate the delivery.\n- **The lamp arrived damaged:** we have a damage photo on file, so confirm this and I'll refund the $120 right away.\n- **The lamp arrived fine:** there's nothing to fix, and the record is correct.",
+  "backend_state": {
+    "refunds": [],
+    "escalations": []
+  }
+}

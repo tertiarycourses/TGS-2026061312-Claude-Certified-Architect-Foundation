@@ -1,0 +1,4 @@
+Customer: Bookshelf ORD-5508, want to return it, don't like it.
+Agent: That order was delivered on 10 August, so the 30-day window has closed. I cannot approve a change-of-mind return.
+Customer: that's annoying. can I at least get store credit for shipping?
+Agent: Shipping on that order was free, so there is nothing to credit. Sorry.

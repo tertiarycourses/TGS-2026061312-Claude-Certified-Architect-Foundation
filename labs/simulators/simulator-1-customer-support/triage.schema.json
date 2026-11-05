@@ -1,0 +1,73 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "transcript_id",
+    "disposition",
+    "rationale",
+    "refund"
+  ],
+  "properties": {
+    "transcript_id": {
+      "type": "string"
+    },
+    "disposition": {
+      "type": "string",
+      "enum": [
+        "resolved",
+        "escalated",
+        "clarified",
+        "unresolved"
+      ]
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 15
+    },
+    "refund": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shipping_refund",
+        "merchandise_credit",
+        "item_refunds",
+        "refund_total"
+      ],
+      "properties": {
+        "shipping_refund": {
+          "type": "number",
+          "minimum": 0
+        },
+        "merchandise_credit": {
+          "type": "number",
+          "minimum": 0
+        },
+        "item_refunds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "order_id",
+              "amount"
+            ],
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "pattern": "^ORD-[0-9]{4}$"
+              },
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "refund_total": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

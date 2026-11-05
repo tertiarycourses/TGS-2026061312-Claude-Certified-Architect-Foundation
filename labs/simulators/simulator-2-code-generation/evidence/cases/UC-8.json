@@ -1,0 +1,46 @@
+{
+  "id": "UC-8",
+  "question_n": 8,
+  "timestamp": "17:34",
+  "title": "Plan mode before replacing the homegrown authorization layer",
+  "type": "run",
+  "correct": "C",
+  "expected_outcome": "Claude researches src/middleware/authorize.js and its callers and returns a plan; the file-hash table shows zero edits.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 380.7,
+      "exit_code": 0,
+      "command": "claude -p We are replacing the homegrown authorization layer (src/middleware/\u2026 --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode plan --allowedTools Read Grep Glob",
+      "subtype": "success",
+      "result": "I recommend enforcing policy in the API handlers, behind a single new `src/policy/` module, with the repository receiving only plain filter data. The plan is ready for your approval and no code has changed. An independent design review, given the facts but not my view, reached the same pick.\n\n## The boundary options\n\n| Option | Can it enforce \"your own order\"? | Main cost or weakness |\n|---|---|---|\n| **A. Route/middleware** | No, the order isn't loaded yet | Needs a router and `req.user` source, neither of which is in this repo |\n| **B. Handler, with scope passed as data (recommended)** | Yes | Relies on convention, so a test will require every handler to deny by default |\n| **C. Service layer** | Yes, and it also covers non-HTTP callers | Adds a new layer around a single client today |\n| **D. Repository** | Yes, by filtering, but a denial looks like \"not found\" | Ties policy to persistence and fits actions like refunds poorly |\n| **E. Postgres row-level security** | Only as a backstop | Defence in depth, not a replacement |\n\n## What the research found\n- **Smaller than the brief:** there are two call sites, both in `src/api/orders.js`. There is no real middleware, router or `req.user` source, and no authorization tests. This may be only part of the monorepo, which is why the first question below comes first.\n- **Likely security hole:** any `customer` can read any order by ID, and can list all orders from the last 30 days. A straight migration would carry this into the engine, and the fix shouldn't wait for it.\n- **Migration risk:** if the engine is async and a call misses its `await`, `!authorize()` evaluates to `false`, which lets everyone through. The new module returns an object instead, so the same mistake denies access.\n- **Tests don't run today:**\n    - `npm test` and the `npm test -- --changed` check that `CLAUDE.md` requires both fail with `MODULE_NOT_FOUND`.\n    - `moment` isn't installed, so the handlers couldn't be run either; I only read them.\n    - With a working test path, `tests/quantity.test.js:6` still fails.\n\nThe work is six PRs, starting with fixing the tests and pinning current behaviour before any handler changes. Role-based decisions are a small finite table, so an exhaustive parity test can prove the engine matches the old layer, and shadow mode is only needed if the engine is remote.\n\n## Limits of the research\nThe `orderly-docs` MCP server failed to connect, so I couldn't consult any design docs there. Git history is a single commit, so I also couldn't see the engineers' actual positions.\n\n## Questions for you\n1. **Does anything other than these handlers read orders, such as workers, cron jobs or other packages?** I assumed not, based on this repo. If something does, I'd switch to C, and the policy module carries over unchanged.\n2. **Should customers see only their own orders?** I assumed yes, which adds the ownership fix as phase 5. If customers are meant to see all orders and a real router exists elsewhere, A becomes viable and simpler.\n3. **Which engine are you using, and does it run in-process or remotely?** None is named, so I didn't research any. The recommendation holds either way, but a remote engine needs shadow mode to measure latency, and an engine that can't produce filters means writing list scoping by hand.\n4. **Do you approve B and the phased plan?** Plan-approval tools aren't available in this session, so please reply here.\n\nOnce plan mode ends, I can also publish this as a private page for the engineers to review.\n\nThe plan is at `<home>/.claude/plans/we-are-replacing-the-giggly-hejlsberg.md`.",
+      "session_id": "6d99cc6f-b11d-4a19-91c7-5f11b3c6bc5d",
+      "total_cost_usd": 2.0470006999999995,
+      "num_turns": 28,
+      "structured_output": null,
+      "permission_denials": [],
+      "is_error": false,
+      "files_changed": []
+    }
+  },
+  "restores": [],
+  "cost_usd": 2.047,
+  "evaluation": [
+    {
+      "criterion": "plan mode edited no files",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the output is a plan that names the authorization boundary",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the plan references the real callers found by research",
+      "pass": true,
+      "note": ""
+    }
+  ]
+}

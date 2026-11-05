@@ -1,0 +1,49 @@
+{
+  "id": "UC-07",
+  "title": "Path-scoped testing rule (rules_sim)",
+  "source": {
+    "practice_test_question": 7,
+    "timestamp": "15:12",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "run",
+  "command": "python3 -B rules_sim.py",
+  "config_change": "rules_sim.py writes four placements of the same guidance into repo-rules/: A .claude/rules/testing.md without frontmatter, B root CLAUDE.md, C CLAUDE.md copied into each of the three folders, D .claude/rules/testing.md with paths: [\"**/*.test.ts\"]. Each placement is exercised by two `claude -p` edits.",
+  "cost_usd": 3.1097232999999997,
+  "matrix": {
+    "A": {
+      "copies": 1,
+      "test": true,
+      "impl": true
+    },
+    "B": {
+      "copies": 1,
+      "test": true,
+      "impl": true
+    },
+    "C": {
+      "copies": 3,
+      "test": true,
+      "impl": true
+    },
+    "D": {
+      "copies": 1,
+      "test": true,
+      "impl": false
+    }
+  },
+  "rubric": [
+    {
+      "check": "D: token present on the test edit and absent on the implementation edit, one copy",
+      "passed": true
+    },
+    {
+      "check": "A and B: token present on both edits (filename and root placement do not scope)",
+      "passed": true
+    },
+    {
+      "check": "C: duplicate count equals the folder count (3) and the token appears for the implementation edit too",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "UC-15",
+  "question_n": 15,
+  "timestamp": "35:10",
+  "scenario": "Claude Code for Continuous Integration",
+  "title": "Separate review and test-generation steps with role-specific tools and a forced output contract",
+  "situation": "The system uses one Claude call for pull request review, test generation, and PR metadata updates. Logs show the review phase sometimes invokes test-writing tools for non-testable style comments, then returns prose instead of the structured finding object your pipeline expects.",
+  "question": "What change best improves tool selection reliability while preserving automated test generation elsewhere in the pipeline?",
+  "options": {
+    "A": "Keep one shared CI step, expose all tools with sharper descriptions, and set tool_choice to any for review output.",
+    "B": "Keep one shared CI step, namespace tool names by category, and leave tool_choice on auto for model flexibility.",
+    "C": "Expose all CI tools to both steps, set tool_choice to none during review, and parse JSON from assistant text.",
+    "D": "Separate review and test generation steps, expose only role-specific tools to each step, and force the review step's reporting tool with tool_choice."
+  },
+  "correct": "D",
+  "why": "When a workflow has distinct responsibilities, tool access should be scoped to the role performing that step. A review step should not have write-test or PR-label mutation tools if its job is to produce review findings, because every extra tool increases the chance of an irrelevant action being selected. In the Messages API, client tools are declared in the top-level tools parameter and each tool definition includes a name, description, and input_schema. Anthropic emphasizes that tool descriptions are the primary steering mechanism for tool selection, but description quality is not a substitute for removing tools unrelated to the agent's current role. tool_choice is the control to use when the pipeline requires a tool call: {\"type\": \"any\"} forces one of the available tools, while {\"type\": \"tool\", \"name\": ...} forces a specific named tool. Forcing the review reporting tool lets the pipeline receive structured findings while a separate test generation step keeps its own file-writing tools. (Docs: implement tool use, tool_choice.)",
+  "type": "run",
+  "concrete_task": "two claude -p calls with different --allowedTools and --json-schema contracts (the CLI form of role-scoped tools plus a forced reporting tool)",
+  "setup": {
+    "workdir": "repo"
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "schema": "finding.schema.json",
+      "max_turns": 4,
+      "prompt": "REVIEW STEP ONLY. Read stock/totals.py. REVIEW CRITERIA (explicit, categorical; never \"be conservative\")\n\nReport a finding ONLY when one of these holds:\n- bug: the code's behaviour contradicts the function name, docstring, or an adjacent test.\n- security: untrusted input reaches SQL, shell, file paths or HTML without validation or parameterisation.\n- data-loss: a write, delete or migration can drop or overwrite records without a guard.\n- contract: a public signature, return shape or error code changes without a matching caller update.\n\nDo NOT report:\n- formatting, naming, import order, comment style;\n- a pattern already used elsewhere in the same file or module;\n- missing tests (the test-generation step handles those).\n\nSeverity:\n- critical: exploitable security flaw or guaranteed data loss (e.g. f-string SQL with request input).\n- high: wrong result on common input (e.g. off-by-one in a loop boundary used by every request).\n- medium: wrong result on an edge case (e.g. None not handled when the caller can pass None).\n- low: contract drift with no current caller impact.\n\nFEW-SHOT EXAMPLES\n\nExample 1 (report)\n  diff: cursor.execute(f\"SELECT * FROM stock WHERE sku = '{sku}'\")\n  finding: {\"severity\": \"critical\", \"category\": \nSet pass to \"per-file\". Return findings only; do not propose tests."
+    },
+    {
+      "id": "t2",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "schema": "test-proposals.schema.json",
+      "max_turns": 4,
+      "prompt": "TEST GENERATION STEP ONLY. Read tests/ and stock/totals.py. Propose at most two new pytest cases for total_qty; a scenario already covered goes in skipped_as_duplicate."
+    }
+  ],
+  "expected_outcome": "The review step gets read-only tools and the finding schema; the test step gets its own schema. Each returns structured output, never prose. In the Messages API the same guarantee is tool_choice {type: tool, name: report_findings}.",
+  "rubric": [
+    {
+      "criterion": "the review step returned a schema-valid finding object, not prose",
+      "check": {
+        "type": "structured_present",
+        "task": "t1"
+      }
+    },
+    {
+      "criterion": "the review step reported the loop bug and nothing about tests",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "field": "structured_output",
+        "pattern": "range\\(1|off.by.one|first (item|element)"
+      }
+    },
+    {
+      "criterion": "the test step returned its own contract with the duplicate skipped",
+      "check": {
+        "type": "regex",
+        "task": "t2",
+        "field": "structured_output",
+        "pattern": "test_total_counts_all_items"
+      }
+    }
+  ]
+}

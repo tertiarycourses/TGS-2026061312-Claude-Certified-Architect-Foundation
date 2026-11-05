@@ -1,0 +1,69 @@
+{
+  "id": "UC-2",
+  "question_n": 2,
+  "timestamp": "03:07",
+  "scenario": "Claude Code for Continuous Integration",
+  "title": "Subagent findings must be pasted into the synthesis subagent's prompt",
+  "situation": "The coordinator delegates pull request review work to separate subagents for security, test coverage, and maintainability. Each subagent returns useful findings to the coordinator, but the final review summary often omits specific file paths, failing test names, and evidence snippets that the coordinator already received.",
+  "question": "What change best addresses this reliability issue?",
+  "options": {
+    "A": "Tell the review synthesis subagent to infer missing details from the coordinator's earlier conversation history.",
+    "B": "Run the synthesis subagent before the specialized review subagents to reduce context size.",
+    "C": "Pass each prior subagent's complete structured findings directly into the review synthesis subagent's prompt.",
+    "D": "Store the security and test coverage instructions in CLAUDE.md for the next CI pipeline run."
+  },
+  "correct": "C",
+  "why": "In a multi-agent review workflow, the coordinator is responsible for moving information between specialized workers. Because subagents are separate agent instances, normal (named) subagents run in fresh isolated conversations and do not automatically receive the parent conversation history or prior tool results. The reliable pattern is to pass prior outputs as structured context in the Agent tool prompt, for example findings grouped by file, severity, evidence excerpt, command output, and recommended fix. The synthesis subagent can also have its own system prompt, tool definitions, and potentially memory such as CLAUDE.md, but those do not replace the need to provide the run-specific findings it must synthesize. Asking the synthesis subagent to infer from another agent's history is an anti-pattern for orchestration reliability. CLAUDE.md is useful for stable project guidance, but it is not a substitute for passing pull-request-specific findings into the active handoff. (Docs: Agent SDK subagents.)",
+  "type": "run",
+  "concrete_task": "python3 -B ci_subagents.py --pass-findings ; python3 -B ci_subagents.py --lossy ; python3 -B ci_subagents.py --compare",
+  "setup": {
+    "workdir": "repo"
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "shell",
+      "cmd": "python3 -B \"{{lab}}/ci_subagents.py\" --pass-findings --evaluate-only-if-cached || python3 -B \"{{lab}}/ci_subagents.py\" --pass-findings"
+    },
+    {
+      "id": "t2",
+      "kind": "shell",
+      "cmd": "python3 -B \"{{lab}}/ci_subagents.py\" --lossy --evaluate-only-if-cached || python3 -B \"{{lab}}/ci_subagents.py\" --lossy"
+    },
+    {
+      "id": "t3",
+      "kind": "shell",
+      "cmd": "python3 -B \"{{lab}}/ci_subagents.py\" --compare"
+    }
+  ],
+  "expected_outcome": "ci_subagents.py --pass-findings keeps the file paths, line numbers and test names in the final PR comment; --lossy drops most of them. The evaluate step prints the preservation percentages.",
+  "rubric": [
+    {
+      "criterion": "pass-findings mode preserves at least 80% of the file paths the reviewers reported",
+      "check": {
+        "type": "regex",
+        "task": "t3",
+        "field": "stdout",
+        "pattern": "pass-findings.*paths (8\\d|9\\d|100)%"
+      }
+    },
+    {
+      "criterion": "lossy mode preserves fewer paths and test names than pass-findings mode",
+      "check": {
+        "type": "regex",
+        "task": "t3",
+        "field": "stdout",
+        "pattern": "VERDICT: pass-findings keeps more"
+      }
+    },
+    {
+      "criterion": "the coordinator spawned the three reviewers in one response (parallel Agent calls)",
+      "check": {
+        "type": "regex",
+        "task": "t3",
+        "field": "stdout",
+        "pattern": "parallel spawn: 3"
+      }
+    }
+  ]
+}

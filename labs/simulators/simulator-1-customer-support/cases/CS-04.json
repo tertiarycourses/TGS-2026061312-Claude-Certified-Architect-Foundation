@@ -1,0 +1,27 @@
+{
+  "case_id": "CS-04",
+  "title": "Two concerns in one message",
+  "exam_task": "1.4 decompose multi-concern request",
+  "customer": {
+    "email": "meilin@example.com"
+  },
+  "message": "I was charged twice for ORD-5503, and also when will ORD-5504 arrive?",
+  "expected": {
+    "disposition": "resolved",
+    "must_call": [
+      "get_customer",
+      "lookup_order",
+      "process_refund"
+    ],
+    "refund_issued": 45.0,
+    "orders_touched": [
+      "ORD-5503",
+      "ORD-5504"
+    ]
+  },
+  "rubric": {
+    "both_orders": "lookup_order was called for ORD-5503 and ORD-5504",
+    "duplicate_refunded": "process_refund issued $45 for the extra charge on ORD-5503",
+    "unified": "one reply covers both the refund and the ORD-5504 eta"
+  }
+}

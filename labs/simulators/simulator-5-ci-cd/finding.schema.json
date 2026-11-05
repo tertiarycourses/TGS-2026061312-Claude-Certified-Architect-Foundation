@@ -1,0 +1,77 @@
+{
+  "title": "CI review findings",
+  "type": "object",
+  "required": [
+    "pass",
+    "findings"
+  ],
+  "properties": {
+    "pass": {
+      "type": "string",
+      "enum": [
+        "per-file",
+        "integration"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "file",
+          "line",
+          "severity",
+          "category",
+          "detected_pattern",
+          "issue",
+          "suggested_fix",
+          "confidence"
+        ],
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "bug",
+              "security",
+              "data-loss",
+              "contract"
+            ]
+          },
+          "detected_pattern": {
+            "type": "string",
+            "description": "the code construct that triggered the finding, for false-positive analysis"
+          },
+          "issue": {
+            "type": "string"
+          },
+          "suggested_fix": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

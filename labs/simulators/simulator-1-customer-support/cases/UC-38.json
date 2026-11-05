@@ -1,0 +1,16 @@
+{
+  "uc": "UC-38",
+  "question": 38,
+  "timestamp": "93:35",
+  "topic": "CI review hangs without -p",
+  "situation": "A nightly PR check prints the prompt then waits for a terminal user until the runner times out.",
+  "correct": "D: run Claude Code with -p and provide the review prompt non-interactively.",
+  "why": "Plan mode, a shared slash command or a CLAUDE.md line do not change the execution mode; only print mode does.",
+  "run": [
+    "./nightly_check.sh"
+  ],
+  "observe": "Same evidence as UC-18; compare with running plain `claude` in a terminal, which waits for input.",
+  "rubric": [
+    "the learner can say which of the four options changes execution mode"
+  ]
+}

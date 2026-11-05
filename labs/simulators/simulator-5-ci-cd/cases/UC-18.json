@@ -1,0 +1,62 @@
+{
+  "id": "UC-18",
+  "question_n": 18,
+  "timestamp": "42:58",
+  "scenario": "Customer Support Resolution Agent",
+  "title": "Print mode is what lets a CI job finish",
+  "situation": "Your CI job runs a nightly support triage check and needs Claude Code to process a prompt, write the result to standard output, and exit without waiting for a developer. The current job launches Claude Code and intermittently hangs in the runner.",
+  "question": "What change best fits this automated workflow?",
+  "options": {
+    "A": "Invoke Claude Code with claude -p or claude --print in the job.",
+    "B": "Launch plain claude and add an instruction telling Claude to exit after answering.",
+    "C": "Add --output-format json to plain claude and parse the response from stdout.",
+    "D": "Wrap the interactive claude command in a timeout and retry the job on failure."
+  },
+  "correct": "A",
+  "why": "For automated jobs, the key distinction is between an interactive Claude Code session and print mode. The documented CLI pattern is claude -p \"query\" or claude --print \"query\", which runs the request non-interactively and then exits, making it suitable for scripts and CI/CD pipelines. Print mode behaves like a Unix-style tool: it can read from stdin and write to stdout, so a pipeline can pass prompt content from files or earlier commands. If the triage job later needs machine-readable output, it can combine print mode with options such as --output-format json, but structured output does not replace the need to invoke non-interactive mode. The anti-pattern is trying to make an interactive session reliable by adding prompt instructions, timeouts, or retries; those do not change the CLI execution mode and leave the pipeline dependent on behavior meant for a human-in-the-loop terminal session. (Docs: Claude Code CLI reference, run Claude Code programmatically.)",
+  "type": "run",
+  "concrete_task": "claude -p \"<triage prompt>\" --output-format json  (compare: plain `claude` opens an interactive session and the runner waits forever)",
+  "setup": {
+    "workdir": "repo"
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "max_turns": 5,
+      "prompt": "Nightly support triage check: read only stock/jobs.py and answer in two lines whether the sync job can raise for an unknown SKU."
+    }
+  ],
+  "expected_outcome": "claude -p processes the prompt, writes one JSON envelope to stdout and exits well inside the job timeout; no terminal is ever waited on.",
+  "rubric": [
+    {
+      "criterion": "the job exited on its own with a JSON envelope (session_id present)",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "field": "session_id",
+        "pattern": "^[0-9a-f-]{36}$"
+      }
+    },
+    {
+      "criterion": "it returned inside a CI-friendly time budget",
+      "check": {
+        "type": "elapsed_lt",
+        "task": "t1",
+        "seconds": 300
+      }
+    },
+    {
+      "criterion": "learner can explain why timeouts, retries or 'please exit' instructions do not change the execution mode",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

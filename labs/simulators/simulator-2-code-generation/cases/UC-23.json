@@ -1,0 +1,154 @@
+{
+  "id": "UC-23",
+  "question_n": 23,
+  "timestamp": "56:06",
+  "scenario": "Code Generation with Claude Code",
+  "title": "Tagged examples stabilise an ambiguous /task command",
+  "situation": "Your team's Claude Code skill / custom command, invoked as /task, is meant to decide whether to investigate, plan, or modify code. In evals, ambiguous requests such as \"clean this up\", \"look into this error\", and \"can you improve this module\" produce inconsistent behavior. Detailed written criteria have not stabilized the boundary.",
+  "question": "What should you change next?",
+  "options": {
+    "A": "Add two to four tagged examples showing similar ambiguous requests, the selected response path, and concise reasoning against plausible alternatives.",
+    "B": "Add a stronger instruction that direct file edits must be avoided whenever the developer's request could imply planning.",
+    "C": "Add a large collection of untagged past transcripts so Claude can infer the team's preferred behavior from volume.",
+    "D": "Add a longer checklist that enumerates every phrase that should trigger investigation, planning, or code modification."
+  },
+  "correct": "A",
+  "why": "When a prompt fails on ambiguous decision boundaries, targeted examples usually outperform more abstract instruction text. The useful pattern is not merely showing the final answer but showing why one action was chosen over another plausible action, such as planning instead of editing or investigating instead of proposing a refactor. For a Claude Code skill or custom command invoked as a slash command, the examples should mirror real developer requests and be clearly separated from the live input. Anthropic recommends examples that are relevant, diverse, and structured with individual <example> tags for clear delimiting, which helps Claude distinguish reusable behavioral guidance from the user's current request. The distractors all miss a key trade-off: a blanket avoid-edits rule improves safety at the cost of over-blocking useful work, a phrase checklist is brittle, and unstructured transcripts can introduce accidental patterns. A compact set of targeted examples gives Claude a clear model of the team's intended judgment without turning the command into an inflexible decision tree. (Docs: Claude prompting best practices on examples, explicit instructions, and XML structure.)",
+  "type": "run",
+  "concrete_task": "claude -p \"/task <request>\" --json-schema '{path, reasoning}' three times; compare with workspace/.claude/commands/task.md",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "reasoning"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "enum": [
+              "investigate",
+              "plan",
+              "modify"
+            ]
+          },
+          "reasoning": {
+            "type": "string"
+          }
+        }
+      },
+      "max_turns": 6,
+      "prompt": "/task look into this error: TypeError in formatDate"
+    },
+    {
+      "id": "t2",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "reasoning"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "enum": [
+              "investigate",
+              "plan",
+              "modify"
+            ]
+          },
+          "reasoning": {
+            "type": "string"
+          }
+        }
+      },
+      "max_turns": 6,
+      "prompt": "/task can you improve this module src/api/orders.js"
+    },
+    {
+      "id": "t3",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "reasoning"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "enum": [
+              "investigate",
+              "plan",
+              "modify"
+            ]
+          },
+          "reasoning": {
+            "type": "string"
+          }
+        }
+      },
+      "max_turns": 6,
+      "prompt": "/task clean this up: remove the unused imports in src/db/orderRepository.js"
+    }
+  ],
+  "expected_outcome": "With three <example> blocks in .claude/commands/task.md, the three ambiguous requests classify as investigate / plan / modify.",
+  "rubric": [
+    {
+      "criterion": "'look into this error' -> investigate",
+      "check": {
+        "type": "json_path",
+        "task": "t1",
+        "path": "path",
+        "equals": "investigate"
+      }
+    },
+    {
+      "criterion": "'can you improve this module' -> plan",
+      "check": {
+        "type": "json_path",
+        "task": "t2",
+        "path": "path",
+        "equals": "plan"
+      }
+    },
+    {
+      "criterion": "'clean this up' with a named file -> modify",
+      "check": {
+        "type": "json_path",
+        "task": "t3",
+        "path": "path",
+        "equals": "modify"
+      }
+    }
+  ]
+}

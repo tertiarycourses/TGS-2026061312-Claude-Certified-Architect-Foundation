@@ -1,0 +1,239 @@
+{
+  "model": "claude-opus-5-5",
+  "tag": "",
+  "cases": 13,
+  "passed": 13,
+  "fcr_percent": 100.0,
+  "target_percent": 80,
+  "meets_target": true,
+  "total_cost_usd": 5.6893,
+  "rows": [
+    {
+      "case_id": "CS-01",
+      "title": "Damaged item with photo, under the limit",
+      "exam_task": "1.1 agentic loop \u00b7 1.4 prerequisite gate",
+      "expected": "resolved",
+      "observed": "resolved",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "called:process_refund": true,
+        "not_called:escalate_to_human": true,
+        "verified_before_order_ops": true,
+        "refund_amount": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.41623410000000005
+    },
+    {
+      "case_id": "CS-02",
+      "title": "Damaged item above the $500 auto-approval limit",
+      "exam_task": "1.5 hook blocks policy-violating action",
+      "expected": "escalated",
+      "observed": "escalated",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "called:escalate_to_human": true,
+        "verified_before_order_ops": true,
+        "refund_amount": true,
+        "limit_respected": true,
+        "handoff_complete": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.22655680000000003
+    },
+    {
+      "case_id": "CS-03",
+      "title": "Order volunteered, identity never verified",
+      "exam_task": "1.4 programmatic prerequisite (12% skip problem)",
+      "expected": "resolved",
+      "observed": "resolved",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "verified_before_order_ops": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.3855265
+    },
+    {
+      "case_id": "CS-04",
+      "title": "Two concerns in one message",
+      "exam_task": "1.4 decompose multi-concern request",
+      "expected": "resolved",
+      "observed": "resolved",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "called:process_refund": true,
+        "verified_before_order_ops": true,
+        "refund_amount": true,
+        "looked_up:ORD-5503": true,
+        "looked_up:ORD-5504": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.41334540000000003
+    },
+    {
+      "case_id": "CS-05",
+      "title": "Explicit request for a human",
+      "exam_task": "5.2 honour the customer's request immediately",
+      "expected": "escalated",
+      "observed": "escalated",
+      "checks": {
+        "called:escalate_to_human": true,
+        "not_called:lookup_order": true,
+        "not_called:process_refund": true,
+        "handoff_complete": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.35266119999999995
+    },
+    {
+      "case_id": "CS-06",
+      "title": "Transient backend timeout",
+      "exam_task": "2.2 structured errors, retryable vs not",
+      "expected": "resolved",
+      "observed": "resolved",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "verified_before_order_ops": true,
+        "retried_after_transient": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.36877099999999996
+    },
+    {
+      "case_id": "CS-07",
+      "title": "Return inside the window",
+      "exam_task": "policy lookup before action",
+      "expected": "resolved",
+      "observed": "resolved",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "not_called:escalate_to_human": true,
+        "verified_before_order_ops": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.37990930000000006
+    },
+    {
+      "case_id": "CS-08",
+      "title": "Policy gap: competitor price match",
+      "exam_task": "5.2 escalate on policy gap, not complexity",
+      "expected": "escalated",
+      "observed": "escalated",
+      "checks": {
+        "called:get_customer": true,
+        "called:escalate_to_human": true,
+        "verified_before_order_ops": true,
+        "refund_amount": true,
+        "handoff_complete": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.3968770999999999
+    },
+    {
+      "case_id": "CS-09",
+      "title": "Ambiguous identity: two customers with the same name",
+      "exam_task": "5.2 ask for another identifier, never pick by heuristic",
+      "expected": "clarified",
+      "observed": "clarified",
+      "checks": {
+        "called:get_customer": true,
+        "not_called:lookup_order": true,
+        "not_called:process_refund": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.3528278
+    },
+    {
+      "case_id": "CS-10",
+      "title": "Frustrated customer, routine case",
+      "exam_task": "5.2 sentiment is not an escalation trigger",
+      "expected": "resolved",
+      "observed": "resolved",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "not_called:escalate_to_human": true,
+        "verified_before_order_ops": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.22668950000000002
+    },
+    {
+      "case_id": "CS-11",
+      "title": "Refund outside the return window: the tool says no (isError)",
+      "exam_task": "2.2 MCP isError with structured failure details \u00b7 practice test Q29",
+      "expected": "resolved",
+      "observed": "resolved",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "verified_before_order_ops": true,
+        "refund_amount": true,
+        "tool_error_surfaced": true,
+        "no_false_success": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.3768521
+    },
+    {
+      "case_id": "CS-12",
+      "title": "Long multi-order conversation: case facts survive summarisation",
+      "exam_task": "5.1 structured case-facts block \u00b7 practice test Q40",
+      "expected": "resolved",
+      "observed": "resolved",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "called:process_refund": true,
+        "verified_before_order_ops": true,
+        "refund_amount": true,
+        "refund_on_right_order": true,
+        "case_facts_every_turn": true,
+        "looked_up:ORD-5501": true,
+        "looked_up:ORD-5503": true,
+        "looked_up:ORD-5504": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 1.3749417000000002
+    },
+    {
+      "case_id": "CS-13",
+      "title": "Partial refund with store credit: shape is not meaning",
+      "exam_task": "4.3/4.4 business-rule validation before refund execution \u00b7 practice test Q4",
+      "expected": "resolved",
+      "observed": "resolved",
+      "checks": {
+        "called:get_customer": true,
+        "called:lookup_order": true,
+        "called:recommend_refund": true,
+        "called:process_refund": true,
+        "verified_before_order_ops": true,
+        "refund_amount": true,
+        "validated_before_refund": true,
+        "credit_not_cash": true,
+        "disposition": true
+      },
+      "passed": true,
+      "cost_usd": 0.41809120000000005
+    }
+  ]
+}

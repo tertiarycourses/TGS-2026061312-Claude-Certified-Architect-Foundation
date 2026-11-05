@@ -1,0 +1,27 @@
+{
+  "id": "UC-D1",
+  "title": "Edit fallback when the anchor is not unique",
+  "source": {
+    "task_statement": "2.5 Select and apply built-in tools",
+    "scenario": "Developer Productivity with Claude"
+  },
+  "prompt": "In src/billing/invoice.py, make calculate_total return the total quantized to Decimal('0.01') with ROUND_HALF_UP. Try Edit with the smallest anchor first; if it fails because the anchor is not unique, fall back to Read + Write. Then run python3 -m pytest -q.",
+  "session_id": "fb614469-d12d-448b-b289-8beaeb7b3e99",
+  "cost_usd": 0.2907485,
+  "expected_outcome": "Edit attempted; either a non-unique failure followed by Write, or a widened unique Edit; pytest passes.",
+  "rubric": [
+    {
+      "check": "Edit attempted on invoice.py",
+      "passed": true
+    },
+    {
+      "check": "after an Edit failure a Write (or a second unique Edit) lands the change",
+      "passed": true
+    },
+    {
+      "check": "pytest exits 0 and quantize present",
+      "passed": true
+    }
+  ],
+  "result": "`calculate_total` now returns the total quantized to `Decimal(\"0.01\")` with `ROUND_HALF_UP`, and `python3 -m pytest -q` passes (2 passed).\n\n- **Edit attempt:** the smallest anchor, `    return total`, matched twice (in `line_total` at line 9 and `calculate_total` at line 16), so Edit failed. I then used Read + Write as you specified.\n- **The change in `src/billing/invoice.py`:**\n  - Line 2 now imports `ROUND_HALF_UP` as well as `Decimal`.\n  - Line 16 is now `return total.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP)`.\n- **`line_total` is still unrounded:** rounding happens once, on the final total after discount and tax, so per-line rounding errors can't build up.\n\n**Not checked:** the architecture doc says `validation.py` compares against stated totals and legacy `report.py` wraps `calculate_total`. I didn't read either file, and the 2 passing tests may not cover them. Anything there that relied on more than two decimal places could now behave differently, for example if `validation.py` compares totals exactly against unrounded values.\n\nI logged the change and this open check in `NOTES.md`."
+}

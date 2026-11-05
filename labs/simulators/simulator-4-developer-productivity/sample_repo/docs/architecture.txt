@@ -1,0 +1,2 @@
+Billing module: invoice.py computes totals; validation.py compares against stated totals.
+Legacy report.py wraps calculate_total for the monthly job.

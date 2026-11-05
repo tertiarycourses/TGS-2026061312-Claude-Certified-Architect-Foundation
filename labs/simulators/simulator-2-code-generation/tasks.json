@@ -1,0 +1,5 @@
+[
+  {"task_id": "T1", "title": "Null date crashes the invoice export", "files_touched": 1, "valid_approaches": 1, "architectural_decision": false, "stack_trace": true},
+  {"task_id": "T2", "title": "Migrate from moment to date-fns across the app", "files_touched": 47, "valid_approaches": 2, "architectural_decision": false, "stack_trace": false},
+  {"task_id": "T3", "title": "Add real-time order notifications (websocket vs SSE vs polling)", "files_touched": 12, "valid_approaches": 3, "architectural_decision": true, "stack_trace": false}
+]

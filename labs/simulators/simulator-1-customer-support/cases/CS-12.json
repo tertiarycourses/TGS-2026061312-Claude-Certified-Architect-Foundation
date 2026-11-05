@@ -1,0 +1,38 @@
+{
+  "case_id": "CS-12",
+  "title": "Long multi-order conversation: case facts survive summarisation",
+  "exam_task": "5.1 structured case-facts block \u00b7 practice test Q40",
+  "practice_test": {
+    "question": 40,
+    "timestamp": "97:39"
+  },
+  "customer": {
+    "email": "meilin@example.com"
+  },
+  "turns": [
+    "Hi, two things. My lamp from ORD-5501 arrived cracked, photo attached, and I think I was double charged on ORD-5503. Please check both and tell me what you find before you refund anything.",
+    "Thanks. Can you also tell me when ORD-5504 is arriving?",
+    "OK. Now please process the refund for the double charge only. Not the lamp yet, I want to think about whether I keep it."
+  ],
+  "message": "(multi-turn, see turns)",
+  "expected": {
+    "disposition": "resolved",
+    "must_call": [
+      "get_customer",
+      "lookup_order",
+      "process_refund"
+    ],
+    "refund_issued": 45.0,
+    "orders_touched": [
+      "ORD-5501",
+      "ORD-5503",
+      "ORD-5504"
+    ],
+    "refund_order": "ORD-5503"
+  },
+  "rubric": {
+    "right_order": "the only refund issued is $45 on ORD-5503, not $120 on ORD-5501",
+    "case_facts_each_turn": "every reply opens with a CASE FACTS block carrying all three order ids and amounts",
+    "lamp_deferred": "the final reply confirms the lamp refund was not processed yet"
+  }
+}

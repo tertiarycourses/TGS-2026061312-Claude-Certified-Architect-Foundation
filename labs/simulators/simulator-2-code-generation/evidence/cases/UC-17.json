@@ -1,0 +1,25 @@
+{
+  "id": "UC-17",
+  "question_n": 17,
+  "timestamp": "40:41",
+  "title": "Where a tool_result belongs in the next request",
+  "type": "discussion",
+  "correct": "C",
+  "expected_outcome": "Append the assistant turn that contains the tool_use block, then a user turn whose first content block is a tool_result with the matching tool_use_id. Text summaries or a wrong role break the link and Claude re-requests the tool.",
+  "model": "claude-opus-5-5",
+  "tasks": {},
+  "note": "discussion use case: no runnable step; expected answer recorded",
+  "cost_usd": 0,
+  "evaluation": [
+    {
+      "criterion": "learner states that tool_result goes in a user message immediately after the assistant tool_use message",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    },
+    {
+      "criterion": "learner names tool_use_id as the link between request and result",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    }
+  ]
+}

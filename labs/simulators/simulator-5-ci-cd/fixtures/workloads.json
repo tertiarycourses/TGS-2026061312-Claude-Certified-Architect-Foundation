@@ -1,0 +1,5 @@
+[
+  {"workload": "pre-merge review", "blocking": true, "latency_tolerance_hours": 0.1, "nightly": false},
+  {"workload": "technical debt report", "blocking": false, "latency_tolerance_hours": 24, "nightly": true},
+  {"workload": "weekly test-gap audit", "blocking": false, "latency_tolerance_hours": 48, "nightly": true}
+]

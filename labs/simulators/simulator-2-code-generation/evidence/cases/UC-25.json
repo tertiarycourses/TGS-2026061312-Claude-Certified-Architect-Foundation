@@ -1,0 +1,68 @@
+{
+  "id": "UC-25",
+  "question_n": 25,
+  "timestamp": "61:17",
+  "title": "Delegation tool must be auto-approved for a fan-out command",
+  "type": "run",
+  "correct": "A",
+  "expected_outcome": "With the delegation tool disallowed the coordinator cannot spawn the reviewer; with Agent allowed the subagent runs and its answer comes back.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 10.1,
+      "exit_code": 0,
+      "command": "claude -p Use the style-reviewer agent to review src/utils/quantity.js and re\u2026 --model claude-opus-5-5 --output-format json --max-turns 3 --permission-mode dontAsk --allowedTools Read Grep Glob --disallowedTools Agent --agents {\n  \"style-reviewer\": {\n    \"description\": \"Reviews one JavaScript \u2026",
+      "subtype": "success",
+      "result": "DELEGATION BLOCKED",
+      "session_id": "a51a13ed-62fe-4d0a-9c77-df720956504a",
+      "total_cost_usd": 0.4791269,
+      "num_turns": 4,
+      "structured_output": null,
+      "permission_denials": [
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_013GAZBRpWUwzLfwgGBg3dL1",
+          "tool_input": {
+            "command": "ls -la .claude/agents 2>&1; ls -la ~/.claude/agents 2>&1 | head -50",
+            "description": "List project and user agent definitions"
+          }
+        }
+      ],
+      "is_error": false
+    },
+    "t2": {
+      "kind": "claude",
+      "elapsed_s": 20.4,
+      "exit_code": 0,
+      "command": "claude -p Use the style-reviewer agent to review src/utils/quantity.js and re\u2026 --model claude-opus-5-5 --output-format json --max-turns 4 --permission-mode dontAsk --allowedTools Read Grep Glob Agent --agents {\n  \"style-reviewer\": {\n    \"description\": \"Reviews one JavaScript \u2026",
+      "subtype": "success",
+      "result": "VERDICT: Needs changes: `validateQuantity` in `<course>/UC-25-1qkucnto/workspace/src/utils/quantity.js` accepts zero and negative integers. A quantity of -5 or 0 passes validation and reaches the repository, which could corrupt order totals or stock. It needs a `qty >= 1` check and probably a maximum. It also lacks the tests the project standards require (expected, edge and failure cases).",
+      "session_id": "b4920ffd-dce0-4551-8c69-eee829e4b35c",
+      "total_cost_usd": 0.3788744,
+      "num_turns": 2,
+      "structured_output": null,
+      "permission_denials": [],
+      "is_error": false
+    }
+  },
+  "restores": [],
+  "cost_usd": 0.858,
+  "evaluation": [
+    {
+      "criterion": "without the delegation tool the fan-out cannot happen",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "with Agent (Task before v2.1.63) in the allowed list the reviewer's verdict comes back",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "learner can state that allowedTools auto-approves and is not a hard allowlist",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    }
+  ]
+}

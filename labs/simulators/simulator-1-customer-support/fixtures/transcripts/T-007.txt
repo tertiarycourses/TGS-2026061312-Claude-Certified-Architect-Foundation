@@ -1,0 +1,3 @@
+Customer: I'd like to return the chair mat from ORD-5505. Doesn't fit.
+Agent: You are within the 30-day window. I have approved the return, you will get a label by email.
+Customer: thx

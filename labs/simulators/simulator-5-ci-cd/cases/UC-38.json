@@ -1,0 +1,62 @@
+{
+  "id": "UC-38",
+  "question_n": 38,
+  "timestamp": "93:35",
+  "scenario": "Customer Support Resolution Agent",
+  "title": "A shared slash command still needs -p to run in CI",
+  "situation": "A nightly pull request check for this team invokes Claude Code to inspect changes to refund and escalation logic. In CI, the job prints the prompt and then waits until the runner times out because there is no terminal user to answer follow-up prompts.",
+  "question": "What change best prevents this failure mode?",
+  "options": {
+    "A": "Run Claude Code in plan mode and require the job to approve the generated plan automatically.",
+    "B": "Create a shared slash command in .claude/commands/ and invoke that command from the CI job.",
+    "C": "Add a CLAUDE.md instruction telling Claude Code not to ask follow-up questions during CI reviews.",
+    "D": "Run Claude Code with the -p or --print flag and provide the review prompt non-interactively."
+  },
+  "correct": "D",
+  "why": "UNCLEAR: the narration is cut short in the video. Only the opening is given: Claude Code has an interactive terminal mode for developer sessions and a non-interactive mode for automation. The rest of the explanation (why plan mode, a shared slash command, or a CLAUDE.md instruction do not change the execution mode) is not spoken; the reasoning matches question 18, where -p / --print runs the prompt and exits, which is what a CI runner needs.",
+  "type": "run",
+  "concrete_task": "claude -p \"/pr-check 418\" --output-format json  (command in repo/.claude/commands/pr-check.md)",
+  "setup": {
+    "workdir": "repo"
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "max_turns": 4,
+      "prompt": "/pr-check 418"
+    }
+  ],
+  "expected_outcome": "The team's /pr-check command runs non-interactively only because the job invokes it through claude -p; the command file alone does not change the execution mode.",
+  "rubric": [
+    {
+      "criterion": "the slash command executed under -p and returned",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "pattern": "jobs\\.py|api\\.py|get_stock"
+      }
+    },
+    {
+      "criterion": "the envelope carries a session id and exit was clean",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "field": "session_id",
+        "pattern": "^[0-9a-f-]{36}$"
+      }
+    },
+    {
+      "criterion": "learner can state that plan mode, a command file or a CLAUDE.md note cannot stop an interactive session from waiting",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+PASS - tool is strict with additionalProperties false and every field required
+PASS - schema has nullable due_date, enum escape hatches (other + detail, unclear) and per-field confidence
+PASS - every extraction came back as an extract_invoice tool_use call
+PASS - tool_choice observation recorded (accepted, or HTTP 400 lesson on a 5.5 model)
+PASS - DOC-01 due date normalised to 2026-11-02
+PASS - DOC-02 states no due date -> null, not a guess
+PASS - DOC-03 receipt: calculated 35.00 vs stated 38.00 flagged as conflict, routed to a human
+PASS - DOC-05 credit note: negative total and currency unclear
+PASS - DOC-06 Thai baht -> currency other with currency_detail THB
+PASS - DOC-07 names the missing attachment, spends no retry on it, and goes to a human
+PASS - every retry carried the exact validation error back to the model
+PASS - routing uses field confidence, conflict or missing information, with reasons recorded
+PASS - accuracy reported overall, by field and by document type
+PASS - stratified audit sample drawn per document type from auto-accepted records
+PASS - batch submitted with one custom_id per document and results keyed by custom_id
+PASS - only failed custom_ids were resubmitted, with a stated modification
+PASS - UC-11: split tools route every document to extract_invoice; the generic tool drifts to other operations
+PASS - UC-12: the gate blocks an unvalidated submit; every executed submit had a prior validation; ticket opened
+PASS - UC-22: discussion case rendered with no unfilled placeholders
+PASS - UC-31: section passes find more records than the single pass; duplicate merged; three unique ids
+PASS - UC-32: interactive upload -> sync, nightly archive -> batch at 0.5x
+PASS - UC-36: partition is non-overlapping and every prompt caps the deliverable

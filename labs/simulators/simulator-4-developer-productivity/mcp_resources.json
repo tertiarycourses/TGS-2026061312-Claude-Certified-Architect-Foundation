@@ -1,0 +1,9 @@
+{
+  "server": "orderly-docs",
+  "resources": [
+    {"uri": "docs://architecture", "name": "Architecture overview", "mimeType": "text/plain", "path": "sample_repo/docs/architecture.txt"},
+    {"uri": "docs://runbook", "name": "Billing runbook", "mimeType": "text/plain", "path": "sample_repo/docs/runbook.txt"},
+    {"uri": "schema://billing", "name": "Billing table schema", "mimeType": "text/plain", "path": null}
+  ],
+  "why": "A resource catalogue lets the agent see what exists without exploratory Glob/Read calls."
+}

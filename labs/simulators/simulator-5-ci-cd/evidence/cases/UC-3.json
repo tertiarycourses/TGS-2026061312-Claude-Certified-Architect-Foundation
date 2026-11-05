@@ -1,0 +1,52 @@
+{
+  "id": "UC-3",
+  "question_n": 3,
+  "timestamp": "05:28",
+  "title": "PreToolUse command hook denies approval while the passing-test artifact is missing",
+  "type": "run",
+  "correct": "B",
+  "expected_outcome": "Scenario 1: the hook exits 2, Claude quotes 'DENIED by require-passing-tests hook' and ci/approvals.log never appears. Scenario 2: after ./ci/run_tests.sh the same prompt approves PR 418 and approvals.log gains one line.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "shell",
+      "command": "python3 -B \"<course>/labs/lab-05-claude-code-for-continuous-integration/hook_gate.py\"",
+      "exit_code": 0,
+      "stdout": "== scenario 1: artifact absent -> the PreToolUse hook must deny the approval\n   denied=True  approval_posted=False  $0.35\n== scenario 2: ./ci/run_tests.sh first -> approval allowed\n   denied=False  approval_posted=True  $0.33\n== GATE HOLDS  cost US$0.68  -> evidence/hook_gate.json\n",
+      "stderr": "",
+      "elapsed_s": 19.1
+    },
+    "t2": {
+      "kind": "shell",
+      "command": "python3 -c \"import json;d=json.load(open('<course>/labs/lab-05-claude-code-for-continuous-integration/evidence/hook_gate.json'));s=d['scenarios'];print('S1 denied',s[0]['denied'],'posted',s[0]['approval_posted']);print('S2 denied',s[1]['denied'],'posted',s[1]['approval_posted']);print('LOG',repr(s[1]['after']['approvals_log']))\"",
+      "exit_code": 0,
+      "stdout": "S1 denied True posted False\nS2 denied False posted True\nLOG 'approved PR 418 at 2026-11-05T06:21:17Z\\n'\n",
+      "stderr": "",
+      "elapsed_s": 0.0
+    }
+  },
+  "restores": [],
+  "cost_usd": 0,
+  "evaluation": [
+    {
+      "criterion": "without the artifact the approval command is blocked before it runs (exit 2, reason fed to Claude)",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "with a passing artifact the same command runs and records the approval",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "approvals.log carries exactly the approval line",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "learner explains why PostToolUse is too late and why a prompt or UserPromptSubmit hook only appends instructions",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "style-reviewer": {
+    "description": "Reviews one JavaScript file for correctness and returns a one-line verdict",
+    "prompt": "Read the file you are given and reply with exactly one line starting with VERDICT: followed by your assessment.",
+    "tools": [
+      "Read"
+    ],
+    "model": "sonnet"
+  }
+}

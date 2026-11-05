@@ -1,0 +1,28 @@
+{
+  "id": "UC-28",
+  "title": "Enum with unclear and other",
+  "source": {
+    "practice_test_question": 28,
+    "timestamp": "68:51",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "run",
+  "mode": "enum",
+  "prompt": "Research this topic and deliver a cited report: Impact of AI on creative industries. Classify every document finding's evidence type.",
+  "config_change": "Change the document-analysis prompt so each finding carries `evidence_type` from [experiment, survey, expert_interview, market_report, unclear, other] plus `other_detail` when `other` is used, with instructions on when to pick unclear.",
+  "cost_usd": 1.0311436999999999,
+  "rubric": [
+    {
+      "check": "every evidence_type is a member of the six-value enum",
+      "passed": true
+    },
+    {
+      "check": "no finding is forced into a specific category when the text is vague",
+      "passed": true
+    },
+    {
+      "check": "every other has a non-empty other_detail",
+      "passed": true
+    }
+  ]
+}

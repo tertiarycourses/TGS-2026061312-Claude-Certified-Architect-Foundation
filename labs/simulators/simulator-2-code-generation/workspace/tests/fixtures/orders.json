@@ -1,0 +1,4 @@
+[
+  {"id": "ORD-1001", "shippedAt": "2026-03-04T09:12:00Z", "total": 48.5},
+  {"id": "ORD-1002", "shippedAt": null, "total": 12.0}
+]

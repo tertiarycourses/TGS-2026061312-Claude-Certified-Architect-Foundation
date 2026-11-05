@@ -1,0 +1,30 @@
+{
+  "source": {
+    "practice_test_question": 20,
+    "timestamp": "47:44",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "The team added a prompt-based quality gate that classifies draft report findings before publication. One category, \"unsupported market claim\", now produces many false positives on well-cited synthesis paragraphs, while other categories such as \"missing citation\" and \"source conflict\" are performing well. Engineers have started ignoring the entire quality report.",
+  "question": "What should the team do next?",
+  "options": {
+    "A": "Temporarily omit the noisy category from the active prompt, keep accurate categories enabled, and rebuild it with examples, definitions, and precision/recall evals.",
+    "B": "Force the quality gate to return strict JSON, reject malformed outputs, and use schema compliance as the main trust metric.",
+    "C": "Disable every quality category for a release cycle, collect no automated findings, and re-enable all categories after prompt edits.",
+    "D": "Keep the noisy category active, add a warning that false positives are expected, and ask engineers to manually disregard those findings."
+  },
+  "correct": "A",
+  "why": "When a single high-false-positive category undermines confidence in an automated review system, the practical move is to separate the noisy signal from the useful signal. Anthropic's documented moderation pattern uses application-defined category lists in prompts, and those lists are customizable, so temporarily omitting or suppressing one category is an application-level control rather than a special built-in toggle. The category should not disappear forever: treat it as a classification problem. Collect examples that should and should not be flagged, include edge cases, define the category more precisely, and evaluate with metrics that balance false positives and false negatives, such as precision, recall, and F1. Structured JSON output is useful for reliable parsing, but it cannot by itself make the category judgment correct. (Docs: content moderation, classification, evaluation tool.)",
+  "id": "UC-20",
+  "title": "Noisy quality category",
+  "task": {
+    "type": "discussion",
+    "prompt_template": "Given a quality-gate prompt with categories [missing citation, source conflict, unsupported market claim], rewrite it to omit the noisy category for now and draft the eval plan (examples, definition, precision/recall) that earns it back.",
+    "expected_answer": "Option A. Keep the categories that engineers trust, drop `unsupported market claim` from the active list, and rebuild it as a classification problem with positive and negative examples, a tighter definition, and precision/recall measured on a labelled set before re-enabling."
+  },
+  "expected_outcome": "A revised category list plus an eval plan with a measurable threshold.",
+  "rubric": [
+    "noisy category removed from the active prompt only",
+    "accurate categories remain enabled",
+    "re-enable gate is precision/recall on labelled examples, not schema compliance"
+  ]
+}

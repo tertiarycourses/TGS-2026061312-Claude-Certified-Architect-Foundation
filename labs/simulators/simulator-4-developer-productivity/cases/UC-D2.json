@@ -1,0 +1,22 @@
+{
+  "id": "UC-D2",
+  "title": "Catalogue first, then read",
+  "source": {
+    "task_statement": "2.4 Integrate MCP servers (resources as content catalogues)",
+    "scenario": "Developer Productivity with Claude"
+  },
+  "situation": "The team exposed an orderly-docs catalogue so agents can see which documents exist without exploratory Glob or Read calls.",
+  "question": "How should the agent find the billing runbook?",
+  "correct": "Call list_catalog, then read_resource docs://runbook; no Glob over docs/.",
+  "why": "A catalogue removes exploratory tool calls and keeps the main context small.",
+  "task": {
+    "type": "run",
+    "prompt_template": "When does the monthly billing job run and which module does it call? Use the orderly-docs catalogue; do not Glob or list the docs folder."
+  },
+  "expected_outcome": "list_catalog precedes read_resource; no Glob or Bash ls touches docs/.",
+  "rubric": [
+    "list_catalog is the first tool call",
+    "read_resource docs://runbook follows",
+    "no Glob/Read/Bash over docs/"
+  ]
+}

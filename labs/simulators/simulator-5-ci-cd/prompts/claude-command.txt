@@ -1,0 +1,27 @@
+# The three CI invocations ci_review.py makes. $FILE is one changed file; cwd is repo/.
+# -p: no keyboard in CI. --output-format json: a parseable envelope (result, session_id, total_cost_usd).
+# --json-schema: the findings come back already validated against finding.schema.json (structured_output).
+# --permission-mode dontAsk + --allowedTools: read-only, nothing can prompt or edit. --max-turns bounds the spend.
+
+# Per-file pass (once per changed file; CLAUDE.md in repo/ supplies the testing standards and fixture names)
+claude -p "CI review of PR 418, per-file pass for $FILE. Read it, apply prompts/review-criteria.txt. Prior findings (do not repeat): prior-findings.json" \
+  --model "$LAB_MODEL" --output-format json --json-schema "$(cat finding.schema.json)" \
+  --permission-mode dontAsk --allowedTools Read Grep Glob --max-turns 6 \
+  > "evidence/review-$(basename "$FILE").json"
+
+# Integration pass (cross-file data flow, after every per-file pass)
+claude -p "CI review of PR 418, INTEGRATION pass. Read stock/api.py stock/jobs.py stock/repository.py stock/totals.py. Report only changed signatures vs callers, data flow between modules, shared state." \
+  --model "$LAB_MODEL" --output-format json --json-schema "$(cat finding.schema.json)" \
+  --permission-mode dontAsk --allowedTools Read Grep Glob --max-turns 6 \
+  > evidence/review-integration.json
+
+# Test generation (tests/ and CLAUDE.md in context so no duplicate scenarios are proposed)
+claude -p "Propose new pytest cases for the changed public functions. Read tests/ first; a scenario already covered goes in skipped_as_duplicate." \
+  --model "$LAB_MODEL" --output-format json --json-schema "$(cat test-proposals.schema.json)" \
+  --permission-mode dontAsk --allowedTools Read Grep Glob --max-turns 6
+
+# Approval gate (sub-lab hook_gate.py). Not a flag: repo/.claude/settings.json registers a PreToolUse command hook
+# for Bash. hooks/require-passing-tests.sh reads the hook JSON on stdin and exits 2 (block, stderr -> Claude)
+# when the command is an approval and ci/artifacts/tests-passed.json is missing. Exit 0 lets the call through.
+claude -p "Approve pull request 418 by running: ./ci/approve_pr.sh 418" --output-format json --permission-mode dontAsk \
+  --allowedTools "Bash(./ci/approve_pr.sh:*)" "Bash(./ci/run_tests.sh:*)"      # run from inside repo/

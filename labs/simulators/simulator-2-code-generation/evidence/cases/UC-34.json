@@ -1,0 +1,65 @@
+{
+  "id": "UC-34",
+  "question_n": 34,
+  "timestamp": "83:32",
+  "title": "Ask directly for a one-function guard clause and run its test",
+  "type": "run",
+  "correct": "C",
+  "expected_outcome": "No plan mode: Claude edits src/utils/quantity.js, runs node --test tests/quantity.test.js and reports three passing tests.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 18.1,
+      "exit_code": 0,
+      "command": "claude -p In src/utils/quantity.js add one guard clause to validateQuantity s\u2026 --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode acceptEdits --allowedTools Read Edit Bash(node:*)",
+      "subtype": "success",
+      "result": "`validateQuantity` now throws on a negative quantity, and `node --test tests/quantity.test.js` passes: **3 passed, 0 failed** (0 cancelled, 0 skipped).\n\nThe change is one line in `src/utils/quantity.js:4`, placed after the integer check:\n\n```js\nif (qty < 0) throw new Error(\"quantity must not be negative\");\n```\n\n- **Zero:** a quantity of `0` still passes, because you only asked to reject negatives. If an order line needs at least 1, the check should be `qty < 1`.\n- **Not run:** `CLAUDE.md` says to run `npm test -- --changed` before reporting a change as done, but that command needed approval and didn't run. It's still worth running, or you can approve it and I'll run it.\n- **Regression test:** the existing `rejects a negative quantity` test covers this change, so I didn't add one. I didn't run it before making the change, but the old code had no check that would reject `-3`.\n\nThe change isn't committed.",
+      "session_id": "58e713a4-c143-41f0-9d2f-6c87720dfa72",
+      "total_cost_usd": 0.42014359999999995,
+      "num_turns": 7,
+      "structured_output": null,
+      "permission_denials": [
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_01Dha63eCLgLMa8fYQ5Ps9js",
+          "tool_input": {
+            "command": "node --test tests/quantity.test.js; echo \"exit: $?\"; npm test -- --changed; echo \"npm exit: $?\"",
+            "description": "Run quantity tests, then the changed-tests suite"
+          }
+        },
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_01CP85uNp59Sx6xBzUYVbGgG",
+          "tool_input": {
+            "command": "npm test -- --changed",
+            "description": "Run tests for changed files"
+          }
+        }
+      ],
+      "is_error": false,
+      "files_changed": [
+        "src/utils/quantity.js"
+      ]
+    }
+  },
+  "restores": [],
+  "cost_usd": 0.4201,
+  "evaluation": [
+    {
+      "criterion": "the single known file was edited directly",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the specified test ran and passed",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "no plan or permission-mode change was needed for a one-sentence diff",
+      "pass": true,
+      "note": "reviewed against the expected answer"
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "id": "UC-39",
+  "question_n": 39,
+  "timestamp": "95:06",
+  "scenario": "Claude Code for Continuous Integration",
+  "title": "Testable report/skip rules beat 'report only high-confidence issues'",
+  "situation": "After several weeks, developers say the reviewer is noisy. Examples show comments about variable names, preferred assertion styles, and missing tests mixed with a few real null dereferences and authorization bypasses. The current prompt says, \"Report only issues you are highly confident about.\"",
+  "question": "What prompt change would most directly improve review usefulness?",
+  "options": {
+    "A": "Define testable report and skip rules that focus comments on production bugs, security flaws, broken edge cases, and subtle regressions.",
+    "B": "Expand the checklist to include naming, formatting, test coverage, and architecture preferences so comments feel more comprehensive.",
+    "C": "Move every automated finding into a single non-blocking summary comment so developers can scan the noise separately.",
+    "D": "Keep the broad review scope and require each inline comment to include a numerical confidence score and short rationale."
+  },
+  "correct": "A",
+  "why": "The failure mode is not that the reviewer lacks confidence metadata; it is that the prompt has not drawn a clear boundary between actionable correctness findings and low-value preference comments. \"High confidence\" is still subjective: a model can be confident that a variable name differs from a local style even when that comment is not useful for a pull request review. Claude Code Code Review is documented as analyzing GitHub pull requests and posting severity-tagged inline findings for issues such as logic errors, security vulnerabilities, broken edge cases, and subtle regressions. The documentation also notes that its default calibration is for correctness, namely bugs that would break production, not formatting preferences or missing test coverage. For CI review prompts, make the decision boundary concrete: report issues when the claimed or implemented behavior can break production, create a security risk, mishandle an edge case, or introduce a regression; skip comments that are only style, naming, formatting, or local preference unless the team has explicitly made them part of the review objective. This reduces false positives and helps developers keep trusting the comments that matter. (Docs: Claude Code Code Review.)",
+  "type": "run",
+  "concrete_task": "two claude -p reviews of stock/pricing.py: 'report only high-confidence issues' vs prompts/review-criteria.txt",
+  "setup": {
+    "workdir": "repo"
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "schema": {
+        "title": "CI review findings",
+        "type": "object",
+        "required": [
+          "pass",
+          "findings"
+        ],
+        "properties": {
+          "pass": {
+            "type": "string",
+            "enum": [
+              "per-file",
+              "integration"
+            ]
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "file",
+                "line",
+                "severity",
+                "category",
+                "detected_pattern",
+                "issue",
+                "suggested_fix",
+                "confidence"
+              ],
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                },
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "bug",
+                    "security",
+                    "data-loss",
+                    "contract",
+                    "style",
+                    "naming",
+                    "test-coverage",
+                    "architecture"
+                  ]
+                },
+                "detected_pattern": {
+                  "type": "string",
+                  "description": "the code construct that triggered the finding, for false-positive analysis"
+                },
+                "issue": {
+                  "type": "string"
+                },
+                "suggested_fix": {
+                  "type": "string"
+                },
+                "confidence": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "max_turns": 4,
+      "prompt": "Review stock/pricing.py (added in PR 418). Report only issues you are highly confident about. Set pass to \"per-file\"."
+    },
+    {
+      "id": "t2",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "schema": "finding.schema.json",
+      "max_turns": 4,
+      "prompt": "Review stock/pricing.py (added in PR 418).\nREVIEW CRITERIA (explicit, categorical; never \"be conservative\")\n\nReport a finding ONLY when one of these holds:\n- bug: the code's behaviour contradicts the function name, docstring, or an adjacent test.\n- security: untrusted input reaches SQL, shell, file paths or HTML without validation or parameterisation.\n- data-loss: a write, delete or migration can drop or overwrite records without a guard.\n- contract: a public signature, return shape or error code changes without a matching caller update.\n\nDo NOT report:\n- formatting, naming, import order, comment style;\n- a pattern already used elsewhere in the same file or module;\n- missing tests (the test-generation step handles those).\n\nSeverity:\n- critical: exploitable security flaw or guaranteed data loss (e.g. f-string SQL with request input).\n- high: wrong result on common input (e.g. off-by-one in a loop boundary used by every request).\n- medium: wrong result on an edge case (e.g. None not handled when the caller can pass None).\n- low: contract drift with no current caller impact.\n\nFEW-SHOT EXAMPLES\n\nExample 1 (report)\n  diff: cursor.execute(f\"SELECT * FROM stock WHERE sku = '{sku}'\")\n  finding: {\"severity\": \"critical\", \"category\": \"security\", \"detected_pattern\": \"f-string SQL\", \"issue\": \"sku comes from the request body and is interpolated into SQL\", \"suggested_fix\": \"cursor.execute('SELECT * FROM stock WHERE sku = %s', (sku,))\"}\n\nExample 2 (report)\n  diff: for i in range(1, len(items)): total += items[i].qty\n  finding: {\"severity\": \"high\", \"category\": \"bug\", \"detected_pattern\": \"range(1, len())\", \"issue\": \"first item skipped; test_total_counts_all_items would fail\", \"suggested_fix\": \"range(len(items)) or sum(i.qty for i in items)\"}\n\nExample 3 (skip)\n  diff: import os, sys  ->  import os\\nimport sys\n  decision: no finding. Formatting only.\n\nExample 4 (skip)\n  diff: logger.info(\"stock synced %s\", sku)\n  decision: no finding. Matches the logging pattern used on lines 12 and 40 of the same file.\n\nSet pass to \"per-file\"."
+    }
+  ],
+  "expected_outcome": "On stock/pricing.py the vague prompt may comment on names and style; the categorical criteria return the None dereference in getPrice and nothing about naming.",
+  "rubric": [
+    {
+      "criterion": "with categorical criteria the None dereference in getPrice is reported as a bug",
+      "check": {
+        "type": "regex",
+        "task": "t2",
+        "field": "structured_output",
+        "pattern": "\"line\": 1[0-3].*\"category\": \"bug\"|None|unknown SKU"
+      }
+    },
+    {
+      "criterion": "with categorical criteria no naming or style comment appears",
+      "check": {
+        "type": "not_regex",
+        "task": "t2",
+        "field": "structured_output",
+        "pattern": "snake_case|camelCase|naming|PEP ?8|style"
+      }
+    },
+    {
+      "criterion": "compare both outputs: the vague prompt is allowed to return style/naming categories and usually does",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

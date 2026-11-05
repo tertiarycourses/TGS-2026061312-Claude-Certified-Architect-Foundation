@@ -1,0 +1,15 @@
+{
+  "pass": "integration",
+  "findings": [
+    {
+      "file": "stock/jobs.py",
+      "line": 12,
+      "severity": "high",
+      "category": "contract",
+      "detected_pattern": "api.get_stock(sku) called with one argument after PR 418 added a required warehouse parameter at stock/api.py:5",
+      "issue": "PR 418 added a required warehouse parameter with no default to api.get_stock, but jobs.sync still calls api.get_stock(sku). Every call raises TypeError: get_stock() missing 1 required positional argument: 'warehouse'. Any non-empty skus list therefore crashes the nightly sync on its first SKU, and it returns nothing.",
+      "suggested_fix": "Pass the warehouse through from the job: def sync(skus: list[str], warehouse: str) -> list[dict], then stock = api.get_stock(sku, warehouse). No caller of sync exists in this repo, but update the scheduler entry point outside it. If the job must cover every warehouse, loop over the warehouse list here instead.",
+      "confidence": 0.99
+    }
+  ]
+}

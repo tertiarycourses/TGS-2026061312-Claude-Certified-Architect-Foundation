@@ -1,0 +1,306 @@
+{
+  "case_id": "CS-13",
+  "title": "Partial refund with store credit: shape is not meaning",
+  "message": "Two of the three items in ORD-5509 arrived broken: the small desk lamp and the desk mat, photos attached. The pen tray is fine. Please refund the two broken items to my card, and give me store credit for the $8 shipping since half the parcel was ruined.",
+  "customer": {
+    "email": "arjun@example.com"
+  },
+  "tool_calls": [
+    {
+      "tool": "ToolSearch",
+      "input": {
+        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__recommend_refund,mcp__backend__process_refund,mcp__backend__escalate_to_human",
+        "max_results": 5
+      },
+      "result": null,
+      "is_error": false
+    },
+    {
+      "tool": "get_customer",
+      "input": {
+        "email": "arjun@example.com",
+        "name": ""
+      },
+      "result": "{\"customer_id\": \"C-1002\", \"name\": \"Arjun Rao\", \"email\": \"arjun@example.com\", \"tier\": \"plus\", \"created_at\": \"2023-11-02T08:15:00Z\", \"status\": \"active\"}",
+      "is_error": false
+    },
+    {
+      "tool": "lookup_order",
+      "input": {
+        "order_id": "ORD-5509",
+        "customer_id": "C-1002"
+      },
+      "result": "{\"order_id\": \"ORD-5509\", \"customer_id\": \"C-1002\", \"amount\": 138.0, \"item\": \"Desk set (3 items)\", \"placed_at\": \"2026-10-26T09:30:00Z\", \"status\": \"delivered\", \"damage_photo\": true, \"charges\": 1, \"shipped\": true, \"eta\": \"2026-10-30\", \"shipping_fee\": 8.0, \"line_items\": [{\"sku\": \"LAMP-S\", \"name\": \"Small desk lamp\", \"price\": 55.0}, {\"sku\": \"TRAY\", \"name\": \"Pen tray\", \"price\": 25.0}, {\"sku\": \"MAT\", \"name\": \"Desk mat\", \"price\": 50.0}]}",
+      "is_error": false
+    },
+    {
+      "tool": "recommend_refund",
+      "input": {
+        "order_id": "ORD-5509",
+        "item_adjustments": [
+          {
+            "sku": "LAMP-S",
+            "amount": 55
+          },
+          {
+            "sku": "MAT",
+            "amount": 50
+          }
+        ],
+        "shipping_refund": 0,
+        "merchandise_credit": 8,
+        "refund_total": 105,
+        "rationale": "Damage photo on file for ORD-5509. Customer reports small desk lamp and desk mat broken, pen tray fine. Refund the two damaged lines to the card ($55 + $50 = $105). Customer asked for the $8 shipping fee as store credit rather than cash."
+      },
+      "result": "{\"validated\": true, \"order_id\": \"ORD-5509\", \"cash_refund\": 105.0, \"merchandise_credit\": 8.0, \"message\": \"Recommendation validated. You may call process_refund for the cash amount.\"}",
+      "is_error": false
+    },
+    {
+      "tool": "process_refund",
+      "input": {
+        "order_id": "ORD-5509",
+        "amount": 105,
+        "reason": "Damaged items with photo evidence: small desk lamp ($55) and desk mat ($50); $8 shipping handled as store credit per validated recommendation."
+      },
+      "result": "{\"refund_id\": \"RF-59414\", \"order_id\": \"ORD-5509\", \"amount\": 105.0, \"reason\": \"Damaged items with photo evidence: small desk lamp ($55) and desk mat ($50); $8 shipping handled as store credit per validated recommendation.\", \"status\": \"issued\"}",
+      "is_error": false
+    }
+  ],
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "tool": "get_customer",
+      "args": {
+        "email": "arjun@example.com",
+        "name": ""
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "get_customer",
+      "raw": {
+        "customer_id": "C-1002",
+        "name": "Arjun Rao",
+        "email": "arjun@example.com",
+        "tier": "plus",
+        "created_at": "2023-11-02T08:15:00Z",
+        "status": "active"
+      },
+      "normalised": {
+        "customer_id": "C-1002",
+        "name": "Arjun Rao",
+        "email": "arjun@example.com",
+        "tier": "plus",
+        "created_at": "2023-11-02T08:15:00Z",
+        "status": "active"
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "ORD-5509",
+        "customer_id": "C-1002"
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "lookup_order",
+      "raw": {
+        "order_id": "ORD-5509",
+        "customer_id": "C-1002",
+        "amount": 138.0,
+        "item": "Desk set (3 items)",
+        "placed_at": "2026-10-26T09:30:00Z",
+        "status": "delivered",
+        "damage_photo": true,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-10-30",
+        "shipping_fee": 8.0,
+        "line_items": [
+          {
+            "sku": "LAMP-S",
+            "name": "Small desk lamp",
+            "price": 55.0
+          },
+          {
+            "sku": "TRAY",
+            "name": "Pen tray",
+            "price": 25.0
+          },
+          {
+            "sku": "MAT",
+            "name": "Desk mat",
+            "price": 50.0
+          }
+        ]
+      },
+      "normalised": {
+        "order_id": "ORD-5509",
+        "customer_id": "C-1002",
+        "amount": 138.0,
+        "item": "Desk set (3 items)",
+        "placed_at": "2026-10-26T09:30:00Z",
+        "status": "delivered",
+        "damage_photo": true,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-10-30",
+        "shipping_fee": 8.0,
+        "line_items": [
+          {
+            "sku": "LAMP-S",
+            "name": "Small desk lamp",
+            "price": 55.0
+          },
+          {
+            "sku": "TRAY",
+            "name": "Pen tray",
+            "price": 25.0
+          },
+          {
+            "sku": "MAT",
+            "name": "Desk mat",
+            "price": 50.0
+          }
+        ]
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "recommend_refund",
+      "args": {
+        "order_id": "ORD-5509",
+        "item_adjustments": [
+          {
+            "sku": "LAMP-S",
+            "amount": 55
+          },
+          {
+            "sku": "MAT",
+            "amount": 50
+          }
+        ],
+        "shipping_refund": 0,
+        "merchandise_credit": 8,
+        "refund_total": 105,
+        "rationale": "Damage photo on file for ORD-5509. Customer reports small desk lamp and desk mat broken, pen tray fine. Refund the two damaged lines to the card ($55 + $50 = $105). Customer asked for the $8 shipping fee as store credit rather than cash."
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "recommend_refund",
+      "raw": {
+        "validated": true,
+        "order_id": "ORD-5509",
+        "cash_refund": 105.0,
+        "merchandise_credit": 8.0,
+        "message": "Recommendation validated. You may call process_refund for the cash amount."
+      },
+      "normalised": {
+        "validated": true,
+        "order_id": "ORD-5509",
+        "cash_refund": 105.0,
+        "merchandise_credit": 8.0,
+        "message": "Recommendation validated. You may call process_refund for the cash amount."
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "process_refund",
+      "args": {
+        "order_id": "ORD-5509",
+        "amount": 105,
+        "reason": "Damaged items with photo evidence: small desk lamp ($55) and desk mat ($50); $8 shipping handled as store credit per validated recommendation."
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "process_refund",
+      "raw": {
+        "refund_id": "RF-59414",
+        "order_id": "ORD-5509",
+        "amount": 105.0,
+        "reason": "Damaged items with photo evidence: small desk lamp ($55) and desk mat ($50); $8 shipping handled as store credit per validated recommendation.",
+        "status": "issued"
+      },
+      "normalised": {
+        "refund_id": "RF-59414",
+        "order_id": "ORD-5509",
+        "amount": 105.0,
+        "reason": "Damaged items with photo evidence: small desk lamp ($55) and desk mat ($50); $8 shipping handled as store credit per validated recommendation.",
+        "status": "issued"
+      }
+    }
+  ],
+  "assistant_text": [
+    "**CASE FACTS**\n- Customer: C-1002 (Arjun Rao)\n- Order: ORD-5509, Desk set (3 items), $138.00, delivered\n- Damage photo: on file\n- Lines: Small desk lamp $55, Desk mat $50, Pen tray $25\n- Shipping fee: $8\n- Refund: RF-59414, $105.00, issued\n\nHi Arjun, I'm sorry half your parcel arrived ruined. I've refunded $105 to your card: $55 for the lamp and $50 for the desk mat. The pen tray stays with you and isn't affected.\n\nYour $8 shipping store credit was approved as part of this refund, but it's separate from the card refund and I don't have a confirmation that it's been posted to your account. If you don't see it, reply with reference RF-59414 and we'll follow up."
+  ],
+  "settings": {
+    "model": "claude-opus-5-5",
+    "gate": true,
+    "limit_hook": true
+  },
+  "turn_replies": [
+    "**CASE FACTS**\n- Customer: C-1002 (Arjun Rao)\n- Order: ORD-5509, Desk set (3 items), $138.00, delivered\n- Damage photo: on file\n- Lines: Small desk lamp $55, Desk mat $50, Pen tray $25\n- Shipping fee: $8\n- Refund: RF-59414, $105.00, issued\n\nHi Arjun, I'm sorry half your parcel arrived ruined. I've refunded $105 to your card: $55 for the lamp and $50 for the desk mat. The pen tray stays with you and isn't affected.\n\nYour $8 shipping store credit was approved as part of this refund, but it's separate from the card refund and I don't have a confirmation that it's been posted to your account. If you don't see it, reply with reference RF-59414 and we'll follow up."
+  ],
+  "result": {
+    "subtype": "success",
+    "stop_reason": "end_turn",
+    "num_turns": 6,
+    "total_cost_usd": 0.41809120000000005,
+    "session_id": "4df0b46f-6970-4415-b63f-80d3ace1f8c5",
+    "is_error": false,
+    "terminal_reason": "completed"
+  },
+  "reply": "**CASE FACTS**\n- Customer: C-1002 (Arjun Rao)\n- Order: ORD-5509, Desk set (3 items), $138.00, delivered\n- Damage photo: on file\n- Lines: Small desk lamp $55, Desk mat $50, Pen tray $25\n- Shipping fee: $8\n- Refund: RF-59414, $105.00, issued\n\nHi Arjun, I'm sorry half your parcel arrived ruined. I've refunded $105 to your card: $55 for the lamp and $50 for the desk mat. The pen tray stays with you and isn't affected.\n\nYour $8 shipping store credit was approved as part of this refund, but it's separate from the card refund and I don't have a confirmation that it's been posted to your account. If you don't see it, reply with reference RF-59414 and we'll follow up.",
+  "backend_state": {
+    "refunds": [
+      {
+        "refund_id": "RF-59414",
+        "order_id": "ORD-5509",
+        "amount": 105.0,
+        "reason": "Damaged items with photo evidence: small desk lamp ($55) and desk mat ($50); $8 shipping handled as store credit per validated recommendation.",
+        "status": "issued"
+      }
+    ],
+    "escalations": [],
+    "validated_refunds": {
+      "ORD-5509": {
+        "refund_total": 105.0,
+        "merchandise_credit": 8.0
+      }
+    },
+    "validation_log": [
+      {
+        "recommendation": {
+          "order_id": "ORD-5509",
+          "item_adjustments": [
+            {
+              "sku": "LAMP-S",
+              "amount": 55
+            },
+            {
+              "sku": "MAT",
+              "amount": 50
+            }
+          ],
+          "shipping_refund": 0,
+          "merchandise_credit": 8,
+          "refund_total": 105,
+          "rationale": "Damage photo on file for ORD-5509. Customer reports small desk lamp and desk mat broken, pen tray fine. Refund the two damaged lines to the card ($55 + $50 = $105). Customer asked for the $8 shipping fee as store credit rather than cash."
+        },
+        "errors": []
+      }
+    ]
+  }
+}

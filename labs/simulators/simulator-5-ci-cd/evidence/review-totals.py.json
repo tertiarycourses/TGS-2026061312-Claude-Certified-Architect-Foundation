@@ -1,0 +1,15 @@
+{
+  "pass": "per-file",
+  "findings": [
+    {
+      "file": "stock/totals.py",
+      "line": 10,
+      "severity": "high",
+      "category": "bug",
+      "detected_pattern": "range(1, len())",
+      "issue": "The loop starts at index 1, so items[0] is never added. This contradicts the total_qty docstring, \"Sum the qty of every item in the list\", and returns a wrong total for every non-empty list.",
+      "suggested_fix": "for i in range(len(items)): or replace the loop with total = sum(item.qty for item in items)",
+      "confidence": 0.99
+    }
+  ]
+}

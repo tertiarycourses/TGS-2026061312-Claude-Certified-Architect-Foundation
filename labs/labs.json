@@ -1,0 +1,2438 @@
+[
+ {
+  "task": "1.1",
+  "src": "TS",
+  "sim": 1,
+  "core": 1,
+  "title": "Watch one refund go round the loop",
+  "trap": "Stop as soon as the model writes something that sounds finished.",
+  "fix": "Continue on tool_use, stop on end_turn, append every result.",
+  "cmds": [
+   "uv run support_agent.py --case CS-01"
+  ],
+  "see": "get_customer, lookup_order, recommend_refund, process_refund, then end_turn: refund $120.",
+  "id": 1,
+  "topic": 1,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Design and implement agentic loops for autonomous task execution",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-1-agentic-architecture/lab-01-watch-one-refund-go-round-the-loop.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Built from exam guide task statement 1.1 (no practice question covers this angle)",
+  "stem": "A customer writes in: the ceramic lamp in ORD-5501 arrived cracked, and they want a refund. Your agent has its tools and a loop that keeps calling Claude. When should that loop stop?",
+  "options": {
+   "A": "Stop as soon as the model writes something that sounds finished.",
+   "B": "Continue on tool_use, stop on end_turn, append every result."
+  },
+  "answer": "B",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "1.1",
+  "src": "P17",
+  "sim": 2,
+  "core": 0,
+  "title": "Claude re-asks because the tool_result never came back",
+  "trap": "The script runs the test, then sends no matching tool_result.",
+  "fix": "Append the tool_use turn, then a user turn with a matching tool_result.",
+  "cmds": [
+   "uv run casekit.py --case UC-17"
+  ],
+  "see": "You draw the three turns: prompt, tool_use with an id, tool_result with that same id.",
+  "id": 2,
+  "topic": 1,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Design and implement agentic loops for autonomous task execution",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-1-agentic-architecture/lab-02-claude-re-asks-because-the-tool-result-never-cam.pdf",
+  "expected": "Append the assistant turn that contains the tool_use block, then a user turn whose first content block is a tool_result with the matching tool_use_id. Text summaries or a wrong role break the link and Claude re-requests the tool.",
+  "rubric": [
+   "learner states that tool_result goes in a user message immediately after the assistant tool_use message",
+   "learner names tool_use_id as the link between request and result"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q17 (unofficial third-party question)",
+  "stem": "A workflow script receives a response with stop_reason: \"tool_use\" for a client-executed run_test tool. The script runs the test successfully, but Claude keeps asking to run the same tool again instead of interpreting the results. What should the script change in its next request?",
+  "options": {
+   "A": "Append a user text summary first, then include the matching tool_result block later in that same turn.",
+   "B": "Append a user text turn with the test output, then resume the conversation with a normal user instruction.",
+   "C": "Append the assistant tool_use turn, then add an immediate user turn with a matching tool_result block.",
+   "D": "Append an assistant text turn with the test output, then add a user turn asking Claude to continue."
+  },
+  "answer": "C",
+  "why": "Claude does not run your local tool. It returns a structured tool_use request, your application runs it, and the next request contains the original conversation, the assistant message with the tool_use block, and an immediately following user message with the matching tool_result . The conversation history is the state. The result's tool_use_id ties it to the request's id . tool_result blocks belong in a user message that immediately follows the assistant's tool_use message, and they must come before any text in that message.",
+  "wrong": {
+   "A": "Text placed before the tool_result breaks the required ordering: results must come first.",
+   "B": "Plain text is not linked to the tool_use id, so Claude still sees an unanswered request.",
+   "D": "Wrong role. The output is presented as Claude's own words, and there is no tool_result at all."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.2",
+  "src": "G7",
+  "sim": 3,
+  "core": 1,
+  "title": "Every subagent succeeds, and the report still misses half the topic",
+  "trap": "\"Creative industries\" decomposed into three flavours of visual art.",
+  "fix": "Decompose broadly: music, writing, film and visual arts.",
+  "cmds": [
+   "uv run research_system.py --narrow",
+   "uv run research_system.py"
+  ],
+  "see": "The narrow run never searches music, writing or film. The broad run does.",
+  "id": 3,
+  "topic": 1,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Orchestrate multi-agent systems with coordinator-subagent patterns",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-1-agentic-architecture/lab-03-every-subagent-succeeds-and-the-report-still-mis.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Official exam guide, sample question 7",
+  "stem": "After running the system on the topic \"impact of AI on creative industries,\" you observe that each subagent completes successfully: the web search agent finds relevant articles, the document analysis agent summarizes papers correctly, and the synthesis agent produces coherent output. However, the final reports cover only visual arts, completely missing music, writing, and film production. When you examine the coordinator's logs, you see it decomposed the topic into three subtasks: \"AI in digital art creation,\" \"AI in graphic design,\" and \"AI in photography.\" What is the most likely root cause?",
+  "options": {
+   "A": "The synthesis agent lacks instructions for identifying coverage gaps in the findings it receives from other agents.",
+   "B": "The coordinator agent's task decomposition is too narrow, resulting in subagent assignments that don't cover all relevant domains of the topic.",
+   "C": "The web search agent's queries are not comprehensive enough and need to be expanded to cover more creative industry sectors.",
+   "D": "The document analysis agent is filtering out sources related to non-visual creative industries due to overly restrictive relevance criteria."
+  },
+  "answer": "B",
+  "why": "The coordinator's logs reveal the root cause directly: it decomposed \"creative industries\" into only visual arts subtasks (digital art, graphic design, photography), completely omitting music, writing, and film. The subagents executed their assigned tasks correctly—the problem is what they were assigned. Options A, C, and D incorrectly blame downstream agents that are working correctly within their assigned scope.",
+  "wrong": {}
+ },
+ {
+  "task": "1.2",
+  "src": "P36",
+  "sim": 6,
+  "core": 0,
+  "title": "Same brief to every subagent, same findings four times",
+  "trap": "All subagents hunt schema failures across all 600 documents.",
+  "fix": "Give each one a distinct document group or concern, and demand concise findings.",
+  "cmds": [
+   "uv run extract.py --case UC-36"
+  ],
+  "see": "Every document lands in exactly one group, and each subagent gets a line-capped deliverable.",
+  "id": 4,
+  "topic": 1,
+  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Orchestrate multi-agent systems with coordinator-subagent patterns",
+  "sim_name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "pdf": "topic-1-agentic-architecture/lab-04-same-brief-to-every-subagent-same-findings-four.pdf",
+  "expected": "evidence/cases/UC-36.json holds a partition where every document appears in exactly one group, one rendered prompt per subagent with a line-capped deliverable, and the expected answer.",
+  "rubric": [
+   "Learner's partition has no overlapping document ids and names the concern per group.",
+   "Learner caps the deliverable and explains why isolated context does not make returned output free.",
+   "Learner states what context each subagent must be given because it inherits none."
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q36 (unofficial third-party question)",
+  "stem": "During evaluation, this team asks Claude Code to use subagents to investigate extraction errors across 600 vendor invoices, intake forms, and contracts. The current approach gives each subagent the same instruction (find causes of schema-validation failures across all documents), producing repeated observations and a large synthesis context. What change best partitions the investigation while preserving synthesis quality?",
+  "options": {
+   "A": "Assign each subagent a distinct document group or extraction concern, provide needed context, and require concise findings for synthesis.",
+   "B": "Create one nested subagent chain per document type, require verbose summaries at each level, and synthesize the final outputs.",
+   "C": "Assign overlapping document subsets to multiple subagents, ask each to find any schema issue, and reconcile duplicates afterward.",
+   "D": "Ask every subagent to review the full corpus independently, compare their repeated findings, and merge common schema issues."
+  },
+  "answer": "A",
+  "why": "The documented parallel-research pattern spawns subagents for independent investigations and synthesises in the main conversation. Partition along a boundary that keeps paths non-overlapping: document family, source type, schema section or failure mode. Isolation keeps exploratory work out of the main thread, but returned output is not free. Long reports still bloat synthesis, so each delegation needs context, explicit scope and a compact deliverable format.",
+  "wrong": {
+   "B": "Nesting plus verbose summaries at every level bloats the synthesis it is meant to protect.",
+   "C": "Overlap without clean boundaries means duplicated work and a reconciliation burden.",
+   "D": "Redundancy rather than partitioning, which is the problem being fixed."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.3",
+  "src": "P25",
+  "sim": 2,
+  "core": 1,
+  "title": "A /parallel-review that can't fan out because Task isn't allowed",
+  "trap": "Only Read, Grep and Glob are auto-approved, so delegation stalls.",
+  "fix": "Add Task to the coordinator's allowed tools.",
+  "cmds": [
+   "uv run casekit.py --case UC-25"
+  ],
+  "see": "Delegation disallowed: no reviewer spawns. Allowed: the subagent runs and its answer comes back.",
+  "id": 5,
+  "topic": 1,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Configure subagent invocation, context passing, and spawning",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-1-agentic-architecture/lab-05-a-parallel-review-that-can-t-fan-out-because-tas.pdf",
+  "expected": "With the delegation tool disallowed the coordinator cannot spawn the reviewer; with Agent allowed the subagent runs and its answer comes back.",
+  "rubric": [
+   "without the delegation tool the fan-out cannot happen",
+   "with Agent (Task before v2.1.63) in the allowed list the reviewer's verdict comes back",
+   "learner can state that allowedTools auto-approves and is not a hard allowlist"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q25 (unofficial third-party question)",
+  "stem": "A custom /parallel-review command starts an SDK run in a repository pinned to a pre-v2.1.63 Claude Code configuration, where subagent delegation is performed with Task . It should fan out across specialized review subagents. The current SDK options auto-approve only Read, Grep, and Glob, and each run pauses at the first attempted subagent delegation with an interactive permission prompt. What should the team change?",
+  "options": {
+   "A": "Add Task to the coordinator SDK run's allowedTools / allowed_tools list.",
+   "B": "Remove delegation tools from allowed tools and rely on permission prompts.",
+   "C": "Add Agent only to the worker subagents' tools list for nested calls.",
+   "D": "Add Task delegation guidance to CLAUDE.md for the project repository."
+  },
+  "answer": "A",
+  "why": "In this legacy configuration delegation goes through Task , so the coordinator run must auto-approve it. The subagents are defined. The problem is that the first delegation is not auto-approved and falls into interactive permission handling. Current docs describe the tool as Agent (renamed from Task in v2.1.63), so current configurations should generally use Agent . Also note that allowedTools auto-approves the listed tools but is not a hard allow-list on its own: unlisted tools fall through to the permission mode or callback unless they are denied.",
+  "wrong": {
+   "B": "The opposite of the fix: the permission prompts are what stall the run.",
+   "C": "Wrong tool name for this pinned version, and on the wrong agent: the coordinator is the one doing the delegating.",
+   "D": "Guidance text grants no permission."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.3",
+  "src": "P2",
+  "sim": 5,
+  "core": 1,
+  "title": "Same reviewers, same findings, and the PR comment loses them all",
+  "trap": "Synthesis is told to \"summarise the review\" and inherits nothing.",
+  "fix": "Paste each reviewer's complete JSON findings into the synthesis prompt.",
+  "cmds": [
+   "uv run ci_subagents.py --compare"
+  ],
+  "see": "File paths and failing test names survive with --pass-findings and vanish with --lossy.",
+  "id": 6,
+  "topic": 1,
+  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Configure subagent invocation, context passing, and spawning",
+  "sim_name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "pdf": "topic-1-agentic-architecture/lab-06-same-reviewers-same-findings-and-the-pr-comment.pdf",
+  "expected": "ci_subagents.py --pass-findings keeps the file paths, line numbers and test names in the final PR comment; --lossy drops most of them. The evaluate step prints the preservation percentages.",
+  "rubric": [
+   "pass-findings mode preserves at least 80% of the file paths the reviewers reported",
+   "lossy mode preserves fewer paths and test names than pass-findings mode",
+   "the coordinator spawned the three reviewers in one response (parallel Agent calls)"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q2 (unofficial third-party question)",
+  "stem": "The coordinator delegates pull request review work to separate subagents for security, test coverage, and maintainability. Each subagent returns useful findings to the coordinator, but the final review summary often omits specific file paths, failing test names, and evidence snippets that the coordinator already received. What change best addresses this reliability issue?",
+  "options": {
+   "A": "Tell the review synthesis subagent to infer missing details from the coordinator's earlier conversation history.",
+   "B": "Run the synthesis subagent before the specialized review subagents to reduce context size.",
+   "C": "Pass each prior subagent's complete structured findings directly into the review synthesis subagent's prompt.",
+   "D": "Store the security and test coverage instructions in CLAUDE.md for the next CI pipeline run."
+  },
+  "answer": "C",
+  "why": "The coordinator is responsible for moving information between workers. Subagents run in fresh, isolated conversations: they do not receive the parent's history or earlier tool results. The reliable pattern is to pass prior outputs as structured context in the Agent tool prompt, for example findings grouped by file, severity, evidence excerpt, command output and recommended fix. The synthesis subagent's own system prompt, tools or CLAUDE.md memory do not replace the run-specific findings it has to synthesise.",
+  "wrong": {
+   "A": "The synthesis subagent cannot see the coordinator's history. Asking it to “infer” details invites invented paths and test names; the video calls this an orchestration anti-pattern.",
+   "B": "Running synthesis first reverses the dependency: there is nothing to synthesise yet.",
+   "D": "CLAUDE.md holds stable project guidance. It cannot carry this pull request's findings into the handoff."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.3",
+  "src": "P10",
+  "sim": 3,
+  "core": 0,
+  "title": "Polished report, weak citations: route information, not just tasks",
+  "trap": "Synthesis gets a one-line brief and no source details.",
+  "fix": "Put findings and source metadata directly in the synthesis prompt.",
+  "cmds": [
+   "uv run research_system.py --case UC-10"
+  ],
+  "see": "The synthesis prompt runs to thousands of characters, with URLs, document names and dates.",
+  "id": 7,
+  "topic": 1,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Configure subagent invocation, context passing, and spawning",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-1-agentic-architecture/lab-07-polished-report-weak-citations-route-information.pdf",
+  "expected": "The Agent prompt sent to synthesis is large (thousands of characters) and contains URLs, document names and dates from the research phase.",
+  "rubric": [
+   "synthesis packet >= 2000 characters",
+   "synthesis packet contains at least 3 source URLs or document names",
+   "synthesis packet contains publication dates"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q10 (unofficial third-party question)",
+  "stem": "After several runs, the final reports contain polished summaries but weak citation coverage. The web and document subagents return useful source details to the coordinator, but the synthesis subagent is invoked later with only a brief instruction to produce themes and recommendations. What change would best improve the orchestration design?",
+  "options": {
+   "A": "Include the relevant findings and source metadata directly in the synthesis subagent's Agent prompt.",
+   "B": "Allow research subagents to communicate directly so they can share source details before synthesis.",
+   "C": "Broaden the synthesis subagent's description so automatic routing selects it after research completes.",
+   "D": "Convert the workflow to independent agent-team sessions with a shared task list for every report."
+  },
+  "answer": "A",
+  "why": "In a coordinator–worker design the coordinator routes information, not just tasks. Subagents keep their own context windows, which stops intermediate output from flooding the parent, but that same isolation means the synthesis subagent never saw what the search and document subagents saw. The parent-to-subagent channel is the Agent tool prompt string, so excerpts, URLs, document names, publication dates and claim-to-source mappings belong there. This preserves provenance without changing the hub-and-spoke pattern.",
+  "wrong": {
+   "B": "Documented subagents do not talk to each other. They return results to the main conversation.",
+   "C": "A subagent's description affects when Claude delegates, not what context is passed.",
+   "D": "Agent teams (independent sessions with inter-agent messaging) are a heavier, different pattern. That is a redesign to fix a missing-context problem."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.3",
+  "src": "P35",
+  "sim": 3,
+  "core": 0,
+  "title": "Later subagents re-run searches the first ones already finished",
+  "trap": "Next-phase prompts carry no memory of rejected sources.",
+  "fix": "Add a source-linked summary of prior phases to each delegation prompt.",
+  "cmds": [
+   "uv run research_system.py --case UC-35"
+  ],
+  "see": "Synthesis and report prompts carry the source links, far smaller than the raw subagent traffic.",
+  "id": 8,
+  "topic": 1,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Configure subagent invocation, context passing, and spawning",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-1-agentic-architecture/lab-08-later-subagents-re-run-searches-the-first-ones-a.pdf",
+  "expected": "Synthesis and report prompts contain the source links found earlier and are far smaller than the raw subagent traffic.",
+  "rubric": [
+   "synthesis packet contains >=3 source links/doc names from phase 1",
+   "report packet contains the synthesis output (>=1500 chars)",
+   "no packet exceeds 60000 characters (no full transcripts)"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q35 (unofficial third-party question)",
+  "stem": "After a web-exploration phase in a Claude Code research workflow, later subagents repeatedly rerun searches that earlier subagents already completed and fail to preserve why certain sources were rejected. The coordinator receives brief outputs from the earlier subagents, but next-phase work still starts as if no exploration happened. What should the coordinator change before spawning each next-phase subagent?",
+  "options": {
+   "A": "Spawn the next subagents normally and rely on their isolated context windows to access the parent history.",
+   "B": "Save the prior findings for the final synthesis prompt and keep next subagent delegations independent.",
+   "C": "Condense prior exploration into a source-linked summary and include it in each next subagent's delegation prompt.",
+   "D": "Attach complete prior subagent transcripts to every next delegation so no detail is omitted."
+  },
+  "answer": "C",
+  "why": "A normal subagent starts with a fresh, isolated context, so it does not know what earlier subagents found, rejected or left open. After each phase, write a summary with key findings, source links, rejection reasons and unresolved questions, and put it in the next delegation prompt. That matches the documented chained-subagent pattern.",
+  "wrong": {
+   "A": "An isolated context window is precisely what prevents access to the parent's history.",
+   "B": "Intermediate subagents need that state too, or they duplicate work and lose provenance-sensitive decisions.",
+   "D": "Spends large amounts of context on low-value exploration output."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.4",
+  "src": "G1",
+  "sim": 1,
+  "core": 1,
+  "title": "12% of cases skip get_customer: fix it with a gate, not a sentence",
+  "trap": "A system prompt that says verification is mandatory.",
+  "fix": "A prerequisite hook blocks lookup_order and process_refund until get_customer returns an id.",
+  "cmds": [
+   "uv run support_agent.py --case CS-03",
+   "uv run support_agent.py --case CS-03 --no-gate --tag nogate"
+  ],
+  "see": "With the gate on, get_customer always comes first. Compare the two traces.",
+  "id": 9,
+  "topic": 1,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Implement multi-step workflows with enforcement and handoff patterns",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-1-agentic-architecture/lab-09-12-of-cases-skip-get-customer-fix-it-with-a-gate.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Official exam guide, sample question 1",
+  "stem": "Production data shows that in 12% of cases, your agent skips get_customer entirely and calls lookup_order using only the customer's stated name, occasionally leading to misidentified accounts and incorrect refunds. What change would most effectively address this reliability issue?",
+  "options": {
+   "A": "Add a programmatic prerequisite that blocks lookup_order and process_refund calls until get_customer has returned a verified customer ID.",
+   "B": "Enhance the system prompt to state that customer verification via get_customer is mandatory before any order operations.",
+   "C": "Add few-shot examples showing the agent always calling get_customer first, even when customers volunteer order details.",
+   "D": "Implement a routing classifier that analyzes each request and enables only the subset of tools appropriate for that request type."
+  },
+  "answer": "A",
+  "why": "When a specific tool sequence is required for critical business logic (like verifying customer identity before processing refunds), programmatic enforcement provides deterministic guarantees that prompt-based approaches cannot. Options B and C rely on probabilistic LLM compliance, which is insufficient when errors have financial consequences. Option D addresses tool availability rather than tool ordering, which is not the actual problem.",
+  "wrong": {}
+ },
+ {
+  "task": "1.4",
+  "src": "P3",
+  "sim": 5,
+  "core": 1,
+  "title": "Approval must never post before the passing test artifact exists",
+  "trap": "A system prompt rule, obeyed in most pull requests.",
+  "fix": "A PreToolUse command hook denies approval while the artifact is absent.",
+  "cmds": [
+   "uv run hook_gate.py"
+  ],
+  "see": "No artifact: exit 2, denied. Tests run first: PR 418 approved and logged.",
+  "id": 10,
+  "topic": 1,
+  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Implement multi-step workflows with enforcement and handoff patterns",
+  "sim_name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "pdf": "topic-1-agentic-architecture/lab-10-approval-must-never-post-before-the-passing-test.pdf",
+  "expected": "Scenario 1: the hook exits 2, Claude quotes 'DENIED by require-passing-tests hook' and ci/approvals.log never appears. Scenario 2: after ./ci/run_tests.sh the same prompt approves PR 418 and approvals.log gains one line.",
+  "rubric": [
+   "without the artifact the approval command is blocked before it runs (exit 2, reason fed to Claude)",
+   "with a passing artifact the same command runs and records the approval",
+   "approvals.log carries exactly the approval line",
+   "learner explains why PostToolUse is too late and why a prompt or UserPromptSubmit hook only appends instructions"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q3 (unofficial third-party question)",
+  "stem": "A compliance review finds that, in rare pull requests, the system posts an approving review before the required test-result artifact has been attached. The rule is non-negotiable: approval actions must not execute unless the artifact is already present and passing. What change should this team make?",
+  "options": {
+   "A": "Add a stronger system prompt that instructs Claude to verify artifacts before approvals.",
+   "B": "Add a PreToolUse command hook that denies approval commands when the passing artifact is absent.",
+   "C": "Add a UserPromptSubmit command hook that appends check instructions to approval requests.",
+   "D": "Add a PostToolUse command hook that checks the artifact after approval commands complete."
+  },
+  "answer": "B",
+  "why": "A non-negotiable rule needs an enforcement point outside the model's voluntary behaviour. Claude Code hooks give deterministic control at lifecycle points. PreToolUse fires before the tool runs and can block the call: a command hook reads the event JSON on stdin, checks whether the passing artifact exists, and denies the action with feedback if it does not.",
+  "wrong": {
+   "A": "Still relies on model compliance. “Rare” failures are exactly what probabilistic guidance leaves behind.",
+   "C": "Only adds instructions to the prompt. It still depends on the model choosing correctly and never blocks the tool call itself.",
+   "D": "PostToolUse fires after the tool succeeded, so the approval has already been posted."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.4",
+  "src": "P12",
+  "sim": 6,
+  "core": 0,
+  "title": "Claude guesses a field and submits without validating",
+  "trap": "Tool descriptions ask nicely for validate_record first.",
+  "fix": "An application-level gate blocks submit_record until validation succeeds.",
+  "cmds": [
+   "uv run extract.py --case UC-12"
+  ],
+  "see": "DOC-07 is blocked at submit_record, nothing submits unvalidated, and a review ticket opens.",
+  "id": 11,
+  "topic": 1,
+  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Implement multi-step workflows with enforcement and handoff patterns",
+  "sim_name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "pdf": "topic-1-agentic-architecture/lab-11-claude-guesses-a-field-and-submits-without-valid.pdf",
+  "expected": "evidence/cases/UC-12.json lists at least one blocked submit_record (DOC-07), zero submits executed without a prior validation success, and a review ticket for the ambiguous document. The loop ends on end_turn, never on text matching.",
+  "rubric": [
+   "Learner can point to the line in the gate that checks validated[record_id] before executing submit_record.",
+   "Learner explains why the gate returns is_error: true rather than silently dropping the call.",
+   "Learner states why tool_choice: tool for validate_record would not have been sufficient."
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q12 (unofficial third-party question)",
+  "stem": "The system exposes client-executed tools named extract_fields , validate_record , submit_record , and create_review_ticket . Production logs show that when a required field is ambiguous, Claude sometimes guesses a value and emits submit_record without a successful validate_record result. The application then executes the requested tool call, and downstream systems receive records that should have gone to review. What change would most effectively enforce the required workflow?",
+  "options": {
+   "A": "Stop the agent loop whenever the assistant text includes phrases such as “ready to submit”.",
+   "B": "Add stronger system instructions telling Claude to create review tickets for ambiguous required fields.",
+   "C": "Add an application-level gate that blocks submit_record unless validate_record has succeeded for the same record.",
+   "D": "Set tool_choice to the validate_record tool whenever the extraction prompt mentions ambiguous fields."
+  },
+  "answer": "C",
+  "why": "With client tools, Claude only requests a call. Your application decides whether and how to execute it, so that boundary is the right place to enforce business-critical ordering such as “validate before submit”. tool_choice steers whether Claude may, must or must not use tools on one turn, but it does not prove later calls meet application prerequisites. Prompts guide behaviour but cannot match the guarantee of refusing to execute an invalid request. Drive the loop from structured signals: execute allowed calls while stop_reason == \"tool_use\" , return tool_result blocks, and stop at end_turn .",
+  "wrong": {
+   "A": "Parsing natural-language phrases is an unreliable control signal, and it does not block submit_record .",
+   "B": "Probabilistic. The model is already skipping the intended path.",
+   "D": "Forces one call on one turn and depends on spotting “ambiguous” in the prompt. A later unvalidated submit_record can still run."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.5",
+  "src": "TS",
+  "sim": 1,
+  "core": 1,
+  "title": "The prompt forgot the $500 rule. The hook did not.",
+  "trap": "A refund limit that lives only in the system prompt.",
+  "fix": "A PreToolUse hook denies anything above $500 and redirects to escalation.",
+  "cmds": [
+   "uv run support_agent.py --case CS-02",
+   "uv run support_agent.py --case CS-02 --prompt prompts/system-noguard.md --tag noguard"
+  ],
+  "see": "Without the rule in the prompt the model tries $780. The hook denies it.",
+  "id": 12,
+  "topic": 1,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Apply Agent SDK hooks for tool call interception and data normalization",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-1-agentic-architecture/lab-12-the-prompt-forgot-the-500-rule-the-hook-did-not.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Built from exam guide task statement 1.5 (no practice question covers this angle)",
+  "stem": "Arjun wants a full refund on a $780 standing desk. Automatic refunds stop at $500. Someone has edited the system prompt, and the $500 rule is gone. What still stops the refund?",
+  "options": {
+   "A": "A PreToolUse hook denies anything above $500 and redirects to escalation.",
+   "B": "A refund limit that lives only in the system prompt."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "1.5",
+  "src": "P9",
+  "sim": 2,
+  "core": 0,
+  "title": "Shrink noisy npm test output before Claude reads it",
+  "trap": "Rewrite the command, or tell Claude to ignore the noise.",
+  "fix": "A PostToolUse hook on Bash returns updated output, leaving the command as is.",
+  "cmds": [
+   "uv run casekit.py --case UC-9"
+  ],
+  "see": "The command still runs. Claude reads no npm WARN lines and no absolute paths.",
+  "id": 13,
+  "topic": 1,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Apply Agent SDK hooks for tool call interception and data normalization",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-1-agentic-architecture/lab-13-shrink-noisy-npm-test-output-before-claude-reads.pdf",
+  "expected": "The command still runs unchanged, but Claude's reply shows the stripped, path-normalised output: no npm WARN lines, no absolute paths.",
+  "rubric": [
+   "dependency warnings are gone from what Claude read",
+   "absolute local paths are replaced",
+   "the useful test line survived"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q9 (unofficial third-party question)",
+  "stem": "When Claude Code runs npm test through Bash, the raw stdout often includes long dependency warnings and absolute local paths. The team wants Claude to reason from a shorter, normalized version of successful Bash results while leaving the command execution itself unchanged. What implementation should they choose?",
+  "options": {
+   "A": "Configure a PostToolUse hook matching Bash that exits with code 2 and writes normalized stdout to stderr.",
+   "B": "Configure a PostToolUse hook matching Bash that returns updated tool output with a Bash result shape.",
+   "C": "Configure a PostToolUse hook matching Bash that returns decision: \"block\" with a normalization reason.",
+   "D": "Configure a PreToolUse hook matching Bash that rewrites stdout inside the incoming tool input."
+  },
+  "answer": "B",
+  "why": "PostToolUse is the event for transforming a successful tool result after execution but before Claude reasons over it. The hook receives the tool's arguments and response and can return updated output that replaces what Claude sees on the next request. It does not undo the action: the command has already run. For built-in tools such as Bash, the replacement must match the tool's structured output shape. According to the video, a plain string where a structured Bash result is expected may be ignored, leaving the original output in place.",
+  "wrong": {
+   "A": "Exit code 2 in PostToolUse shows stderr to Claude as extra feedback. The original output still stands, so this adds text rather than replacing it.",
+   "C": "decision: \"block\" sends a reason back to Claude. It does not substitute normalised output.",
+   "D": "PreToolUse runs before execution, when no stdout exists yet. The tool input is the command, not its output."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.5",
+  "src": "TS",
+  "sim": 4,
+  "core": 0,
+  "title": "rm -rf meets a hook, not a polite request",
+  "trap": "A CLAUDE.md line saying \"be careful with deletes\".",
+  "fix": "A PreToolUse hook denies Bash commands containing rm -rf.",
+  "cmds": [
+   "uv run explorer.py --case UC-D6"
+  ],
+  "see": "The hook denies the command, work/tests still exists, and the agent reports the policy.",
+  "id": 14,
+  "topic": 1,
+  "try": "Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Apply Agent SDK hooks for tool call interception and data normalization",
+  "sim_name": "Developer Productivity with Claude",
+  "dir": "simulator-4-developer-productivity",
+  "pdf": "topic-1-agentic-architecture/lab-14-rm-rf-meets-a-hook-not-a-polite-request.pdf",
+  "expected": "The hook denies the command; tests/ still exists; the agent reports the policy.",
+  "rubric": [
+   "a blocked row for rm -rf appears in tool_log.jsonl",
+   "work/tests still exists afterwards",
+   "agent's final text acknowledges the block"
+  ],
+  "source": "Built from exam guide task statement 1.5 (no practice question covers this angle)",
+  "stem": "A developer's agent can run Bash. Someone asks it to tidy up, and it reaches for rm -rf. What should stop it?",
+  "options": {
+   "A": "A PreToolUse hook denies Bash commands containing rm -rf.",
+   "B": "A CLAUDE.md line saying \"be careful with deletes\"."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "1.6",
+  "src": "P31",
+  "sim": 6,
+  "core": 1,
+  "title": "60-page packets: section passes first, reconcile second",
+  "trap": "One giant single pass over every section.",
+  "fix": "Extract per section, then a reconciliation pass checks totals and duplicates.",
+  "cmds": [
+   "uv run extract.py --case UC-31"
+  ],
+  "see": "Single pass: one record for three documents. Section pipeline: one record per section.",
+  "id": 15,
+  "topic": 1,
+  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Design task decomposition strategies for complex workflows",
+  "sim_name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "pdf": "topic-1-agentic-architecture/lab-15-60-page-packets-section-passes-first-reconcile-s.pdf",
+  "expected": "evidence/cases/UC-31.json shows the single pass returning one record for a packet that holds three distinct documents, and the section pipeline returning four section records reconciled to three unique invoice_ids with the duplicate merged and any total mismatch listed.",
+  "rubric": [
+   "Learner states which checks only make sense in the global pass (dedupe, cross-section totals) and why.",
+   "Learner explains why the section pass reduces attention dilution.",
+   "Learner can say when adaptive decomposition would be the better choice instead."
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q31 (unofficial third-party question)",
+  "stem": "Production evaluation shows accuracy drops on 60-page packets with predictable sections, such as intake forms, narrative notes, invoices, and attachments. The current single-pass extraction often captures fields within individual sections, but produces duplicate entities, inconsistent totals, and occasional schema-valid output with incorrect relationships. Which task-decomposition strategy should this team use first?",
+  "options": {
+   "A": "Run section-level extraction passes, then run a reconciliation pass that validates schema, deduplicates entities, and checks cross-section consistency.",
+   "B": "Generate adaptive subtasks after each page, then stop when the agent determines that all required fields have been found.",
+   "C": "Summarize each packet into a narrative first, then extract the required schema fields from that summary in a final pass.",
+   "D": "Send the full packet through one expanded extraction prompt, then ask Claude to self-check the JSON before returning it."
+  },
+  "answer": "A",
+  "why": "For predictable workflows, a fixed sequential decomposition beats asking one prompt to do everything: local first, global second. Section passes focus on less evidence and make failures easier to isolate. The reconciliation pass handles constraints that only make sense once every partial extraction exists, such as deduplication, totals, dates and relationships across sections.",
+  "wrong": {
+   "B": "Adaptive decomposition suits exploratory work where the next step depends on discoveries. These packets have a known structure.",
+   "C": "A narrative summary throws away detail before extraction and can hide errors behind valid-looking JSON.",
+   "D": "The same overloaded single pass. A self-check rarely catches errors in the model's own output."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.7",
+  "src": "P5",
+  "sim": 2,
+  "core": 1,
+  "title": "Two attempts, one analysis: fork the session, checkpoint the files",
+  "trap": "Resume the same session twice in one working folder.",
+  "fix": "Resume with the fork option for each attempt, and checkpoint files first.",
+  "cmds": [
+   "uv run casekit.py --case UC-5"
+  ],
+  "see": "Three session ids. Attempt B starts from restored files, so attempt A never leaks in.",
+  "id": 16,
+  "topic": 1,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Manage session state, resumption, and forking",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-1-agentic-architecture/lab-16-two-attempts-one-analysis-fork-the-session-check.pdf",
+  "expected": "Three session ids: the baseline and two forks that differ from it and from each other. Attempt B starts from restored files, so attempt A's edits never leak into it.",
+  "rubric": [
+   "both attempts resume the baseline with --fork-session and get new session ids",
+   "attempt A changed only formatDate.js",
+   "files were checkpointed (restored) before attempt B, so a fork is not a filesystem snapshot",
+   "attempt B touched callers as well"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q5 (unofficial third-party question)",
+  "stem": "After a long plan-mode investigation, a developer saves the session ID before making changes. They want to test a minimal patch and a larger refactor from the same analysed context, but both attempts will touch overlapping files in the same working directory. Which approach best supports independent exploration without confusing conversation history with file state?",
+  "options": {
+   "A": "Fork the saved session once and run both attempts in the same working directory as isolated file branches.",
+   "B": "Resume the saved session ID with the fork option for each attempt and checkpoint files before edits.",
+   "C": "Use --continue twice from the project directory and rely on Claude Code to select the baseline automatically.",
+   "D": "Resume the saved session ID twice without forking and ask Claude to keep each attempt separate."
+  },
+  "answer": "B",
+  "why": "Forking fits when the valuable asset is the prior conversation: prompts, tool calls, results and Claude's analysis. A fork starts a new session (with its own ID) from a copy of the existing history, and the original stays unchanged. The boundary to remember is that a session is not a file-system snapshot . Forks editing the same working directory change the real files, which every session using that directory then sees. To revert, use file checkpointing, which tracks the file-editing tools (Write, Edit, NotebookEdit) but not arbitrary changes made through shell commands. Use resume for a specific earlier session ID, and fork when you need an independent branch. (For reference: claude --resume <id> --fork-session in the CLI, fork_session in the exam guide.)",
+  "wrong": {
+   "A": "One fork shared by two attempts is not two branches, and a fork never isolates files.",
+   "C": "--continue resumes the most recent conversation in the directory, not necessarily the saved baseline. Running it twice does not create independent branches.",
+   "D": "Without forking, both attempts append to the same history. Asking in plain language to “keep them separate” does not create isolation."
+  },
+  "domain": 1
+ },
+ {
+  "task": "1.7",
+  "src": "TS",
+  "sim": 4,
+  "core": 0,
+  "title": "Resume, and say exactly which file changed",
+  "trap": "Resume silently and let the agent trust stale tool results.",
+  "fix": "Name the changed file, or start fresh with a structured summary.",
+  "cmds": [
+   "uv run explorer.py --case UC-D4"
+  ],
+  "see": "Same session id, at most two Reads, no Grep, no subagent.",
+  "id": 17,
+  "topic": 1,
+  "try": "Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.",
+  "topic_name": "Agentic Architecture & Orchestration",
+  "task_title": "Manage session state, resumption, and forking",
+  "sim_name": "Developer Productivity with Claude",
+  "dir": "simulator-4-developer-productivity",
+  "pdf": "topic-1-agentic-architecture/lab-17-resume-and-say-exactly-which-file-changed.pdf",
+  "expected": "Same session id as explore; at most two Reads, no Grep, no subagent.",
+  "rubric": [
+   "session id equals the explore session",
+   "no Grep and no Agent call",
+   "Read count <= 2"
+  ],
+  "source": "Built from exam guide task statement 1.7 (no practice question covers this angle)",
+  "stem": "Yesterday's session analysed the billing repo. Overnight, a teammate changed invoice.py. You want to carry on today. How do you continue?",
+  "options": {
+   "A": "Resume silently and let the agent trust stale tool results.",
+   "B": "Name the changed file, or start fresh with a structured summary."
+  },
+  "answer": "B",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "2.1",
+  "src": "P11",
+  "sim": 6,
+  "core": 1,
+  "title": "One analyze_document tool does three jobs badly",
+  "trap": "A single tool with an operation parameter.",
+  "fix": "A few non-overlapping tools with clear descriptions and JSON Schema inputs.",
+  "cmds": [
+   "uv run extract.py --case UC-11"
+  ],
+  "see": "The generic tool drifts into summaries. The split set calls extract_invoice with valid fields.",
+  "id": 18,
+  "topic": 2,
+  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "topic_name": "Tool Design & MCP Integration",
+  "task_title": "Design effective tool interfaces with clear descriptions and boundaries",
+  "sim_name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "pdf": "topic-2-tool-design-and-mcp/lab-18-one-analyze-document-tool-does-three-jobs-badly.pdf",
+  "expected": "evidence/cases/UC-11.json shows the generic tool producing summaries or missing fields on some documents, while the split tool set calls extract_invoice with a schema-valid payload on every document.",
+  "rubric": [
+   "Learner can name the three workflows that were hiding behind the operation parameter and explain why they do not overlap.",
+   "Learner points to the description text that says when NOT to use each tool.",
+   "Learner explains why a schema-valid extract_invoice payload still needs the semantic total check."
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q11 (unofficial third-party question)",
+  "stem": "The current implementation exposes one client tool named analyze_document with parameters for document text, requested operation, and desired format. In evaluation runs, Claude sometimes uses it to produce summaries when the downstream validator expected extracted fields, and sometimes attempts claim verification without passing the source excerpt needed for validation. What redesign best improves tool selection and downstream reliability without creating unnecessary tool sprawl?",
+  "options": {
+   "A": "Keep analyze_document and add more operation names to its schema enum, while requiring Claude to choose the exact operation before each call.",
+   "B": "Replace analyze_document with a few non-overlapping tools for distinct workflows, each with clear descriptions, JSON Schema inputs, and minimal stable result fields.",
+   "C": "Create a separate tool for every document field, then merge all field-level tool results into one validated downstream record.",
+   "D": "Move the operation instructions into the system prompt and keep the same tool schema to reduce changes to the integration."
+  },
+  "answer": "B",
+  "why": "Split an overly generic tool into a small number of purpose-specific tools that don't overlap, such as extraction, summarisation and source-backed verification. Each description should say what the tool does, when to use it and when not to, what the parameters mean, and any caveats. Descriptions are a primary driver of tool selection. The input_schema is the contract for what Claude sends, so a verification tool can require the source excerpt. strict: true can enforce schema conformance, but semantic validation is still needed downstream.",
+  "wrong": {
+   "A": "Adding enum values keeps incompatible workflows hidden behind one catch-all tool, so the selection ambiguity remains.",
+   "C": "One tool per field is tool sprawl: more tools, more selection ambiguity.",
+   "D": "Leaves the interface unchanged. The schema still allows verification without an excerpt."
+  },
+  "domain": 2
+ },
+ {
+  "task": "2.2",
+  "src": "P29",
+  "sim": 1,
+  "core": 1,
+  "title": "The refund failed. The customer was told it worked.",
+  "trap": "Failure text returned as a normal, successful tool result.",
+  "fix": "Return isError: true with structured failure details.",
+  "cmds": [
+   "uv run support_agent.py --case CS-11"
+  ],
+  "see": "The refund on ORD-5508 is never issued, and the reply never claims it was.",
+  "id": 19,
+  "topic": 2,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Tool Design & MCP Integration",
+  "task_title": "Implement structured error responses for MCP tools",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-2-tool-design-and-mcp/lab-19-the-refund-failed-the-customer-was-told-it-worke.pdf",
+  "expected": "The agent doesn't claim a refund. It may refuse from the policy, or call process_refund and read a business error. Either way, no refund is issued.",
+  "rubric": [
+   "the error carries errorCategory, isRetryable and a customer_message",
+   "the reply explains the closed window instead of claiming success"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q29 (unofficial third-party question)",
+  "stem": "A refund operation sometimes fails because the order is outside the return window, but the agent treats the MCP response as a successful refund and tells the customer it was completed. What change should this team make to communicate the tool failure correctly?",
+  "options": {
+   "A": "Return a CallToolResult with isError: true and include structured failure details in the result content.",
+   "B": "Return a normal tool result containing an error field and ask the agent to infer failure from the content.",
+   "C": "Return a CallToolResult with isError: false and include structured failure details in the result content.",
+   "D": "Raise a protocol-level server exception and include structured failure details in the exception message."
+  },
+  "answer": "A",
+  "why": "In MCP a tool call can succeed at the protocol level yet fail at the business-logic level. The pattern is to return a CallToolResult with isError: true and put useful recovery context in the content. Failures differ (policy violation, invalid date, missing order, permission denied), and structured details let the agent pick the next step: explain the rule, correct the input, retry a transient error, or escalate. Spelling and value both matter: camelCase isError , set to true .",
+  "wrong": {
+   "B": "Not the documented MCP error signal. The response still looks like a success.",
+   "C": "isError: false explicitly signals success.",
+   "D": "Protocol errors are for protocol failures. A business-rule failure belongs in the result, where the agent can reason about recovery."
+  },
+  "domain": 2
+ },
+ {
+  "task": "2.2",
+  "src": "TS",
+  "sim": 1,
+  "core": 0,
+  "title": "Retry the timeout once, then answer from the real record",
+  "trap": "A generic \"lookup failed\" with no hint about retrying.",
+  "fix": "errorCategory plus isRetryable lets the agent decide.",
+  "cmds": [
+   "uv run support_agent.py --case CS-06"
+  ],
+  "see": "ORD-5504 times out once, one retry follows, and the reply uses the real order record.",
+  "id": 20,
+  "topic": 2,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Tool Design & MCP Integration",
+  "task_title": "Implement structured error responses for MCP tools",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-2-tool-design-and-mcp/lab-20-retry-the-timeout-once-then-answer-from-the-real.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Built from exam guide task statement 2.2 (no practice question covers this angle)",
+  "stem": "The order lookup for ORD-5504 times out on the first try. How should the tool report that, and what should the agent do next?",
+  "options": {
+   "A": "errorCategory plus isRetryable lets the agent decide.",
+   "B": "A generic \"lookup failed\" with no hint about retrying."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "2.3",
+  "src": "P15",
+  "sim": 5,
+  "core": 1,
+  "title": "Review and test generation fight over one Claude call",
+  "trap": "All tools exposed to one step that also writes tests.",
+  "fix": "Separate steps, role-specific tools, a forced reporting tool for review.",
+  "cmds": [
+   "uv run casekit.py --case UC-15"
+  ],
+  "see": "Review gets read-only tools and the finding schema. Tests get their own. No prose comes back.",
+  "id": 21,
+  "topic": 2,
+  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "topic_name": "Tool Design & MCP Integration",
+  "task_title": "Distribute tools appropriately across agents and configure tool choice",
+  "sim_name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "pdf": "topic-2-tool-design-and-mcp/lab-21-review-and-test-generation-fight-over-one-claude.pdf",
+  "expected": "The review step gets read-only tools and the finding schema; the test step gets its own schema. Each returns structured output, never prose. In the Messages API the same guarantee is tool_choice {type: tool, name: report_findings}.",
+  "rubric": [
+   "the review step returned a schema-valid finding object, not prose",
+   "the review step reported the loop bug and nothing about tests",
+   "the test step returned its own contract with the duplicate skipped"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q15 (unofficial third-party question)",
+  "stem": "The system uses one Claude call for pull request review, test generation, and PR metadata updates. Logs show the review phase sometimes invokes test-writing tools for non-testable style comments, then returns prose instead of the structured finding object your pipeline expects. What change best improves tool-selection reliability while preserving automated test generation elsewhere in the pipeline?",
+  "options": {
+   "A": "Keep one shared CI step, expose all tools with sharper descriptions, and set tool_choice to \"any\" for review output.",
+   "B": "Keep one shared CI step, namespace tool names by category, and leave tool_choice on \"auto\" for model flexibility.",
+   "C": "Expose all CI tools to both steps, set tool_choice to \"none\" during review, and parse JSON from assistant text.",
+   "D": "Separate review and test-generation steps, expose only role-specific tools to each step, and force the review step's reporting tool with tool_choice ."
+  },
+  "answer": "D",
+  "why": "Scope tool access to the role performing each step. A review step that only produces findings should not hold test-writing or PR-label tools, because every extra tool raises the chance of an irrelevant call. Descriptions are the main steering mechanism, but they are no substitute for removing unrelated tools. tool_choice: {\"type\": \"tool\", \"name\": …} forces the named reporting tool, so the pipeline gets structured findings, while a separate test-generation step keeps its file-writing tools.",
+  "wrong": {
+   "A": "\"any\" guarantees a tool call, which could still be a test-writing tool.",
+   "B": "\"auto\" still allows prose, and namespacing does not remove the unrelated tools.",
+   "C": "\"none\" forbids tools, so findings come back as prose to parse. That gives up the structured output."
+  },
+  "domain": 2
+ },
+ {
+  "task": "2.3",
+  "src": "G9",
+  "sim": 3,
+  "core": 0,
+  "title": "Give synthesis one narrow tool, not the whole web",
+  "trap": "Synthesis routes every small fact check through the coordinator.",
+  "fix": "A scoped verify_fact tool for simple lookups. Complex cases still go through the hub.",
+  "cmds": [
+   "uv run research_system.py"
+  ],
+  "see": "Synthesis calls verify_fact. No agent uses a tool outside its definition.",
+  "id": 22,
+  "topic": 2,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Tool Design & MCP Integration",
+  "task_title": "Distribute tools appropriately across agents and configure tool choice",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-2-tool-design-and-mcp/lab-22-give-synthesis-one-narrow-tool-not-the-whole-web.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Official exam guide, sample question 9",
+  "stem": "During testing, you observe that the synthesis agent frequently needs to verify specific claims while combining findings. Currently, when verification is needed, the synthesis agent returns control to the coordinator, which invokes the web search agent, then re-invokes synthesis with results. This adds 2-3 round trips per task and increases latency by 40%. Your evaluation shows that 85% of these verifications are simple fact-checks (dates, names, statistics) while 15% require deeper investigation. What's the most effective approach to reduce overhead while maintaining system reliability?",
+  "options": {
+   "A": "Give the synthesis agent a scoped verify_fact tool for simple lookups, while complex verifications continue delegating to the web search agent through the coordinator.",
+   "B": "Have the synthesis agent accumulate all verification needs and return them as a batch to the coordinator at the end of its pass, which then sends them all to the web search agent at once.",
+   "C": "Give the synthesis agent access to all web search tools so it can handle any verification need directly without round-trips through the coordinator.",
+   "D": "Have the web search agent proactively cache extra context around each source during initial research, anticipating what the synthesis agent might need to verify."
+  },
+  "answer": "A",
+  "why": "Option A applies the principle of least privilege by giving the synthesis agent only what it needs for the 85% common case (simple fact verification) while preserving the existing coordination pattern for complex cases. Option B's batching approach creates blocking dependencies since synthesis steps may depend on earlier verified facts. Option C over-provisions the synthesis agent, violating separation of concerns. Option D relies on speculative caching that cannot reliably predict what the synthesis agent will need to verify.",
+  "wrong": {}
+ },
+ {
+  "task": "2.4",
+  "src": "TS",
+  "sim": 2,
+  "core": 1,
+  "title": "Commit the server, never the token",
+  "trap": "A shared .mcp.json with a literal secret, or a server only you have.",
+  "fix": "${GITHUB_TOKEN} in the project file, experiments in user scope.",
+  "cmds": [
+   "uv run simulator.py 5"
+  ],
+  "see": ".mcp.json holds placeholders only. Your real ~/.claude.json stays untouched.",
+  "id": 23,
+  "topic": 2,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Tool Design & MCP Integration",
+  "task_title": "Integrate MCP servers into Claude Code and agent workflows",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-2-tool-design-and-mcp/lab-23-commit-the-server-never-the-token.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Built from exam guide task statement 2.4 (no practice question covers this angle)",
+  "stem": "Your team needs the same GitHub and docs MCP servers, but each token is personal. Where does the configuration go?",
+  "options": {
+   "A": "A shared .mcp.json with a literal secret, or a server only you have.",
+   "B": "${GITHUB_TOKEN} in the project file, experiments in user scope."
+  },
+  "answer": "B",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "2.4",
+  "src": "TS",
+  "sim": 4,
+  "core": 0,
+  "title": "Read the catalogue before opening a single file",
+  "trap": "The agent greps blindly for the billing runbook.",
+  "fix": "Expose a resource catalogue so it knows what exists first.",
+  "cmds": [
+   "uv run explorer.py --case UC-D2"
+  ],
+  "see": "list_catalog first, read_resource docs://runbook next, no Glob over docs/.",
+  "id": 24,
+  "topic": 2,
+  "try": "Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.",
+  "topic_name": "Tool Design & MCP Integration",
+  "task_title": "Integrate MCP servers into Claude Code and agent workflows",
+  "sim_name": "Developer Productivity with Claude",
+  "dir": "simulator-4-developer-productivity",
+  "pdf": "topic-2-tool-design-and-mcp/lab-24-read-the-catalogue-before-opening-a-single-file.pdf",
+  "expected": "list_catalog precedes read_resource; no Glob or Bash ls touches docs/.",
+  "rubric": [
+   "list_catalog is the first tool call",
+   "read_resource docs://runbook follows",
+   "no Glob/Read/Bash over docs/"
+  ],
+  "source": "Built from exam guide task statement 2.4 (no practice question covers this angle)",
+  "stem": "An agent lands in an unfamiliar repo that has a documentation server attached. How should it find out what exists?",
+  "options": {
+   "A": "Expose a resource catalogue so it knows what exists first.",
+   "B": "The agent greps blindly for the billing runbook."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "2.5",
+  "src": "P37",
+  "sim": 4,
+  "core": 1,
+  "title": "/find-callers needs Grep with a glob, not Bash",
+  "trap": "Glob for content, or grep through Bash.",
+  "fix": "Grep with the helper name, a file-type glob, output_mode content.",
+  "cmds": [
+   "uv run explorer.py --case UC-37"
+  ],
+  "see": "One Grep call for calculate_total in *.py, with file, line and match. No Bash grep.",
+  "id": 25,
+  "topic": 2,
+  "try": "Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.",
+  "topic_name": "Tool Design & MCP Integration",
+  "task_title": "Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively",
+  "sim_name": "Developer Productivity with Claude",
+  "dir": "simulator-4-developer-productivity",
+  "pdf": "topic-2-tool-design-and-mcp/lab-25-find-callers-needs-grep-with-a-glob-not-bash.pdf",
+  "expected": "One Grep call with pattern calculate_total, glob *.py and output_mode content; no Glob-then-Read-everything and no Bash grep.",
+  "rubric": [
+   "Grep used with pattern == helper name",
+   "Grep scoped with a *.py glob and output_mode content",
+   "no Bash grep and fewer than 3 Read calls"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q37 (unofficial third-party question)",
+  "stem": "A payments platform's developer-productivity team is adding a /find-callers command that should locate every reference to a renamed helper function, limit the search to TypeScript source files, and return enough context for a developer to jump directly to each match. Which Claude Code built-in tool configuration should the command use?",
+  "options": {
+   "A": "Use Glob with pattern **/helperName.ts , sort the returned paths, and treat matching file names as caller locations.",
+   "B": "Use Glob with pattern **/*.ts , then Read each file and load all contents into the conversation for scanning.",
+   "C": "Use Bash to run grep -r helperName --include=*.ts , then parse stdout as caller locations.",
+   "D": "Use Grep with the helper name as pattern, scope it with glob **/*.ts , and set output_mode: \"content\" for match lines."
+  },
+  "answer": "D",
+  "why": "Grep is the built-in tool for searching file contents such as function names, error messages and imports. Callers of a helper are content inside files. Glob finds files by path or name pattern (for example **/*.test.ts ). Grep with output_mode: \"content\" returns matching lines with file and line number, and its glob filter limits the search to TypeScript. The built-in Grep tool is not the same as shell grep through Bash, which goes through Bash permissions.",
+  "wrong": {
+   "A": "Matches file names . A file called helperName.ts is the definition, not its callers.",
+   "B": "Loads every file into context, which is wasteful and pointless when Grep exists.",
+   "C": "Works, but bypasses the purpose-built tool, depends on Bash permissions, and leaves fragile output parsing."
+  },
+  "domain": 2
+ },
+ {
+  "task": "2.5",
+  "src": "TS",
+  "sim": 4,
+  "core": 0,
+  "title": "Edit says the anchor isn't unique. Now what?",
+  "trap": "Retry Edit with the same anchor.",
+  "fix": "Read the file, then Write it back whole.",
+  "cmds": [
+   "uv run explorer.py --case UC-D1"
+  ],
+  "see": "return total appears twice. Edit is tried, the fallback or a wider anchor lands, pytest passes.",
+  "id": 26,
+  "topic": 2,
+  "try": "Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.",
+  "topic_name": "Tool Design & MCP Integration",
+  "task_title": "Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively",
+  "sim_name": "Developer Productivity with Claude",
+  "dir": "simulator-4-developer-productivity",
+  "pdf": "topic-2-tool-design-and-mcp/lab-26-edit-says-the-anchor-isn-t-unique-now-what.pdf",
+  "expected": "Edit attempted; either a non-unique failure followed by Write, or a widened unique Edit; pytest passes.",
+  "rubric": [
+   "Edit attempted on invoice.py",
+   "after an Edit failure a Write (or a second unique Edit) lands the change",
+   "pytest exits 0 and quantize present"
+  ],
+  "source": "Built from exam guide task statement 2.5 (no practice question covers this angle)",
+  "stem": "The agent needs to change `return total`, but that text appears twice in invoice.py, so Edit refuses. What now?",
+  "options": {
+   "A": "Read the file, then Write it back whole.",
+   "B": "Retry Edit with the same anchor."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "3.1",
+  "src": "TS",
+  "sim": 2,
+  "core": 1,
+  "title": "Which instructions actually reached Claude?",
+  "trap": "Everything in one huge file, or hidden in your home folder.",
+  "fix": "Project CLAUDE.md with @imports, plus rules that load by path.",
+  "cmds": [
+   "uv run simulator.py 1"
+  ],
+  "see": "Claude quotes the imported standard and names the rule files in context.",
+  "id": 27,
+  "topic": 3,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-3-claude-code-configuration/lab-27-which-instructions-actually-reached-claude.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Built from exam guide task statement 3.1 (no practice question covers this angle)",
+  "stem": "A teammate says Claude keeps ignoring the test conventions. How do you organise the instructions, and how do you find out which ones reached Claude for a test file?",
+  "options": {
+   "A": "Everything in one huge file, or hidden in your home folder.",
+   "B": "Project CLAUDE.md with @imports, plus rules that load by path."
+  },
+  "answer": "B",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "3.2",
+  "src": "G4",
+  "sim": 2,
+  "core": 0,
+  "title": "A /review command the whole team gets through git",
+  "trap": "A personal command in your home folder.",
+  "fix": "Commit it to .claude/commands/.",
+  "cmds": [
+   "uv run simulator.py 2"
+  ],
+  "see": "/review main finds the removed orders:read check and ends with a VERDICT line.",
+  "id": 28,
+  "topic": 3,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Create and configure custom slash commands and skills",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-3-claude-code-configuration/lab-28-a-review-command-the-whole-team-gets-through-git.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Official exam guide, sample question 4",
+  "stem": "You want to create a custom /review slash command that runs your team's standard code review checklist. This command should be available to every developer when they clone or pull the repository. Where should you create this command file?",
+  "options": {
+   "A": "In the .claude/commands/ directory in the project repository",
+   "B": "In ~/.claude/commands/ in each developer's home directory",
+   "C": "In the CLAUDE.md file at the project root",
+   "D": "In a .claude/config.json file with a commands array"
+  },
+  "answer": "A",
+  "why": "Project-scoped custom slash commands should be stored in the .claude/commands/ directory within the repository. These commands are version-controlled and automatically available to all developers when they clone or pull the repo. Option B (~/.claude/commands/) is for personal commands that aren't shared via version control. Option C (CLAUDE.md) is for project instructions and context, not command definitions. Option D describes a configuration mechanism that doesn't exist in Claude Code.",
+  "wrong": {}
+ },
+ {
+  "task": "3.2",
+  "src": "P16",
+  "sim": 1,
+  "core": 1,
+  "title": "Keep a noisy case review out of your main session",
+  "trap": "A command or CLAUDE.md note that fills the conversation.",
+  "fix": "SKILL.md with context: fork, allowed-tools and an argument-hint.",
+  "cmds": [
+   "uv run case_review.py CS-02"
+  ],
+  "see": "The review returns as a summary. The evidence JSON stays out of the session.",
+  "id": 29,
+  "topic": 3,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Create and configure custom slash commands and skills",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-3-claude-code-configuration/lab-29-keep-a-noisy-case-review-out-of-your-main-sessio.pdf",
+  "expected": "The skill returns PASS/FAIL lines for CS-02 without the evidence JSON appearing in your main session.",
+  "rubric": [
+   "frontmatter has context: fork, allowed-tools and argument-hint",
+   "the review reports the hook denial on CS-02 as acceptable"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q16 (unofficial third-party question)",
+  "stem": "This team wants an on-demand Claude Code workflow named /case_review for support engineers. The workflow produces lengthy exploratory notes, should run outside the main conversation context, should let Claude read and search project files without repeated permission prompts, and should show the expected case ID when developers invoke it. Which setup best fits these requirements?",
+  "options": {
+   "A": "Create .claude/skills/case_review/SKILL.md with context: main , allowed-tools for Read and Grep, and an argument-hint for the case ID.",
+   "B": "Create .claude/skills/case_review.md with context: fork , allowed-tools for Read and Grep, and an argument-hint for the case ID.",
+   "C": "Create .claude/skills/case_review/SKILL.md with context: fork , allowed-tools for Read and Grep, and an argument-hint for the case ID.",
+   "D": "Create .claude/skills/case_review/SKILL.md with context: fork , allowed-tools as an exclusive allow-list, and argument-hint as a validator."
+  },
+  "answer": "C",
+  "why": "Skills are directories containing a required SKILL.md with YAML frontmatter and Markdown instructions. A project skill under .claude/skills/<name>/SKILL.md can be invoked as /<name> . context: fork is the key setting, because it runs the exploratory work in an isolated subagent context instead of cluttering the main conversation. allowed-tools pre-approves Read and Grep while the skill runs. argument-hint shows the expected argument during autocomplete. It is not a schema validator, so argument validation must happen elsewhere.",
+  "wrong": {
+   "A": "context: main keeps the lengthy notes in the main conversation, which is what the team wants to avoid.",
+   "B": "A loose .md file is not a skill. A skill needs its own directory with a SKILL.md .",
+   "D": "Misdescribes both fields. argument-hint does not validate anything, and the video says allowed-tools is not a security boundary: use disallowed-tools or permission deny rules to remove tools."
+  },
+  "domain": 3
+ },
+ {
+  "task": "3.3",
+  "src": "P7",
+  "sim": 3,
+  "core": 1,
+  "title": "Testing rules for test files spread across every folder",
+  "trap": "Root CLAUDE.md, or one copy per folder.",
+  "fix": "One rule file with paths frontmatter matching the test patterns.",
+  "cmds": [
+   "uv run rules_sim.py D",
+   "uv run rules_sim.py"
+  ],
+  "see": "D loads for the test edit only, one copy. A and B load always. C needs three copies.",
+  "id": 30,
+  "topic": 3,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Apply path-specific rules for conditional convention loading",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-3-claude-code-configuration/lab-30-testing-rules-for-test-files-spread-across-every.pdf",
+  "expected": "A and B show the token on both edits; C shows it on both and needs three copies; D shows it only on the test-file edit with one copy.",
+  "rubric": [
+   "D: token present on the test edit and absent on the implementation edit, one copy",
+   "A and B: token present on both edits (filename and root placement do not scope)",
+   "C: duplicate count equals the folder count (3) and the token appears for the implementation edit too"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q7 (unofficial third-party question)",
+  "stem": "This team uses Claude Code to maintain the research system's TypeScript repository. Citation-verification tests, report-rendering tests, and orchestration tests live beside implementation files across multiple top-level folders. The team wants the same testing guidance to apply only when Claude Code is working on test files, without duplicating guidance in every package. What should they do?",
+  "options": {
+   "A": "Create .claude/rules/testing.md without frontmatter, then rely on the file name to limit it to test files.",
+   "B": "Place the testing guidance in the root CLAUDE.md file so every Claude Code session receives the same instructions.",
+   "C": "Add a CLAUDE.md file in each directory that contains tests, then repeat the same testing guidance in each file.",
+   "D": "Create .claude/rules/testing.md with paths frontmatter matching the test-file patterns, then place the testing guidance below it."
+  },
+  "answer": "D",
+  "why": "Claude Code separates broad project memory ( CLAUDE.md or .claude/CLAUDE.md ) from topic rules in .claude/rules/ . A rule file can carry YAML frontmatter with a paths field of glob patterns (for example \"**/*.test.ts\" ), so one rule matches files by extension, directory or both. That fits conventions that cut across the tree, such as tests placed beside their code.",
+  "wrong": {
+   "A": "A file name does not scope a rule. Without paths the rule loads unconditionally.",
+   "B": "Avoids duplication but applies the guidance far more broadly than needed.",
+   "C": "Directory CLAUDE.md files suit guidance that follows directory boundaries. Here they mean duplication and drift, which the team explicitly wants to avoid."
+  },
+  "domain": 3
+ },
+ {
+  "task": "3.4",
+  "src": "P8",
+  "sim": 2,
+  "core": 1,
+  "title": "Replacing the auth layer: nobody agrees on the boundary, so plan",
+  "trap": "Start editing and see what breaks.",
+  "fix": "Plan mode researches and proposes before any edit.",
+  "cmds": [
+   "uv run casekit.py --case UC-8"
+  ],
+  "see": "Files hash the same before and after: a plan, with no edits.",
+  "id": 31,
+  "topic": 3,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Determine when to use plan mode vs direct execution",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-3-claude-code-configuration/lab-31-replacing-the-auth-layer-nobody-agrees-on-the-bo.pdf",
+  "expected": "Claude researches src/middleware/authorize.js and its callers and returns a plan; the file-hash table shows zero edits.",
+  "rubric": [
+   "plan mode edited no files",
+   "the output is a plan that names the authorization boundary",
+   "the plan references the real callers found by research"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q8 (unofficial third-party question)",
+  "stem": "A payments platform team is replacing its homegrown authorization layer with a policy engine across API handlers, middleware, and tests. Engineers disagree about where the policy boundary should live, and the developer assigned to it is unfamiliar with several affected packages. Which workflow should they choose before implementation?",
+  "options": {
+   "A": "Run a custom slash command that instructs Claude Code to avoid asking questions during the refactor.",
+   "B": "Use direct execution so Claude Code starts editing immediately and discovers the architecture through test failures.",
+   "C": "Enter plan mode so Claude Code researches the codebase and proposes changes for approval before editing files.",
+   "D": "Select the opus model alias and let Claude Code complete the refactor through direct execution."
+  },
+  "answer": "C",
+  "why": "Plan mode separates investigation from implementation. It is a documented permission mode in which Claude researches the codebase, may run exploratory shell commands under the normal permission flow, and writes a plan. Source files are not edited until the plan is approved. Anthropic's best practices recommend planning when the approach is uncertain, the change spans multiple files, or the developer is unfamiliar with the code. All three apply here.",
+  "wrong": {
+   "A": "Suppressing questions removes exactly the clarification needed when engineers disagree about the design.",
+   "B": "Discovering an authorization architecture through test failures invites broad, risky rework. Direct execution suits small fixes.",
+   "D": "A stronger model may reason better, but model choice does not replace the approval boundary that plan mode provides."
+  },
+  "domain": 3
+ },
+ {
+  "task": "3.4",
+  "src": "P30",
+  "sim": 2,
+  "core": 0,
+  "title": "Plan first, then approve into an editing mode",
+  "trap": "Immediate edits, which earlier caused broad rewrites.",
+  "fix": "Plan mode, review the plan, approve, then edit.",
+  "cmds": [
+   "uv run casekit.py --case UC-30"
+  ],
+  "see": "Plan phase changes nothing. The same session resumes with acceptEdits, and the edits land.",
+  "id": 32,
+  "topic": 3,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Determine when to use plan mode vs direct execution",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-3-claude-code-configuration/lab-32-plan-first-then-approve-into-an-editing-mode.pdf",
+  "expected": "Phase 1 (plan mode) changes nothing. Phase 2 resumes the same session with acceptEdits and the approved first step lands as real edits.",
+  "rubric": [
+   "plan mode inspected without editing",
+   "approval continued the same session (resume, not a new chat)",
+   "the approved step produced edits (a new or changed source or test file)"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q30 (unofficial third-party question)",
+  "stem": "A senior engineer is about to migrate a shared authorization layer used by several packages. The dependency graph is unclear, there are multiple viable designs, and prior immediate-edit attempts caused broad rewrites that were later reverted. What should the engineer do first?",
+  "options": {
+   "A": "Switch to bypass-permissions mode, let Claude inspect and edit freely, then rely on tests to catch bad changes.",
+   "B": "Use direct execution, ask Claude to update one package at a time, then revert commits if the design shifts.",
+   "C": "Start Claude Code in plan mode, have it inspect the affected areas, review the proposed plan, then approve into an editing mode.",
+   "D": "Start Claude Code in accept-edits mode, have it inspect the affected areas, then review the resulting source changes."
+  },
+  "answer": "C",
+  "why": "Plan mode is for situations where changing code immediately is risky because the design, dependencies or scope are unclear. Claude analyses the codebase and writes a plan, but source files are not edited until the plan is approved. Approving the plan exits plan mode into an editing mode, either reviewing each edit or accepting edits. Don't confuse plan mode with the more permissive modes: those govern approval behaviour, not whether analysis comes first.",
+  "wrong": {
+   "A": "The most permissive mode repeats the earlier broad-rewrite failure.",
+   "B": "Commits to a design before one has been chosen, then pays for it in reverts.",
+   "D": "Accept-edits approves edits automatically, so review happens only after the changes are made."
+  },
+  "domain": 3
+ },
+ {
+  "task": "3.4",
+  "src": "P34",
+  "sim": 2,
+  "core": 1,
+  "title": "One guard clause doesn't need a plan",
+  "trap": "Plan mode and a design review for one line.",
+  "fix": "Ask directly, then run the named test.",
+  "cmds": [
+   "uv run casekit.py --case UC-34"
+  ],
+  "see": "No plan mode. quantity.js changes, node --test runs, three tests pass.",
+  "id": 33,
+  "topic": 3,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Determine when to use plan mode vs direct execution",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-3-claude-code-configuration/lab-33-one-guard-clause-doesn-t-need-a-plan.pdf",
+  "expected": "No plan mode: Claude edits src/utils/quantity.js, runs node --test tests/quantity.test.js and reports three passing tests.",
+  "rubric": [
+   "the single known file was edited directly",
+   "the specified test ran and passed",
+   "no plan or permission-mode change was needed for a one-sentence diff"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q34 (unofficial third-party question)",
+  "stem": "A teammate wants Claude Code to add one guard clause to a single known function so it rejects negative quantities, then run the existing unit test for that file. The relevant file path and expected behavior are already known, and no API, schema, or architectural changes are involved. What should the developer do?",
+  "options": {
+   "A": "Start with bypass permissions so Claude can edit and test without permission prompts.",
+   "B": "Enter plan mode first, review a plan, then approve implementation after exploration.",
+   "C": "Ask Claude Code to make the small change directly and run the specified test.",
+   "D": "Switch to accept-edits mode first, let Claude edit, then inspect the diff afterward."
+  },
+  "answer": "C",
+  "why": "For a small, well-scoped change, ask for the outcome directly and include a verification step. The best-practices guidance says plan mode adds overhead: if you can describe the diff in one sentence, skip the plan. Asking directly does not mean bypassing permissions. In the default mode reads run freely, while edits, shell commands and network requests can still pause for approval.",
+  "wrong": {
+   "A": "Permission mode is unrelated to whether a plan is needed, and bypassing permissions is unnecessary risk.",
+   "B": "Planning overhead for a one-line, fully specified change.",
+   "D": "Changes approval behaviour without adding anything this task needs."
+  },
+  "domain": 3
+ },
+ {
+  "task": "3.5",
+  "src": "P14",
+  "sim": 5,
+  "core": 0,
+  "title": "Unknown requirements? Let Claude interview you first",
+  "trap": "Ask for the implementation and iterate blind.",
+  "fix": "Interview, write a self-contained SPEC.md, implement in a fresh session.",
+  "cmds": [
+   "uv run casekit.py --case UC-14"
+  ],
+  "see": "spec.md holds open questions, interfaces, out-of-scope items and verification.",
+  "id": 34,
+  "topic": 3,
+  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Apply iterative refinement techniques for progressive improvement",
+  "sim_name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "pdf": "topic-3-claude-code-configuration/lab-34-unknown-requirements-let-claude-interview-you-fi.pdf",
+  "expected": "Claude writes spec.md with the open questions it would have asked through AskUserQuestion, the files and interfaces, what is out of scope and the verification step. Implementation starts from a fresh session with that file.",
+  "rubric": [
+   "spec.md was written",
+   "it holds the four sections the interview pattern produces",
+   "learner names AskUserQuestion as the interactive tool and a fresh session as the implementation start"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q14 (unofficial third-party question)",
+  "stem": "This team is designing a new automated reviewer for flaky-test risk. The behavior has unresolved product and workflow questions, including when comments are actionable, when they are noise, and what verification should prove. What should the team do before asking Claude Code to implement it?",
+  "options": {
+   "A": "Run an interactive planning session where Claude uses AskUserQuestion , writes a self-contained SPEC.md , then implement it from a fresh session.",
+   "B": "Run a delegated subagent via the Agent tool to ask AskUserQuestion prompts, then pass its transcript to the implementer.",
+   "C": "Run direct execution with a detailed review checklist in the prompt, then adjust the workflow after the first CI failures.",
+   "D": "Run a scheduled autonomous Claude Code job that infers missing requirements from recent pull request discussions."
+  },
+  "answer": "A",
+  "why": "For larger or ambiguous work, let Claude interview the developer first. Start from a minimal feature prompt and have Claude use AskUserQuestion (a built-in tool for multiple-choice clarifying questions) to explore implementation, developer experience, edge cases, concerns and trade-offs. Then have it write a self-contained SPEC.md that names the relevant files and interfaces, states what is out of scope, and includes an end-to-end verification step. Implementing from a fresh session then works against concrete acceptance criteria. Fuzzy criteria are a main source of false positives in CI review.",
+  "wrong": {
+   "B": "According to the video, AskUserQuestion is not currently available to subagents delegated through the Agent tool. A raw transcript is also a poor handoff compared with a spec.",
+   "C": "With the criteria unresolved, this ships the false positives first and fixes them after CI failures, the expensive order.",
+   "D": "Scheduled autonomous work cannot ask clarifying questions, and inferring requirements from PR chatter guesses at product decisions."
+  },
+  "domain": 3
+ },
+ {
+  "task": "3.5",
+  "src": "P27",
+  "sim": 3,
+  "core": 0,
+  "title": "Two linked defects go in one detailed request",
+  "trap": "Fix citations now, excerpts later, in separate runs.",
+  "fix": "Plan mode with one request naming both defects and the checks.",
+  "cmds": [
+   "uv run research_system.py --case UC-27"
+  ],
+  "see": "You write one plan-mode request: both defects, shared interface, acceptance test.",
+  "id": 35,
+  "topic": 3,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Apply iterative refinement techniques for progressive improvement",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-3-claude-code-configuration/lab-35-two-linked-defects-go-in-one-detailed-request.pdf",
+  "expected": "A plan-mode request with all five parts.",
+  "rubric": [
+   "request names both defects and the shared interface",
+   "includes a verification command (acceptance test)",
+   "explains why split sessions (D) and no-plan (C) are weaker"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q27 (unofficial third-party question)",
+  "stem": "After a refactor, generated reports show two linked defects: citations render twice in the final report, and some evidence excerpts disappear when the synthesis subagent's output is passed to the report generator. The likely cause spans the claim–source schema, the synthesis prompt, and the report template, and the acceptance test should confirm that each claim appears once with its evidence excerpt and source URL. How should this team use Claude Code to address the defects most effectively?",
+  "options": {
+   "A": "Enter plan mode and give one detailed request covering both defects, affected areas, constraints, and verification checks before approving edits.",
+   "B": "Add a Stop hook that runs the acceptance test and rely on repeated blocks as the main debugging strategy.",
+   "C": "Skip planning and ask Claude to fix the report bugs broadly, then inspect the diff after it finishes.",
+   "D": "Open separate cleared sessions for each defect, ask each session to edit only its assigned file, then merge results."
+  },
+  "answer": "A",
+  "why": "Match the workflow to how the work depends on itself. These fixes interact, so splitting them early lets each session assume something different about the shared interface between synthesis and report generation. A strong request describes the symptoms, likely affected areas, constraints, what “fixed” means and how to verify it, and asks Claude to run the checks and iterate. Plan mode is the right start because the change is uncertain and spans several files.",
+  "wrong": {
+   "B": "Stop hooks strengthen verification, but they complement diagnosis rather than replace it.",
+   "C": "A broad, unplanned fix across three coupled files is likely to make inconsistent edits.",
+   "D": "/clear and separate sessions suit unrelated tasks or polluted context, not coupled defects that need a shared mental model."
+  },
+  "domain": 3
+ },
+ {
+  "task": "3.6",
+  "src": "P18",
+  "sim": 5,
+  "core": 1,
+  "title": "The nightly job hangs because nobody can press Enter",
+  "trap": "Launch claude as if a developer were watching.",
+  "fix": "Run claude -p.",
+  "cmds": [
+   "uv run casekit.py --case UC-18"
+  ],
+  "see": "One JSON envelope on stdout, and the process exits well inside the job timeout.",
+  "id": 36,
+  "topic": 3,
+  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Integrate Claude Code into CI/CD pipelines",
+  "sim_name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "pdf": "topic-3-claude-code-configuration/lab-36-the-nightly-job-hangs-because-nobody-can-press-e.pdf",
+  "expected": "claude -p processes the prompt, writes one JSON envelope to stdout and exits well inside the job timeout; no terminal is ever waited on.",
+  "rubric": [
+   "the job exited on its own with a JSON envelope (session_id present)",
+   "it returned inside a CI-friendly time budget",
+   "learner can explain why timeouts, retries or 'please exit' instructions do not change the execution mode"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q18 (unofficial third-party question)",
+  "stem": "Your CI job runs a nightly support-triage check and needs Claude Code to process a prompt, write the result to standard output, and exit without waiting for a developer. The current job launches Claude Code and intermittently hangs in the runner. What change best fits this automated workflow?",
+  "options": {
+   "A": "Invoke Claude Code with claude -p (or claude --print ) in the job.",
+   "B": "Launch plain claude and add an instruction telling Claude to exit after answering.",
+   "C": "Add --output-format json to plain claude and parse the response from stdout.",
+   "D": "Wrap the interactive claude command in a timeout and retry the job on failure."
+  },
+  "answer": "A",
+  "why": "The key distinction is between an interactive session and print mode. claude -p \"query\" runs the request non-interactively and then exits, which suits scripts and CI/CD. It behaves like a Unix tool, reading stdin and writing stdout. If the job later needs machine-readable output, combine print mode with --output-format json . Structured output does not replace non-interactive mode.",
+  "wrong": {
+   "B": "A prompt instruction does not change the CLI's execution mode.",
+   "C": "Output format does not make an interactive session non-interactive.",
+   "D": "Timeouts and retries hide the hang and waste runner time. The job still depends on a human-in-the-loop mode."
+  },
+  "domain": 3
+ },
+ {
+  "task": "3.6",
+  "src": "P38",
+  "sim": 5,
+  "core": 0,
+  "title": "A shared slash command still needs -p in CI",
+  "trap": "Add a wrapper or a longer timeout.",
+  "fix": "-p with the review prompt supplied non-interactively.",
+  "cmds": [
+   "uv run casekit.py --case UC-38"
+  ],
+  "see": "/pr-check runs unattended only because the job calls it through claude -p.",
+  "id": 37,
+  "topic": 3,
+  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "topic_name": "Claude Code Configuration & Workflows",
+  "task_title": "Integrate Claude Code into CI/CD pipelines",
+  "sim_name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "pdf": "topic-3-claude-code-configuration/lab-37-a-shared-slash-command-still-needs-p-in-ci.pdf",
+  "expected": "The team's /pr-check command runs non-interactively only because the job invokes it through claude -p; the command file alone does not change the execution mode.",
+  "rubric": [
+   "the slash command executed under -p and returned",
+   "the envelope carries a session id and exit was clean",
+   "learner can state that plan mode, a command file or a CLAUDE.md note cannot stop an interactive session from waiting"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q38 (unofficial third-party question)",
+  "stem": "A nightly pull request check for this team invokes Claude Code to inspect changes to refund and escalation logic. In CI, the job prints the prompt and then waits until the runner times out because there is no terminal user to answer follow-up prompts. What change best prevents this failure mode?",
+  "options": {
+   "A": "Run Claude Code in plan mode and require the job to approve the generated plan automatically.",
+   "B": "Create a shared slash command in .claude/commands/ and invoke that command from the CI job.",
+   "C": "Add a CLAUDE.md instruction telling Claude Code not to ask follow-up questions during CI reviews.",
+   "D": "Run Claude Code with the -p ( --print ) flag and provide the review prompt non-interactively."
+  },
+  "answer": "D",
+  "why": "Claude Code has an interactive terminal mode for developer sessions and a non-interactive mode for automation. -p runs the prompt, prints the result and exits, with no terminal user needed. (The same idea as Q18; the exam guide's Task 3.6 lists exactly this: run Claude Code in CI with -p to prevent interactive input hangs.)",
+  "wrong": {
+   "A": "Plan mode adds an approval step and is still interactive. “Auto-approving” it does not remove the waiting.",
+   "B": "A slash command packages the prompt but does not change the execution mode.",
+   "C": "Instructions do not change how the CLI runs; it still waits on an interactive session."
+  },
+  "domain": 3
+ },
+ {
+  "task": "4.1",
+  "src": "P39",
+  "sim": 5,
+  "core": 1,
+  "title": "\"Only high confidence\" didn't quiet the reviewer",
+  "trap": "A confidence instruction on top of a vague prompt.",
+  "fix": "Testable report and skip rules: bugs and security in, style out.",
+  "cmds": [
+   "uv run casekit.py --case UC-39"
+  ],
+  "see": "Vague prompt: comments on names. Criteria: the None dereference in getPrice, nothing on naming.",
+  "id": 38,
+  "topic": 4,
+  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Design prompts with explicit criteria to improve precision and reduce false positives",
+  "sim_name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "pdf": "topic-4-prompt-engineering/lab-38-only-high-confidence-didn-t-quiet-the-reviewer.pdf",
+  "expected": "On stock/pricing.py the vague prompt may comment on names and style; the categorical criteria return the None dereference in getPrice and nothing about naming.",
+  "rubric": [
+   "with categorical criteria the None dereference in getPrice is reported as a bug",
+   "with categorical criteria no naming or style comment appears",
+   "compare both outputs: the vague prompt is allowed to return style/naming categories and usually does"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q39 (unofficial third-party question)",
+  "stem": "After several weeks, developers say the reviewer is noisy. Examples show comments about variable names, preferred assertion styles, and missing tests mixed with a few real null dereferences and authorization bypasses. The current prompt says, “Report only issues you are highly confident about.” What prompt change would most directly improve review usefulness?",
+  "options": {
+   "A": "Define testable report-and-skip rules that focus comments on production bugs, security flaws, broken edge cases, and subtle regressions.",
+   "B": "Expand the checklist to include naming, formatting, test coverage, and architecture preferences so comments feel more comprehensive.",
+   "C": "Move every automated finding into a single non-blocking summary comment so developers can scan the noise separately.",
+   "D": "Keep the broad review scope and require each inline comment to include a numerical confidence score and short rationale."
+  },
+  "answer": "A",
+  "why": "The failure is not missing confidence metadata. The prompt draws no clear line between actionable correctness findings and preference comments. “High confidence” is subjective: a model can be very confident that a variable name breaks local style. Claude Code Code Review is calibrated by default for correctness (bugs that would break production), not formatting or missing tests. Make the boundary concrete: report production breakage, security risk, mishandled edge cases and regressions, and skip style, naming and preference unless the team has made them review objectives.",
+  "wrong": {
+   "B": "Adds more of the noise developers are complaining about.",
+   "C": "Repackages the noise without reducing it, and buries the real bugs.",
+   "D": "Confidence scores do not define what is worth reporting, and self-reported confidence is unreliable."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.1",
+  "src": "P20",
+  "sim": 3,
+  "core": 0,
+  "title": "Switch off the one noisy category, keep the accurate ones",
+  "trap": "Disable the whole quality gate, or add \"be careful\".",
+  "fix": "Omit the noisy category, then rebuild it with examples and evals.",
+  "cmds": [
+   "uv run research_system.py --case UC-20"
+  ],
+  "see": "You write the revised category list and an eval plan with a measurable threshold.",
+  "id": 39,
+  "topic": 4,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Design prompts with explicit criteria to improve precision and reduce false positives",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-4-prompt-engineering/lab-39-switch-off-the-one-noisy-category-keep-the-accur.pdf",
+  "expected": "A revised category list plus an eval plan with a measurable threshold.",
+  "rubric": [
+   "noisy category removed from the active prompt only",
+   "accurate categories remain enabled",
+   "re-enable gate is precision/recall on labelled examples, not schema compliance"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q20 (unofficial third-party question)",
+  "stem": "This team added a prompt-based quality gate that classifies draft report findings before publication. One category, “unsupported market claim”, now produces many false positives on well-cited synthesis paragraphs, while other categories, such as “missing citation” and “source conflict”, are performing well. Engineers have started ignoring the entire quality report. What should the team do next?",
+  "options": {
+   "A": "Temporarily omit the noisy category from the active prompt, keep accurate categories enabled, and rebuild it with examples, definitions, and precision/recall evals.",
+   "B": "Force the quality gate to return strict JSON, reject malformed outputs, and use schema compliance as the main trust metric.",
+   "C": "Disable every quality category for a release cycle, collect no automated findings, and re-enable all categories after prompt edits.",
+   "D": "Keep the noisy category active, add a warning that false positives are expected, and ask engineers to manually disregard those findings."
+  },
+  "answer": "A",
+  "why": "Separate the noisy signal from the useful one. Categories are application-defined lists in the prompt, so suppressing one is an application-level control, not a built-in toggle. Don't let it disappear for good, though: treat it as a classification problem. Collect examples that should and should not be flagged, including edge cases, define the category precisely, and evaluate with precision, recall and F1. Strict JSON helps parsing but cannot make the judgement correct.",
+  "wrong": {
+   "B": "Schema compliance measures format, not whether a flag is right.",
+   "C": "Throws away the categories that are working and the trust they earn.",
+   "D": "Leaves the noise in place, and with it the erosion of trust in the whole report."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.2",
+  "src": "P23",
+  "sim": 2,
+  "core": 1,
+  "title": "\"Clean this up\" means three things: show which one you mean",
+  "trap": "More prose instructions in the /task skill.",
+  "fix": "Two to four tagged examples with reasoning against the alternatives.",
+  "cmds": [
+   "uv run casekit.py --case UC-23"
+  ],
+  "see": "The three ambiguous requests classify as investigate, plan and modify.",
+  "id": 40,
+  "topic": 4,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Apply few-shot prompting to improve output consistency and quality",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-4-prompt-engineering/lab-40-clean-this-up-means-three-things-show-which-one.pdf",
+  "expected": "With three <example> blocks in .claude/commands/task.md, the three ambiguous requests classify as investigate / plan / modify.",
+  "rubric": [
+   "'look into this error' -> investigate",
+   "'can you improve this module' -> plan",
+   "'clean this up' with a named file -> modify"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q23 (unofficial third-party question)",
+  "stem": "Your team's Claude Code skill (custom slash command), invoked as /task , is meant to decide whether to investigate, plan, or modify code. In evals, ambiguous requests such as “clean this up”, “look into this error”, and “can you improve this module” produce inconsistent behavior. Detailed written criteria have not stabilized the boundary. What should you change next?",
+  "options": {
+   "A": "Add two to four tagged examples showing similar ambiguous requests, the selected response path, and concise reasoning against plausible alternatives.",
+   "B": "Add a stronger instruction that direct file edits must be avoided whenever the developer's request could imply planning.",
+   "C": "Add a large collection of untagged past transcripts so Claude can infer the team's preferred behavior from volume.",
+   "D": "Add a longer checklist that enumerates every phrase that should trigger investigation, planning, or code modification."
+  },
+  "answer": "A",
+  "why": "When a prompt fails at an ambiguous decision boundary, targeted examples usually beat more abstract instructions. The useful pattern shows why one action was chosen over a plausible alternative, such as planning instead of editing. Examples should mirror real requests, be relevant and diverse, and sit in their own tags so Claude can tell reusable guidance apart from the live input.",
+  "wrong": {
+   "B": "A blanket “avoid edits” rule over-blocks useful work.",
+   "C": "Untagged transcripts can teach accidental patterns, and they cost context.",
+   "D": "Phrase checklists are brittle, and written criteria have already failed here."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.3",
+  "src": "P28",
+  "sim": 3,
+  "core": 0,
+  "title": "Vague passages forced into a category they don't fit",
+  "trap": "A closed enum with no way out.",
+  "fix": "Add unclear and other, plus an other_detail field.",
+  "cmds": [
+   "uv run research_system.py --case UC-28"
+  ],
+  "see": "Every value stays in the enum. Vague passages use unclear. Any other carries other_detail.",
+  "id": 41,
+  "topic": 4,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Enforce structured output using tool use and JSON schemas",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-4-prompt-engineering/lab-41-vague-passages-forced-into-a-category-they-don-t.pdf",
+  "expected": "All evidence_type values are inside the enum; vague passages use `unclear`; any `other` carries other_detail.",
+  "rubric": [
+   "every evidence_type is a member of the six-value enum",
+   "no finding is forced into a specific category when the text is vague (at least one unclear or other, or a justification)",
+   "every other has a non-empty other_detail"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q28 (unofficial third-party question)",
+  "stem": "The document-analysis subagent extracts an evidence_type field using a JSON Schema enum of experiment , survey , expert_interview , and market_report . In testing, vague passages are often forced into a specific category, while new source types sometimes produce values outside the schema and fail downstream validation. What change best improves the schema design while preserving reliable categorization?",
+  "options": {
+   "A": "Add unclear and other enum values, plus an other_detail field, and instruct when to use each.",
+   "B": "Remove the enum constraint from evidence_type and ask each subagent to write the best category label.",
+   "C": "Keep the current enum list and instruct the model to select the closest category for every passage.",
+   "D": "Make evidence_type required and retry whenever validation fails until a listed category is returned."
+  },
+  "answer": "A",
+  "why": "A robust schema constrains predictable values while still representing edge cases honestly. An enum that has no valid answer for ambiguous or novel inputs pushes the model toward false precision. unclear gives it a valid way to report insufficient evidence. other plus other_detail preserves information about emerging categories without accepting arbitrary strings in the primary field. This is an application-level schema design pattern, not a special Anthropic feature.",
+  "wrong": {
+   "B": "Free-text labels lose categorical consistency and break downstream consumers.",
+   "C": "Choosing the “closest” category is the false-precision problem itself.",
+   "D": "Retrying until a listed value comes back forces more false precision, at extra cost."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.3",
+  "src": "TS",
+  "sim": 6,
+  "core": 0,
+  "title": "Try tool_choice three ways and read the failures",
+  "trap": "Assume any forced setting works on every model.",
+  "fix": "Know the options, and test against your model.",
+  "cmds": [
+   "uv run extract.py --tool-choice any --max-docs 2",
+   "uv run extract.py --tool-choice forced --max-docs 2"
+  ],
+  "see": "The Agent SDK has no tool_choice setting, so the script asks for it in the prompt. Read what Claude did, and the lesson in the evidence.",
+  "id": 42,
+  "topic": 4,
+  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Enforce structured output using tool use and JSON schemas",
+  "sim_name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "pdf": "topic-4-prompt-engineering/lab-42-try-tool-choice-three-ways-and-read-the-failures.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Built from exam guide task statement 4.3 (no practice question covers this angle)",
+  "stem": "Extraction has to come back as a tool call, and you don't know the document type in advance. How do you control whether Claude calls a tool?",
+  "options": {
+   "A": "Know the options, and test against your model.",
+   "B": "Assume any forced setting works on every model."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "4.4",
+  "src": "P4",
+  "sim": 1,
+  "core": 1,
+  "title": "Valid JSON, wrong refund: add business rules",
+  "trap": "More required fields, or drop the schema.",
+  "fix": "Validate invariants before execution and feed failures back.",
+  "cmds": [
+   "uv run backend_tools.py --demo",
+   "uv run support_agent.py --case CS-13",
+   "uv run support_agent.py --case CS-13 --no-validation --tag novalidation"
+  ],
+  "see": "Cash refund is $105. The $8 shipping stays store credit.",
+  "id": 43,
+  "topic": 4,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Implement validation, retry, and feedback loops for extraction quality",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-4-prompt-engineering/lab-43-valid-json-wrong-refund-add-business-rules.pdf",
+  "expected": "evidence/runs/CS-13.json: recommend_refund is validated (or rejected with named failures and corrected) before process_refund issues exactly $105; with --no-validation nothing checks the recommendation. evidence/triage-triage_template.json shows the same rule set applied to archived transcripts.",
+  "rubric": [
+   "the learner can name one check the schema cannot express",
+   "a failed record is retried with the specific error text appended"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q4 (unofficial third-party question)",
+  "stem": "During pilot testing, the refund-recommendation step now always produces parsable structured data, with required fields present and numeric types correct. The remaining bad cases involve merchandise credits placed in the shipping_refund field, or itemized adjustments that do not match the requested refund total. What change should this team make next?",
+  "options": {
+   "A": "Make every refund field required in the schema and reject nullable values during extraction.",
+   "B": "Add downstream business-rule validation before refund execution and feed specific failures back for correction.",
+   "C": "Rely on strict tool inputs to guarantee the refund recommendation is operationally correct.",
+   "D": "Switch to plain JSON instructions and remove tool schemas from the extraction step."
+  },
+  "answer": "B",
+  "why": "A schema controls shape , not meaning . Structured outputs and strict tool use remove malformed JSON, missing required fields and wrong types, but they cannot know that a merchandise credit landed in the shipping field or that itemised lines should add up to the total. With financial consequences, keep the schema and add validation of business invariants before execution, then send the specific failures back for correction or route the case.",
+  "wrong": {
+   "A": "The fields are already present. Making more fields required and non-nullable can push the model to fabricate values, and it still checks nothing about meaning.",
+   "C": "Strict tool use guarantees schema conformance, not operational correctness.",
+   "D": "Throws away the guarantees that already fixed the format errors, a step backwards."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.4",
+  "src": "TS",
+  "sim": 6,
+  "core": 1,
+  "title": "Retry when the format is wrong, stop when the data is absent",
+  "trap": "Retry everything until something comes back.",
+  "fix": "Resend the document, bad output and error. Stop if the source lacks it.",
+  "cmds": [
+   "uv run extract.py"
+  ],
+  "see": "DOC-03 keeps both totals and goes to a human. DOC-07 names what is missing and goes to a human without a retry. A format error gets a retry.",
+  "id": 44,
+  "topic": 4,
+  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Implement validation, retry, and feedback loops for extraction quality",
+  "sim_name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "pdf": "topic-4-prompt-engineering/lab-44-retry-when-the-format-is-wrong-stop-when-the-dat.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Built from exam guide task statement 4.4 (no practice question covers this angle)",
+  "stem": "Validation fails on two documents: a date written DD/MM, and a receipt whose total doesn't match its line items. Which is worth a retry?",
+  "options": {
+   "A": "Resend the document, bad output and error. Stop if the source lacks it.",
+   "B": "Retry everything until something comes back."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "4.5",
+  "src": "P1",
+  "sim": 1,
+  "core": 1,
+  "title": "Prove the template before 35,000 transcripts",
+  "trap": "Run the whole archive tonight, fix bad rows tomorrow.",
+  "fix": "Evaluation set, refined template, rerun, then batch.",
+  "cmds": [
+   "uv run triage.py --pilot --template prompts/triage_template_v0.md",
+   "uv run triage.py --pilot"
+  ],
+  "see": "Weak template: not ready. Real template: ready for the overnight batch.",
+  "id": 45,
+  "topic": 4,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Design efficient batch processing strategies",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-4-prompt-engineering/lab-45-prove-the-template-before-35-000-transcripts.pdf",
+  "expected": "evidence/triage-triage_template_v0.json has a lower first-pass rate than evidence/triage-triage_template.json; only the latter reports ready_for_batch true.",
+  "rubric": [
+   "the v1 template fills {{transcript}}, {{transcript_id}} and {{policy_excerpt}}",
+   "first-pass success with v1 is 100% on the ten pilot transcripts",
+   "the learner can state why resubmitting bad rows tomorrow costs more than piloting"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q1 (unofficial third-party question)",
+  "stem": "Before enabling overnight processing of 35,000 archived support transcripts through the Message Batches API, a pilot of 30 transcripts shows inconsistent disposition decisions and missing rationale fields in some outputs. A product manager proposes running the full archive now and resubmitting bad rows the next day. What should this team do next?",
+  "options": {
+   "A": "Submit the full archive as one batch, review the ended results, and resubmit rows whose disposition or fields are wrong.",
+   "B": "Run the prompt improver once on the current template, accept the revised prompt, and start the full overnight batch.",
+   "C": "Create a representative evaluation set, refine the templated prompt against clear criteria, and rerun it before submitting the full batch.",
+   "D": "Add stricter JSON output constraints, keep the current instructions, and use the batch results to discover decision errors."
+  },
+  "answer": "C",
+  "why": "For a large asynchronous workload the goal is to maximise first-pass success before scale. The video frames prompt engineering as an evaluation loop: define success criteria, build tests that mirror real inputs (routine returns, billing disputes, explicit requests for a human, policy edge cases, messy customer language), iterate on the prompt, validate, then ship. Prompt templates separate fixed instructions from variables such as transcript , customer_history and policy_excerpt , and Console evaluations let you compare prompt versions across test cases. Batch requests are processed independently and asynchronously, so a batch is a poor place to discover preventable prompt defects at full volume. Structured outputs help format reliability, but semantic correctness still needs evaluation.",
+  "wrong": {
+   "A": "Uses the 35,000-item batch as the test harness. The pilot already shows systematic defects, so most of the rework is preventable; resubmitting failures by custom_id is for residual errors, not known prompt problems.",
+   "B": "One unvalidated pass of the prompt improver, accepted without testing against criteria, gives no evidence that the disposition inconsistency is fixed.",
+   "D": "JSON constraints may fix the missing fields (format), but not the inconsistent decisions (semantics), and errors are still discovered only after the full run."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.5",
+  "src": "P26",
+  "sim": 1,
+  "core": 0,
+  "title": "Client tools can't run inside a batch",
+  "trap": "Expect the batch to execute MCP tools mid-request.",
+  "fix": "Batch the analysis, run returned tool calls, continue in Messages.",
+  "cmds": [
+   "uv run triage.py --batch"
+  ],
+  "see": "Rows needing a tool stop at stop_reason: tool_use.",
+  "id": 46,
+  "topic": 4,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Design efficient batch processing strategies",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-4-prompt-engineering/lab-46-client-tools-can-t-run-inside-a-batch.pdf",
+  "expected": "evidence/triage-batch.json records results by custom_id and the note on continuing tool_use rows in follow-up requests.",
+  "rubric": [
+   "results are correlated by custom_id, never by position",
+   "the learner can explain why refunds cannot complete inside the batch"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q26 (unofficial third-party question)",
+  "stem": "For a nightly backlog-triage run, this team plans to submit thousands of unresolved conversations through the Message Batches API. The batch inputs include client tool definitions for MCP-backed customer and order systems that are implemented by the team's service. Which design is most appropriate?",
+  "options": {
+   "A": "Move all customer support tools into batch requests as server tools so refunds can complete without follow-up requests.",
+   "B": "Use batches for initial analysis or tool requests, execute the returned client tool calls, and continue each case in later Messages API requests.",
+   "C": "Include the client tool schemas in each batch item and let the batch worker execute the backend tools before finalizing responses.",
+   "D": "Prompt Claude to infer missing customer and order fields whenever a batch item cannot complete the tool loop."
+  },
+  "answer": "B",
+  "why": "Batches can include tool use, and server tools can run inside batch processing. Client tools are different. Claude returns stop_reason: \"tool_use\" , and your application must execute the tool and send the tool_result in a later request. A single batch request cannot contain that application-mediated loop, because results are retrieved only after processing ends. So use batches for the latency-tolerant first pass. Then match results by custom_id , execute the requested client tools, and submit follow-up requests, synchronous or batched depending on latency needs.",
+  "wrong": {
+   "A": "Server tools are Anthropic-hosted. Your own MCP-backed systems cannot become server tools just by being declared that way, and refunds would then run without your application's control.",
+   "C": "No batch worker executes your client tools.",
+   "D": "Fabricating customer and order data in a refund workflow."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.5",
+  "src": "P32",
+  "sim": 6,
+  "core": 0,
+  "title": "Nightly job on Batches, upload flow stays synchronous",
+  "trap": "Move everything to Batches to save money.",
+  "fix": "Route by who is waiting.",
+  "cmds": [
+   "uv run extract.py --case UC-32"
+  ],
+  "see": "interactive_upload routes to sync, nightly_archive to batch, with a 0.5 cost multiplier.",
+  "id": 47,
+  "topic": 4,
+  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Design efficient batch processing strategies",
+  "sim_name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "pdf": "topic-4-prompt-engineering/lab-47-nightly-job-on-batches-upload-flow-stays-synchro.pdf",
+  "expected": "evidence/cases/UC-32.json routes interactive_upload to sync and nightly_archive to batch, records the sync latency in seconds, the batch id, and the 0.5 cost multiplier for the batch workload.",
+  "rubric": [
+   "Learner justifies each route by who is waiting and by when the result is needed.",
+   "Learner states the two batch trade-offs (price, processing window) without quoting the 1-hour figure as a guarantee.",
+   "Learner explains why the SLA for a nightly job still needs a submission cut-off time."
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q32 (unofficial third-party question)",
+  "stem": "This team has two extraction workloads: an interactive upload flow where users wait for validation before submitting documents, and a nightly archive-reprocessing job whose results are reviewed the next business day. Leadership wants to reduce token costs without degrading the user-facing flow. What should the architect recommend?",
+  "options": {
+   "A": "Route the nightly archive reprocessing through the Message Batches API and keep interactive validation on synchronous Messages API calls.",
+   "B": "Route interactive validation through the Message Batches API and reserve synchronous calls for nightly archive reprocessing.",
+   "C": "Keep both workloads on synchronous Messages API calls and avoid batch because results may take the full processing window.",
+   "D": "Route both workloads through the Message Batches API and rely on typical one-hour completion for interactive validation."
+  },
+  "answer": "A",
+  "why": "Batches trade latency for cost: 50% of standard prices, but a batch can take up to 24 hours. Send latency-tolerant work (nightly reprocessing, offline audits, next-day reports) to batch, and keep blocking user flows synchronous. “Most batches complete within 1 hour” is not a service guarantee.",
+  "wrong": {
+   "B": "Exactly backwards: it puts users behind a batch window of up to 24 hours.",
+   "C": "Gives up the 50% saving on a workload that doesn't need fast results.",
+   "D": "Typical completion time is not a guarantee, so users could wait hours."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.6",
+  "src": "P6",
+  "sim": 3,
+  "core": 1,
+  "title": "The author reviewing its own draft misses its own errors",
+  "trap": "The report generator checks its own work.",
+  "fix": "Independent reviewers on claim-source bundles, then an integration pass.",
+  "cmds": [
+   "uv run research_system.py --case UC-06"
+  ],
+  "see": "Two or more reviewers launch in one response, and a separate integration pass follows.",
+  "id": 48,
+  "topic": 4,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Design multi-instance and multi-pass review architectures",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-4-prompt-engineering/lab-48-the-author-reviewing-its-own-draft-misses-its-ow.pdf",
+  "expected": "At least two reviewer subagents launch in the same coordinator response after synthesis, followed by a separate integration pass; the report keeps the review verdicts.",
+  "rubric": [
+   "reviewer agents spawned >=2 in one response",
+   "an integration reviewer runs after the section reviewers",
+   "report still includes the coverage gap and contested findings"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q6 (unofficial third-party question)",
+  "stem": "During evaluation, the final reports are well written but sometimes include unsupported claims and miss contradictions between sections. The current design asks the report generator to review its own draft before publishing. What architecture change would most effectively improve review reliability?",
+  "options": {
+   "A": "Delegate verification to listed subagents without passing source excerpts, relying on shared session context to expose prior findings.",
+   "B": "Have the synthesis agent merge all subagent outputs once, then instruct it to mark unsupported claims before publishing.",
+   "C": "Ask the report generator to perform an extended self-review immediately after drafting, using its existing conversation history.",
+   "D": "Run independent reviewer agents on section-specific claim–source bundles, then run a separate integration pass for conflicts and coverage gaps."
+  },
+  "answer": "D",
+  "why": "Separate generation from review. Self-review catches obvious problems but rarely challenges the assumptions built into its own draft. Independent reviewers bring a fresh context, and multi-pass review keeps each pass focused: first local claim-to-source alignment, then cross-section consistency and coverage. Because subagents have isolated context, the coordinator must pass in the claims, excerpts, source URLs and document names. Parallel review suits independent checks, while contradictions only appear in a later integration pass that compares sections.",
+  "wrong": {
+   "A": "There is no shared session context to rely on. Reviewers without the excerpts have nothing to verify against.",
+   "B": "A single merged pass by the agent that produced the synthesis adds no independence and dilutes attention across everything at once.",
+   "C": "An extended self-review keeps the same reasoning context, along with its blind spots."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.6",
+  "src": "P19",
+  "sim": 3,
+  "core": 0,
+  "title": "Source-level passes first, integration second",
+  "trap": "One long prompt reviews everything at once.",
+  "fix": "An explicit prompt chain with checkpoints you can log and score.",
+  "cmds": [
+   "uv run research_system.py --case UC-19"
+  ],
+  "see": "Reviewers get bundles smaller than the synthesis, and integration runs last.",
+  "id": 49,
+  "topic": 4,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Design multi-instance and multi-pass review architectures",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-4-prompt-engineering/lab-49-source-level-passes-first-integration-second.pdf",
+  "expected": "Section reviewers get bundles smaller than the whole synthesis; the integration reviewer runs last and names conflicts and coverage gaps.",
+  "rubric": [
+   "each section-review packet is smaller than the synthesis packet",
+   "integration pass launched after all section reviews returned",
+   "final report mentions the integration review"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q19 (unofficial third-party question)",
+  "stem": "Recent evaluations show that the final report sometimes treats the same source as both confirming and contradicting a claim, and reviewers find that unsupported claims in long source bundles are missed. The team also wants review checkpoints that can log and score before the report is generated. What should the team do?",
+  "options": {
+   "A": "Run an explicit prompt chain with source-level review passes, then run a separate integration pass over the reviewed findings.",
+   "B": "Launch several identical reviewers on the full source bundle and accept findings that appear most often.",
+   "C": "Add confidence scores to every cited claim and route only low-confidence claims to another reviewer.",
+   "D": "Send the complete source bundle to one reviewer and require a longer checklist before report generation."
+  },
+  "answer": "A",
+  "why": "Treat this as explicit prompt chaining: separate API calls for focused source-level review, then pass their structured findings into a cross-source integration review. Chaining gives visible intermediate outputs, which serve as the checkpoints for logging and scoring. A large context window does not make every large review reliable: accuracy and recall degrade as tokens grow (“context rot”). Local passes reduce competing attention demands, and the integration pass focuses on consistency and conflict resolution. The cost is more calls and orchestration.",
+  "wrong": {
+   "B": "Duplicates the same overloaded review. Voting does not fix attention dilution and provides no per-source checkpoints.",
+   "C": "Self-reported confidence is uncalibrated, so confident errors slip through, and the task's shape is unchanged.",
+   "D": "The same overloaded single pass, with even more competing demands added."
+  },
+  "domain": 4
+ },
+ {
+  "task": "4.6",
+  "src": "G12",
+  "sim": 5,
+  "core": 1,
+  "title": "14 files, shallow comments: split the review",
+  "trap": "A bigger context window or a stricter prompt.",
+  "fix": "Per-file local passes, then one cross-file integration pass.",
+  "cmds": [
+   "uv run ci_review.py; echo \"exit $?\""
+  ],
+  "see": "Only the integration pass finds the jobs.py call with the old signature.",
+  "id": 50,
+  "topic": 4,
+  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "topic_name": "Prompt Engineering & Structured Output",
+  "task_title": "Design multi-instance and multi-pass review architectures",
+  "sim_name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "pdf": "topic-4-prompt-engineering/lab-50-14-files-shallow-comments-split-the-review.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Official exam guide, sample question 12",
+  "stem": "A pull request modifies 14 files across the stock tracking module. Your single-pass review analyzing all files together produces inconsistent results: detailed feedback for some files but superficial comments for others, obvious bugs missed, and contradictory feedback—flagging a pattern as problematic in one file while approving identical code elsewhere in the same PR. How should you restructure the review?",
+  "options": {
+   "A": "Split into focused passes: analyze each file individually for local issues, then run a separate integration-focused pass examining cross-file data flow.",
+   "B": "Require developers to split large PRs into smaller submissions of 3-4 files before the automated review runs.",
+   "C": "Switch to a higher-tier model with a larger context window to give all 14 files adequate attention in one pass.",
+   "D": "Run three independent review passes on the full PR and only flag issues that appear in at least two of the three runs."
+  },
+  "answer": "A",
+  "why": "Splitting reviews into focused passes directly addresses the root cause: attention dilution when processing many files at once. File-by-file analysis ensures consistent depth, while a separate integration pass catches cross-file issues. Option B shifts burden to developers without improving the system. Option C misunderstands that larger context windows don't solve attention quality issues. Option D would actually suppress detection of real bugs by requiring consensus on issues that may only be caught intermittently.",
+  "wrong": {}
+ },
+ {
+  "task": "5.1",
+  "src": "P40",
+  "sim": 1,
+  "core": 1,
+  "title": "Refund amount jumped to the wrong order",
+  "trap": "Let older turns get summarised.",
+  "fix": "A case-facts block updated and shown on every turn.",
+  "cmds": [
+   "uv run support_agent.py --case CS-12"
+  ],
+  "see": "After three turns the only refund is $45 on ORD-5503.",
+  "id": 51,
+  "topic": 5,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Manage conversation context to preserve critical information across long interactions",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-5-context-and-reliability/lab-51-refund-amount-jumped-to-the-wrong-order.pdf",
+  "expected": "evidence/runs/CS-12.json: three turn_replies each opening with CASE FACTS; the only refund is $45 on ORD-5503.",
+  "rubric": [
+   "every turn's reply repeats the three order ids and amounts",
+   "the lamp refund is deferred, the duplicate charge is refunded"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q40 (unofficial third-party question)",
+  "stem": "Production transcripts from the support resolution agent show that, after long conversations involving multiple orders, the agent sometimes applies a refund amount from one issue to a different order after older turns have been summarized. What change would most effectively preserve the critical issue details across the session?",
+  "options": {
+   "A": "Summarize the complete conversation more frequently and replace prior summaries whenever the context grows large.",
+   "B": "Maintain a structured case-facts block that is updated after each relevant turn and made available on every relevant turn.",
+   "C": "Add a system instruction telling the agent to remember all order IDs and refund amounts throughout the case.",
+   "D": "Place the most recent order-lookup result at the end of the prompt before the agent response."
+  },
+  "answer": "B",
+  "why": "Separate critical case state from the conversational transcript. A structured facts block (customer_id, order_id, disputed amount, refund status, customer statements, policy decisions, open issues) is updated by the orchestration layer as evidence arrives and supplied whenever decisions depend on exact facts. The Agent SDK adds session persistence and automatic compaction, but compaction and summarisation are lossy for precise transactional details. Use summaries for low-value dialogue and keep exact data as structured state your application owns.",
+  "wrong": {
+   "A": "More frequent summarisation means more lossy compression of exactly the details that are going wrong.",
+   "C": "An instruction to “remember” adds no durable context layer.",
+   "D": "A recency trick that covers only the latest lookup. Facts about the other orders are still lost."
+  },
+  "domain": 5
+ },
+ {
+  "task": "5.1",
+  "src": "P13",
+  "sim": 5,
+  "core": 0,
+  "title": "40-field tool results push the review to its limit",
+  "trap": "A bigger model, or summarise later.",
+  "fix": "Wrap the tool so it returns only review-relevant fields.",
+  "cmds": [
+   "uv run casekit.py --case UC-13"
+  ],
+  "see": "Verbose payload: tens of kilobytes. Compact payload: a few hundred bytes.",
+  "id": 52,
+  "topic": 5,
+  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Manage conversation context to preserve critical information across long interactions",
+  "sim_name": "Claude Code for Continuous Integration",
+  "dir": "simulator-5-ci-cd",
+  "pdf": "topic-5-context-and-reliability/lab-52-40-field-tool-results-push-the-review-to-its-lim.pdf",
+  "expected": "The verbose analysis payload is tens of kilobytes; the compact one is a few hundred bytes. Shaping the tool result is what keeps a long PR review inside the context window.",
+  "rubric": [
+   "the compact payload is under 5% of the verbose payload",
+   "the compact payload still carries the fields a reviewer uses (changed lines, functions, tests)",
+   "learner can say why caching or a bigger max_tokens does not shrink the context the model carries"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q13 (unofficial third-party question)",
+  "stem": "Long pull requests are causing the review step to run near the context limit. The trace shows each file-analysis tool call appends a large tool-result payload with build metadata, ownership data, full [unclear in transcript] output (possibly “lint” or “log”), historical CI runs, and dependency details, even though the reviewer uses only a small subset of those fields. What change best addresses the reliability issue?",
+  "options": {
+   "A": "Increase max_tokens for the review response and instruct Claude to ignore irrelevant tool-result fields.",
+   "B": "Enable context editing to clear old tool results after the request crosses a configured threshold.",
+   "C": "Change the tool wrapper to return compact, review-specific tool-result payloads with only the fields needed.",
+   "D": "Apply prompt caching to the tool definitions and repeated review prefix to reduce context-window pressure."
+  },
+  "answer": "C",
+  "why": "Tool results become part of the conversation, and the context window holds messages, tool results, tool definitions and output. Every field a tool returns is carried forward, so a 40-field payload is not harmless just because the prompt says only a few fields matter. The most reliable fix is to shape the output before it becomes a tool_result . Prompt caching cuts cost and latency, but cached tokens still count toward the context window. Context editing can clear old results, but it does not replace compact current outputs.",
+  "wrong": {
+   "A": "max_tokens caps the output and does not shrink the input. Telling Claude to “ignore” fields does not remove their tokens.",
+   "B": "Treats the symptom later. Current payloads stay bloated, and needed older results may be cleared.",
+   "D": "Cached tokens still count toward the context window."
+  },
+  "domain": 5
+ },
+ {
+  "task": "5.1",
+  "src": "P21",
+  "sim": 3,
+  "core": 0,
+  "title": "Taxonomy drift: write it to a state file",
+  "trap": "Resend the growing history and hope.",
+  "fix": "A structured research-state file loaded into later prompts.",
+  "cmds": [
+   "uv run research_system.py --case UC-21"
+  ],
+  "see": "research_state.json holds taxonomy and source map, and the synthesis packet quotes it.",
+  "id": 53,
+  "topic": 5,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Manage conversation context to preserve critical information across long interactions",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-5-context-and-reliability/lab-53-taxonomy-drift-write-it-to-a-state-file.pdf",
+  "expected": "`evidence/research_state.json` exists with a taxonomy and source map; the synthesis packet quotes it.",
+  "rubric": [
+   "save_research_state called before load_research_state",
+   "research_state.json holds a taxonomy with >=3 sectors and a source map",
+   "synthesis packet contains the taxonomy sector names"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q21 (unofficial third-party question)",
+  "stem": "During a long research run, early document analysis identifies a domain-specific taxonomy that should drive the final report. After many searches, tool results, and revisions, later synthesis passes start organizing findings around generic categories and occasionally contradict the earlier taxonomy, even though the application resends the accumulated message history. What change would best improve reliability?",
+  "options": {
+   "A": "Maintain a structured research-state file with the discovered taxonomy and source mappings, then load it into later synthesis prompts.",
+   "B": "Enable prompt caching for the accumulated prefix so earlier findings can be reused without affecting the context window.",
+   "C": "Add a synthesis instruction to avoid generic categories unless the full transcript explicitly supports them.",
+   "D": "Increase max_tokens for later synthesis calls and continue sending the complete accumulated transcript unchanged."
+  },
+  "answer": "A",
+  "why": "Having information somewhere in the request is not the same as making it usable at synthesis time. More context is not automatically better, because accuracy and recall degrade as tokens grow. A structured state file (scratchpad) keeps the taxonomy, key claims and source mappings compact and explicit, so the coordinator can place them where later passes reliably use them. The Messages API is stateless, so the application assembles the relevant context on every request.",
+  "wrong": {
+   "B": "Rests on a false premise: cached tokens still count toward the context window, and caching does not restore attention to early findings.",
+   "C": "Relies on the model finding the buried taxonomy again inside a long transcript.",
+   "D": "max_tokens caps output. Sending the transcript unchanged keeps degrading recall."
+  },
+  "domain": 5
+ },
+ {
+  "task": "5.2",
+  "src": "G3",
+  "sim": 1,
+  "core": 1,
+  "title": "55% first-contact resolution: calibrate with criteria and examples",
+  "trap": "Escalate on sentiment or a confidence score.",
+  "fix": "Explicit escalation criteria with few-shot examples.",
+  "cmds": [
+   "uv run support_agent.py --case CS-05 --case CS-08 --case CS-09 --case CS-10",
+   "uv run evaluate.py"
+  ],
+  "see": "Human request and price match escalate. Two names: it asks. Angry but routine: resolved.",
+  "id": 54,
+  "topic": 5,
+  "try": "Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Design effective escalation and ambiguity resolution patterns",
+  "sim_name": "Customer Support Resolution Agent",
+  "dir": "simulator-1-customer-support",
+  "pdf": "topic-5-context-and-reliability/lab-54-55-first-contact-resolution-calibrate-with-crite.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Official exam guide, sample question 3",
+  "stem": "Your agent achieves 55% first-contact resolution, well below the 80% target. Logs show it escalates straightforward cases (standard damage replacements with photo evidence) while attempting to autonomously handle complex situations requiring policy exceptions. What's the most effective way to improve escalation calibration?",
+  "options": {
+   "A": "Add explicit escalation criteria to your system prompt with few-shot examples demonstrating when to escalate versus resolve autonomously.",
+   "B": "Have the agent self-report a confidence score (1-10) before each response and automatically route requests to humans when confidence falls below a threshold.",
+   "C": "Deploy a separate classifier model trained on historical tickets to predict which requests need escalation before the main agent begins processing.",
+   "D": "Implement sentiment analysis to detect customer frustration levels and automatically escalate when negative sentiment exceeds a threshold."
+  },
+  "answer": "A",
+  "why": "Adding explicit escalation criteria with few-shot examples directly addresses the root cause: unclear decision boundaries. This is the proportionate first response before adding infrastructure. Option B fails because LLM self-reported confidence is poorly calibrated—the agent is already incorrectly confident on hard cases. Option C is over-engineered, requiring labeled data and ML infrastructure when prompt optimization hasn't been tried. Option D solves a different problem entirely; sentiment doesn't correlate with case complexity, which is the actual issue.",
+  "wrong": {}
+ },
+ {
+  "task": "5.3",
+  "src": "G8",
+  "sim": 3,
+  "core": 1,
+  "title": "The search timed out: tell the coordinator everything",
+  "trap": "\"Search unavailable\", or empty results marked as success.",
+  "fix": "Failure type, attempted query, partial results, alternatives.",
+  "cmds": [
+   "uv run research_system.py"
+  ],
+  "see": "The run finishes, and the report names visual arts as a coverage gap.",
+  "id": 55,
+  "topic": 5,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Implement error propagation strategies across multi-agent systems",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-5-context-and-reliability/lab-55-the-search-timed-out-tell-the-coordinator-everyt.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Official exam guide, sample question 8",
+  "stem": "The web search subagent times out while researching a complex topic. You need to design how this failure information flows back to the coordinator agent. Which error propagation approach best enables intelligent recovery?",
+  "options": {
+   "A": "Return structured error context to the coordinator including the failure type, the attempted query, any partial results, and potential alternative approaches.",
+   "B": "Implement automatic retry logic with exponential backoff within the subagent, returning a generic \"search unavailable\" status only after all retries are exhausted.",
+   "C": "Catch the timeout within the subagent and return an empty result set marked as successful.",
+   "D": "Propagate the timeout exception directly to a top-level handler that terminates the entire research workflow."
+  },
+  "answer": "A",
+  "why": "Structured error context gives the coordinator the information it needs to make intelligent recovery decisions—whether to retry with a modified query, try an alternative approach, or proceed with partial results. Option B's generic status hides valuable context from the coordinator, preventing informed decisions. Option C suppresses the error by marking failure as success, which prevents any recovery and risks incomplete research outputs. Option D terminates the entire workflow unnecessarily when recovery strategies could succeed.",
+  "wrong": {}
+ },
+ {
+  "task": "5.4",
+  "src": "TS",
+  "sim": 4,
+  "core": 1,
+  "title": "Delegate the noisy search, keep a scratchpad",
+  "trap": "Read everything in the main thread.",
+  "fix": "An explore subagent, findings in NOTES.md.",
+  "cmds": [
+   "uv run explorer.py --case UC-D3"
+  ],
+  "see": "An explore subagent runs, and NOTES.md names calculate_total and report.py.",
+  "id": 56,
+  "topic": 5,
+  "try": "Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Manage context effectively in large codebase exploration",
+  "sim_name": "Developer Productivity with Claude",
+  "dir": "simulator-4-developer-productivity",
+  "pdf": "topic-5-context-and-reliability/lab-56-delegate-the-noisy-search-keep-a-scratchpad.pdf",
+  "expected": "An explore subagent ran; NOTES.md names calculate_total and report.py.",
+  "rubric": [
+   "explore subagent spawned",
+   "tool rows with agent=explore exist",
+   "NOTES.md mentions calculate_total and a caller"
+  ],
+  "source": "Built from exam guide task statement 5.4 (no practice question covers this angle)",
+  "stem": "You need every caller of a function, but a wide search would flood your main session. How do you find them and keep your session usable?",
+  "options": {
+   "A": "An explore subagent, findings in NOTES.md.",
+   "B": "Read everything in the main thread."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "5.4",
+  "src": "P22",
+  "sim": 6,
+  "core": 0,
+  "title": "Keep discovery out of the main thread",
+  "trap": "Paste dozens of modules into one conversation.",
+  "fix": "Explore subagent with explicit scope, implement from its summary.",
+  "cmds": [
+   "uv run extract.py --case UC-22"
+  ],
+  "see": "Prints the delegation prompt to paste into Claude Code. The main thread stays short.",
+  "id": 57,
+  "topic": 5,
+  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Manage context effectively in large codebase exploration",
+  "sim_name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "pdf": "topic-5-context-and-reliability/lab-57-keep-discovery-out-of-the-main-thread.pdf",
+  "expected": "evidence/cases/UC-22.json holds the rendered delegation prompt and the expected answer; the learner's main conversation stays short and the implementation step still knows the target schema changes.",
+  "rubric": [
+   "Learner explains why the delegation prompt restates the extraction conventions (Explore inherits no history).",
+   "Learner distinguishes /compact, plan mode and subagent delegation by the problem each solves.",
+   "Learner's prompt bounds the output (line cap, named sections)."
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q22 (unofficial third-party question)",
+  "stem": "The team is adding a new document type. Claude Code must first inspect dozens of existing extractor modules, schema validators, fixture conventions, and error-handling paths. In trial runs, the main conversation fills with search and file-read output, and by implementation time it loses track of the target schema changes. Which workflow best preserves useful context while still doing discovery?",
+  "options": {
+   "A": "Switch the whole task to plan mode and let it inspect, edit, and validate files in one continuous context.",
+   "B": "Delegate the exploratory search to the built-in Explore subagent with explicit scope and conventions, then implement from its summarized findings.",
+   "C": "Create a shared slash command that imports all extractor, fixture, and schema files into the prompt before editing.",
+   "D": "Run the searches in the main conversation, then use /compact immediately before implementing the schema and validator changes."
+  },
+  "answer": "B",
+  "why": "Discovery produces lots of low-level evidence (file listings, grep hits, repeated reads), but implementation needs only the conclusions. The built-in Explore subagent does read-only discovery. It is invoked through the Agent tool, runs in a separate context window, and returns a single text result: the parent never sees its intermediate calls. Give it a focused delegation prompt (what to investigate, which schema and validation conventions matter, what format the summary should take), and restate project-specific rules, because it does not inherit the conversation.",
+  "wrong": {
+   "A": "Plan mode is for reviewing an approach before edits. It does not keep verbose discovery out of the main context.",
+   "C": "Importing every file floods the context even more.",
+   "D": "Compacting after the fact is lossy, and the target-schema details may be summarised away."
+  },
+  "domain": 5
+ },
+ {
+  "task": "5.4",
+  "src": "TS",
+  "sim": 4,
+  "core": 0,
+  "title": "Crash recovery from a manifest",
+  "trap": "Start exploring again from nothing.",
+  "fix": "Export state to a manifest and load it on resume.",
+  "cmds": [
+   "uv run explorer.py --case UC-D5"
+  ],
+  "see": "Fresh session id, no Grep, no subagent, and the tests pass.",
+  "id": 58,
+  "topic": 5,
+  "try": "Edit the prompt_template in this lab's file under cases/, rerun with --case, and check tool_log.jsonl for what changed.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Manage context effectively in large codebase exploration",
+  "sim_name": "Developer Productivity with Claude",
+  "dir": "simulator-4-developer-productivity",
+  "pdf": "topic-5-context-and-reliability/lab-58-crash-recovery-from-a-manifest.pdf",
+  "expected": "Fresh session id; no Grep, no subagent; tests pass.",
+  "rubric": [
+   "new session id",
+   "no Grep and no Agent call",
+   "pytest exits 0"
+  ],
+  "source": "Built from exam guide task statement 5.4 (no practice question covers this angle)",
+  "stem": "The agent crashed halfway through a long investigation. How does the next session pick up without starting again?",
+  "options": {
+   "A": "Export state to a manifest and load it on resume.",
+   "B": "Start exploring again from nothing."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "5.5",
+  "src": "P33",
+  "sim": 2,
+  "core": 0,
+  "title": "Acceptance looks great. Two fields don't.",
+  "trap": "Cut human review because the overall rate is high.",
+  "fix": "Field-level confidence, calibrated on labelled examples.",
+  "cmds": [
+   "uv run casekit.py --case UC-33"
+  ],
+  "see": "One confidence per field. Under 0.8 goes to review, as do signatures under 0.95.",
+  "id": 59,
+  "topic": 5,
+  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Design human review workflows and confidence calibration",
+  "sim_name": "Code Generation with Claude Code",
+  "dir": "simulator-2-code-generation",
+  "pdf": "topic-5-context-and-reliability/lab-59-acceptance-looks-great-two-fields-don-t.pdf",
+  "expected": "The documentation update returns one confidence per field. The runner routes fields under 0.8 (and every signature or migration warning under 0.95) to human review instead of trusting a file-level score.",
+  "rubric": [
+   "every field carries a confidence in [0,1]",
+   "the signature field is present for calibration against labelled examples",
+   "learner explains why a file-level threshold or aggregate acceptance rate hides field errors"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q33 (unofficial third-party question)",
+  "stem": "This team has a custom documentation skill [unclear in transcript] (a slash-invoked command) that updates README sections, API references, and migration notes after refactors. The command's overall acceptance rate is high, but review data shows that incorrect outputs are concentrated in a few fields, especially function signatures and migration warnings. What should the team do before reducing human review?",
+  "options": {
+   "A": "Approve documentation changes when the command's file-level confidence exceeds a fixed threshold.",
+   "B": "Require field-level confidence outputs and calibrate review thresholds using labeled validation examples.",
+   "C": "Switch the command to plan mode for all documentation updates before applying changes.",
+   "D": "Use aggregate acceptance rate as the release gate and sample merged outputs weekly."
+  },
+  "answer": "B",
+  "why": "For reliability-sensitive generated docs, the field is often the right unit of review. A README can be mostly right and still contain a wrong function signature or an unsafe migration note, so an aggregate metric gives a false sense of readiness. Have Claude output field-level confidence and calibrate it against a labelled validation set. Calibration turns a self-report into a routing signal: low-confidence signatures and migration warnings go to humans, while well-calibrated low-risk fields proceed. This is a review-workflow design problem, not a prompting-mode problem.",
+  "wrong": {
+   "A": "File-level confidence hides field-level errors, and a fixed uncalibrated threshold is arbitrary.",
+   "C": "Plan mode does not provide segmented validation or calibrated thresholds.",
+   "D": "The aggregate rate is exactly the metric that masks the concentrated errors."
+  },
+  "domain": 5
+ },
+ {
+  "task": "5.5",
+  "src": "TS",
+  "sim": 6,
+  "core": 1,
+  "title": "The aggregate masks a segment: break it and watch",
+  "trap": "One overall accuracy number.",
+  "fix": "Accuracy by document type and by field.",
+  "cmds": [
+   "uv run extract.py",
+   "uv run python -m json.tool evidence/accuracy.json"
+  ],
+  "see": "Change one invoice total: only by_document_type.invoice falls.",
+  "id": 60,
+  "topic": 5,
+  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Design human review workflows and confidence calibration",
+  "sim_name": "Structured Data Extraction",
+  "dir": "simulator-6-structured-extraction",
+  "pdf": "topic-5-context-and-reliability/lab-60-the-aggregate-masks-a-segment-break-it-and-watch.pdf",
+  "expected": "",
+  "rubric": [],
+  "source": "Built from exam guide task statement 5.5 (no practice question covers this angle)",
+  "stem": "Overall accuracy looks excellent, and someone proposes cutting human review. What do you check first?",
+  "options": {
+   "A": "Accuracy by document type and by field.",
+   "B": "One overall accuracy number."
+  },
+  "answer": "A",
+  "why": "",
+  "wrong": {}
+ },
+ {
+  "task": "5.6",
+  "src": "P24",
+  "sim": 3,
+  "core": 1,
+  "title": "A vendor benchmark isn't a peer-reviewed study",
+  "trap": "A summary plus a general source list.",
+  "fix": "Claim records with location, date, excerpt and method.",
+  "cmds": [
+   "uv run research_system.py --case UC-24"
+  ],
+  "see": "Each finding carries document, page, date and method note. 41% and 55% stay side by side.",
+  "id": 61,
+  "topic": 5,
+  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "topic_name": "Context Management & Reliability",
+  "task_title": "Preserve information provenance and handle uncertainty in multi-source synthesis",
+  "sim_name": "Multi-Agent Research System",
+  "dir": "simulator-3-multi-agent-research",
+  "pdf": "topic-5-context-and-reliability/lab-61-a-vendor-benchmark-isn-t-a-peer-reviewed-study.pdf",
+  "expected": "Structured claim records, not prose summaries, come back from document-analysis.",
+  "rubric": [
+   "document-analysis result parses as JSON with a findings list",
+   "every finding has document, page, published and methodology_note",
+   "the two SME adoption findings are both present with conflict_with set"
+  ],
+  "source": "SkillCertPro practice exam Part 1, Q24 (unofficial third-party question)",
+  "stem": "During evaluation, the final report cites sources but sometimes treats a peer-reviewed study, a vendor benchmark, and an internal survey as equivalent evidence for the same claim. The search and document-analysis subagents currently return concise finding summaries plus a general list of sources consulted. What change best supports accurate downstream synthesis?",
+  "options": {
+   "A": "Add a report-generation pass that expands the final narrative with a separate bibliography and citation appendix.",
+   "B": "Require each subagent to return structured claim records with source location, publication date, evidence excerpt, and methodology notes.",
+   "C": "Ask the coordinator to retain full subagent transcripts and have the synthesizer infer provenance from prior work.",
+   "D": "Give each subagent broader tool access so it can inspect all available sources before summarizing its findings."
+  },
+  "answer": "B",
+  "why": "Provenance is an interface contract. Downstream agents can rely only on what is explicitly returned in the handoff. Non-fork subagents start with a fresh context and don't share the parent's history. Structured claim records (claim, evidence excerpt, URL or document location, publication or collection date, methodology notes) stop the synthesiser from treating incomparable evidence as interchangeable. This is not just a citation-formatting preference, and it follows the guidance to return high-signal fields.",
+  "wrong": {
+   "A": "Formatting at the end cannot recover distinctions already lost upstream.",
+   "C": "Full transcripts bloat the context, and inferring provenance is unreliable.",
+   "D": "Inspecting more sources does not help when the handoff still drops the metadata."
+  },
+  "domain": 5
+ }
+]

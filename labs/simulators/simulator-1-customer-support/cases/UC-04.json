@@ -1,0 +1,19 @@
+{
+  "uc": "UC-04",
+  "question": 4,
+  "timestamp": "07:38",
+  "topic": "Shape is not meaning: business-rule validation",
+  "situation": "Refund recommendations are now always schema-valid, but store credit lands in shipping_refund and itemised adjustments do not add up to the refund total.",
+  "correct": "B: add downstream business-rule validation before refund execution and feed specific failures back for correction.",
+  "why": "Structured outputs and strict tools guarantee JSON shape and types, not semantics.",
+  "run": [
+    "python3 -B support_agent.py --case CS-13",
+    "python3 -B support_agent.py --case CS-13 --no-validation --tag novalidation",
+    "python3 -B triage.py --pilot"
+  ],
+  "observe": "evidence/runs/CS-13.json: recommend_refund is validated (or rejected with named failures and corrected) before process_refund issues exactly $105; with --no-validation nothing checks the recommendation. evidence/triage-triage_template.json shows the same rule set applied to archived transcripts.",
+  "rubric": [
+    "the learner can name one check the schema cannot express",
+    "a failed record is retried with the specific error text appended"
+  ]
+}

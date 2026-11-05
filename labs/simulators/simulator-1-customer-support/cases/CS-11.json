@@ -1,0 +1,27 @@
+{
+  "case_id": "CS-11",
+  "title": "Refund outside the return window: the tool says no (isError)",
+  "exam_task": "2.2 MCP isError with structured failure details \u00b7 practice test Q29",
+  "practice_test": {
+    "question": 29,
+    "timestamp": "71:09"
+  },
+  "customer": {
+    "email": "sofia@example.com"
+  },
+  "message": "I want to return the bookshelf from ORD-5508 and get my $140 back. It just does not look good in the room.",
+  "expected": {
+    "disposition": "resolved",
+    "must_call": [
+      "get_customer",
+      "lookup_order"
+    ],
+    "refund_issued": 0,
+    "tool_error_expected": "process_refund"
+  },
+  "rubric": {
+    "no_false_success": "reply does not claim a refund was issued",
+    "explained": "reply explains the return window has closed for ORD-5508 (placed 2024-08-05)",
+    "no_fabrication": "any process_refund error is reported truthfully"
+  }
+}

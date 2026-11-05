@@ -1,0 +1,349 @@
+{
+  "mode": "pilot",
+  "model": "claude-opus-5-5",
+  "template": "triage_template_v0.md",
+  "transcripts": 10,
+  "first_pass_success": 1,
+  "first_pass_rate": 10.0,
+  "disposition_accuracy": 30.0,
+  "refund_total_accuracy": 30.0,
+  "cost_usd": 3.5724,
+  "ready_for_batch": false,
+  "results": [
+    {
+      "transcript_id": "T-001",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": {
+            "transcript_id": "not-provided",
+            "disposition": "resolved",
+            "rationale": "Customer reported ORD-5501 (ceramic lamp) arrived cracked and provided a photo the agent saw. Customer chose a refund over a replacement, the agent confirmed a $120 refund to the card within 5 days, and the customer accepted. The $120 was stated by the customer and not checked against an order record in the transcript. No shipping refund or merchandise credit was discussed. No transcript ID was supplied.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [
+                {
+                  "order_id": "ORD-5501",
+                  "amount": 120
+                }
+              ],
+              "refund_total": 120
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "not-provided",
+        "disposition": "resolved",
+        "rationale": "Customer reported ORD-5501 (ceramic lamp) arrived cracked and provided a photo the agent saw. Customer chose a refund over a replacement, the agent confirmed a $120 refund to the card within 5 days, and the customer accepted. The $120 was stated by the customer and not checked against an order record in the transcript. No shipping refund or merchandise credit was discussed. No transcript ID was supplied.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [
+            {
+              "order_id": "ORD-5501",
+              "amount": 120
+            }
+          ],
+          "refund_total": 120
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 120.0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-002",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        },
+        {
+          "attempt": 2,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        }
+      ],
+      "final": {},
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 45.0
+      },
+      "disposition_correct": false,
+      "refund_total_correct": false
+    },
+    {
+      "transcript_id": "T-003",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        },
+        {
+          "attempt": 2,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        }
+      ],
+      "final": {},
+      "label": {
+        "disposition": "escalated",
+        "refund_total": 0
+      },
+      "disposition_correct": false,
+      "refund_total_correct": false
+    },
+    {
+      "transcript_id": "T-004",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        },
+        {
+          "attempt": 2,
+          "record": {
+            "transcript_id": "not_provided",
+            "disposition": "escalated",
+            "rationale": "The customer reported a bent frame on standing desk ORD-5502 and asked for $780 back. The agent accepted the damage, but refunds over $500 need a manager, so the case was raised to the team, with confirmation due within one business day. The agent noted $780 as a recommendation only and no approval appears in the transcript, so all confirmed refund amounts are 0. The $780 stays pending manager approval. The transcript had no ID, so transcript_id is marked not_provided.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "not_provided",
+        "disposition": "escalated",
+        "rationale": "The customer reported a bent frame on standing desk ORD-5502 and asked for $780 back. The agent accepted the damage, but refunds over $500 need a manager, so the case was raised to the team, with confirmation due within one business day. The agent noted $780 as a recommendation only and no approval appears in the transcript, so all confirmed refund amounts are 0. The $780 stays pending manager approval. The transcript had no ID, so transcript_id is marked not_provided.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "escalated",
+        "refund_total": 780.0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": false
+    },
+    {
+      "transcript_id": "T-005",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        },
+        {
+          "attempt": 2,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        }
+      ],
+      "final": {},
+      "label": {
+        "disposition": "escalated",
+        "refund_total": 0
+      },
+      "disposition_correct": false,
+      "refund_total_correct": false
+    },
+    {
+      "transcript_id": "T-006",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        },
+        {
+          "attempt": 2,
+          "record": {
+            "transcript_id": "unknown (none supplied; transcript concerns ORD-5504)",
+            "disposition": "unresolved",
+            "rationale": "The customer chased ORD-5504 after a week and the agent said it had shipped and was due 9 November. The customer replied that the app says otherwise, and the agent did not investigate or escalate that conflict. The customer's 'ok' is reluctant, the delivery date is unconfirmed and the order has not arrived. Nobody requested, offered or issued a refund, so all refund amounts are 0.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "unknown (none supplied; transcript concerns ORD-5504)",
+        "disposition": "unresolved",
+        "rationale": "The customer chased ORD-5504 after a week and the agent said it had shipped and was due 9 November. The customer replied that the app says otherwise, and the agent did not investigate or escalate that conflict. The customer's 'ok' is reluctant, the delivery date is unconfirmed and the order has not arrived. Nobody requested, offered or issued a refund, so all refund amounts are 0.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 0
+      },
+      "disposition_correct": false,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-007",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        },
+        {
+          "attempt": 2,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        }
+      ],
+      "final": {},
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 0
+      },
+      "disposition_correct": false,
+      "refund_total_correct": false
+    },
+    {
+      "transcript_id": "T-008",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        },
+        {
+          "attempt": 2,
+          "record": {
+            "transcript_id": "ORD-5508",
+            "disposition": "resolved",
+            "rationale": "Change-of-mind return for bookshelf ORD-5508 was declined because delivery on 10 August put it outside the 30-day window. The customer's fallback request for store credit on shipping was also declined because shipping was free. The customer accepted without further dispute or escalation, so the case closed with no refund or credit. The transcript has no separate ID, so the order number is used as the transcript_id.",
+            "refund": {
+              "shipping_refund": 0,
+              "merchandise_credit": 0,
+              "item_refunds": [],
+              "refund_total": 0
+            }
+          },
+          "errors": []
+        }
+      ],
+      "final": {
+        "transcript_id": "ORD-5508",
+        "disposition": "resolved",
+        "rationale": "Change-of-mind return for bookshelf ORD-5508 was declined because delivery on 10 August put it outside the 30-day window. The customer's fallback request for store credit on shipping was also declined because shipping was free. The customer accepted without further dispute or escalation, so the case closed with no refund or credit. The transcript has no separate ID, so the order number is used as the transcript_id.",
+        "refund": {
+          "shipping_refund": 0,
+          "merchandise_credit": 0,
+          "item_refunds": [],
+          "refund_total": 0
+        }
+      },
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 0
+      },
+      "disposition_correct": true,
+      "refund_total_correct": true
+    },
+    {
+      "transcript_id": "T-009",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        },
+        {
+          "attempt": 2,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        }
+      ],
+      "final": {},
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 0
+      },
+      "disposition_correct": false,
+      "refund_total_correct": false
+    },
+    {
+      "transcript_id": "T-010",
+      "attempts": [
+        {
+          "attempt": 1,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        },
+        {
+          "attempt": 2,
+          "record": null,
+          "errors": [
+            "no JSON object returned"
+          ]
+        }
+      ],
+      "final": {},
+      "label": {
+        "disposition": "resolved",
+        "refund_total": 165.0
+      },
+      "disposition_correct": false,
+      "refund_total_correct": false
+    }
+  ]
+}

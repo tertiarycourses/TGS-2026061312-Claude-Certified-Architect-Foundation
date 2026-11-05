@@ -1,0 +1,28 @@
+{
+  "id": "UC-21",
+  "title": "Structured research state file",
+  "source": {
+    "practice_test_question": 21,
+    "timestamp": "50:36",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "run",
+  "mode": "state",
+  "prompt": "Research this topic and deliver a cited report: Impact of AI on creative industries. Organise all findings under the sector taxonomy you discover and keep that taxonomy in the research state.",
+  "config_change": "Add `save_research_state` and `load_research_state` MCP tools; the coordinator must save the taxonomy and source map after research and load it right before building the synthesis packet.",
+  "cost_usd": 1.3895955,
+  "rubric": [
+    {
+      "check": "save_research_state called before load_research_state",
+      "passed": true
+    },
+    {
+      "check": "research_state.json holds a taxonomy with >=3 sectors and a source map",
+      "passed": true
+    },
+    {
+      "check": "synthesis packet contains the taxonomy sector names",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "uc": "UC-18",
+  "question": 18,
+  "timestamp": "42:58",
+  "topic": "Nightly triage check with claude -p",
+  "situation": "A CI job must process a prompt, write to stdout and exit, but it intermittently hangs waiting for a terminal.",
+  "correct": "A: invoke Claude Code with claude -p (--print).",
+  "why": "Print mode runs non-interactively and exits; --output-format json adds machine-readable output but does not remove the need for -p.",
+  "run": [
+    "./nightly_check.sh"
+  ],
+  "observe": "evidence/nightly_check.json holds structured_output with one PASS/FAIL per case and total_cost_usd; the script exits non-zero on any FAIL.",
+  "rubric": [
+    "the command uses -p, --output-format json and --json-schema",
+    "the job exits without waiting for input"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "id": "UC-23",
+  "question_n": 23,
+  "timestamp": "56:06",
+  "title": "Tagged examples stabilise an ambiguous /task command",
+  "type": "run",
+  "correct": "A",
+  "expected_outcome": "With three <example> blocks in .claude/commands/task.md, the three ambiguous requests classify as investigate / plan / modify.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 44.3,
+      "exit_code": 0,
+      "command": "claude -p /task look into this error: TypeError in formatDate --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pat\u2026",
+      "subtype": "success",
+      "result": "{\"path\":\"investigate\",\"reasoning\":\"The request asks for a diagnosis of an error, not a change, so I traced the cause by reading the code and made no edits. The likely cause is callers passing null to formatDate, which is documented to throw; the runtime reproduction was blocked because Bash was denied.\"}",
+      "session_id": "8054dedf-3a9a-45ba-b9a9-1988b638a85f",
+      "total_cost_usd": 0.48061620000000005,
+      "num_turns": 12,
+      "structured_output": {
+        "path": "investigate",
+        "reasoning": "The request asks for a diagnosis of an error, not a change, so I traced the cause by reading the code and made no edits. The likely cause is callers passing null to formatDate, which is documented to throw; the runtime reproduction was blocked because Bash was denied."
+      },
+      "permission_denials": [
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_01VdLSEiHbyVp8yVnasGTymk",
+          "tool_input": {
+            "command": "cat > \"<course>/UC-23-jn3uos1o-workspace/8054dedf-3a9a-45ba-b9a9-1988b638a85f/scratchpad/repro.mjs\" <<'EOF'\nimport { formatDate } from \"<course>/UC-23-jn3uos1o/workspace/src/utils/formatDate.js\";\nfor (const [n, v] of [[\"Date\", new Date(\"2026-01-02T00:00:00Z\")], [\"null\", null], [\"undefined\", undefined], [\"ISO string\", \"2026-01-02T00:00:00Z\"], [\"Invalid Date\", new Date(\"x\")]]) {\n  try { console.log(n, \"=>\", formatDate(v)); } catch (e) { console.log(n, \"=>\", e.name + \":\", e.message); }\n}\nEOF\nnode \"<course>/UC-23-jn3uos1o-workspace/8054dedf-3a9a-45ba-b9a9-1988b638a85f/scratchpad/repro.mjs\"",
+            "description": "Run formatDate against sample inputs to reproduce the error"
+          }
+        }
+      ],
+      "is_error": false
+    },
+    "t2": {
+      "kind": "claude",
+      "elapsed_s": 63.7,
+      "exit_code": 0,
+      "command": "claude -p /task can you improve this module src/api/orders.js --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pat\u2026",
+      "subtype": "success",
+      "result": "{\"path\":\"plan\",\"reasoning\":\"\\\"Improve\\\" has no acceptance criterion, and the module has decisions that need the user's input: owner scoping, repository injection and response contract changes. I proposed options and made no file changes.\"}",
+      "session_id": "85610c7f-db66-4283-8258-714893d3cc27",
+      "total_cost_usd": 0.5292024,
+      "num_turns": 18,
+      "structured_output": {
+        "path": "plan",
+        "reasoning": "\"Improve\" has no acceptance criterion, and the module has decisions that need the user's input: owner scoping, repository injection and response contract changes. I proposed options and made no file changes."
+      },
+      "permission_denials": [],
+      "is_error": false
+    },
+    "t3": {
+      "kind": "claude",
+      "elapsed_s": 16.4,
+      "exit_code": 0,
+      "command": "claude -p /task clean this up: remove the unused imports in src/db/orderRepos\u2026 --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pat\u2026",
+      "subtype": "success",
+      "result": "{\"path\":\"modify\",\"reasoning\":\"One file and one named change, with nothing to decide, so no plan or investigation was needed. On reading the file, its only import (moment) is used by findSince on line 8, so there was nothing to remove and no edit was made.\"}",
+      "session_id": "48b9f767-cb00-4b70-ba59-9b381140dcbf",
+      "total_cost_usd": 0.35524580000000006,
+      "num_turns": 4,
+      "structured_output": {
+        "path": "modify",
+        "reasoning": "One file and one named change, with nothing to decide, so no plan or investigation was needed. On reading the file, its only import (moment) is used by findSince on line 8, so there was nothing to remove and no edit was made."
+      },
+      "permission_denials": [],
+      "is_error": false
+    }
+  },
+  "restores": [],
+  "cost_usd": 1.3651,
+  "evaluation": [
+    {
+      "criterion": "'look into this error' -> investigate",
+      "pass": true,
+      "note": "value='investigate'"
+    },
+    {
+      "criterion": "'can you improve this module' -> plan",
+      "pass": true,
+      "note": "value='plan'"
+    },
+    {
+      "criterion": "'clean this up' with a named file -> modify",
+      "pass": true,
+      "note": "value='modify'"
+    }
+  ]
+}

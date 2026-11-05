@@ -1,0 +1,30 @@
+{
+  "source": {
+    "practice_test_question": 27,
+    "timestamp": "66:07",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "After a refactor, generated reports show two linked defects: citations render twice in the final report, and some evidence excerpts disappear when the synthesis subagent output is passed to the report generator. The likely cause spans the claim-source schema, the synthesis prompt, and the report template, and the acceptance test should confirm that each claim appears once with its evidence excerpt and source URL.",
+  "question": "How should this team use Claude Code to address the defects most effectively?",
+  "options": {
+    "A": "Enter plan mode; give one detailed request covering both defects, affected areas, constraints, and verification checks before approving edits.",
+    "B": "Add a Stop hook that runs the acceptance test and rely on repeated blocks as the main debugging strategy.",
+    "C": "Skip planning and ask Claude to fix the report bugs broadly, then inspect the diff after it finishes.",
+    "D": "Open separate cleared sessions for each defect, ask each session to edit only its assigned file, then merge results."
+  },
+  "correct": "A",
+  "why": "Claude Code is most effective when the workflow matches the dependency structure of the work. For interacting fixes, splitting the defects too early can create inconsistent edits because each session may make different assumptions about the shared interface between synthesis and report generation. A strong request should describe the observed symptoms, the likely affected areas, the constraints, what \"fixed\" means, and how to verify the result. Anthropic's Claude Code guidance recommends detailed prompts for bugs and also recommends asking Claude to run checks and iterate in the same request, which fits an acceptance test for citation and evidence preservation. Plan mode is the right starting point because the change is uncertain and spans multiple files: it lets Claude inspect the codebase and propose an approach before editing, while approval of the plan moves the workflow into an editing mode. By contrast, /clear is better for unrelated tasks or when repeated failed attempts have polluted the context, not for coupled defects that need a shared mental model. Stop hooks can strengthen verification by running checks before Claude ends a turn, but they should complement a clear debugging prompt rather than replace planning and diagnosis for a multi-file design issue. (Docs: Claude Code best practices, permission modes, sessions.)",
+  "id": "UC-27",
+  "title": "Plan mode for two linked defects",
+  "task": {
+    "type": "discussion",
+    "prompt_template": "Write the single plan-mode request you would give Claude Code for the duplicated-citation and lost-excerpt defects: symptoms, suspected files (claim-source schema, synthesis prompt, report template), constraints, definition of fixed, and the acceptance test it must run.",
+    "expected_answer": "Option A. One detailed plan-mode request covering both defects, because they share the synthesis-to-report interface; separate sessions would make different assumptions, a Stop hook is a check not a strategy, and skipping planning risks rework."
+  },
+  "expected_outcome": "A plan-mode request with all five parts.",
+  "rubric": [
+    "request names both defects and the shared interface",
+    "includes a verification command (acceptance test)",
+    "explains why split sessions (D) and no-plan (C) are weaker"
+  ]
+}

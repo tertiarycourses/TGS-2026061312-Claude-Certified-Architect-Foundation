@@ -1,0 +1,38 @@
+=== DOC-01 | type: invoice
+INVOICE INV-2041
+From: Harbour Office Supplies Pte Ltd
+Date: 03/10/2026   Due: 02/11/2026   Currency: SGD
+1 x A4 paper (10 reams) ......... 48.00
+1 x Toner cartridge ............. 112.00
+TOTAL DUE: 160.00
+
+=== DOC-02 | type: invoice
+Tax invoice no. INV-2042 issued by Meridian Catering on 5 Oct 2026.
+Items: lunch boxes 24 pax $264.00; delivery $15.00.
+Amount payable S$ 279.00. Payment terms: on receipt.
+
+=== DOC-03 | type: receipt
+RECEIPT R-7781   Lumen Coworking   2026-10-07
+Day pass ............................ 35.00
+Amount paid: 38.00 (incl. 9% GST)
+
+=== DOC-04 | type: invoice
+INVOICE INV-2043   Northgate Logistics   Issued 2026-10-09   Due 2026-11-08
+Freight Singapore->Johor ........... 420.00
+Fuel surcharge ..................... 36.00
+TOTAL: 456.00
+
+=== DOC-05 | type: credit_note
+CREDIT NOTE CN-118 against INV-1990, Harbour Office Supplies, 10 Oct 2026
+Returned: 2 x Desk lamp .......... -78.00
+Credit total: -78.00   Currency: not shown
+
+=== DOC-06 | type: invoice
+INVOICE INV-2044 Pacific Print Works 12.10.2026 due 11.11.2026, amounts in Thai baht
+Banners 3 pcs ...................... 2,400.00
+Total THB 2,400.00
+
+=== DOC-07 | type: invoice
+INVOICE INV-2045  Kaya Software Pte Ltd  issued 2026-10-14  due 2026-11-13  SGD
+Annual licence (see attached schedule A for line detail)
+TOTAL: 1,200.00

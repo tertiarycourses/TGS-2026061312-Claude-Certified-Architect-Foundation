@@ -1,0 +1,45 @@
+{
+  "id": "UC-37",
+  "question_n": 37,
+  "timestamp": "91:14",
+  "title": "/find-callers with Grep scoped to TypeScript",
+  "type": "run",
+  "correct": "D",
+  "expected_outcome": "The command returns path:line locations for formatDate inside .ts files only, using the built-in Grep tool with a glob filter and output_mode content.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 6.6,
+      "exit_code": 0,
+      "command": "claude -p /find-callers formatDate --model claude-opus-5-5 --output-format json --max-turns 3 --permission-mode dontAsk --allowedTools Grep",
+      "subtype": "success",
+      "result": "- `src/services/report.ts:1` `import { formatDate } from \"../utils/formatDate.js\";`\n- `src/services/report.ts:4` `` return `${label}: ${formatDate(when)}`; ``\n- `src/services/invoice.ts:2` `import { formatDate } from \"../utils/formatDate.js\";`\n- `src/services/invoice.ts:7` `` return `${inv.id} issued ${formatDate(inv.issuedAt)} due ${formatDate(inv.dueAt)}`; ``",
+      "session_id": "e7c692b1-d287-4b13-ba52-799e4ebe0915",
+      "total_cost_usd": 0.3527516,
+      "num_turns": 2,
+      "structured_output": null,
+      "permission_denials": [],
+      "is_error": false
+    }
+  },
+  "restores": [],
+  "cost_usd": 0.3528,
+  "evaluation": [
+    {
+      "criterion": "TypeScript callers come back as path:line",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "both .ts callers are listed",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "JavaScript callers are excluded by the glob",
+      "pass": true,
+      "note": ""
+    }
+  ]
+}

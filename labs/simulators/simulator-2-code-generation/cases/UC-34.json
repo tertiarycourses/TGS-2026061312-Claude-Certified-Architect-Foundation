@@ -1,0 +1,63 @@
+{
+  "id": "UC-34",
+  "question_n": 34,
+  "timestamp": "83:32",
+  "scenario": "Code Generation with Claude Code",
+  "title": "Ask directly for a one-function guard clause and run its test",
+  "situation": "A teammate wants Claude Code to add one guard clause to a single known function so it rejects negative quantities, then run the existing unit test for that file. The relevant file path and expected behavior are already known, and no API, schema, or architectural changes are involved.",
+  "question": "What should the developer do?",
+  "options": {
+    "A": "Start with bypass permissions so Claude can edit and test without permission prompts.",
+    "B": "Enter plan mode first, review a plan, then approve implementation after exploration.",
+    "C": "Ask Claude Code to make the small change directly and run the specified test.",
+    "D": "Switch to accept-edits mode first, let Claude edit, then inspect the diff afterward."
+  },
+  "correct": "C",
+  "why": "For a small, well-scoped change, Claude Code is most effective when you ask for the outcome directly and include a verification step. Anthropic's best-practices guidance says plan mode adds overhead, and if the diff can be described in one sentence you should skip the plan and ask Claude to do it directly. Plan mode is valuable when the approach is uncertain, the work touches multiple files, or the developer is unfamiliar with the area being changed; it lets Claude read, explore, and write a plan before source edits happen, which is useful for review but unnecessary for a known guard clause in one function. Directly asking Claude Code to implement the fix does not mean bypassing permissions. In the documented default permission mode, reads run without asking, but edits, shell commands, and network requests can still pause for approval. Modes such as accept edits and bypass permissions control permission behavior, not whether planning is appropriate. (Docs: Claude Code best practices, permission modes.)",
+  "type": "run",
+  "concrete_task": "claude -p \"add the guard clause... then run node --test\" --permission-mode acceptEdits --allowedTools Read Edit \"Bash(node:*)\"",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "acceptEdits",
+      "tools": [
+        "Read",
+        "Edit",
+        "Bash(node:*)"
+      ],
+      "snapshot": true,
+      "max_turns": 6,
+      "prompt": "In src/utils/quantity.js add one guard clause to validateQuantity so it throws on a negative quantity. Then run: node --test tests/quantity.test.js  and report the pass/fail counts."
+    }
+  ],
+  "expected_outcome": "No plan mode: Claude edits src/utils/quantity.js, runs node --test tests/quantity.test.js and reports three passing tests.",
+  "rubric": [
+    {
+      "criterion": "the single known file was edited directly",
+      "check": {
+        "type": "files_changed_contains",
+        "task": "t1",
+        "path": "quantity.js"
+      }
+    },
+    {
+      "criterion": "the specified test ran and passed",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "pattern": "pass(ed)?\\D{0,20}3|3\\D{0,20}pass|all (three|3) tests"
+      }
+    },
+    {
+      "criterion": "no plan or permission-mode change was needed for a one-sentence diff",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

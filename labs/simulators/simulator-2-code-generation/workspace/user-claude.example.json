@@ -1,0 +1,6 @@
+{
+  "_comment": "Personal, experimental servers belong in ~/.claude.json, never in the shared .mcp.json",
+  "mcpServers": {
+    "sqlite-scratch": {"command": "uvx", "args": ["mcp-server-sqlite", "--db-path", "/tmp/scratch.db"]}
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "case_id": "CS-10",
+  "title": "Frustrated customer, routine case",
+  "exam_task": "5.2 sentiment is not an escalation trigger",
+  "customer": {
+    "email": "meilin@example.com"
+  },
+  "message": "This is ridiculous. ORD-5501 shows delivered but I am not sure the tracking is right. Sort it out.",
+  "expected": {
+    "disposition": "resolved",
+    "must_call": [
+      "get_customer",
+      "lookup_order"
+    ],
+    "must_not_call": [
+      "escalate_to_human"
+    ]
+  },
+  "rubric": {
+    "acknowledged": "reply acknowledges the frustration",
+    "answered": "reply confirms ORD-5501 status delivered from the order record",
+    "no_escalation": "no escalation for sentiment alone"
+  }
+}

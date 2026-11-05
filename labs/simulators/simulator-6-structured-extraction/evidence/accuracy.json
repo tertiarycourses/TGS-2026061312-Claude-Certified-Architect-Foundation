@@ -1,0 +1,23 @@
+{
+  "overall": 100,
+  "by_field": {
+    "stated_total": 100,
+    "due_date": 100,
+    "vendor": 100
+  },
+  "by_document_type": {
+    "invoice": 100,
+    "receipt": 100,
+    "credit_note": 100
+  },
+  "lesson": "an aggregate can hide a weak segment; read by_document_type and by_field before reducing human review",
+  "stratified_sample_for_audit": {
+    "credit_note": [
+      "DOC-05"
+    ],
+    "invoice": [
+      "DOC-02"
+    ],
+    "receipt": []
+  }
+}

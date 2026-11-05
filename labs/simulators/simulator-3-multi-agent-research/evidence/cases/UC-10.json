@@ -1,0 +1,28 @@
+{
+  "id": "UC-10",
+  "title": "Route information, not just tasks",
+  "source": {
+    "practice_test_question": 10,
+    "timestamp": "21:53",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "run",
+  "mode": "broad",
+  "prompt": "Research this topic and deliver a cited report: Impact of AI on creative industries.",
+  "config_change": "None. Inspect the synthesis packet the coordinator built: it must carry the research findings and source metadata, because the synthesis subagent starts with an empty context.",
+  "cost_usd": 1.099836,
+  "rubric": [
+    {
+      "check": "synthesis packet >= 2000 characters",
+      "passed": true
+    },
+    {
+      "check": "synthesis packet contains at least 3 source URLs or document names",
+      "passed": true
+    },
+    {
+      "check": "synthesis packet contains publication dates",
+      "passed": true
+    }
+  ]
+}

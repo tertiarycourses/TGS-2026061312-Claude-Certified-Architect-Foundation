@@ -1,0 +1,57 @@
+{
+  "topic": "Impact of AI on creative industries",
+  "web": {
+    "music": [
+      {
+        "url": "https://example.org/ifpi-2026-ai-music",
+        "title": "IFPI Global Music Report 2026",
+        "published": "2026-03-19",
+        "excerpt": "62% of surveyed labels used generative tools in production during 2025."
+      },
+      {
+        "url": "https://example.org/musicians-union-survey",
+        "title": "Musicians' Union member survey",
+        "published": "2025-09-02",
+        "excerpt": "48% of members reported using AI tools in composition or mixing."
+      }
+    ],
+    "writing": [
+      {
+        "url": "https://example.org/authors-guild-ai-2026",
+        "title": "Authors Guild AI survey",
+        "published": "2026-01-14",
+        "excerpt": "Median reported income effect of AI on freelance writers: -11% year over year."
+      }
+    ],
+    "film": [
+      {
+        "url": "https://example.org/vfx-society-2026",
+        "title": "Visual Effects Society workforce note",
+        "published": "2026-02-07",
+        "excerpt": "Previsualisation time fell by roughly 30% on productions using AI storyboarding."
+      }
+    ],
+    "visual_arts": "TIMEOUT"
+  },
+  "documents": [
+    {
+      "name": "WIPO-Creative-Economy-2025.pdf",
+      "page": 14,
+      "published": "2025-11-30",
+      "excerpt": "Generative AI adoption among creative SMEs reached 41% in 2025, up from 23% in 2023."
+    },
+    {
+      "name": "UNESCO-Culture-Report-2026.pdf",
+      "page": 88,
+      "published": "2026-04-01",
+      "excerpt": "Adoption among creative SMEs is estimated at 55% in 2025; methodology weights by firm size."
+    }
+  ],
+  "fact_bank": {
+    "IFPI Global Music Report 2026 publication year": "2026",
+    "Authors Guild survey sample size": "2,300 members",
+    "WIPO creative SMEs generative AI adoption 2025": "41%",
+    "UNESCO creative SMEs adoption estimate 2025": "55%",
+    "Visual Effects Society previsualisation time reduction": "30%"
+  }
+}

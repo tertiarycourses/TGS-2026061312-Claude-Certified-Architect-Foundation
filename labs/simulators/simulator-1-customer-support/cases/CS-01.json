@@ -1,0 +1,26 @@
+{
+  "case_id": "CS-01",
+  "title": "Damaged item with photo, under the limit",
+  "exam_task": "1.1 agentic loop \u00b7 1.4 prerequisite gate",
+  "customer": {
+    "email": "meilin@example.com"
+  },
+  "message": "My ceramic table lamp from order ORD-5501 arrived cracked. Photo attached. I want a refund.",
+  "expected": {
+    "disposition": "resolved",
+    "must_call": [
+      "get_customer",
+      "lookup_order",
+      "process_refund"
+    ],
+    "refund_issued": 120.0,
+    "must_not_call": [
+      "escalate_to_human"
+    ]
+  },
+  "rubric": {
+    "verified_first": "get_customer was called before lookup_order",
+    "refund_correct": "process_refund issued exactly $120 for ORD-5501",
+    "case_facts": "reply opens with a CASE FACTS block naming C-1001, ORD-5501 and $120"
+  }
+}

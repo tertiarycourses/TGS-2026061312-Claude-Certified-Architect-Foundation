@@ -1,0 +1,54 @@
+{
+  "id": "UC-36",
+  "question_number": 36,
+  "timestamp": "88:26",
+  "mode": "discussion",
+  "title": "Partition the investigation: one document group or concern per subagent",
+  "exam_question": "What change best partitions the investigation while preserving synthesis quality?",
+  "correct_option": "A",
+  "correct_option_text": "Assign each subagent a distinct document group or extraction concern, provide needed context, and require concise findings for synthesis.",
+  "why": "Subagents have isolated context, but their final reports still land in the caller's context. Non-overlapping scope (by document family, schema section or failure mode) removes repeated observations; a compact deliverable format keeps the synthesis step small. Giving every subagent the full corpus or overlapping subsets produces redundancy, not coverage.",
+  "rubric": [
+    "Learner's partition has no overlapping document ids and names the concern per group.",
+    "Learner caps the deliverable and explains why isolated context does not make returned output free.",
+    "Learner states what context each subagent must be given because it inherits none."
+  ],
+  "task": "Discussion plus a partition plan. The case run groups the seven fixture documents into non-overlapping assignments (by document type and by failure concern) and renders one delegation prompt per subagent from the template. Paste them into Claude Code as parallel Agent calls if you want to see the synthesis.",
+  "prompt_template": "You are subagent {{agent_name}}. Scope: ONLY documents {{document_ids}} ({{group}}). Concern: {{concern}}. Context you need: the extract_invoice schema is strict, absent fields must be null, calculated_total is the sum of line_items. Deliverable: at most 8 lines, one finding per line as `doc_id | field | cause | fix`. Do not inspect documents outside your scope.",
+  "partition": [
+    {
+      "agent_name": "investigator-1",
+      "group": "credit_note",
+      "document_ids": [
+        "DOC-05"
+      ],
+      "concern": "sign of totals and missing currency",
+      "prompt": "You are subagent investigator-1. Scope: ONLY documents DOC-05 (credit_note). Concern: sign of totals and missing currency. Context you need: the extract_invoice schema is strict, absent fields must be null, calculated_total is the sum of line_items. Deliverable: at most 8 lines, one finding per line as `doc_id | field | cause | fix`. Do not inspect documents outside your scope."
+    },
+    {
+      "agent_name": "investigator-2",
+      "group": "invoice",
+      "document_ids": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-04",
+        "DOC-06",
+        "DOC-07"
+      ],
+      "concern": "date and currency normalisation failures",
+      "prompt": "You are subagent investigator-2. Scope: ONLY documents DOC-01, DOC-02, DOC-04, DOC-06, DOC-07 (invoice). Concern: date and currency normalisation failures. Context you need: the extract_invoice schema is strict, absent fields must be null, calculated_total is the sum of line_items. Deliverable: at most 8 lines, one finding per line as `doc_id | field | cause | fix`. Do not inspect documents outside your scope."
+    },
+    {
+      "agent_name": "investigator-3",
+      "group": "receipt",
+      "document_ids": [
+        "DOC-03"
+      ],
+      "concern": "totals that include un-itemised tax",
+      "prompt": "You are subagent investigator-3. Scope: ONLY documents DOC-03 (receipt). Concern: totals that include un-itemised tax. Context you need: the extract_invoice schema is strict, absent fields must be null, calculated_total is the sum of line_items. Deliverable: at most 8 lines, one finding per line as `doc_id | field | cause | fix`. Do not inspect documents outside your scope."
+    }
+  ],
+  "non_overlapping": true,
+  "expected_answer": "Assign each subagent a distinct document group or extraction concern, provide needed context, and require concise findings for synthesis.",
+  "expected_outcome": "evidence/cases/UC-36.json holds a partition where every document appears in exactly one group, one rendered prompt per subagent with a line-capped deliverable, and the expected answer."
+}

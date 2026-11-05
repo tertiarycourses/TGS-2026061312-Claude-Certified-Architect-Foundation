@@ -1,0 +1,1 @@
+Monthly billing job: run python -m src.legacy.report after the 1st of each month.

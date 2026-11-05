@@ -1,0 +1,9 @@
+{
+  "DOC-01": {"stated_total": 160.0, "due_date": "2026-11-02", "vendor": "Harbour Office Supplies Pte Ltd"},
+  "DOC-02": {"stated_total": 279.0, "due_date": null, "vendor": "Meridian Catering"},
+  "DOC-03": {"stated_total": 38.0, "due_date": null, "vendor": "Lumen Coworking"},
+  "DOC-04": {"stated_total": 456.0, "due_date": "2026-11-08", "vendor": "Northgate Logistics"},
+  "DOC-05": {"stated_total": -78.0, "due_date": null, "vendor": "Harbour Office Supplies"},
+  "DOC-06": {"stated_total": 2400.0, "due_date": "2026-11-11", "vendor": "Pacific Print Works"},
+  "DOC-07": {"stated_total": 1200.0, "due_date": "2026-11-13", "vendor": "Kaya Software Pte Ltd"}
+}

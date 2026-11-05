@@ -1,0 +1,72 @@
+{
+  "pr": 418,
+  "files": [
+    {
+      "path": "stock/repository.py",
+      "diff": [
+        {
+          "line": 11,
+          "code": "cursor.execute(f\"SELECT qty FROM stock WHERE sku = '{sku}' AND warehouse = '{warehouse}'\")"
+        },
+        {
+          "line": 2,
+          "code": "import os"
+        },
+        {
+          "line": 3,
+          "code": "import sys"
+        }
+      ]
+    },
+    {
+      "path": "stock/totals.py",
+      "diff": [
+        {
+          "line": 10,
+          "code": "for i in range(1, len(items)):"
+        },
+        {
+          "line": 12,
+          "code": "logger.info(\"totals computed %s\", len(items))"
+        }
+      ]
+    },
+    {
+      "path": "stock/api.py",
+      "diff": [
+        {
+          "line": 5,
+          "code": "def get_stock(sku: str, warehouse: str) -> dict:"
+        },
+        {
+          "line": 7,
+          "code": "return repository.fetch(sku, warehouse)"
+        }
+      ]
+    },
+    {
+      "path": "stock/jobs.py",
+      "diff": [
+        {
+          "line": 12,
+          "code": "stock = api.get_stock(sku)"
+        },
+        {
+          "line": 14,
+          "code": "logger.info(\"job done\")"
+        }
+      ]
+    }
+  ],
+  "existing_tests": [
+    "tests/test_totals.py::test_total_counts_all_items",
+    "tests/test_repository.py::test_fetch_known_sku"
+  ],
+  "prior_findings": [
+    {
+      "file": "stock/repository.py",
+      "line": 11,
+      "detected_pattern": "f-string SQL"
+    }
+  ]
+}

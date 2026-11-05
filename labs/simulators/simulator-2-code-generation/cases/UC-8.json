@@ -1,0 +1,64 @@
+{
+  "id": "UC-8",
+  "question_n": 8,
+  "timestamp": "17:34",
+  "scenario": "Code Generation with Claude Code",
+  "title": "Plan mode before replacing the homegrown authorization layer",
+  "situation": "A payments platform team is replacing its homegrown authorization layer with a policy engine across API handlers, middleware, and tests. Engineers disagree about where the policy boundary should live, and the developer assigned to it is unfamiliar with several affected packages.",
+  "question": "Which workflow should they choose before implementation?",
+  "options": {
+    "A": "Run a custom slash command that instructs Claude Code to avoid asking questions during the refactor.",
+    "B": "Use direct execution so Claude Code starts editing immediately and discovers the architecture through test failures.",
+    "C": "Enter plan mode so Claude Code researches the codebase and proposes changes for approval before editing files.",
+    "D": "Select the opus model alias and let Claude Code complete the refactor through direct execution."
+  },
+  "correct": "C",
+  "why": "Plan mode is designed for work where it is valuable to separate investigation from implementation. In Claude Code, plan is a documented permission mode where Claude can research the codebase, may run exploratory shell commands subject to the normal permission flow, and writes a plan before source edits occur. The key operational boundary is that Claude Code does not edit source files until the plan is approved. Anthropic's best-practices guidance recommends planning when the user is uncertain about the approach, the change modifies multiple files, or the user is unfamiliar with the code being changed; all three conditions are present here, so direct execution is a poor fit even if it might be faster for small fixes. Selecting a stronger model can help Claude reason through difficult code, but model choice does not replace the workflow control and approval boundary provided by plan mode. (Docs: Claude Code permission modes, best practices, model configuration.)",
+  "type": "run",
+  "concrete_task": "claude -p \"<refactor brief>\" --permission-mode plan --allowedTools Read Grep Glob",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "plan",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "snapshot": true,
+      "max_turns": 6,
+      "prompt": "We are replacing the homegrown authorization layer (src/middleware/authorize.js) with a policy engine across API handlers, middleware and tests. Engineers disagree where the policy boundary should live. Research the codebase and propose a plan with the boundary options for approval."
+    }
+  ],
+  "expected_outcome": "Claude researches src/middleware/authorize.js and its callers and returns a plan; the file-hash table shows zero edits.",
+  "rubric": [
+    {
+      "criterion": "plan mode edited no files",
+      "check": {
+        "type": "files_changed_empty",
+        "task": "t1"
+      }
+    },
+    {
+      "criterion": "the output is a plan that names the authorization boundary",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "pattern": "authoriz|policy"
+      }
+    },
+    {
+      "criterion": "the plan references the real callers found by research",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "pattern": "orders\\.js|authorize\\.js"
+      }
+    }
+  ]
+}

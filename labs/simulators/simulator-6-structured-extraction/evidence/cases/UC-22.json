@@ -1,0 +1,21 @@
+{
+  "id": "UC-22",
+  "question_number": 22,
+  "timestamp": "53:13",
+  "mode": "discussion",
+  "title": "Keep discovery out of the main thread: delegate to the Explore subagent",
+  "exam_question": "Which workflow best preserves useful context while still doing discovery?",
+  "correct_option": "B",
+  "correct_option_text": "Delegate the exploratory search to the built-in Explore subagent with explicit scope and conventions, then implement from its summarized findings.",
+  "why": "Discovery produces low-level evidence; implementation needs conclusions. The Explore subagent runs in its own context window and returns one summary, so the main conversation never sees the grep and file-read noise. /compact shrinks a conversation that is already large; plan mode reviews an approach. Neither stops the noise entering the main thread in the first place. Explore starts fresh, so the delegation prompt must restate the extraction rules it needs.",
+  "rubric": [
+    "Learner explains why the delegation prompt restates the extraction conventions (Explore inherits no history).",
+    "Learner distinguishes /compact, plan mode and subagent delegation by the problem each solves.",
+    "Learner's prompt bounds the output (line cap, named sections)."
+  ],
+  "task": "Discussion. Open this lab folder in Claude Code and paste the delegation prompt below (fill the placeholders). Compare the length of the returned summary with what a direct Grep + Read sequence would have put into your main conversation.",
+  "prompt_template": "Use the Explore subagent. Scope: {{scope_paths}}. Goal: I am adding a new document type '{{new_document_type}}' to the extraction pipeline. Report (max 30 lines): 1) where extract_invoice's schema and validation live, 2) the fixture and label conventions in fixtures/, 3) how retry decisions are made, 4) the exact files a new document type must touch. Conventions that matter: strict tool schemas, null for absent fields, calculated vs stated totals. Do not edit anything.",
+  "rendered_prompt": "Use the Explore subagent. Scope: labs/lab-06-structured-data-extraction/ (extract.py, cases.py, invoice.schema.json, fixtures/). Goal: I am adding a new document type 'purchase_order' to the extraction pipeline. Report (max 30 lines): 1) where extract_invoice's schema and validation live, 2) the fixture and label conventions in fixtures/, 3) how retry decisions are made, 4) the exact files a new document type must touch. Conventions that matter: strict tool schemas, null for absent fields, calculated vs stated totals. Do not edit anything.",
+  "expected_answer": "Delegate the exploratory search to the built-in Explore subagent with explicit scope and conventions, then implement from its summarized findings.",
+  "expected_outcome": "evidence/cases/UC-22.json holds the rendered delegation prompt and the expected answer; the learner's main conversation stays short and the implementation step still knows the target schema changes."
+}

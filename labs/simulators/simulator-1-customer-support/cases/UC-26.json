@@ -1,0 +1,19 @@
+{
+  "uc": "UC-26",
+  "question": 26,
+  "timestamp": "63:33",
+  "topic": "Client tools inside a batch",
+  "situation": "A nightly backlog run submits thousands of conversations through Message Batches; the requests include client tool definitions for MCP-backed systems.",
+  "correct": "B: use the batch for initial analysis or tool requests, then execute returned client tools and continue each case in later Messages requests.",
+  "why": "A batch item ends at stop_reason tool_use; the application-mediated tool loop cannot complete inside one batch request.",
+  "run": [
+    "export ANTHROPIC_API_KEY=...  # then",
+    "python3 -B triage.py --batch"
+  ],
+  "observe": "evidence/triage-batch.json records results by custom_id and the note on continuing tool_use rows in follow-up requests.",
+  "rubric": [
+    "results are correlated by custom_id, never by position",
+    "the learner can explain why refunds cannot complete inside the batch"
+  ],
+  "discussion_only_without_api_key": true
+}

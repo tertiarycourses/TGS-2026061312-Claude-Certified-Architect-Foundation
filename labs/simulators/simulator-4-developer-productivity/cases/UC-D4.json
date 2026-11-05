@@ -1,0 +1,23 @@
+{
+  "id": "UC-D4",
+  "title": "Resume and name what changed",
+  "source": {
+    "task_statement": "1.7 Manage session state, resumption and forking",
+    "scenario": "Developer Productivity with Claude"
+  },
+  "situation": "A teammate edited docs/runbook.txt after the agent's analysis session ended.",
+  "question": "Resume or start fresh?",
+  "correct": "Resume the session and tell it exactly which file changed so it re-reads only that file.",
+  "why": "Prior context is still valid; a targeted note avoids a full re-exploration, while a fresh session would need an injected summary.",
+  "task": {
+    "type": "run",
+    "resume": "explore",
+    "prompt_template": "Since your last turn only docs/runbook.txt changed. Re-read just that file and tell me in three lines whether it changes your proposed fix. Do not Grep or re-explore."
+  },
+  "expected_outcome": "Same session id as explore; at most two Reads, no Grep, no subagent.",
+  "rubric": [
+    "session id equals the explore session",
+    "no Grep and no Agent call",
+    "Read count <= 2"
+  ]
+}

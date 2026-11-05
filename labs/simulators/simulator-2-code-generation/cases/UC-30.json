@@ -1,0 +1,84 @@
+{
+  "id": "UC-30",
+  "question_n": 30,
+  "timestamp": "73:29",
+  "scenario": "Code Generation with Claude Code",
+  "title": "Plan first, then approve into an editing mode",
+  "situation": "A senior engineer is about to migrate a shared authorization layer used by several packages. The dependency graph is unclear, there are multiple viable designs, and prior immediate-edit attempts caused broad rewrites that were later reverted.",
+  "question": "What should the engineer do first?",
+  "options": {
+    "A": "Switch to bypass permissions mode, let Claude inspect and edit freely, then rely on tests to catch bad changes.",
+    "B": "Use direct execution, ask Claude to update one package at a time, then revert commits if the design shifts.",
+    "C": "Start Claude Code in plan mode, have it inspect the affected areas, review the proposed plan, then approve into an editing mode.",
+    "D": "Start Claude Code in accept-edits mode, have it inspect the affected areas, then review the resulting source changes."
+  },
+  "correct": "C",
+  "why": "Plan mode is designed for situations where changing code immediately would be risky because the design, dependencies, or scope are not yet clear. In this mode, Claude Code can analyze the codebase and write a proposed plan, but it does not edit source files until the plan is approved. This creates a useful checkpoint for complex refactors: the developer can evaluate the approach before committing to a path, give feedback, keep planning, or approve the plan and choose how edits should proceed. Approving a plan exits plan mode and switches to an editing permission mode, such as reviewing each edit manually or accepting edits, depending on the approval choice. Do not confuse plan mode with more permissive modes such as accept edits or bypass permissions; those modes address approval behavior for edits or tool use, while plan mode specifically supports analysis and design before source changes. (Docs: Claude Code permission modes, common workflows.)",
+  "type": "run",
+  "concrete_task": "claude -p \"<brief>\" --permission-mode plan, then claude -p \"Plan approved...\" --resume <id> --permission-mode acceptEdits",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "plan",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "snapshot": true,
+      "max_turns": 6,
+      "prompt": "Migrate the shared authorization layer in src/middleware/authorize.js to a policy module. The dependency graph is unclear and earlier immediate-edit attempts caused broad rewrites. Inspect the affected areas and write a plan whose first step is small and reversible."
+    },
+    {
+      "id": "t2",
+      "kind": "claude",
+      "mode": "acceptEdits",
+      "tools": [
+        "Read",
+        "Edit",
+        "Write",
+        "Grep",
+        "Glob",
+        "Bash(node:*)"
+      ],
+      "resume": "t1",
+      "snapshot": true,
+      "max_turns": 8,
+      "prompt": "Plan approved. Implement ONLY step 1 of your plan, then stop and list the files you changed."
+    }
+  ],
+  "expected_outcome": "Phase 1 (plan mode) changes nothing. Phase 2 resumes the same session with acceptEdits and the approved first step lands as real edits.",
+  "rubric": [
+    {
+      "criterion": "plan mode inspected without editing",
+      "check": {
+        "type": "files_changed_empty",
+        "task": "t1"
+      }
+    },
+    {
+      "criterion": "approval continued the same session (resume, not a new chat)",
+      "check": {
+        "type": "same",
+        "tasks": [
+          "t1",
+          "t2"
+        ]
+      }
+    },
+    {
+      "criterion": "the approved step produced edits (a new or changed source or test file)",
+      "check": {
+        "type": "regex",
+        "task": "t2",
+        "field": "files_changed",
+        "pattern": "\\.(js|ts|tsx)"
+      }
+    }
+  ]
+}

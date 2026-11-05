@@ -1,0 +1,272 @@
+{
+  "mode": "lossy",
+  "model": "claude-opus-5-5",
+  "subagent_model": "sonnet",
+  "session_id": "c2c0f564-b6cc-48e0-947b-bc94698d153a",
+  "cost_usd": 0.7380847,
+  "num_turns": 2,
+  "agent_calls_per_assistant_message": [
+    3,
+    1
+  ],
+  "max_parallel_spawn": 3,
+  "max_concurrent_reviewers": 3,
+  "synthesis_prompt": "Summarise the review of this pull request as a short PR comment.",
+  "synthesis_prompt_chars": 64,
+  "reviewer_findings": [
+    [
+      {
+        "file": "stock/repository.py",
+        "line": 11,
+        "severity": "critical",
+        "category": "SQL injection",
+        "detected_pattern": "f-string interpolation of user-controlled values into a SQL statement",
+        "issue": "The query is built with an f-string: `cursor.execute(f\"SELECT qty FROM stock WHERE sku = '{sku}' AND warehouse = '{warehouse}'\")`. The `sku` and `warehouse` values come from the HTTP-facing `stock/api.py` (`get_stock`, `get_many`) with no validation. A value such as `' OR '1'='1` or `'; DROP TABLE stock; --` changes the query. The new `warehouse` parameter in PR 418 adds a second injection point. `fetch_many` repeats the call for every SKU in a list.",
+        "suggested_fix": "Use a parameterized query: `cursor.execute(\"SELECT qty FROM stock WHERE sku = %s AND warehouse = %s\", (sku, warehouse))`. Use the placeholder style your DB driver expects, such as `?` for sqlite3. Also validate the format and length of `sku` and `warehouse` at the API boundary.",
+        "confidence": 0.97
+      },
+      {
+        "file": "stock/api.py",
+        "line": 5,
+        "severity": "medium",
+        "category": "Missing input validation / authorisation",
+        "detected_pattern": "Untrusted parameters passed straight to the repository; no access check on warehouse",
+        "issue": "`def get_stock(sku: str, warehouse: str)` and `get_many` pass caller-supplied `sku`, `warehouse` and `skus` to `repository.fetch` unchecked. There is no check that the caller may read the requested warehouse. The new `warehouse` parameter lets any caller query any warehouse's stock. `get_many` accepts an unbounded `skus` list, and each SKU triggers its own query, so a caller can generate heavy database load.",
+        "suggested_fix": "Validate `sku` and `warehouse` against an allow-list or strict pattern. Check that the authenticated user is allowed to read the requested warehouse. Cap the length of `skus`.",
+        "confidence": 0.55
+      }
+    ],
+    [
+      {
+        "file": "stock/repository.py",
+        "line": 8,
+        "severity": "high",
+        "category": "test-coverage",
+        "detected_pattern": "changed public function with a partial existing test",
+        "issue": "fetch() is covered only by tests/test_repository.py::test_fetch_known_sku. That test mocks the cursor and ignores what execute() receives. Nothing checks the line-11 SQL change. Nothing covers the missing-SKU path, which should return qty 0. The f-string SQL is open to injection, and no test would notice.",
+        "suggested_fix": "Add tests/test_repository.py::test_fetch_unknown_sku_returns_zero_qty, using a cursor whose fetchone returns None and asserting qty == 0. Add tests/test_repository.py::test_fetch_passes_sku_and_warehouse_as_parameters, which asserts that a SKU such as \"A1' OR '1'='1\" reaches the cursor as a bound parameter and not inside the SQL string. Fix the code to use parameterized queries.",
+        "confidence": 0.85
+      },
+      {
+        "file": "stock/repository.py",
+        "line": 16,
+        "severity": "medium",
+        "category": "test-coverage",
+        "detected_pattern": "public function with no test",
+        "issue": "fetch_many() has no test. A user would notice if it dropped a SKU, reordered results, or applied the wrong warehouse.",
+        "suggested_fix": "Add tests/test_repository.py::test_fetch_many_returns_one_row_per_sku_in_order. Monkeypatch get_cursor and assert one row per requested SKU, in order, all carrying the requested warehouse.",
+        "confidence": 0.8
+      },
+      {
+        "file": "stock/totals.py",
+        "line": 7,
+        "severity": "critical",
+        "category": "test-coverage",
+        "detected_pattern": "off-by-one: loop starts at index 1, so the first item is skipped",
+        "issue": "tests/test_totals.py::test_total_counts_all_items already covers total_qty(). It should fail on this PR. sample_stock holds qty 3, 0 and 9, so the expected total is 12, but range(1, len(items)) returns 9. No new test is needed. The existing test is correct and catches the regression. The PR must not merge while it fails.",
+        "suggested_fix": "Fix the code with `for item in items: total += item.qty`, or `sum(i.qty for i in items)`. Keep tests/test_totals.py::test_total_counts_all_items as it is.",
+        "confidence": 0.95
+      },
+      {
+        "file": "stock/totals.py",
+        "line": 16,
+        "severity": "medium",
+        "category": "test-coverage",
+        "detected_pattern": "public function with no test",
+        "issue": "low_stock() has no test in tests/test_totals.py. Nothing pins the threshold boundary (qty &lt; threshold, so qty == 5 is excluded) or the default threshold of 5.",
+        "suggested_fix": "Add tests/test_totals.py::test_low_stock_returns_items_below_threshold. With sample_stock and the default threshold it should return A1 and B2. Add a boundary assertion with threshold=3 that excludes A1.",
+        "confidence": 0.8
+      },
+      {
+        "file": "stock/api.py",
+        "line": 5,
+        "severity": "high",
+        "category": "test-coverage",
+        "detected_pattern": "signature change (warehouse parameter added) with no test file",
+        "issue": "No tests/test_api.py exists, so get_stock() has no test. The new required warehouse parameter breaks callers, and jobs.py is one of them. Nothing checks that the warehouse reaches the repository.",
+        "suggested_fix": "Create tests/test_api.py with test_get_stock_passes_warehouse_to_repository. Monkeypatch repository.fetch and assert it receives both sku and warehouse, and that the result is returned unchanged.",
+        "confidence": 0.85
+      },
+      {
+        "file": "stock/api.py",
+        "line": 10,
+        "severity": "low",
+        "category": "test-coverage",
+        "detected_pattern": "public function with no test",
+        "issue": "get_many() has no test. It is a thin pass-through to repository.fetch_many, so the risk is low.",
+        "suggested_fix": "Add tests/test_api.py::test_get_many_delegates_to_repository. This only needs to confirm that the skus and warehouse are forwarded.",
+        "confidence": 0.6
+      },
+      {
+        "file": "stock/jobs.py",
+        "line": 9,
+        "severity": "critical",
+        "category": "test-coverage",
+        "detected_pattern": "caller not updated after signature change (api.get_stock now requires warehouse)",
+        "issue": "sync() calls api.get_stock(sku) without the new warehouse argument. This raises TypeError at runtime, so the nightly job fails. There is no tests/test_jobs.py, so CI would not catch it.",
+        "suggested_fix": "Create tests/test_jobs.py with test_sync_returns_stock_for_every_sku. Monkeypatch api.get_stock and assert that sync(['A1','B2']) returns two rows with the warehouse passed through. Update sync() to accept a warehouse parameter and pass it to get_stock.",
+        "confidence": 0.9
+      }
+    ],
+    [
+      {
+        "file": "stock/jobs.py",
+        "line": 12,
+        "severity": "critical",
+        "category": "contract_break",
+        "detected_pattern": "api.get_stock(sku) called without the new required warehouse argument",
+        "issue": "PR 418 added a required `warehouse` parameter to api.get_stock (stock/api.py line 5). sync() still calls it with only `sku`, so every nightly run raises TypeError. sync() also has no warehouse parameter to pass through.",
+        "suggested_fix": "Add a `warehouse: str` parameter to sync() and call api.get_stock(sku, warehouse). Alternatively, call api.get_many(skus, warehouse) and drop the loop. Update every caller of sync().",
+        "confidence": 0.97
+      },
+      {
+        "file": "stock/totals.py",
+        "line": 10,
+        "severity": "high",
+        "category": "logic_bug",
+        "detected_pattern": "range(1, len(items)) skips the first element",
+        "issue": "The PR 418 loop starts at index 1, so items[0] is never summed. total_qty undercounts. tests/test_totals.py expects 12 for sample_stock and would fail. The index loop is also less readable than direct iteration.",
+        "suggested_fix": "Replace the loop with `total = sum(i.qty for i in items)`, or iterate with `for item in items`.",
+        "confidence": 0.93
+      },
+      {
+        "file": "stock/repository.py",
+        "line": 11,
+        "severity": "critical",
+        "category": "security",
+        "detected_pattern": "SQL built with an f-string from sku and warehouse",
+        "issue": "The sku and warehouse values are interpolated straight into the SQL string, which allows SQL injection. This is the line changed in PR 418. The query will also break on values that contain quotes.",
+        "suggested_fix": "Use a parameterised query, for example cursor.execute(\"SELECT qty FROM stock WHERE sku = %s AND warehouse = %s\", (sku, warehouse)). Use the placeholder style that your DB driver expects.",
+        "confidence": 0.96
+      },
+      {
+        "file": "stock/pricing.py",
+        "line": 12,
+        "severity": "high",
+        "category": "error_handling",
+        "detected_pattern": "p['amount'] when p may be None",
+        "issue": "getPrice raises TypeError for an unknown SKU, as the inline comment admits. total_price then fails for the whole basket because of one unknown SKU.",
+        "suggested_fix": "Raise an explicit KeyError or a custom UnknownSkuError with a clear message, or return None and handle it in total_price.",
+        "confidence": 0.9
+      },
+      {
+        "file": "stock/pricing.py",
+        "line": 8,
+        "severity": "medium",
+        "category": "naming",
+        "detected_pattern": "camelCase and Capitalised_Snake function names",
+        "issue": "getPrice and Apply_Discount do not follow the snake_case used elsewhere in the package (fetch_many, total_qty, low_stock). Inconsistent names make calls hard to guess.",
+        "suggested_fix": "Rename them to get_price and apply_discount, and update total_price.",
+        "confidence": 0.9
+      },
+      {
+        "file": "stock/pricing.py",
+        "line": 21,
+        "severity": "low",
+        "category": "naming",
+        "detected_pattern": "single-letter names (p, x, t, s) and untyped signatures",
+        "issue": "Variables such as `t`, `s`, `p` and `x` say nothing about what they hold. The functions have no type hints, unlike the rest of the package. The temporary `x` in Apply_Discount is unnecessary. `total_price` can also be a plain sum.",
+        "suggested_fix": "Add type hints. Use descriptive names. Return the discounted amount directly. Write total_price as `sum(get_price(s) for s in skus)`.",
+        "confidence": 0.75
+      },
+      {
+        "file": "stock/pricing.py",
+        "line": 11,
+        "severity": "low",
+        "category": "maintainability",
+        "detected_pattern": "logging in a lookup helper; money as float",
+        "issue": "The logger.info runs before the None check, so it logs lookups that go on to fail. The prices are floats, and rounding errors can accumulate in total_price and Apply_Discount. The currency is stored in CATALOG but ignored, so a mixed-currency basket would be summed silently.",
+        "suggested_fix": "Use Decimal for money. Check or return the currency, and fail on mixed currencies. Log after a successful lookup, or drop the log.",
+        "confidence": 0.5
+      },
+      {
+        "file": "stock/totals.py",
+        "line": 12,
+        "severity": "low",
+        "category": "maintainability",
+        "detected_pattern": "logger.info inside a pure computation",
+        "issue": "The message 'totals computed %s' logs only a count and gives no context. A pure helper does not need to log, and a log line fires on every call.",
+        "suggested_fix": "Remove the log line, or make it a debug-level message that includes useful context.",
+        "confidence": 0.4
+      },
+      {
+        "file": "stock/repository.py",
+        "line": 2,
+        "severity": "low",
+        "category": "dead_code",
+        "detected_pattern": "unused imports os and sys",
+        "issue": "`os` and `sys` are imported but never used.",
+        "suggested_fix": "Remove both imports.",
+        "confidence": 0.95
+      },
+      {
+        "file": "stock/repository.py",
+        "line": 16,
+        "severity": "medium",
+        "category": "performance",
+        "detected_pattern": "N+1 queries in fetch_many",
+        "issue": "fetch_many runs one query per SKU. It also has no docstring, and its name suggests a batch read. api.get_many only forwards to it, so the API layer adds nothing.",
+        "suggested_fix": "Run a single query with `sku IN (...)` using parameter placeholders. Add a docstring.",
+        "confidence": 0.6
+      },
+      {
+        "file": "stock/api.py",
+        "line": 5,
+        "severity": "low",
+        "category": "duplicated_logic",
+        "detected_pattern": "pass-through wrappers",
+        "issue": "get_stock and get_many only delegate to repository.fetch and fetch_many with the same arguments. The `# PR 418` comment records change history in the code and will go stale.",
+        "suggested_fix": "Move the PR note into the commit message. Keep the wrappers only if the API layer will add validation or serialisation. Otherwise call the repository directly.",
+        "confidence": 0.4
+      }
+    ]
+  ],
+  "final_answer": "## Reviewer findings (verbatim)\n\n**security-reviewer**\n\n```json\n[\n  {\n    \"file\": \"stock/repository.py\",\n    \"line\": 11,\n    \"severity\": \"critical\",\n    \"category\": \"SQL injection\",\n    \"detected_pattern\": \"f-string interpolation of user-controlled values into a SQL statement\",\n    \"issue\": \"The query is built with an f-string: `cursor.execute(f\\\"SELECT qty FROM stock WHERE sku = '{sku}' AND warehouse = '{warehouse}'\\\")`. The `sku` and `warehouse` values come from the HTTP-facing `stock/api.py` (`get_stock`, `get_many`) with no validation. A value such as `' OR '1'='1` or `'; DROP TABLE stock; --` changes the query. The new `warehouse` parameter in PR 418 adds a second injection point. `fetch_many` repeats the call for every SKU in a list.\",\n    \"suggested_fix\": \"Use a parameterized query: `cursor.execute(\\\"SELECT qty FROM stock WHERE sku = %s AND warehouse = %s\\\", (sku, warehouse))`. Use the placeholder style your DB driver expects, such as `?` for sqlite3. Also validate the format and length of `sku` and `warehouse` at the API boundary.\",\n    \"confidence\": 0.97\n  },\n  {\n    \"file\": \"stock/api.py\",\n    \"line\": 5,\n    \"severity\": \"medium\",\n    \"category\": \"Missing input validation / authorisation\",\n    \"detected_pattern\": \"Untrusted parameters passed straight to the repository; no access check on warehouse\",\n    \"issue\": \"`def get_stock(sku: str, warehouse: str)` and `get_many` pass caller-supplied `sku`, `warehouse` and `skus` to `repository.fetch` unchecked. There is no check that the caller may read the requested warehouse. The new `warehouse` parameter lets any caller query any warehouse's stock. `get_many` accepts an unbounded `skus` list, and each SKU triggers its own query, so a caller can generate heavy database load.\",\n    \"suggested_fix\": \"Validate `sku` and `warehouse` against an allow-list or strict pattern. Check that the authenticated user is allowed to read the requested warehouse. Cap the length of `skus`.\",\n    \"confidence\": 0.55\n  }\n]\n```\n\n**test-coverage-reviewer**\n\n```json\n[\n  {\n    \"file\": \"stock/repository.py\",\n    \"line\": 8,\n    \"severity\": \"high\",\n    \"category\": \"test-coverage\",\n    \"detected_pattern\": \"changed public function with a partial existing test\",\n    \"issue\": \"fetch() is covered only by tests/test_repository.py::test_fetch_known_sku. That test mocks the cursor and ignores what execute() receives. Nothing checks the line-11 SQL change. Nothing covers the missing-SKU path, which should return qty 0. The f-string SQL is open to injection, and no test would notice.\",\n    \"suggested_fix\": \"Add tests/test_repository.py::test_fetch_unknown_sku_returns_zero_qty, using a cursor whose fetchone returns None and asserting qty == 0. Add tests/test_repository.py::test_fetch_passes_sku_and_warehouse_as_parameters, which asserts that a SKU such as \\\"A1' OR '1'='1\\\" reaches the cursor as a bound parameter and not inside the SQL string. Fix the code to use parameterized queries.\",\n    \"confidence\": 0.85\n  },\n  {\n    \"file\": \"stock/repository.py\",\n    \"line\": 16,\n    \"severity\": \"medium\",\n    \"category\": \"test-coverage\",\n    \"detected_pattern\": \"public function with no test\",\n    \"issue\": \"fetch_many() has no test. A user would notice if it dropped a SKU, reordered results, or applied the wrong warehouse.\",\n    \"suggested_fix\": \"Add tests/test_repository.py::test_fetch_many_returns_one_row_per_sku_in_order. Monkeypatch get_cursor and assert one row per requested SKU, in order, all carrying the requested warehouse.\",\n    \"confidence\": 0.8\n  },\n  {\n    \"file\": \"stock/totals.py\",\n    \"line\": 7,\n    \"severity\": \"critical\",\n    \"category\": \"test-coverage\",\n    \"detected_pattern\": \"off-by-one: loop starts at index 1, so the first item is skipped\",\n    \"issue\": \"tests/test_totals.py::test_total_counts_all_items already covers total_qty(). It should fail on this PR. sample_stock holds qty 3, 0 and 9, so the expected total is 12, but range(1, len(items)) returns 9. No new test is needed. The existing test is correct and catches the regression. The PR must not merge while it fails.\",\n    \"suggested_fix\": \"Fix the code with `for item in items: total += item.qty`, or `sum(i.qty for i in items)`. Keep tests/test_totals.py::test_total_counts_all_items as it is.\",\n    \"confidence\": 0.95\n  },\n  {\n    \"file\": \"stock/totals.py\",\n    \"line\": 16,\n    \"severity\": \"medium\",\n    \"category\": \"test-coverage\",\n    \"detected_pattern\": \"public function with no test\",\n    \"issue\": \"low_stock() has no test in tests/test_totals.py. Nothing pins the threshold boundary (qty &lt; threshold, so qty == 5 is excluded) or the default threshold of 5.\",\n    \"suggested_fix\": \"Add tests/test_totals.py::test_low_stock_returns_items_below_threshold. With sample_stock and the default threshold it should return A1 and B2. Add a boundary assertion with threshold=3 that excludes A1.\",\n    \"confidence\": 0.8\n  },\n  {\n    \"file\": \"stock/api.py\",\n    \"line\": 5,\n    \"severity\": \"high\",\n    \"category\": \"test-coverage\",\n    \"detected_pattern\": \"signature change (warehouse parameter added) with no test file\",\n    \"issue\": \"No tests/test_api.py exists, so get_stock() has no test. The new required warehouse parameter breaks callers, and jobs.py is one of them. Nothing checks that the warehouse reaches the repository.\",\n    \"suggested_fix\": \"Create tests/test_api.py with test_get_stock_passes_warehouse_to_repository. Monkeypatch repository.fetch and assert it receives both sku and warehouse, and that the result is returned unchanged.\",\n    \"confidence\": 0.85\n  },\n  {\n    \"file\": \"stock/api.py\",\n    \"line\": 10,\n    \"severity\": \"low\",\n    \"category\": \"test-coverage\",\n    \"detected_pattern\": \"public function with no test\",\n    \"issue\": \"get_many() has no test. It is a thin pass-through to repository.fetch_many, so the risk is low.\",\n    \"suggested_fix\": \"Add tests/test_api.py::test_get_many_delegates_to_repository. This only needs to confirm that the skus and warehouse are forwarded.\",\n    \"confidence\": 0.6\n  },\n  {\n    \"file\": \"stock/jobs.py\",\n    \"line\": 9,\n    \"severity\": \"critical\",\n    \"category\": \"test-coverage\",\n    \"detected_pattern\": \"caller not updated after signature change (api.get_stock now requires warehouse)\",\n    \"issue\": \"sync() calls api.get_stock(sku) without the new warehouse argument. This raises TypeError at runtime, so the nightly job fails. There is no tests/test_jobs.py, so CI would not catch it.\",\n    \"suggested_fix\": \"Create tests/test_jobs.py with test_sync_returns_stock_for_every_sku. Monkeypatch api.get_stock and assert that sync(['A1','B2']) returns two rows with the warehouse passed through. Update sync() to accept a warehouse parameter and pass it to get_stock.\",\n    \"confidence\": 0.9\n  }\n]\n```\n\n**maintainability-reviewer**\n\n```json\n[\n  {\n    \"file\": \"stock/jobs.py\",\n    \"line\": 12,\n    \"severity\": \"critical\",\n    \"category\": \"contract_break\",\n    \"detected_pattern\": \"api.get_stock(sku) called without the new required warehouse argument\",\n    \"issue\": \"PR 418 added a required `warehouse` parameter to api.get_stock (stock/api.py line 5). sync() still calls it with only `sku`, so every nightly run raises TypeError. sync() also has no warehouse parameter to pass through.\",\n    \"suggested_fix\": \"Add a `warehouse: str` parameter to sync() and call api.get_stock(sku, warehouse). Alternatively, call api.get_many(skus, warehouse) and drop the loop. Update every caller of sync().\",\n    \"confidence\": 0.97\n  },\n  {\n    \"file\": \"stock/totals.py\",\n    \"line\": 10,\n    \"severity\": \"high\",\n    \"category\": \"logic_bug\",\n    \"detected_pattern\": \"range(1, len(items)) skips the first element\",\n    \"issue\": \"The PR 418 loop starts at index 1, so items[0] is never summed. total_qty undercounts. tests/test_totals.py expects 12 for sample_stock and would fail. The index loop is also less readable than direct iteration.\",\n    \"suggested_fix\": \"Replace the loop with `total = sum(i.qty for i in items)`, or iterate with `for item in items`.\",\n    \"confidence\": 0.93\n  },\n  {\n    \"file\": \"stock/repository.py\",\n    \"line\": 11,\n    \"severity\": \"critical\",\n    \"category\": \"security\",\n    \"detected_pattern\": \"SQL built with an f-string from sku and warehouse\",\n    \"issue\": \"The sku and warehouse values are interpolated straight into the SQL string, which allows SQL injection. This is the line changed in PR 418. The query will also break on values that contain quotes.\",\n    \"suggested_fix\": \"Use a parameterised query, for example cursor.execute(\\\"SELECT qty FROM stock WHERE sku = %s AND warehouse = %s\\\", (sku, warehouse)). Use the placeholder style that your DB driver expects.\",\n    \"confidence\": 0.96\n  },\n  {\n    \"file\": \"stock/pricing.py\",\n    \"line\": 12,\n    \"severity\": \"high\",\n    \"category\": \"error_handling\",\n    \"detected_pattern\": \"p['amount'] when p may be None\",\n    \"issue\": \"getPrice raises TypeError for an unknown SKU, as the inline comment admits. total_price then fails for the whole basket because of one unknown SKU.\",\n    \"suggested_fix\": \"Raise an explicit KeyError or a custom UnknownSkuError with a clear message, or return None and handle it in total_price.\",\n    \"confidence\": 0.9\n  },\n  {\n    \"file\": \"stock/pricing.py\",\n    \"line\": 8,\n    \"severity\": \"medium\",\n    \"category\": \"naming\",\n    \"detected_pattern\": \"camelCase and Capitalised_Snake function names\",\n    \"issue\": \"getPrice and Apply_Discount do not follow the snake_case used elsewhere in the package (fetch_many, total_qty, low_stock). Inconsistent names make calls hard to guess.\",\n    \"suggested_fix\": \"Rename them to get_price and apply_discount, and update total_price.\",\n    \"confidence\": 0.9\n  },\n  {\n    \"file\": \"stock/pricing.py\",\n    \"line\": 21,\n    \"severity\": \"low\",\n    \"category\": \"naming\",\n    \"detected_pattern\": \"single-letter names (p, x, t, s) and untyped signatures\",\n    \"issue\": \"Variables such as `t`, `s`, `p` and `x` say nothing about what they hold. The functions have no type hints, unlike the rest of the package. The temporary `x` in Apply_Discount is unnecessary. `total_price` can also be a plain sum.\",\n    \"suggested_fix\": \"Add type hints. Use descriptive names. Return the discounted amount directly. Write total_price as `sum(get_price(s) for s in skus)`.\",\n    \"confidence\": 0.75\n  },\n  {\n    \"file\": \"stock/pricing.py\",\n    \"line\": 11,\n    \"severity\": \"low\",\n    \"category\": \"maintainability\",\n    \"detected_pattern\": \"logging in a lookup helper; money as float\",\n    \"issue\": \"The logger.info runs before the None check, so it logs lookups that go on to fail. The prices are floats, and rounding errors can accumulate in total_price and Apply_Discount. The currency is stored in CATALOG but ignored, so a mixed-currency basket would be summed silently.\",\n    \"suggested_fix\": \"Use Decimal for money. Check or return the currency, and fail on mixed currencies. Log after a successful lookup, or drop the log.\",\n    \"confidence\": 0.5\n  },\n  {\n    \"file\": \"stock/totals.py\",\n    \"line\": 12,\n    \"severity\": \"low\",\n    \"category\": \"maintainability\",\n    \"detected_pattern\": \"logger.info inside a pure computation\",\n    \"issue\": \"The message 'totals computed %s' logs only a count and gives no context. A pure helper does not need to log, and a log line fires on every call.\",\n    \"suggested_fix\": \"Remove the log line, or make it a debug-level message that includes useful context.\",\n    \"confidence\": 0.4\n  },\n  {\n    \"file\": \"stock/repository.py\",\n    \"line\": 2,\n    \"severity\": \"low\",\n    \"category\": \"dead_code\",\n    \"detected_pattern\": \"unused imports os and sys\",\n    \"issue\": \"`os` and `sys` are imported but never used.\",\n    \"suggested_fix\": \"Remove both imports.\",\n    \"confidence\": 0.95\n  },\n  {\n    \"file\": \"stock/repository.py\",\n    \"line\": 16,\n    \"severity\": \"medium\",\n    \"category\": \"performance\",\n    \"detected_pattern\": \"N+1 queries in fetch_many\",\n    \"issue\": \"fetch_many runs one query per SKU. It also has no docstring, and its name suggests a batch read. api.get_many only forwards to it, so the API layer adds nothing.\",\n    \"suggested_fix\": \"Run a single query with `sku IN (...)` using parameter placeholders. Add a docstring.\",\n    \"confidence\": 0.6\n  },\n  {\n    \"file\": \"stock/api.py\",\n    \"line\": 5,\n    \"severity\": \"low\",\n    \"category\": \"duplicated_logic\",\n    \"detected_pattern\": \"pass-through wrappers\",\n    \"issue\": \"get_stock and get_many only delegate to repository.fetch and fetch_many with the same arguments. The `# PR 418` comment records change history in the code and will go stale.\",\n    \"suggested_fix\": \"Move the PR note into the commit message. Keep the wrappers only if the API layer will add validation or serialisation. Otherwise call the repository directly.\",\n    \"confidence\": 0.4\n  }\n]\n```\n\n## Synthesis comment\n\nNo review findings, file paths, line numbers, test names or evidence were passed to me, so there is nothing specific to report for this pull request.\n\n**Summary comment**\n\nI did not receive any review output for this PR, so I can't confirm what was checked or what was found. Please re-run the review and share its findings, or point me to the diff and results. I will then write up the file paths, line numbers and evidence.\n\nFor reference, the repo's CI review context (`CLAUDE.md`) says tests should use pytest with one test file per module under `tests/`, assert behaviour a user would notice, and use the `sample_stock` and `empty_stock` fixtures from `tests/conftest.py`. Findings should follow `prompts/review-criteria.txt` and validate against `finding.schema.json`.\n\n---\n\n**Coordinator notes (outside the two requested sections):**\n- **Synthesis comment:** don't post it as the PR review. It reports no findings because the Step 2 prompt withheld them, as you specified, while the reviewers found critical issues.\n- **Omitted text:** the security reviewer added a note after its array, so I left it out of the verbatim section. It said it found no security issues in `stock/totals.py` or `stock/jobs.py`, and it flagged the `total_qty` loop bug and the `jobs.sync` `TypeError` as out of its scope.\n- **Out-of-scope findings:** four maintainability findings target `stock/pricing.py`, which isn't in the PR's changed files.\n- **Conflicting line numbers:** the reviewers disagree on two findings, and I didn't check either against the source:\n  - **`jobs.py` missing argument:** line 9 or line 12.\n  - **`totals.py` loop bug:** line 7 or line 10.",
+  "timeline": [
+    "   4.1s  coordinator                session c2c0f564-b6cc-48e0-947b-bc94698d153a model claude-opus-5-5",
+    "   6.6s  coordinator                Agent -> security-reviewer  (prompt 200 chars)",
+    "   6.7s  security-reviewer          SubagentStart",
+    "   6.7s  security-reviewer          returned 1240 chars",
+    "   7.8s  coordinator                Agent -> test-coverage-reviewer  (prompt 198 chars)",
+    "   7.8s  test-coverage-reviewer     SubagentStart",
+    "   7.8s  test-coverage-reviewer     returned 1240 chars",
+    "   8.8s  coordinator                Agent -> maintainability-reviewer  (prompt 200 chars)",
+    "   8.8s  maintainability-reviewer   SubagentStart",
+    "   8.8s  maintainability-reviewer   returned 1240 chars",
+    "  10.6s  coordinator                success turns=4 cost=$0.33",
+    "  11.0s  security-reviewer          Read or-continuous-integration/repo/stock/repository.py",
+    "  11.5s  security-reviewer          Read de-for-continuous-integration/repo/stock/totals.py",
+    "  12.2s  security-reviewer          Read -code-for-continuous-integration/repo/stock/api.py",
+    "  12.3s  test-coverage-reviewer     Glob **/*.py",
+    "  12.3s  maintainability-reviewer   Glob **/*.py",
+    "  13.0s  security-reviewer          Read code-for-continuous-integration/repo/stock/jobs.py",
+    "  13.3s  test-coverage-reviewer     Glob **/*.{txt,json}",
+    "  14.5s  maintainability-reviewer   Read or-continuous-integration/repo/stock/repository.py",
+    "  15.1s  test-coverage-reviewer     Read or-continuous-integration/repo/stock/repository.py",
+    "  15.3s  maintainability-reviewer   Read de-for-continuous-integration/repo/stock/totals.py",
+    "  15.7s  test-coverage-reviewer     Read de-for-continuous-integration/repo/stock/totals.py",
+    "  15.9s  maintainability-reviewer   Read -code-for-continuous-integration/repo/stock/api.py",
+    "  16.1s  test-coverage-reviewer     Read -code-for-continuous-integration/repo/stock/api.py",
+    "  16.7s  maintainability-reviewer   Read code-for-continuous-integration/repo/stock/jobs.py",
+    "  16.9s  test-coverage-reviewer     Read code-for-continuous-integration/repo/stock/jobs.py",
+    "  17.1s  maintainability-reviewer   Read e-for-continuous-integration/repo/stock/pricing.py",
+    "  17.4s  test-coverage-reviewer     Read r-continuous-integration/repo/tests/test_totals.py",
+    "  17.8s  maintainability-reviewer   Read e-code-for-continuous-integration/repo/stock/db.py",
+    "  18.1s  test-coverage-reviewer     Read ntinuous-integration/repo/tests/test_repository.py",
+    "  18.5s  test-coverage-reviewer     Read -for-continuous-integration/repo/tests/conftest.py",
+    "  20.8s  security-reviewer          SubagentStop",
+    "  20.8s  coordinator                session c2c0f564-b6cc-48e0-947b-bc94698d153a model claude-opus-5-5",
+    "  22.0s  maintainability-reviewer   Grep get_stock|total_qty|pricing|getPrice",
+    "  22.1s  coordinator                success turns=1 cost=$0.44",
+    "  33.9s  test-coverage-reviewer     SubagentStop",
+    "  34.0s  coordinator                session c2c0f564-b6cc-48e0-947b-bc94698d153a model claude-opus-5-5",
+    "  35.3s  coordinator                success turns=1 cost=$0.52",
+    "  39.1s  maintainability-reviewer   SubagentStop",
+    "  39.2s  coordinator                session c2c0f564-b6cc-48e0-947b-bc94698d153a model claude-opus-5-5",
+    "  41.2s  coordinator                Agent -> review-synthesis  (prompt 64 chars)",
+    "  41.2s  review-synthesis           SubagentStart",
+    "  47.5s  review-synthesis           SubagentStop",
+    "  47.5s  review-synthesis           returned 1458 chars",
+    "  89.5s  coordinator                success turns=2 cost=$0.74"
+  ]
+}

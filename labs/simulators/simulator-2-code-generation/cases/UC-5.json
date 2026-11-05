@@ -1,0 +1,110 @@
+{
+  "id": "UC-5",
+  "question_n": 5,
+  "timestamp": "09:59",
+  "scenario": "Code Generation with Claude Code",
+  "title": "Fork a saved plan-mode session twice, checkpoint files before each attempt",
+  "situation": "After a long plan mode investigation, a developer saves the session ID before making changes. They want to test a minimal patch and a larger refactor from the same analyzed context, but both attempts will touch overlapping files in the same working directory.",
+  "question": "Which approach best supports independent exploration without confusing conversation history with file state?",
+  "options": {
+    "A": "Fork the saved session once and run both attempts in the same working directory as isolated file branches.",
+    "B": "Resume the saved session ID with the fork option for each attempt and checkpoint files before edits.",
+    "C": "Use --continue twice from the project directory and rely on Claude Code to select the baseline automatically.",
+    "D": "Resume the saved session ID twice without forking and ask Claude to keep each attempt separate."
+  },
+  "correct": "B",
+  "why": "Forking is the right tool when the valuable asset is prior conversational context: prompts, tool calls, tool results, and Claude's previous analysis. A fork starts a new session from a copy of an existing session's history with its own session ID while the original session remains unchanged, which is ideal for comparing divergent plans that should share the same investigation baseline. The important boundary is that a session is not a file system snapshot. If forked sessions edit files in the same working directory, those edits affect the real files and can be seen by other sessions using that directory. When file changes need to be reverted, the documented mechanism is file checkpointing, with the limitation that it tracks supported file-editing tools (Write, Edit, NotebookEdit), not arbitrary changes made through shell commands. --continue, --resume, and fork solve different problems: use resume when you need a specific prior session ID, and use fork with that resumed session when you need an independent conversation branch. Do not rely on natural-language instructions to simulate session isolation. (Docs: Agent SDK sessions, file checkpointing.)",
+  "type": "run",
+  "concrete_task": "claude -p ... --resume <baseline-id> --fork-session for each attempt; the runner hashes the tree before and after and restores it between attempts.",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "t0",
+      "kind": "claude",
+      "mode": "plan",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "max_turns": 4,
+      "name": "uc5-baseline",
+      "prompt": "Plan mode investigation only: formatDate in src/utils/formatDate.js crashes on a null date. Read its callers (src/api/orders.js, src/services/*.ts) and report, in five lines, the minimal patch and the larger refactor that would remove the crash class entirely. Do not edit."
+    },
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "acceptEdits",
+      "tools": [
+        "Read",
+        "Edit",
+        "Write",
+        "Grep",
+        "Glob"
+      ],
+      "resume": "t0",
+      "fork": true,
+      "snapshot": true,
+      "max_turns": 6,
+      "prompt": "Attempt A from this analysis: implement ONLY the minimal patch to src/utils/formatDate.js. Touch no other file."
+    },
+    {
+      "id": "t2",
+      "kind": "claude",
+      "mode": "acceptEdits",
+      "tools": [
+        "Read",
+        "Edit",
+        "Write",
+        "Grep",
+        "Glob"
+      ],
+      "resume": "t0",
+      "fork": true,
+      "snapshot": true,
+      "restore_before": true,
+      "max_turns": 8,
+      "prompt": "Attempt B from this analysis: implement the larger refactor you described. Move date formatting into src/utils/dates.js and update every caller."
+    }
+  ],
+  "expected_outcome": "Three session ids: the baseline and two forks that differ from it and from each other. Attempt B starts from restored files, so attempt A's edits never leak into it.",
+  "rubric": [
+    {
+      "criterion": "both attempts resume the baseline with --fork-session and get new session ids",
+      "check": {
+        "type": "distinct",
+        "tasks": [
+          "t0",
+          "t1",
+          "t2"
+        ]
+      }
+    },
+    {
+      "criterion": "attempt A changed only formatDate.js",
+      "check": {
+        "type": "files_changed_contains",
+        "task": "t1",
+        "path": "formatDate.js"
+      }
+    },
+    {
+      "criterion": "files were checkpointed (restored) before attempt B, so a fork is not a filesystem snapshot",
+      "check": {
+        "type": "restored_before",
+        "task": "t2"
+      }
+    },
+    {
+      "criterion": "attempt B touched callers as well",
+      "check": {
+        "type": "files_changed_contains",
+        "task": "t2",
+        "path": "src/"
+      }
+    }
+  ]
+}

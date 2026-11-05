@@ -1,0 +1,17 @@
+
+=== explore ===
+[explore] success turns=16 cost=$0.7794 session=2876ea54-f253-472a-b2be-77ccd71824d4
+
+=== edit ===
+[edit] success turns=5 cost=$1.0870 session=2876ea54-f253-472a-b2be-77ccd71824d4
+
+=== fork-a ===
+[fork-a] success turns=1 cost=$1.1355 session=d95108e2-e603-4321-97c5-38f2ece59709
+
+=== fork-b ===
+[fork-b] success turns=1 cost=$1.1395 session=5f071e79-4fce-4ea5-93b9-fffeb9f3db3f
+
+=== recover ===
+[recover] success turns=5 cost=$0.4362 session=65c74cff-bb46-4cb5-b5ec-3e5ae85badc9
+
+[evidence] .run.log, edit.json, explore.json, fork-a.json, fork-b.json, manifest.json, patched-invoice.py.txt, recover.json, scratchpad.md, sessions.json, tool_log.jsonl

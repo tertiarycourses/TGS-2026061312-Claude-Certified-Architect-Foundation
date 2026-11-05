@@ -1,0 +1,23 @@
+{
+  "case_id": "CS-05",
+  "title": "Explicit request for a human",
+  "exam_task": "5.2 honour the customer's request immediately",
+  "customer": {
+    "email": "arjun@example.com"
+  },
+  "message": "I want to speak to a human agent now.",
+  "expected": {
+    "disposition": "escalated",
+    "must_call": [
+      "escalate_to_human"
+    ],
+    "must_not_call": [
+      "lookup_order",
+      "process_refund"
+    ]
+  },
+  "rubric": {
+    "immediate": "escalate_to_human was called without any lookup_order",
+    "handoff_complete": "handoff names the customer and the reason (customer requested a human)"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "UC-D3",
+  "title": "Delegate the noisy search and keep a scratchpad",
+  "source": {
+    "task_statement": "5.4 Manage context in large codebase exploration",
+    "scenario": "Developer Productivity with Claude"
+  },
+  "situation": "Long sessions degrade: the agent starts quoting generic patterns instead of the classes it found earlier.",
+  "question": "How do you keep discovery output out of the main context and keep findings durable?",
+  "correct": "Spawn an explore subagent for the wide search and record findings in a scratchpad file.",
+  "why": "Subagent isolation keeps verbose output out of the parent; the scratchpad survives compaction and session restarts.",
+  "task": {
+    "type": "run",
+    "prompt_template": "Map this repo for a new engineer: entry points, where totals are computed and validated, and every caller of calculate_total. Use the explore subagent for the caller search and write the map to NOTES.md.",
+    "fresh_workdir": true
+  },
+  "expected_outcome": "An explore subagent ran; NOTES.md names calculate_total and report.py.",
+  "rubric": [
+    "explore subagent spawned",
+    "tool rows with agent=explore exist",
+    "NOTES.md mentions calculate_total and a caller"
+  ]
+}

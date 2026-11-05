@@ -1,0 +1,17 @@
+{
+  "uc": "UC-40",
+  "question": 40,
+  "timestamp": "97:39",
+  "topic": "Case-facts block across a long multi-order conversation",
+  "situation": "After long conversations with several orders, the agent applies one issue's refund amount to a different order once older turns are summarised.",
+  "correct": "B: maintain a structured case-facts block updated every turn and available on every relevant turn.",
+  "why": "Summaries are lossy; critical state lives outside the transcript. The Messages API is stateless; Agent SDK sessions persist history but the facts block still anchors exact values.",
+  "run": [
+    "python3 -B support_agent.py --case CS-12"
+  ],
+  "observe": "evidence/runs/CS-12.json: three turn_replies each opening with CASE FACTS; the only refund is $45 on ORD-5503.",
+  "rubric": [
+    "every turn's reply repeats the three order ids and amounts",
+    "the lamp refund is deferred, the duplicate charge is refunded"
+  ]
+}

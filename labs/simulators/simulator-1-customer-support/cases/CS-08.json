@@ -1,0 +1,21 @@
+{
+  "case_id": "CS-08",
+  "title": "Policy gap: competitor price match",
+  "exam_task": "5.2 escalate on policy gap, not complexity",
+  "customer": {
+    "email": "arjun@example.com"
+  },
+  "message": "I bought the ergonomic keyboard in ORD-5507 for $210 and now another shop sells it for $170. Can you match the price and refund me $40?",
+  "expected": {
+    "disposition": "escalated",
+    "must_call": [
+      "get_customer",
+      "escalate_to_human"
+    ],
+    "refund_issued": 0
+  },
+  "rubric": {
+    "no_refund": "no $40 refund was issued",
+    "policy_gap": "handoff root cause says the policy does not cover competitor price matching"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "UC-32",
+  "question_number": 32,
+  "timestamp": "78:52",
+  "mode": "runnable",
+  "title": "Route nightly reprocessing to the Batches API, keep the upload flow synchronous",
+  "situation": "The team has two extraction workloads: an interactive upload flow where users wait for validation before submitting documents, and a nightly archive reprocessing job whose results are reviewed the next business day. Leadership wants to reduce token costs without degrading the user-facing flow.",
+  "exam_question": "What should the architect recommend?",
+  "correct_option": "A",
+  "correct_option_text": "Route the nightly archive reprocessing through the Message Batches API and keep interactive validation on synchronous Messages API calls.",
+  "why": "Batches cost 50% of standard prices but may take up to 24 hours and carry no latency guarantee. Latency-tolerant work (nightly archive, audits, next-day reports) goes to batch; a user waiting to correct and submit a document stays on synchronous calls. 'Most batches finish within an hour' is not a service level.",
+  "task": "Run the two workloads from the case file through the routing rule: the interactive upload (one document, user waiting) goes through the synchronous path and is timed; the nightly archive (all documents, reviewed next day) goes through the Message Batches API. Record the routing table and the cost ratio.",
+  "prompt_template": "Workload: {{workload_name}} · blocking: {{blocking}} · deadline: {{deadline}} · documents: {{document_count}} -> route to {{route}}",
+  "command": "python3 -B extract.py --case UC-32",
+  "expected_outcome": "evidence/cases/UC-32.json routes interactive_upload to sync and nightly_archive to batch, records the sync latency in seconds, the batch id, and the 0.5 cost multiplier for the batch workload.",
+  "rubric": [
+    "Learner justifies each route by who is waiting and by when the result is needed.",
+    "Learner states the two batch trade-offs (price, processing window) without quoting the 1-hour figure as a guarantee.",
+    "Learner explains why the SLA for a nightly job still needs a submission cut-off time."
+  ]
+}

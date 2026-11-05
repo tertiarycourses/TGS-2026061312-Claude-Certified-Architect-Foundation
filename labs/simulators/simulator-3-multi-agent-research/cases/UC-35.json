@@ -1,0 +1,31 @@
+{
+  "source": {
+    "practice_test_question": 35,
+    "timestamp": "85:48",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "After a web exploration phase in a Claude Code research workflow, later subagents repeatedly rerun searches that earlier subagents already completed and fail to preserve why certain sources were rejected. The coordinator receives brief outputs from the earlier subagents, but next-phase work still starts as if no exploration happened.",
+  "question": "What should the coordinator change before spawning each next-phase subagent?",
+  "options": {
+    "A": "Spawn the next subagents normally and rely on their isolated context windows to access the parent history.",
+    "B": "Save the prior findings for the final synthesis prompt and keep next subagent delegations independent.",
+    "C": "Condense prior exploration into a source-link summary and include it in each next subagent's delegation prompt.",
+    "D": "Attach complete prior subagent transcripts to every next delegation so no detail is omitted."
+  },
+  "correct": "C",
+  "why": "Subagents are useful for multi-agent research because they can keep verbose search logs, file contents, and exploratory work out of the main conversation, then return a compact summary. The trade-off is that a normal subagent starts with a fresh, isolated context window, so it will not automatically know what earlier subagents found, rejected, or left unresolved. The practical pattern is to create a phase summary after each exploration phase, including key findings, source links, rejection rationale when relevant, and unresolved questions, and include that summary in the next subagent's delegation prompt so the next phase starts from the current research state rather than rediscovering it. This matches the documented chained-workflow pattern, where each subagent completes its task, returns results, and Claude passes the relevant context to the next subagent. Passing full transcripts is usually the wrong trade-off because it preserves detail by spending large amounts of context on low-value exploration output. Keeping all prior findings only for final synthesis also misses the point of chained work, since intermediate subagents need enough context to avoid duplicated effort and preserve provenance-sensitive decisions. (Docs: Claude Code subagents, chaining subagent workflows.)",
+  "id": "UC-35",
+  "title": "Phase summary into the next delegation",
+  "task": {
+    "type": "run",
+    "mode": "broad",
+    "prompt_template": "Research this topic and deliver a cited report: {{topic}}.",
+    "config_change": "None. Evaluate that the next-phase delegations (synthesis, report) carry a condensed source-link summary of the exploration phase rather than nothing or full transcripts."
+  },
+  "expected_outcome": "Synthesis and report prompts contain the source links found earlier and are far smaller than the raw subagent traffic.",
+  "rubric": [
+    "synthesis packet contains >=3 source links/doc names from phase 1",
+    "report packet contains the synthesis output (>=1500 chars)",
+    "no packet exceeds 60000 characters (no full transcripts)"
+  ]
+}

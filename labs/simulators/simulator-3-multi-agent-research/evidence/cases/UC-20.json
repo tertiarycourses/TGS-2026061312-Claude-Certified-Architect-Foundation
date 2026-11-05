@@ -1,0 +1,29 @@
+{
+  "id": "UC-20",
+  "title": "Noisy quality category",
+  "source": {
+    "practice_test_question": 20,
+    "timestamp": "47:44",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "discussion",
+  "prompt": "Given a quality-gate prompt with categories [missing citation, source conflict, unsupported market claim], rewrite it to omit the noisy category for now and draft the eval plan (examples, definition, precision/recall) that earns it back.",
+  "expected_answer": "Option A. Keep the categories that engineers trust, drop `unsupported market claim` from the active list, and rebuild it as a classification problem with positive and negative examples, a tighter definition, and precision/recall measured on a labelled set before re-enabling.",
+  "rubric": [
+    {
+      "check": "noisy category removed from the active prompt only",
+      "passed": null,
+      "note": "learner-assessed"
+    },
+    {
+      "check": "accurate categories remain enabled",
+      "passed": null,
+      "note": "learner-assessed"
+    },
+    {
+      "check": "re-enable gate is precision/recall on labelled examples, not schema compliance",
+      "passed": null,
+      "note": "learner-assessed"
+    }
+  ]
+}

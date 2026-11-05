@@ -1,0 +1,27 @@
+{
+  "id": "UC-D3",
+  "title": "Delegate the noisy search and keep a scratchpad",
+  "source": {
+    "task_statement": "5.4 Manage context in large codebase exploration",
+    "scenario": "Developer Productivity with Claude"
+  },
+  "prompt": "Map this repo for a new engineer: entry points, where totals are computed and validated, and every caller of calculate_total. Use the explore subagent for the caller search and write the map to NOTES.md.",
+  "session_id": "d52931d4-c93c-4b7d-a319-1e8a7af2527f",
+  "cost_usd": 0.6093665000000001,
+  "expected_outcome": "An explore subagent ran; NOTES.md names calculate_total and report.py.",
+  "rubric": [
+    {
+      "check": "explore subagent spawned",
+      "passed": true
+    },
+    {
+      "check": "tool rows with agent=explore exist",
+      "passed": true
+    },
+    {
+      "check": "NOTES.md mentions calculate_total and a caller",
+      "passed": true
+    }
+  ],
+  "result": "The repo map is in `NOTES.md`, and mapping turned up two real problems: the monthly job does nothing, and discounted invoices fail validation. I didn't change `src/` or `tests/`. Both tests pass, though running them left the usual pytest cache folders behind.\n\n**Entry points:** there's no working one. The repo has no `__main__` block, CLI or packaging config, so it's just library functions.\n\n**Totals:**\n- **Computed:** `src/billing/invoice.py:12`, in `calculate_total`. It sums the lines, subtracts the discount, then adds 9% tax, and doesn't round the result.\n- **Validated:** `src/billing/validation.py:5`, in `validate_invoice`. It recomputes the total and raises `ValueError` if the stated total is off by more than 0.01.\n\n**Callers of `calculate_total`:** the explore subagent found one definition and these three direct callers, with no aliases or dynamic lookups. I confirmed the two `src/` call sites by reading the files and the test lines with Grep.\n\n| Call site | Function | Kind |\n|---|---|---|\n| `src/billing/validation.py:6` | `validate_invoice` | production |\n| `src/legacy/report.py:5` | `monthly_report` | production, but nothing in the repo calls it |\n| `tests/test_invoice.py:6` | `test_total_with_tax` | test |\n\n`tests/test_validation.py:7` also reaches it indirectly through `validate_invoice`.\n\n**Problems to raise with the repo's owner:**\n1. **The monthly job does nothing:** the runbook's `python -m src.legacy.report` exits 0 with no output, only a runpy warning. `report"
+}

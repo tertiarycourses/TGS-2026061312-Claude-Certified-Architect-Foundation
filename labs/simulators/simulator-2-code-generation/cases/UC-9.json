@@ -1,0 +1,63 @@
+{
+  "id": "UC-9",
+  "question_n": 9,
+  "timestamp": "19:48",
+  "scenario": "Code Generation with Claude Code",
+  "title": "PostToolUse hook that normalises Bash output before Claude reads it",
+  "situation": "When Claude Code runs npm test through Bash, the raw stdout often includes long dependency warnings and absolute local paths. The team wants Claude to reason from a shorter, normalized version of successful Bash results while leaving the command execution itself unchanged.",
+  "question": "What implementation should they choose?",
+  "options": {
+    "A": "Configure a PostToolUse hook matching Bash that exits with code 2 and writes normalized stdout to stderr.",
+    "B": "Configure a PostToolUse hook matching Bash that returns updatedToolOutput with a Bash result shape.",
+    "C": "Configure a PostToolUse hook matching Bash that returns a decision: block with a normalization reason.",
+    "D": "Configure a PreToolUse hook matching Bash that rewrites stdout inside the incoming tool input."
+  },
+  "correct": "B",
+  "why": "PostToolUse is the appropriate hook event when Claude Code should transform a successful tool result after execution but before Claude reasons over that result. The hook receives the original tool arguments and the tool response, then can return updated tool output to replace what Claude sees on the next model request. The important boundary is that this does not undo or prevent the tool action; if Bash already ran, the command's effects have already occurred. Use PreToolUse when the goal is to stop or alter a tool call before it executes. For built-in tools such as Bash, the replacement output must match the tool's expected structured output shape. Returning a plain normalized string where Claude Code expects a structured Bash result can cause the replacement to be ignored and the original output to be used instead. (Docs: Claude Code hooks reference, output replacement.)",
+  "type": "run",
+  "concrete_task": "claude -p \"run node scripts/noisy-test.js\" --settings hooks/post-bash.json (PostToolUse, matcher Bash, returns updatedToolOutput in the {stdout, stderr, interrupted} shape)",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "dontAsk",
+      "tools": [
+        "Bash(node:*)"
+      ],
+      "settings": "hooks/post-bash.json",
+      "max_turns": 3,
+      "prompt": "Run exactly this command with Bash: node scripts/noisy-test.js  Then repeat the command output you received back to me verbatim, nothing else."
+    }
+  ],
+  "expected_outcome": "The command still runs unchanged, but Claude's reply shows the stripped, path-normalised output: no npm WARN lines, no absolute paths.",
+  "rubric": [
+    {
+      "criterion": "dependency warnings are gone from what Claude read",
+      "check": {
+        "type": "not_regex",
+        "task": "t1",
+        "pattern": "npm WARN|DeprecationWarning"
+      }
+    },
+    {
+      "criterion": "absolute local paths are replaced",
+      "check": {
+        "type": "not_regex",
+        "task": "t1",
+        "pattern": "/Users/|/home/|/private/"
+      }
+    },
+    {
+      "criterion": "the useful test line survived",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "pattern": "tests passed"
+      }
+    }
+  ]
+}

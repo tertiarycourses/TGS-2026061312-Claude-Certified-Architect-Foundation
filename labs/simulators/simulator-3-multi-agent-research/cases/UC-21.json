@@ -1,0 +1,31 @@
+{
+  "source": {
+    "practice_test_question": 21,
+    "timestamp": "50:36",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "During a long research run, early document analysis identifies a domain-specific taxonomy that should drive the final report. After many searches, tool results, and revisions, later synthesis passes start organizing findings around generic categories and occasionally contradict the earlier taxonomy, even though the application resends the accumulated message history.",
+  "question": "What change would best improve reliability?",
+  "options": {
+    "A": "Maintain a structured research state file with the discovered taxonomy and source mappings, then load it into later synthesis prompts.",
+    "B": "Enable prompt caching for the accumulated prefix so earlier findings can be reused without affecting the context window.",
+    "C": "Add a synthesis instruction to avoid generic categories unless the full transcript explicitly supports them.",
+    "D": "Increase max_tokens for later synthesis calls and continue sending the complete accumulated transcript unchanged."
+  },
+  "correct": "A",
+  "why": "Long-running research systems need to distinguish between having information somewhere in the request and making the information usable at the moment of synthesis. Anthropic describes the context window as the model's working memory and documents context rot: more context is not automatically better, and accuracy and recall can degrade as token count grows. A structured research state file, or scratchpad, keeps the discovered taxonomy, key claims, and source mappings compact and explicit, so the coordinator can place them where later subagents will reliably use them. The Messages API is stateless, so the application is responsible for assembling the relevant messages, summaries, tool results, and synthetic state on every request. Sending the entire history unchanged may preserve bytes, but it does not guarantee attention to early findings, especially after many tool outputs and revisions. Prompt caching is useful for repeated prefixes, but cached tokens still count toward the context window, so caching is not a remedy for context degradation. (Docs: context windows, working with messages.)",
+  "id": "UC-21",
+  "title": "Structured research state file",
+  "task": {
+    "type": "run",
+    "mode": "state",
+    "config_change": "Add `save_research_state` and `load_research_state` MCP tools; the coordinator must save the taxonomy and source map after research and load it right before building the synthesis packet.",
+    "prompt_template": "Research this topic and deliver a cited report: {{topic}}. Organise all findings under the sector taxonomy you discover and keep that taxonomy in the research state."
+  },
+  "expected_outcome": "`evidence/research_state.json` exists with a taxonomy and source map; the synthesis packet quotes it.",
+  "rubric": [
+    "save_research_state called before load_research_state",
+    "research_state.json holds a taxonomy with >=3 sectors and a source map",
+    "synthesis packet contains the taxonomy sector names"
+  ]
+}

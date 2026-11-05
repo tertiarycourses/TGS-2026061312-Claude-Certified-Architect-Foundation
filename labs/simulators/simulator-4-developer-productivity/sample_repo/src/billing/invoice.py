@@ -1,0 +1,16 @@
+"""Invoice totals for the legacy billing module."""
+from decimal import Decimal
+
+TAX_RATE = Decimal("0.09")
+
+
+def line_total(qty, unit_price):
+    total = Decimal(qty) * Decimal(unit_price)
+    return total
+
+
+def calculate_total(lines, discount=Decimal("0")):
+    total = sum(line_total(q, p) for q, p in lines)
+    total = total - discount
+    total = total + total * TAX_RATE
+    return total

@@ -1,0 +1,70 @@
+{
+  "id": "UC-3",
+  "question_n": 3,
+  "timestamp": "05:28",
+  "scenario": "Claude Code for Continuous Integration",
+  "title": "PreToolUse command hook denies approval while the passing-test artifact is missing",
+  "situation": "A compliance review finds that in rare pull requests, the system posts an approving review before the required test result artifact has been attached. The rule is non-negotiable: approval actions must not execute unless the artifact is already present and passing.",
+  "question": "What change should this team make?",
+  "options": {
+    "A": "Add a stronger system prompt that instructs Claude to verify artifacts before approvals.",
+    "B": "Add a PreToolUse command hook that denies approval commands when the passing artifact is absent.",
+    "C": "Add a UserPromptSubmit command hook that appends check instructions to approval requests.",
+    "D": "Add a PostToolUse command hook that checks the artifact after approval commands complete."
+  },
+  "correct": "B",
+  "why": "When a CI/CD rule is non-negotiable, the enforcement point should be outside the model's voluntary behavior. Claude Code hooks are lifecycle automation points that provide deterministic control, so required actions happen or forbidden actions are blocked without relying on the LLM to choose correctly every time. For a rule that must stop an approval before it is posted, PreToolUse is the relevant hook event because it fires before tool execution and can block the call. A command hook can inspect the event-specific JSON it receives on stdin, check whether the passing test artifact exists, and deny the action with feedback when the condition is not met. PostToolUse is too late because it fires after a successful tool call. A stronger prompt or a UserPromptSubmit hook that appends instructions may improve behavior, but those approaches still rely on model compliance rather than blocking the specific tool call. (Docs: Claude Code hooks guide, hooks reference.)",
+  "type": "run",
+  "concrete_task": "python3 -B hook_gate.py  (repo/.claude/settings.json -> hooks/require-passing-tests.sh, exit 2 blocks ./ci/approve_pr.sh until ./ci/run_tests.sh wrote ci/artifacts/tests-passed.json)",
+  "setup": {
+    "workdir": "repo"
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "shell",
+      "cmd": "python3 -B \"{{lab}}/hook_gate.py\""
+    },
+    {
+      "id": "t2",
+      "kind": "shell",
+      "cmd": "python3 -c \"import json;d=json.load(open('{{lab}}/evidence/hook_gate.json'));s=d['scenarios'];print('S1 denied',s[0]['denied'],'posted',s[0]['approval_posted']);print('S2 denied',s[1]['denied'],'posted',s[1]['approval_posted']);print('LOG',repr(s[1]['after']['approvals_log']))\""
+    }
+  ],
+  "expected_outcome": "Scenario 1: the hook exits 2, Claude quotes 'DENIED by require-passing-tests hook' and ci/approvals.log never appears. Scenario 2: after ./ci/run_tests.sh the same prompt approves PR 418 and approvals.log gains one line.",
+  "rubric": [
+    {
+      "criterion": "without the artifact the approval command is blocked before it runs (exit 2, reason fed to Claude)",
+      "check": {
+        "type": "regex",
+        "task": "t2",
+        "field": "stdout",
+        "pattern": "S1 denied True posted False"
+      }
+    },
+    {
+      "criterion": "with a passing artifact the same command runs and records the approval",
+      "check": {
+        "type": "regex",
+        "task": "t2",
+        "field": "stdout",
+        "pattern": "S2 denied False posted True"
+      }
+    },
+    {
+      "criterion": "approvals.log carries exactly the approval line",
+      "check": {
+        "type": "regex",
+        "task": "t2",
+        "field": "stdout",
+        "pattern": "LOG 'approved PR 418"
+      }
+    },
+    {
+      "criterion": "learner explains why PostToolUse is too late and why a prompt or UserPromptSubmit hook only appends instructions",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

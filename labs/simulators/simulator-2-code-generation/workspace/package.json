@@ -1,0 +1,7 @@
+{
+  "name": "orderly",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test tests/" },
+  "dependencies": { "moment": "^2.30.1" }
+}

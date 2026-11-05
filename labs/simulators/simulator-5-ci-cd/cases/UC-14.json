@@ -1,0 +1,66 @@
+{
+  "id": "UC-14",
+  "question_n": 14,
+  "timestamp": "32:45",
+  "scenario": "Claude Code for Continuous Integration",
+  "title": "Interview first: a self-contained spec.md before implementing the flaky-test reviewer",
+  "situation": "The team is designing a new automated reviewer for flaky-test risk. The behavior has unresolved product and workflow questions, including when comments are actionable, when they are noise, and what verification should prove.",
+  "question": "What should the team do before asking Claude Code to implement it?",
+  "options": {
+    "A": "Run an interactive planning session where Claude uses AskUserQuestion, writes a self-contained spec.md, then implement it from a fresh session.",
+    "B": "Run a delegated subagent via the Agent tool to ask AskUserQuestion prompts, then pass its transcript to the implementer.",
+    "C": "Run direct execution with a detailed review checklist in the prompt, then adjust the workflow after the first CI failures.",
+    "D": "Run a scheduled autonomous Claude Code job that infers missing requirements from recent pull request discussions."
+  },
+  "correct": "A",
+  "why": "For larger or ambiguous Claude Code work, the recommended pattern is to let Claude interview the developer before implementation. The documented workflow starts from a minimal feature prompt, asks Claude to use AskUserQuestion to explore technical implementation, UI or developer experience, edge cases, concerns, and trade-offs, then writes the result to a self-contained spec.md. This is especially useful for CI review prompts because false positives often come from fuzzy criteria. A good spec should name relevant files and interfaces, state what is out of scope, and include an end-to-end verification step, so the implementation session has concrete acceptance criteria rather than vague intent. AskUserQuestion is a built-in Claude Code tool for asking multiple-choice clarifying questions, as documented in the tools reference and the Agent SDK user input guide. It should not be confused with autonomous scheduled work, which cannot ask clarifying questions, or with delegated subagents through the Agent tool, where AskUserQuestion is not currently available. (Docs: Claude Code best practices, tools reference, Agent SDK user input.)",
+  "type": "run",
+  "concrete_task": "claude -p \"write spec.md with Open questions / Files and interfaces / Out of scope / Verification\" --permission-mode acceptEdits",
+  "setup": {
+    "workdir": "repo"
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "kind": "claude",
+      "mode": "acceptEdits",
+      "tools": [
+        "Read",
+        "Write",
+        "Glob"
+      ],
+      "max_turns": 8,
+      "capture_files": [
+        "spec.md"
+      ],
+      "snapshot": true,
+      "prompt": "We want an automated reviewer for flaky-test risk in this repo. Open questions remain (when is a comment actionable, what counts as noise, what verification proves). This job is non-interactive so AskUserQuestion cannot run: instead write spec.md with these headings exactly: '## Open questions' (the questions you would have asked, with your proposed default answers), '## Files and interfaces', '## Out of scope', '## Verification'. Write the file and stop."
+    }
+  ],
+  "expected_outcome": "Claude writes spec.md with the open questions it would have asked through AskUserQuestion, the files and interfaces, what is out of scope and the verification step. Implementation starts from a fresh session with that file.",
+  "rubric": [
+    {
+      "criterion": "spec.md was written",
+      "check": {
+        "type": "files_changed_contains",
+        "task": "t1",
+        "path": "spec.md"
+      }
+    },
+    {
+      "criterion": "it holds the four sections the interview pattern produces",
+      "check": {
+        "type": "regex",
+        "task": "t1",
+        "field": "files",
+        "pattern": "Open questions.*Files and interfaces.*Out of scope.*Verification"
+      }
+    },
+    {
+      "criterion": "learner names AskUserQuestion as the interactive tool and a fresh session as the implementation start",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

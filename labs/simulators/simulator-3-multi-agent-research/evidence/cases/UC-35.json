@@ -1,0 +1,28 @@
+{
+  "id": "UC-35",
+  "title": "Phase summary into the next delegation",
+  "source": {
+    "practice_test_question": 35,
+    "timestamp": "85:48",
+    "scenario": "Multi-Agent Research System"
+  },
+  "type": "run",
+  "mode": "broad",
+  "prompt": "Research this topic and deliver a cited report: Impact of AI on creative industries.",
+  "config_change": "None. Evaluate that the next-phase delegations (synthesis, report) carry a condensed source-link summary of the exploration phase rather than nothing or full transcripts.",
+  "cost_usd": 1.099836,
+  "rubric": [
+    {
+      "check": "synthesis packet contains >=3 source links/doc names from phase 1",
+      "passed": true
+    },
+    {
+      "check": "report packet contains the synthesis output (>=1500 chars)",
+      "passed": true
+    },
+    {
+      "check": "no packet exceeds 60000 characters (no full transcripts)",
+      "passed": true
+    }
+  ]
+}

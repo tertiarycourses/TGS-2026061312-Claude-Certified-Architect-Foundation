@@ -1,0 +1,45 @@
+{
+  "id": "UC-9",
+  "question_n": 9,
+  "timestamp": "19:48",
+  "title": "PostToolUse hook that normalises Bash output before Claude reads it",
+  "type": "run",
+  "correct": "B",
+  "expected_outcome": "The command still runs unchanged, but Claude's reply shows the stripped, path-normalised output: no npm WARN lines, no absolute paths.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 6.5,
+      "exit_code": 0,
+      "command": "claude -p Run exactly this command with Bash: node scripts/noisy-test.js  The\u2026 --model claude-opus-5-5 --output-format json --max-turns 3 --permission-mode dontAsk --allowedTools Bash(node:*) --settings {\"hooks\": {\"PostToolUse\": [{\"matcher\": \"Bash\", \"hooks\": [{\"type\": \"\u2026",
+      "subtype": "success",
+      "result": "ok 3 tests passed in <repo>/tests/quantity.test.js (41ms)",
+      "session_id": "2e3c187b-846e-48ad-b052-76af4aa86457",
+      "total_cost_usd": 0.3474283,
+      "num_turns": 2,
+      "structured_output": null,
+      "permission_denials": [],
+      "is_error": false
+    }
+  },
+  "restores": [],
+  "cost_usd": 0.3474,
+  "evaluation": [
+    {
+      "criterion": "dependency warnings are gone from what Claude read",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "absolute local paths are replaced",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the useful test line survived",
+      "pass": true,
+      "note": ""
+    }
+  ]
+}

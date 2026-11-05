@@ -1,0 +1,24 @@
+PASS - CLAUDE.md @imports resolve and Claude quoted the imported testing standard
+PASS - editing a *.test.* file loads tests.md (path-scoped rule)
+PASS - api handler loads api-handlers.md and not the test rule
+PASS - /review slash command ran non-interactively and ended with a VERDICT
+PASS - codebase-map skill (context: fork, read-only) summarised src/api
+PASS - skill and command frontmatter: context: fork, allowed-tools without Write, argument-hint
+PASS - plan mode on the 47-file migration produced a plan and changed no files
+PASS - direct execution fixed the one-file bug and added its regression test
+PASS - the real workspace was not modified by step 3
+PASS - --resume keeps the session id; --fork-session mints a new one
+PASS - project .mcp.json uses ${ENV} placeholders and holds no literal secret
+PASS - user-scope servers stay out of the shared project file
+PASS - every practice-test use case has been run (10/10)
+PASS - UC-17 rubric passes
+PASS - UC-23 rubric passes
+PASS - UC-25 rubric passes
+PASS - UC-30 rubric passes
+PASS - UC-33 rubric passes
+PASS - UC-34 rubric passes
+PASS - UC-37 rubric passes
+PASS - UC-5 rubric passes
+PASS - UC-8 rubric passes
+PASS - UC-9 rubric passes
+model: claude-opus-5-5  cost_usd: 10.3681

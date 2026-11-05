@@ -1,0 +1,112 @@
+{
+  "id": "UC-30",
+  "question_n": 30,
+  "timestamp": "73:29",
+  "title": "Plan first, then approve into an editing mode",
+  "type": "run",
+  "correct": "C",
+  "expected_outcome": "Phase 1 (plan mode) changes nothing. Phase 2 resumes the same session with acceptEdits and the approved first step lands as real edits.",
+  "model": "claude-opus-5-5",
+  "tasks": {
+    "t1": {
+      "kind": "claude",
+      "elapsed_s": 157.0,
+      "exit_code": 0,
+      "command": "claude -p Migrate the shared authorization layer in src/middleware/authorize.\u2026 --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode plan --allowedTools Read Grep Glob",
+      "subtype": "success",
+      "result": "I've written the migration plan, and its first step only adds one test file, so undoing it just means deleting that file. No project files changed, and nothing has been migrated yet. This session has no plan-approval tool, so your reply is the approval.\n\n**The dependency graph is small:** in this checkout, only `src/api/orders.js` imports `authorize`, from two call sites that both check `orders:read`. There's no router and nothing sets `req.user`, so the code calling these handlers lives elsewhere and might import `authorize` too. The old path therefore stays until that's checked.\n\n## Steps\nEach step is one revertible commit, and if a step needs a file outside its list, I stop and revisit the plan.\n\n| # | Change | Files touched |\n|---|---|---|\n| 1 | Pin current `authorize` behaviour with 16 test cases | new `tests/authorize.test.js` only |\n| 2 | Pin the handlers' 403 and allowed outcomes | new `tests/orders.authz.test.js` only |\n| 3 | Move the code to the policy module, leaving a one-line re-export at the old path | new `src/policy/authorization.js`, `src/middleware/authorize.js` |\n| 4 | Point the handlers at the new module | one import line in `src/api/orders.js` |\n| 5 | Make `\"constructor\"` and `\"__proto__\"` deny access instead of throwing a `TypeError` | `src/policy/authorization.js`, `tests/authorize.test.js` |\n| 6 | Delete the old path, only once outside callers are ruled out | `src/middleware/authorize.js`, plus the test import if needed |\n\n## Problems that already exist\n- **Possible security hole:** customers have `orders:read` and neither handler checks ownership. Unless something upstream filters, any customer can read any order, and `listOrders` returns every order from the last 30 days.\n- **`npm test` is broken:** it crashes on Node 22, so the `npm test -- --changed` check that `CLAUDE.md` requires can't pass. Each step will be verified with explicit test file paths, and I'll report that command's real result.\n- **A real bug in the test suite:** `validateQuantity(-3)` doesn't throw, so the suite stays red even once the script is fixed.\n- **Limits of this inspection:** `moment` isn't installed, so Step 2 needs `npm install --no-package-lock`, which leaves no tracked changes. I also couldn't consult any design docs: the `orderly-docs` server is down and its code isn't in this checkout. Git has only the baseline commit, so I couldn't see what went wrong in the earlier attempts.\n\n## Questions for you\n1. **Does \"policy module\" mean an in-repo module with the same `authorize(user, permission)` signature?** I assumed yes. If you meant an engine like OPA or CASL, Steps 3 and 5 change, but Steps 1, 2 and 4 still hold.\n2. **When should the customer order access be fixed?** I recommend its own PR right after Step 4, not inside the migration. The order owner field has to be identified first, because neither the fixture nor the repository has one.\n3. **Should `npm test` be repaired first?** I recommend a separate PR before Step 3 that fixes both the script and the quantity bug, so the required check can pass. You'd also need to decide what `--changed` should do, because Node's test runner doesn't filter on it.\n\nIf you approve, I'll start Step 1 on a feature branch and stop there for review.\n\nThe plan is at `<home>/.claude/plans/migrate-the-shared-authorization-wise-clock.md`.",
+      "session_id": "f1c30ab3-ab2c-42ec-8426-a6a776df612a",
+      "total_cost_usd": 1.2236694,
+      "num_turns": 26,
+      "structured_output": null,
+      "permission_denials": [],
+      "is_error": false,
+      "files_changed": []
+    },
+    "t2": {
+      "kind": "claude",
+      "elapsed_s": 42.5,
+      "exit_code": 0,
+      "command": "claude -p Plan approved. Implement ONLY step 1 of your plan, then stop and li\u2026 --model claude-opus-5-5 --output-format json --max-turns 8 --permission-mode acceptEdits --allowedTools Read Edit Write Grep Glob --resume f1c30ab3-ab2c-42ec-8426-a6a776df612a",
+      "subtype": "success",
+      "result": "Step 1's test file is written, but **the tests haven't been run, so the step isn't done**. Its done condition is 16/16 passing, and this session blocked the test commands because they need approval.\n\n## Files changed\n- `tests/authorize.test.js` (new, untracked, not committed)\n\n`git status` shows this as the only change, so no production code was touched.\n\n## What's still open\n- **Tests not run:** `node --test tests/authorize.test.js` was blocked, including when I resubmitted it with no pipes. I didn't try other ways of running it. The expected values come from my earlier run of `authorize` during planning. That run covered every case except that it used `\"nope\"` as the unknown permission, where the test uses `\"orders:unknown\"`.\n- **Required check not run:** `npm test -- --changed` was blocked the same way. When it ran during planning it crashed with `MODULE_NOT_FOUND`, and nothing in this step fixes that, so expect the same failure.\n- **Wrong branch:** creating the feature branch was also blocked, so the file is sitting uncommitted on `main`. That departs from the plan, and nothing has been committed there.\n- **Check I dropped:** I also tried to run the tests against a deliberately broken copy of `authorize` in the scratchpad, to confirm they can fail. It was blocked, and since it wasn't part of the plan I dropped it.\n\n## To finish Step 1\nEither approve these commands in this session, or run them yourself:\n\n```sh\ngit switch -c refactor/authorize-policy-module\nnode --test tests/authorize.test.js\nnpm test -- --changed\n```\n\nThe second command should report 16 passing, and the branch command keeps the untracked file. I've stopped here and haven't started Step 2.",
+      "session_id": "f1c30ab3-ab2c-42ec-8426-a6a776df612a",
+      "total_cost_usd": 1.4481903999999999,
+      "num_turns": 9,
+      "structured_output": null,
+      "permission_denials": [
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_01A7eqBpc2UVH67p4mLfLcxC",
+          "tool_input": {
+            "command": "git switch -c refactor/authorize-policy-module && git status --short --branch",
+            "description": "Create feature branch for the migration"
+          }
+        },
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_01BchBzRFZAeZJFnereuMHFR",
+          "tool_input": {
+            "command": "node --test tests/authorize.test.js 2>&1 | grep -E \"^\\s*(not )?ok |^# (tests|pass|fail)\"",
+            "description": "Run the new authorize tests"
+          }
+        },
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_015L338XB7RzMWzitPjTLovs",
+          "tool_input": {
+            "command": "npm test -- --changed 2>&1 | grep -E \"Cannot find module|^# (tests|pass|fail)\"",
+            "description": "Run the test command required by project instructions"
+          }
+        },
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_01UiXrN8ksMqkY7cFuDa4saE",
+          "tool_input": {
+            "command": "D=<course>/UC-30-sadgr-no-workspace/f1c30ab3-ab2c-42ec-8426-a6a776df612a/scratchpad/mutation; rm -rf \"$D\"; mkdir -p \"$D/src/middleware\" \"$D/tests\"; cp package.json \"$D/\"; cp tests/authorize.test.js \"$D/tests/\"; sed 's/\"orders:refund\": \\[\"admin\", \"support\"\\]/\"orders:refund\": [\"admin\", \"support\", \"customer\"]/; s/if (!user) return false;/if (!user) return true;/; s/(ROLES\\[permission\\] || \\[\\])/(Object.hasOwn(ROLES, permission) ? ROLES[permission] : [])/' src/middleware/authorize.js > \"$D/src/middleware/authorize.js\"; cd \"$D\" && node --test tests/authorize.test.js 2>&1 | grep -E \"^\\s*not ok |^# (tests|pass|fail)\"",
+            "description": "Run the tests against a deliberately broken scratchpad copy"
+          }
+        },
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_01BGNPDgXsxTdxPxGv9WHPYg",
+          "tool_input": {
+            "command": "node --test tests/authorize.test.js",
+            "description": "Run the new authorize tests"
+          }
+        },
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "toolu_018fXcPHGZ2pkpT2jgUwyFeU",
+          "tool_input": {
+            "command": "npm test -- --changed",
+            "description": "Run the test command required by project instructions"
+          }
+        }
+      ],
+      "is_error": false,
+      "files_changed": [
+        "tests/authorize.test.js"
+      ]
+    }
+  },
+  "restores": [],
+  "cost_usd": 2.6719,
+  "evaluation": [
+    {
+      "criterion": "plan mode inspected without editing",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "approval continued the same session (resume, not a new chat)",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "criterion": "the approved step produced edits (a new or changed source or test file)",
+      "pass": true,
+      "note": ""
+    }
+  ]
+}

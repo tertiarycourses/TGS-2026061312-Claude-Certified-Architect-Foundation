@@ -1,0 +1,207 @@
+{
+  "id": "UC-12",
+  "question_number": 12,
+  "timestamp": "27:41",
+  "mode": "runnable",
+  "title": "Application-level gate: no submit_record without a successful validate_record",
+  "exam_question": "What change would most effectively enforce the required workflow?",
+  "correct_option": "C",
+  "correct_option_text": "Add an application-level gate that blocks submit_record unless validate_record has succeeded for the same record.",
+  "why": "Claude only emits a tool_use request; the application executes it. That boundary is where business-critical ordering is enforced deterministically. Prompt wording and tool_choice steer behaviour but cannot prove a prerequisite was met; stopping the loop on phrases like 'ready to submit' is the anti-pattern the exam warns about.",
+  "rubric": [
+    "Learner can point to the line in the gate that checks validated[record_id] before executing submit_record.",
+    "Learner explains why the gate returns is_error: true rather than silently dropping the call.",
+    "Learner states why tool_choice: tool for validate_record would not have been sufficient."
+  ],
+  "task": "Run a manual agent loop (stop_reason == tool_use) over the four tools. The gate refuses submit_record for any record_id without a prior validate_record success and returns a tool_result with is_error: true, so Claude has to validate and, for the ambiguous document, open a review ticket instead.",
+  "prompt_template": "<document>\n{{document}}\n</document>\nExtract this document's fields, validate the record, then submit it. Record id: {{record_id}}. If a required field is ambiguous, open a review ticket instead of guessing.",
+  "gate": "submit_record executes only when validated[record_id] is True",
+  "submits_executed": [
+    "DOC-01",
+    "DOC-02",
+    "DOC-03",
+    "DOC-04",
+    "DOC-05",
+    "DOC-06"
+  ],
+  "submits_blocked": [],
+  "gate_probe": {
+    "record_id": "GATE-PROBE",
+    "blocked": true,
+    "response": {
+      "error": "blocked by application gate: validate_record has not succeeded for this record_id",
+      "required_next_step": "call validate_record, or create_review_ticket if a required field is ambiguous"
+    }
+  },
+  "review_tickets": [
+    {
+      "record_id": "DOC-07",
+      "reason": "Extraction flagged required field 'line_items' as ambiguous: the invoice (INV-2045) gives only \"Annual licence (see attached schedule A for line detail)\", and schedule A was not included in the document text, so line items cannot be confirmed. Other extraction problems to check: vendor came back malformed as \"INVOICE INV-2045  Kaya Software Pte Ltd  issued 2026-10-14  \" (the document appears to show Kaya Software Pte Ltd), and due_date came back null although the document text reads \"due 2026-11-13\". stated_total extracted as 1200.00 (SGD on the document). Please obtain schedule A and confirm the fields. Record was not validated or submitted."
+    }
+  ],
+  "every_executed_submit_had_prior_validation": true,
+  "transcript": [
+    {
+      "record_id": "DOC-01",
+      "turn": 1,
+      "tool": "extract_fields",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-01",
+      "turn": 2,
+      "tool": "validate_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-01",
+      "turn": 3,
+      "tool": "submit_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-01",
+      "turn": 4,
+      "stop_reason": "end_turn",
+      "text": "DOC-01 is submitted: `validate_record` returned `ok: true` with no errors, and `submit_record` returned `status: submitted`. No review ticket was opened.\n\n| Fie"
+    },
+    {
+      "record_id": "DOC-02",
+      "turn": 1,
+      "tool": "extract_fields",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-02",
+      "turn": 2,
+      "tool": "validate_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-02",
+      "turn": 3,
+      "tool": "submit_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-02",
+      "turn": 4,
+      "stop_reason": "end_turn",
+      "text": "DOC-02 is submitted to the ledger, and validation passed with no errors. Please check the vendor name on the ledger entry, as I corrected it by hand and the sub"
+    },
+    {
+      "record_id": "DOC-03",
+      "turn": 1,
+      "tool": "extract_fields",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-03",
+      "turn": 2,
+      "tool": "validate_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-03",
+      "turn": 3,
+      "tool": "submit_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-03",
+      "turn": 4,
+      "stop_reason": "end_turn",
+      "text": "DOC-03 is submitted, and the validator passed it with no errors, but **please check the vendor and total below**.\n\n| Field | Value validated | Note |\n|---|---|-"
+    },
+    {
+      "record_id": "DOC-04",
+      "turn": 1,
+      "tool": "extract_fields",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-04",
+      "turn": 2,
+      "tool": "validate_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-04",
+      "turn": 3,
+      "tool": "submit_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-04",
+      "turn": 4,
+      "stop_reason": "end_turn",
+      "text": "DOC-04 is submitted, but I corrected two extractor values by hand first, and **I can't confirm those corrections reached the ledger**. `submit_record` only take"
+    },
+    {
+      "record_id": "DOC-05",
+      "turn": 1,
+      "tool": "extract_fields",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-05",
+      "turn": 2,
+      "tool": "validate_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-05",
+      "turn": 3,
+      "tool": "submit_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-05",
+      "turn": 4,
+      "stop_reason": "end_turn",
+      "text": "DOC-05 is submitted to the ledger and passed validation with no errors, but a few points are worth checking because this is a credit note rather than a standard"
+    },
+    {
+      "record_id": "DOC-06",
+      "turn": 1,
+      "tool": "extract_fields",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-06",
+      "turn": 2,
+      "tool": "validate_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-06",
+      "turn": 3,
+      "tool": "submit_record",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-06",
+      "turn": 4,
+      "stop_reason": "end_turn",
+      "text": "DOC-06 has been submitted to the ledger, and validation passed with no errors. However, `extract_fields` failed on this document, so I read the validated values"
+    },
+    {
+      "record_id": "DOC-07",
+      "turn": 1,
+      "tool": "extract_fields",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-07",
+      "turn": 2,
+      "tool": "create_review_ticket",
+      "blocked": false
+    },
+    {
+      "record_id": "DOC-07",
+      "turn": 3,
+      "stop_reason": "end_turn",
+      "text": "I didn't submit DOC-07 or run validation on it. I opened review ticket **REV-001** instead because a required field is ambiguous.\n\n**Why it needs review**\n- **L"
+    }
+  ]
+}

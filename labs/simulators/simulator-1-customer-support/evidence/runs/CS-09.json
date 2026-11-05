@@ -1,0 +1,77 @@
+{
+  "case_id": "CS-09",
+  "title": "Ambiguous identity: two customers with the same name",
+  "message": "Hi, this is Sofia Alvarez. What is the status of my latest order?",
+  "customer": {
+    "name": "Sofia Alvarez"
+  },
+  "tool_calls": [
+    {
+      "tool": "ToolSearch",
+      "input": {
+        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__process_refund,mcp__backend__escalate_to_human",
+        "max_results": 4
+      },
+      "result": null,
+      "is_error": false
+    },
+    {
+      "tool": "get_customer",
+      "input": {
+        "name": "Sofia Alvarez",
+        "email": ""
+      },
+      "result": "{\"error\": true, \"errorCategory\": \"ambiguous\", \"isRetryable\": false, \"message\": \"2 customers named 'Sofia Alvarez'. Ask for the email or order number.\", \"candidates\": [\"C-1003\", \"C-1004\"]}",
+      "is_error": false
+    }
+  ],
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "tool": "get_customer",
+      "args": {
+        "name": "Sofia Alvarez",
+        "email": ""
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "get_customer",
+      "raw": {
+        "error": true,
+        "errorCategory": "ambiguous",
+        "isRetryable": false,
+        "message": "2 customers named 'Sofia Alvarez'. Ask for the email or order number.",
+        "candidates": [
+          "C-1003",
+          "C-1004"
+        ]
+      },
+      "error": true
+    }
+  ],
+  "assistant_text": [
+    "**CASE FACTS**\n- customer_id: not yet verified (two accounts match the name Sofia Alvarez)\n- Order ids, amounts, statuses, dates: none confirmed\n\nHi Sofia, I can check on your order, but two accounts share your name and I need to be sure I open the right one.\n\nCould you send me one of these?\n- The email address on your Orderly account\n- The order number (format ORD-####), which also tells me exactly which order to check\n\nI can only look up an order by its number, so please include it if you have it. Your order confirmation email should show it. If you can't find either, let me know and I'll pass this to a colleague who can help."
+  ],
+  "settings": {
+    "model": "claude-opus-5-5",
+    "gate": true,
+    "limit_hook": true
+  },
+  "result": {
+    "subtype": "success",
+    "stop_reason": "end_turn",
+    "num_turns": 3,
+    "total_cost_usd": 0.3528278,
+    "session_id": "e9798a89-d366-4f9f-964e-ab22b2b72a3d",
+    "is_error": false,
+    "terminal_reason": "completed"
+  },
+  "reply": "**CASE FACTS**\n- customer_id: not yet verified (two accounts match the name Sofia Alvarez)\n- Order ids, amounts, statuses, dates: none confirmed\n\nHi Sofia, I can check on your order, but two accounts share your name and I need to be sure I open the right one.\n\nCould you send me one of these?\n- The email address on your Orderly account\n- The order number (format ORD-####), which also tells me exactly which order to check\n\nI can only look up an order by its number, so please include it if you have it. Your order confirmation email should show it. If you can't find either, let me know and I'll pass this to a colleague who can help.",
+  "backend_state": {
+    "refunds": [],
+    "escalations": []
+  }
+}

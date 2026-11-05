@@ -1,0 +1,145 @@
+{
+  "case_id": "CS-07",
+  "title": "Return inside the window",
+  "message": "I would like to return the chair mat from ORD-5505, it does not fit my floor.",
+  "customer": {
+    "email": "sofia@example.com"
+  },
+  "tool_calls": [
+    {
+      "tool": "ToolSearch",
+      "input": {
+        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__process_refund,mcp__backend__escalate_to_human",
+        "max_results": 4
+      },
+      "result": null,
+      "is_error": false
+    },
+    {
+      "tool": "get_customer",
+      "input": {
+        "email": "sofia@example.com",
+        "name": ""
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"customer_id\": \"C-1003\", \"name\": \"Sofia Alvarez\", \"email\": \"sofia@example.com\", \"tier\": \"standard\", \"created_at\": \"2024-07-01T00:00:00Z\", \"status\": \"shipped\"}"
+          }
+        ]
+      },
+      "is_error": false
+    },
+    {
+      "tool": "lookup_order",
+      "input": {
+        "order_id": "ORD-5505",
+        "customer_id": "C-1003"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"order_id\": \"ORD-5505\", \"customer_id\": \"C-1003\", \"amount\": 95.0, \"item\": \"Office chair mat\", \"placed_at\": \"2024-10-31T00:00:00Z\", \"status\": \"delivered\", \"damage_photo\": false, \"charges\": 1, \"shipped\": true, \"eta\": \"2026-11-03\", \"return_window_open\": true}"
+          }
+        ]
+      },
+      "is_error": false
+    }
+  ],
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "tool": "get_customer",
+      "args": {
+        "email": "sofia@example.com",
+        "name": ""
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "get_customer",
+      "raw": {
+        "customer_id": "C-1003",
+        "name": "Sofia Alvarez",
+        "email": "sofia@example.com",
+        "tier": "standard",
+        "created_at": 1719792000,
+        "status": 2
+      },
+      "normalised": {
+        "customer_id": "C-1003",
+        "name": "Sofia Alvarez",
+        "email": "sofia@example.com",
+        "tier": "standard",
+        "created_at": "2024-07-01T00:00:00Z",
+        "status": "shipped"
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "lookup_order",
+      "args": {
+        "order_id": "ORD-5505",
+        "customer_id": "C-1003"
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "lookup_order",
+      "raw": {
+        "order_id": "ORD-5505",
+        "customer_id": "C-1003",
+        "amount": 95.0,
+        "item": "Office chair mat",
+        "placed_at": 1730332800,
+        "status": "delivered",
+        "damage_photo": false,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-11-03",
+        "return_window_open": true
+      },
+      "normalised": {
+        "order_id": "ORD-5505",
+        "customer_id": "C-1003",
+        "amount": 95.0,
+        "item": "Office chair mat",
+        "placed_at": "2024-10-31T00:00:00Z",
+        "status": "delivered",
+        "damage_photo": false,
+        "charges": 1,
+        "shipped": true,
+        "eta": "2026-11-03",
+        "return_window_open": true
+      }
+    }
+  ],
+  "assistant_text": [
+    "**CASE FACTS**\n- Customer: C-1003 (Sofia Alvarez)\n- Order: ORD-5505, Office chair mat\n- Amount: $95.00, charged once\n- Status: delivered (ETA on record 2026-11-03)\n- Placed: 2024-10-31 on the record, which looks inconsistent with the 2026 ETA\n- Return window: open\n- Damage photo: none\n\nHi Sofia, your return for the chair mat is approved, since the order record shows your return window is still open.\n\n**Next step:** pack the mat and send it back, quoting ORD-5505 on the parcel. I don't have a return address or prepaid label available here, so please reply to this email if you need either before you ship it.\n\nI haven't issued a refund at this stage, so the $95.00 is still on your original payment method."
+  ],
+  "settings": {
+    "model": "claude-opus-5-5",
+    "gate": true,
+    "limit_hook": true
+  },
+  "result": {
+    "subtype": "success",
+    "stop_reason": "end_turn",
+    "num_turns": 4,
+    "total_cost_usd": 0.37990930000000006,
+    "session_id": "6dd1d476-8d92-4b6e-8066-066b05503ee1",
+    "is_error": false,
+    "terminal_reason": "completed"
+  },
+  "reply": "**CASE FACTS**\n- Customer: C-1003 (Sofia Alvarez)\n- Order: ORD-5505, Office chair mat\n- Amount: $95.00, charged once\n- Status: delivered (ETA on record 2026-11-03)\n- Placed: 2024-10-31 on the record, which looks inconsistent with the 2026 ETA\n- Return window: open\n- Damage photo: none\n\nHi Sofia, your return for the chair mat is approved, since the order record shows your return window is still open.\n\n**Next step:** pack the mat and send it back, quoting ORD-5505 on the parcel. I don't have a return address or prepaid label available here, so please reply to this email if you need either before you ship it.\n\nI haven't issued a refund at this stage, so the $95.00 is still on your original payment method.",
+  "backend_state": {
+    "refunds": [],
+    "escalations": []
+  }
+}

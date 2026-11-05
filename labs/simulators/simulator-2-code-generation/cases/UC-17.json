@@ -1,0 +1,45 @@
+{
+  "id": "UC-17",
+  "question_n": 17,
+  "timestamp": "40:41",
+  "scenario": "Code Generation with Claude Code",
+  "title": "Where a tool_result belongs in the next request",
+  "situation": "A workflow script receives a response with stop_reason tool_use for a client-executed run_test tool. The script runs the test successfully, but Claude keeps asking to run the same tool again instead of interpreting the results.",
+  "question": "What should the script change in its next request?",
+  "options": {
+    "A": "Append a user text summary first, then include the matching tool_result block later in that same turn.",
+    "B": "Append a user text turn with the test output, then resume the conversation with a normal user instruction.",
+    "C": "Append the assistant tool_use turn, then add an immediate user turn with a matching tool_result block.",
+    "D": "Append an assistant text turn with the test output, then add a user turn asking Claude to continue."
+  },
+  "correct": "C",
+  "why": "In Claude's client tool loop, Claude does not execute your local tool directly. It returns a structured tool_use request; your application runs the operation, and the next API request includes the original conversation, the assistant message containing tool_use, and an immediate user message containing the corresponding tool_result. The conversation history is the state. If the tool result is summarized as ordinary text, placed under the wrong role, or separated from the tool_use request, Claude may not reliably associate the observation with the action it asked for. The tool_result's tool_use_id ties the result back to the tool_use id, allowing Claude to reason about whether to continue debugging, call another tool, or produce the final answer. The documentation specifies that tool_result blocks belong in a user message, must immediately follow the assistant tool_use message, and must appear before any text in that user message. (Docs: how tool use works, handle tool calls.)",
+  "type": "discussion",
+  "concrete_task": "No command. Whiteboard the message sequence and compare with the option C wording.",
+  "setup": {
+    "workdir": "workspace",
+    "git_init": true
+  },
+  "tasks": [
+    {
+      "id": "n1",
+      "kind": "note",
+      "text": "Simulators 1 and 6 run this loop in code; here the point is the message shape. Draw the three turns: user prompt -> assistant tool_use(id=X) -> user tool_result(tool_use_id=X)."
+    }
+  ],
+  "expected_outcome": "Append the assistant turn that contains the tool_use block, then a user turn whose first content block is a tool_result with the matching tool_use_id. Text summaries or a wrong role break the link and Claude re-requests the tool.",
+  "rubric": [
+    {
+      "criterion": "learner states that tool_result goes in a user message immediately after the assistant tool_use message",
+      "check": {
+        "type": "discussion"
+      }
+    },
+    {
+      "criterion": "learner names tool_use_id as the link between request and result",
+      "check": {
+        "type": "discussion"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "uc": "UC-16",
+  "question": 16,
+  "timestamp": "37:47",
+  "topic": "/case-review skill with context: fork",
+  "situation": "Support engineers want an on-demand /case-review workflow that produces long notes, runs outside the main context, reads files without prompts, and shows the expected case id.",
+  "correct": "C: .claude/skills/case-review/SKILL.md with context: fork, allowed-tools Read and Grep, argument-hint [case-id].",
+  "why": "Skills live in a directory with SKILL.md; context: fork isolates verbose work; allowed-tools pre-approves; argument-hint documents the argument.",
+  "run": [
+    "cat .claude/skills/case-review/SKILL.md",
+    "claude -p '/case-review CS-02' --max-turns 8"
+  ],
+  "observe": "The skill returns PASS/FAIL lines for CS-02 without the evidence JSON appearing in your main session.",
+  "rubric": [
+    "frontmatter has context: fork, allowed-tools and argument-hint",
+    "the review reports the hook denial on CS-02 as acceptable"
+  ]
+}

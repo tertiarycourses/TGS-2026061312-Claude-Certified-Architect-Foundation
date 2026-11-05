@@ -1,0 +1,32 @@
+{
+  "source": {
+    "practice_test_question": 7,
+    "timestamp": "15:12",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "The team uses Claude Code to maintain the research system's TypeScript repository. Citation verification tests, report rendering tests, and orchestration tests live beside implementation files across multiple top-level folders. The team wants the same testing guidance to apply only when Claude Code is working on test files, without duplicating guidance in every package.",
+  "question": "What should they do?",
+  "options": {
+    "A": "Create .claude/rules/testing.md without frontmatter, then rely on the file name to limit it to test files.",
+    "B": "Place the testing guidance in the root CLAUDE.md file so every Claude Code session receives the same instructions.",
+    "C": "Add a CLAUDE.md file in each directory that contains tests, then repeat the same testing guidance in each file.",
+    "D": "Create .claude/rules/testing.md with paths frontmatter matching the test file patterns, then place the testing guidance below it."
+  },
+  "correct": "D",
+  "why": "Claude Code separates broadly applicable project memory from topic-scoped rules. Project instructions can live in CLAUDE.md or .claude/CLAUDE.md, while reusable rules can live under .claude/rules/. For conventions that cut across the directory tree, such as tests collocated beside implementation files, a path-scoped rule is the better fit. A Markdown rule file can include YAML frontmatter with the paths field, and those path patterns use glob matching, so one rule can match files by extension, directory, or a combination. Directory-level CLAUDE.md files are useful when instructions naturally follow directory boundaries, but they are awkward when the relevant files are spread across many folders. Putting everything in the root CLAUDE.md avoids duplication but makes the guidance apply more broadly than needed. (Docs: Claude Code memory.)",
+  "id": "UC-07",
+  "title": "Path-scoped testing rule (rules_sim)",
+  "task": {
+    "type": "run",
+    "driver": "rules_sim.py",
+    "config_change": "rules_sim.py writes four placements of the same guidance into repo-rules/: A .claude/rules/testing.md without frontmatter, B root CLAUDE.md, C CLAUDE.md copied into each of the three folders, D .claude/rules/testing.md with paths: [\"**/*.test.ts\"]. Each placement is exercised by two `claude -p` edits.",
+    "prompt_template": "test edit: In orchestration/orchestrator.test.ts add one more assertion inside the existing test that checks the first planned item contains 'music'. / impl edit: In report-rendering/renderer.ts change the header line so the last column reads 'Date' instead of 'Published'.",
+    "command": "python3 -B rules_sim.py"
+  },
+  "expected_outcome": "A and B show the token on both edits; C shows it on both and needs three copies; D shows it only on the test-file edit with one copy.",
+  "rubric": [
+    "D: token present on the test edit and absent on the implementation edit, one copy",
+    "A and B: token present on both edits (filename and root placement do not scope)",
+    "C: duplicate count equals the folder count (3) and the token appears for the implementation edit too"
+  ]
+}

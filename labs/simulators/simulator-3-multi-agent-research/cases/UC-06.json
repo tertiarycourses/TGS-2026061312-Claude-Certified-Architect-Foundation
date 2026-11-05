@@ -1,0 +1,31 @@
+{
+  "source": {
+    "practice_test_question": 6,
+    "timestamp": "12:27",
+    "scenario": "Multi-Agent Research System"
+  },
+  "situation": "During evaluation, the final reports are well written but sometimes include unsupported claims and miss contradictions between sections. The current design asks the report generator to review its own draft before publishing.",
+  "question": "What architecture change would most effectively improve review reliability?",
+  "options": {
+    "A": "Delegate verification to listed subagents without passing source excerpts, relying on shared session context to expose prior findings.",
+    "B": "Have the synthesis agent merge all subagent outputs once, then instruct it to mark unsupported claims before publishing.",
+    "C": "Ask the report generator to perform an extended self-review immediately after drafting using its existing conversation history.",
+    "D": "Run independent reviewer agents on section-specific claim-source bundles, then run a separate integration pass for conflicts and coverage gaps."
+  },
+  "correct": "D",
+  "why": "For high-stakes synthesis, a stronger pattern is to separate generation from review. The report generator's self-review can catch obvious formatting problems, but it is less likely to challenge the assumptions embedded in its own draft. Independent reviewer agents provide a fresh context, and multi-pass review keeps each pass focused: first verify local claim-source alignment, then check cross-section consistency and coverage. With Claude subagents, the important reliability property is isolated conversation context. A subagent receives its own prompt and task context rather than automatically seeing the coordinator's prior findings. Tool access is governed by configuration, so it may be inherited or restricted depending on how the subagent is defined, and MCP access can be inherited, referenced, or scoped depending on setup. That means the coordinator must explicitly pass the relevant claims, excerpts, source URLs, document names, and other metadata into each reviewer task. The same design principle applies when using tool-based orchestration rather than subagents: Claude can emit multiple tool calls in one response, but your application is responsible for executing them and returning matched results correctly. Parallel review is valuable when the checks are independent, while a later integration pass is better for contradictions and gaps that only appear after comparing sections. (Docs: subagents, Agent SDK overview, parallel tool use.)",
+  "id": "UC-06",
+  "title": "Separate generation from review",
+  "task": {
+    "type": "run",
+    "mode": "review",
+    "config_change": "Add a `reviewer` AgentDefinition (tools: none) and change the coordinator prompt: after synthesis, spawn one reviewer per section in ONE response with that section's claim-source bundle, then spawn one integration reviewer over all review outputs, then report.",
+    "prompt_template": "Research this topic and deliver a cited report: {{topic}}. Before the report, run the review chain described in your instructions."
+  },
+  "expected_outcome": "At least two reviewer subagents launch in the same coordinator response after synthesis, followed by a separate integration pass; the report keeps the review verdicts.",
+  "rubric": [
+    "reviewer agents spawned >=2 in one response",
+    "an integration reviewer runs after the section reviewers",
+    "report still includes the coverage gap and contested findings"
+  ]
+}
