@@ -17,6 +17,23 @@ from claude_agent_sdk.types import StreamEvent
 MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
 ON_EVENT = None  # the website sets this to stream lines into its console
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import atexit, costnote  # the estimated API cost line at the end of every run
+
+_COST = {"usd": 0.0, "calls": 0}
+
+
+def record_cost(usd):
+    """Log one finished Claude run. A launcher's ledger collects it; run on its own, the script prints the total at exit."""
+    _COST["usd"] += float(usd or 0); _COST["calls"] += 1
+    costnote.record(os.environ.get(costnote.ENV), usd)
+
+
+@atexit.register
+def _cost_at_exit():
+    if _COST["calls"] and not os.environ.get(costnote.ENV) and not ON_EVENT:
+        print("\n" + costnote.note(_COST["usd"], _COST["calls"]), flush=True)
+
 
 def emit(line):
     print(line, flush=True)
@@ -144,7 +161,8 @@ def narrate(msg, seen=None):
         for s in _LOOP.values():
             _flush(s)
         _LOOP.clear()
-        emit(f"  done: {msg.subtype}, {msg.num_turns} turns, cost ${(msg.total_cost_usd or 0):.4f}")
+        record_cost(msg.total_cost_usd)
+        emit(f"  done: {msg.subtype}, {msg.num_turns} turns, est. API cost ${(msg.total_cost_usd or 0):.4f}")
 
 
 PRESET = {"type": "preset", "preset": "claude_code"}
@@ -159,10 +177,18 @@ def _agents(text):
 
 async def _run(prompt, opts):
     out = {"result": None, "session_id": None, "total_cost_usd": 0, "num_turns": 0, "subtype": None, "structured_output": None, "permission_denials": [], "is_error": False}
+    # Who saw what: tool calls and tool-result characters in the main thread vs inside subagents.
+    ctx = out["context"] = {"main": {"tool_calls": [], "tool_result_chars": 0}, "subagent": {"tool_calls": [], "tool_result_chars": 0}}
     got = False
     try:
         async for m in query(prompt=prompt, options=opts):
             narrate(m)
+            if isinstance(m, AssistantMessage):
+                side = ctx["subagent" if m.parent_tool_use_id else "main"]
+                side["tool_calls"] += [b.name.split("__")[-1] for b in m.content if isinstance(b, ToolUseBlock)]
+            elif isinstance(m, UserMessage) and isinstance(m.content, list):
+                side = ctx["subagent" if getattr(m, "parent_tool_use_id", None) else "main"]
+                side["tool_result_chars"] += sum(len(_text_of(b.content)) for b in m.content if isinstance(b, ToolResultBlock))
             if isinstance(m, ResultMessage):
                 got = True
                 out.update(result=m.result, session_id=m.session_id, total_cost_usd=m.total_cost_usd or 0, num_turns=m.num_turns, subtype=m.subtype,
@@ -282,11 +308,14 @@ async def _one(params):
                         content.append(Block(type="text", text=b.text))
             elif isinstance(m, ResultMessage):
                 usage = m.usage or {}; cost = m.total_cost_usd or 0
+                record_cost(cost)
     except Exception as e:
         if not content: raise RuntimeError(f"Agent SDK call failed: {e}")
     stop = "tool_use" if any(b.type == "tool_use" for b in content) else "end_turn"
     return SimpleNamespace(content=content, stop_reason=stop, model=model, cost_usd=cost,
-                           usage=SimpleNamespace(input_tokens=usage.get("input_tokens", 0), output_tokens=usage.get("output_tokens", 0)))
+                           usage=SimpleNamespace(input_tokens=usage.get("input_tokens", 0), output_tokens=usage.get("output_tokens", 0),
+                                                 # everything Claude read this turn, cached or not (Claude Code caches the prompt)
+                                                 total_input_tokens=sum(usage.get(k, 0) or 0 for k in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"))))
 
 
 class _Counts(SimpleNamespace):

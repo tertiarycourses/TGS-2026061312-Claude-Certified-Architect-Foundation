@@ -3,24 +3,41 @@ import asyncio, json, os, re, secrets, shlex, shutil, signal, subprocess, sys, t
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import simkit
+import costnote
 from guides import BENCH, GUIDES
 
 HERE = Path(__file__).resolve().parent
 SIMS_DIR = HERE / "simulators"
-LABS = {l["id"]: l for l in json.loads((HERE / "labs.json").read_text())}
-SIMS = {s["n"]: s for s in json.loads((HERE / "sims.json").read_text())}
+LABS = {l["id"]: l for l in json.loads((HERE / "labs.json").read_text(encoding="utf-8"))}
+SIMS = {s["n"]: s for s in json.loads((HERE / "sims.json").read_text(encoding="utf-8"))}
 MODELS = ["claude-sonnet-5-5", "claude-haiku-5-5", "claude-opus-5-5"]
 TEXT = {".json", ".md", ".txt", ".py", ".sh", ".jsonl", ".yml", ".yaml", ".toml", ".ts", ".tsx", ".js", ".html", ".css", ".log"}
 SKIP = {"__pycache__", "node_modules", ".git", ".pristine-evidence", "work"}
 JOBS, ACTIVE, LOCK = {}, {}, threading.Lock()
 MAX_SECONDS = 1800
+WIN = os.name == "nt"
+# Windows reads and prints text as cp1252 unless told otherwise; every lab file and log is UTF-8.
+UTF8 = {"PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"}
 
 def sim_dir(n): return SIMS_DIR / SIMS[n]["dir"]
+
+def claude_cli():
+    """The claude program: the one on PATH, else the copy bundled inside the Agent SDK (desktop-app users have no CLI)."""
+    exe = shutil.which("claude")  # finds claude.exe / claude.cmd on Windows too
+    if exe: return exe
+    try:
+        import claude_agent_sdk
+        p = Path(claude_agent_sdk.__file__).parent / "_bundled" / ("claude.exe" if WIN else "claude")
+        return str(p) if p.exists() else None
+    except Exception:
+        return None
 
 def login():
     """Is this laptop signed in to Claude? Asks the same CLI the SDK drives."""
     try:
-        d = json.loads(subprocess.run(["claude", "auth", "status"], capture_output=True, text=True, timeout=20).stdout)
+        exe = claude_cli()
+        if not exe: return False, ""
+        d = json.loads(subprocess.run([exe, "auth", "status"], capture_output=True, text=True, timeout=20, env=dict(os.environ, **UTF8)).stdout)
         return bool(d.get("loggedIn")), d.get("authMethod", "")
     except Exception:
         return False, ""
@@ -42,8 +59,11 @@ class Job:
     def stop(self):
         self.stopped = True
         if self.proc and self.proc.poll() is None:
-            try: os.killpg(self.proc.pid, signal.SIGTERM)
-            except ProcessLookupError: pass
+            if WIN:  # no process groups on Windows: end the whole tree
+                subprocess.run(["taskkill", "/F", "/T", "/PID", str(self.proc.pid)], capture_output=True)
+            else:
+                try: os.killpg(self.proc.pid, signal.SIGTERM)
+                except ProcessLookupError: pass
         if not self.proc: self.finish(130)
 
 def active(n):
@@ -111,9 +131,10 @@ def run_steps(n, title, steps, model=None, evidence=(), live=True):
     """Run commands one after another in a background thread, streaming every line."""
     job = Job(n, title); job.evidence = list(evidence)
     if not _claim(job): return None
-    env = dict(os.environ, PYTHONUNBUFFERED="1")
+    env = dict(os.environ, PYTHONUNBUFFERED="1", **UTF8)
     for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "CLAUDECODE"): env.pop(k, None)
     if model: env["LAB_MODEL"] = model
+    ledger = env[costnote.ENV] = costnote.new_ledger()  # every Claude run in these steps logs its estimated API cost here
     def beat():  # silence reads as broken, so say we're alive
         while not job.done:
             time.sleep(1)
@@ -130,7 +151,8 @@ def run_steps(n, title, steps, model=None, evidence=(), live=True):
                 if job.stopped: break
                 job.line("$ " + ("uv run " + " ".join(shlex.quote(x) for x in argv[2:]) if argv[0] == sys.executable else " ".join(shlex.quote(x) for x in argv)))
                 if live: job.line("  starting Python and loading the simulator...")
-                job.proc = subprocess.Popen(argv, cwd=sim_dir(n), env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace", bufsize=1, start_new_session=True)
+                job.proc = subprocess.Popen(argv, cwd=sim_dir(n), env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", bufsize=1,
+                                             start_new_session=not WIN, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if WIN else 0)
                 killer = threading.Timer(MAX_SECONDS, job.stop); killer.start()
                 for l in job.proc.stdout: job.line(l.rstrip("\n"))
                 rc = job.proc.wait(); killer.cancel()
@@ -138,6 +160,8 @@ def run_steps(n, title, steps, model=None, evidence=(), live=True):
         except Exception as e:
             job.line(f"!! {e}"); code = 1
         finally:
+            cost = costnote.finish(ledger)
+            if live: job.line(""); job.line(cost)
             job.finish(code)
     threading.Thread(target=work, daemon=True).start()
     return job
@@ -177,6 +201,12 @@ def evidence_for(n, cmd):
         return ["evidence/fork-a.json", "evidence/fork-b.json"] if p == "fork" else [f"evidence/{p}.json"]
     if script == "ci_subagents.py": return ["evidence/pr-comment-lossy.md"] if "--lossy" in a else ["evidence/pr-comment-pass-findings.md"]
     if script == "hook_gate.py": return ["evidence/hook_gate.json"]
+    if script == "tool_result_loop.py": return ["evidence/tool_result_loop.json"]
+    if script == "payload_review.py": return ["evidence/payload_review.json"]
+    if script == "partition_review.py": return ["evidence/partition_review.json"]
+    if script == "quality_gate.py": return ["evidence/quality_gate.json"]
+    if script == "plan_request.py": return ["evidence/plan_request.json"]
+    if script == "discovery_delegate.py": return ["evidence/discovery_delegate.json"]
     if script == "ci_review.py": return ["evidence/review-integration.json", "evidence/review.json"]
     if script == "extract.py": return ["evidence/accuracy.json", "evidence/batch.json" if "--batch" in a else "evidence/extraction.json"]
     if "json.tool" in cmd: return [a[-1]]
@@ -186,6 +216,9 @@ def lab_evidence(l):
     return sorted({p for c in l["cmds"] for p in evidence_for(l["sim"], c)})
 
 def existing(n, paths): return [p for p in paths if (sim_dir(n) / p).exists()]
+def written_since(n, paths, t):
+    """Evidence this run wrote: the file must be newer than the run's start, so shipped copies never pass as live output."""
+    return [p for p in paths if (sim_dir(n) / p).exists() and (sim_dir(n) / p).stat().st_mtime >= t - 1]
 
 def run_lab(lab_id, model):
     l = LABS[lab_id]
@@ -214,7 +247,8 @@ def typed_command(n, text, model):
     elif a[0] == "python3" and a[1:3] == ["-m", "json.tool"]:
         argv = [sys.executable, "-B"] + a[1:]
     elif a[0] in LOOK:
-        argv = a
+        # Windows has no ls, cat, head, tail, grep, wc or pwd: the same commands, in Python
+        argv = a if shutil.which(a[0]) else [sys.executable, "-B", str(HERE / "lookcmd.py")] + a
     else:
         return None, f"`{a[0]}` isn't available here. " + TERMINAL_HELP
     return run_steps(n, text, [argv], model, evidence_for(n, text) if live else [], live=live), None
@@ -225,7 +259,7 @@ def case_choices(n, glob):
     if n == 1: files += sorted((sim_dir(1) / "my_cases").glob("MY-*.json"))
     for f in files:
         try:
-            d = json.loads(f.read_text()); text = d.get("message") or d.get("situation") or ""
+            d = json.loads(f.read_text(encoding="utf-8")); text = d.get("message") or d.get("situation") or ""
             exp = (d.get("expected") or {}).get("disposition") if isinstance(d.get("expected"), dict) else None
             out.append(dict(value=f.stem, label=f"{f.stem}: {d.get('title') or text[:60]}", detail=text, expected=exp))
         except Exception:
@@ -266,7 +300,7 @@ def read(n, rel, shipped=False):
         q = root / ".pristine-evidence" / rel[len("evidence/"):]
         if q.is_file(): p = q
     if not p.is_file(): return None
-    return p.read_text(errors="replace")[:300000]
+    return p.read_text(encoding="utf-8", errors="replace")[:300000]
 
 def copy_of(n, sub):
     """A throwaway copy for a live session, so the shipped files never change."""

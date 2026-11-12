@@ -29,7 +29,9 @@
   },
   "answer": "B",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The loop reads stop_reason, not the wording of the reply. Each tool_use turn means Claude wants a tool run, so the loop executes get_customer, lookup_order, recommend_refund and process_refund in turn and appends every result before calling Claude again. Only when Claude returns end_turn does the loop stop, which is why the $120 refund lands before the run ends.",
+  "exam_tip": "Pick the option that continues on tool_use and stops on end_turn. Reject any loop that stops when the text \"sounds finished\": natural-language cues are not a control signal."
  },
  {
   "task": "1.1",
@@ -40,12 +42,12 @@
   "trap": "The script runs the test, then sends no matching tool_result.",
   "fix": "Append the tool_use turn, then a user turn with a matching tool_result.",
   "cmds": [
-   "uv run casekit.py --case UC-17"
+   "uv run tool_result_loop.py"
   ],
-  "see": "You draw the three turns: prompt, tool_use with an id, tool_result with that same id.",
+  "see": "Scenario 1: Claude asks for run_test on every turn, each time with a new tool_use id, until the 3-turn loop guard stops it. Scenario 2: the tool_result carries the same tool_use_id, and Claude answers on turn 2 that the test failed on rounding.",
   "id": 2,
   "topic": 1,
-  "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
+  "try": "Change run_test_locally in tool_result_loop.py to return a passing outcome, rerun, and check that Claude's answer changes with the tool result.",
   "topic_name": "Agentic Architecture & Orchestration",
   "task_title": "Design and implement agentic loops for autonomous task execution",
   "sim_name": "Code Generation with Claude Code",
@@ -71,7 +73,9 @@
    "B": "Plain text is not linked to the tool_use id, so Claude still sees an unanswered request.",
    "D": "Wrong role. The output is presented as Claude's own words, and there is no tool_result at all."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "Claude only knows a tool ran when the next request holds a tool_result block whose tool_use_id matches the tool_use it sent. In scenario 1 the script ran the test but sent back a plain text note, so on every turn Claude still has no result and asks again. In scenario 2 the assistant tool_use turn and the matching tool_result go back together, so Claude reads the outcome and stops on end_turn.",
+  "exam_tip": "When Claude keeps re-requesting a tool, pick the option that appends the assistant tool_use turn, then a user turn whose tool_result carries the same tool_use_id. Text summaries, assistant-role results and fresh instructions never close the tool call. Cap your loop's turns either way."
  },
  {
   "task": "1.2",
@@ -105,7 +109,9 @@
   },
   "answer": "B",
   "why": "The coordinator's logs reveal the root cause directly: it decomposed \"creative industries\" into only visual arts subtasks (digital art, graphic design, photography), completely omitting music, writing, and film. The subagents executed their assigned tasks correctly—the problem is what they were assigned. Options A, C, and D incorrectly blame downstream agents that are working correctly within their assigned scope.",
-  "wrong": {}
+  "wrong": {},
+  "explain": "Subagents only research what the coordinator hands them. When the plan splits \"creative industries\" into digital art, graphic design and photography, every subagent succeeds and the report still misses music, writing and film. A broad decomposition fixes coverage at the source, and the report then flags any gap it finds.",
+  "exam_tip": "When every subagent works but coverage is narrow, blame the coordinator's decomposition. Reject options that point at the search, document or synthesis agent: the logs show they did exactly what they were assigned."
  },
  {
   "task": "1.2",
@@ -116,12 +122,12 @@
   "trap": "All subagents hunt schema failures across all 600 documents.",
   "fix": "Give each one a distinct document group or concern, and demand concise findings.",
   "cmds": [
-   "uv run extract.py --case UC-36"
+   "uv run partition_review.py"
   ],
-  "see": "Every document lands in exactly one group, and each subagent gets a line-capped deliverable.",
+  "see": "Run 1, same brief: the document table shows all 7 documents read by all three subagents, and about 1,500 words of overlapping findings. Run 2, partitioned: each document has one owner (invoices to one subagent, the receipt and the credit note to the others), and about 300 words reach synthesis.",
   "id": 4,
   "topic": 1,
-  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "try": "Run it with --max-turns 3, then change CONCERN in partition_review.py so two groups share a concern, and see whether the findings start to repeat.",
   "topic_name": "Agentic Architecture & Orchestration",
   "task_title": "Orchestrate multi-agent systems with coordinator-subagent patterns",
   "sim_name": "Structured Data Extraction",
@@ -148,7 +154,9 @@
    "C": "Overlap without clean boundaries means duplicated work and a reconciliation burden.",
    "D": "Redundancy rather than partitioning, which is the problem being fixed."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "Each subagent is its own Claude session: it reads only what its brief and its own tool calls give it. Hand all three the same brief over the whole corpus and they do the same work three times, so the coordinator inherits three copies of every observation. Give each one a distinct group and concern, and the load_document calls split cleanly, one owner per document, with short findings that merge easily.",
+  "exam_tip": "Pick the option that gives each subagent a distinct document group or concern, the context it needs, and a concise deliverable. Overlapping subsets, every agent on the full corpus, and verbose nested summaries all multiply the synthesis work."
  },
  {
   "task": "1.3",
@@ -191,7 +199,9 @@
    "C": "Wrong tool name for this pinned version, and on the wrong agent: the coordinator is the one doing the delegating.",
    "D": "Guidance text grants no permission."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "allowedTools auto-approves only what it lists, so with Read, Grep and Glob alone the first delegation call drops into an interactive permission prompt and the run stalls. Add the delegation tool to the coordinator's list and the subagent spawns, runs and returns its answer. The simulator uses the current tool name, Agent; the exam's pinned pre-v2.1.63 setup calls the same tool Task.",
+  "exam_tip": "Grant the delegation tool on the coordinator, because the coordinator is the one delegating. Reject CLAUDE.md guidance, which grants no permission, and reject adding Agent to the workers in a configuration that still uses Task."
  },
  {
   "task": "1.3",
@@ -234,7 +244,9 @@
    "B": "Running synthesis first reverses the dependency: there is nothing to synthesise yet.",
    "D": "CLAUDE.md holds stable project guidance. It cannot carry this pull request's findings into the handoff."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "A subagent starts in a fresh, isolated conversation and sees only its own prompt. When the coordinator pastes each reviewer's complete structured findings into the synthesis prompt, file paths, line numbers and test names have a route into the PR comment. The --lossy run cuts that route, and the evaluate step shows how much detail disappears.",
+  "exam_tip": "If a final summary drops details the coordinator already held, pass the structured findings directly in the synthesis prompt. An option asking the subagent to \"infer\" from earlier history is the trap: it cannot see that history and will invent details."
  },
  {
   "task": "1.3",
@@ -277,7 +289,9 @@
    "C": "A subagent's description affects when Claude delegates, not what context is passed.",
    "D": "Agent teams (independent sessions with inter-agent messaging) are a heavier, different pattern. That is a redesign to fix a missing-context problem."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "The Agent tool prompt is the only channel from coordinator to subagent. Isolated context windows keep research noise out of the parent, but they also hide every URL and document name from the synthesis subagent unless the coordinator writes them in. That is why the working prompt runs to thousands of characters: provenance travels inside it.",
+  "exam_tip": "Weak citations after good research point to a thin synthesis prompt, so put findings and source metadata in it. Direct subagent-to-subagent chat, broader descriptions and agent teams don't fit: subagents report to the parent, and a description controls routing, not context."
  },
  {
   "task": "1.3",
@@ -320,7 +334,9 @@
    "B": "Intermediate subagents need that state too, or they duplicate work and lose provenance-sensitive decisions.",
    "D": "Spends large amounts of context on low-value exploration output."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "Each new subagent begins with an empty context, so it repeats searches and forgets which sources were rejected unless the coordinator tells it. A condensed, source-linked summary in each delegation prompt carries findings, links and rejection reasons forward. You see those links reach synthesis and report while the prompts stay far smaller than the raw subagent traffic.",
+  "exam_tip": "Prefer a source-linked summary in every next-phase prompt. Reject full transcripts, which waste context, and reject \"rely on isolated context\", because isolation is exactly what blocks access to parent history."
  },
  {
   "task": "1.4",
@@ -354,7 +370,9 @@
   },
   "answer": "A",
   "why": "When a specific tool sequence is required for critical business logic (like verifying customer identity before processing refunds), programmatic enforcement provides deterministic guarantees that prompt-based approaches cannot. Options B and C rely on probabilistic LLM compliance, which is insufficient when errors have financial consequences. Option D addresses tool availability rather than tool ordering, which is not the actual problem.",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The prerequisite gate lives in a PreToolUse hook that checks for a verified customer_id before lookup_order or process_refund can run. Code makes that check on every call, so the order lookup cannot run on a stated name alone. In this run the agent verified first and the gate allowed each call; switch the gate off with --no-gate and only the prompt is left guarding the order.",
+  "exam_tip": "A 12% skip rate with financial consequences calls for a programmatic prerequisite. Stronger system-prompt wording and few-shot examples are still probabilistic, and a routing classifier changes which tools are available, not the order they run in."
  },
  {
   "task": "1.4",
@@ -398,7 +416,9 @@
    "C": "Only adds instructions to the prompt. It still depends on the model choosing correctly and never blocks the tool call itself.",
    "D": "PostToolUse fires after the tool succeeded, so the approval has already been posted."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "The PreToolUse hook runs outside the model, before the approval command executes. It checks for the passing artifact and exits 2 when it is missing, so Claude receives the denial text and ci/approvals.log never appears. After ./ci/run_tests.sh produces the artifact, the same hook lets the approval for PR 418 through.",
+  "exam_tip": "\"Non-negotiable\" plus \"rare failures\" means a PreToolUse hook that denies the action. PostToolUse is the tempting near-miss: it fires after the approval has already posted."
  },
  {
   "task": "1.4",
@@ -441,7 +461,9 @@
    "B": "Probabilistic. The model is already skipping the intended path.",
    "D": "Forces one call on one turn and depends on spotting “ambiguous” in the prompt. A later unvalidated submit_record can still run."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "With client tools, Claude only requests submit_record; your application decides whether it runs. The gate refuses that request until validate_record has succeeded for the same record, so DOC-07 is blocked and routed to a review ticket. The loop ends on end_turn rather than on phrases like \"ready to submit\", so nothing slips through on wording.",
+  "exam_tip": "Enforce validate-before-submit at the application boundary that executes the tool. Reject tool_choice tricks: forcing validate_record on one turn does not stop a later unvalidated submit_record."
  },
  {
   "task": "1.5",
@@ -473,7 +495,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The no-guard prompt has lost the $500 line, so the model goes ahead and requests process_refund for $780. The PreToolUse hook checks the amount in code, denies the call and tells the agent to call escalate_to_human instead. Arjun gets an escalation ticket, not a refund, because the limit never depended on the prompt.",
+  "exam_tip": "When a rule must hold even after someone edits the prompt, choose the PreToolUse hook. A refund cap that lives only in the system prompt fails the moment that line disappears."
  },
  {
   "task": "1.5",
@@ -516,7 +540,9 @@
    "C": "decision: \"block\" sends a reason back to Claude. It does not substitute normalised output.",
    "D": "PreToolUse runs before execution, when no stdout exists yet. The tool input is the command, not its output."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "PostToolUse fires after Bash has run npm test and before Claude reads the result. The hook returns updated tool output in the Bash result shape, which replaces what Claude sees on the next request. The command itself never changes; only the stdout Claude reasons over loses its npm WARN lines and absolute paths.",
+  "exam_tip": "To reshape a result without touching the action, return updated output from PostToolUse in the tool's own structure. Exit code 2 and decision: \"block\" only add feedback, and PreToolUse runs before any stdout exists."
  },
  {
   "task": "1.5",
@@ -552,7 +578,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "This case removes the \"Never delete directories\" line from the system prompt, so only the PreToolUse hook stands between the agent and rm -rf tests. The hook inspects the Bash command before it runs, denies it, and the tool log records the blocked row while work/tests survives. Earlier runs slipped past a literal-match guard with plain rm and mv, which is why the hook now covers rm with -r or -f flags, a tests path and mv.",
+  "exam_tip": "Destructive commands need a PreToolUse deny, because a CLAUDE.md line like \"be careful with deletes\" is advice the model may ignore. Make the hook match the command's intent, not one literal string."
  },
  {
   "task": "1.6",
@@ -595,7 +623,9 @@
    "C": "A narrative summary throws away detail before extraction and can hide errors behind valid-looking JSON.",
    "D": "The same overloaded single pass. A self-check rarely catches errors in the model's own output."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "One pass over a 60-page packet asks the model to find fields and enforce cross-section rules at the same time, so it merges three documents into one record. Section passes look at less evidence each, then a reconciliation pass deduplicates invoice_ids and checks totals once every partial record exists. UC-31 shows four section records reconciled to three unique invoices.",
+  "exam_tip": "Predictable sections call for a fixed pipeline: extract locally, then reconcile globally. Reject the bigger single prompt with a self-check, since the model rarely catches its own errors, and save adaptive subtasks for exploratory work."
  },
  {
   "task": "1.7",
@@ -639,7 +669,9 @@
    "C": "--continue resumes the most recent conversation in the directory, not necessarily the saved baseline. Running it twice does not create independent branches.",
    "D": "Without forking, both attempts append to the same history. Asking in plain language to “keep them separate” does not create isolation."
   },
-  "domain": 1
+  "domain": 1,
+  "explain": "Resuming the saved session ID with the fork option copies the conversation into a new session with its own ID, which is why you count three IDs. A fork copies history, not files, so both attempts would see each other's edits in a shared working directory. Restoring the checkpoint before attempt B is what keeps attempt A's changes out.",
+  "exam_tip": "Fork each attempt from the saved ID and checkpoint files before edits. Reject --continue and a plain double resume: neither creates independent branches, and no session option isolates file state."
  },
  {
   "task": "1.7",
@@ -675,7 +707,9 @@
   },
   "answer": "B",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "Resuming keeps the same session ID and all the earlier analysis, so the agent does not need to explore again. Naming the changed file tells it which cached tool result is stale, so it re-reads only that file: at most two Reads, no Grep and no subagent. Resume silently and the agent keeps trusting the old contents.",
+  "exam_tip": "After an overnight change, resume and name the changed file, or start fresh with a structured summary. Reject a silent resume: the agent cannot tell which tool results went stale."
  },
  {
   "task": "2.1",
@@ -718,7 +752,9 @@
    "C": "One tool per field is tool sprawl: more tools, more selection ambiguity.",
    "D": "Leaves the interface unchanged. The schema still allows verification without an excerpt."
   },
-  "domain": 2
+  "domain": 2,
+  "explain": "A catch-all analyze_document tool forces Claude to guess the workflow from an operation parameter, so it drifts into summaries where the validator expects fields. Split tools give each job its own description and input_schema, so the choice is clear and extract_invoice receives a schema-valid payload every time. UC-11 records both behaviours side by side.",
+  "exam_tip": "Choose a few non-overlapping tools with clear descriptions and JSON Schema inputs. Reject one tool per field as tool sprawl, and reject more enum values, because they keep the ambiguity inside one tool."
  },
  {
   "task": "2.2",
@@ -760,7 +796,9 @@
    "C": "isError: false explicitly signals success.",
    "D": "Protocol errors are for protocol failures. A business-rule failure belongs in the result, where the agent can reason about recovery."
   },
-  "domain": 2
+  "domain": 2,
+  "explain": "The tool now returns a CallToolResult with isError: true and structured details when ORD-5508 falls outside the return window. That flag tells the agent the business action failed even though the MCP call itself succeeded, so the agent cannot read the response as a completed refund. Whether it refuses from policy or calls process_refund and reads the error, no refund is issued.",
+  "exam_tip": "Signal a business failure with isError: true inside the result. An error field buried in a normal result still looks like success, and a protocol-level exception is the wrong layer for a policy rule."
  },
  {
   "task": "2.2",
@@ -792,7 +830,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The first lookup_order on ORD-5504 times out, and the tool returns isError with errorCategory \"transient\" and isRetryable true. Those fields tell the agent the failure is temporary, so it retries once rather than escalating or guessing. The second call returns the real record, which is why the reply quotes the shipped status and the 9 November ETA.",
+  "exam_tip": "Return errorCategory and isRetryable so the agent can choose: retry a transient failure, explain a policy one. A generic \"lookup failed\" message leaves the agent guessing whether to retry, give up or make up an answer."
  },
  {
   "task": "2.3",
@@ -835,7 +875,9 @@
    "B": "\"auto\" still allows prose, and namespacing does not remove the unrelated tools.",
    "C": "\"none\" forbids tools, so findings come back as prose to parse. That gives up the structured output."
   },
-  "domain": 2
+  "domain": 2,
+  "explain": "Each extra tool is another chance of an irrelevant call, so a review step holding test-writing tools sometimes uses them. Give review only read-only tools and force its reporting tool with tool_choice {\"type\": \"tool\", \"name\": ...}, and the step has to return a structured finding. Test generation runs as its own step with its own tools and schema, so neither step returns prose.",
+  "exam_tip": "Scope tools by role, then force the reporting tool. Reject tool_choice \"any\", which guarantees a call but could still pick a test-writing tool, and reject \"none\", which forces prose you then have to parse."
  },
  {
   "task": "2.3",
@@ -869,7 +911,9 @@
   },
   "answer": "A",
   "why": "Option A applies the principle of least privilege by giving the synthesis agent only what it needs for the 85% common case (simple fact verification) while preserving the existing coordination pattern for complex cases. Option B's batching approach creates blocking dependencies since synthesis steps may depend on earlier verified facts. Option C over-provisions the synthesis agent, violating separation of concerns. Option D relies on speculative caching that cannot reliably predict what the synthesis agent will need to verify.",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The agent definitions give synthesis exactly one tool, mcp__research__verify_fact, while search_web stays with the web-search agent. The SDK exposes only the tools listed in each agent's definition, so synthesis can check a date or a figure itself but cannot drift into open-ended research. Deeper questions still travel back through the coordinator, so the hub-and-spoke routing stays intact.",
+  "exam_tip": "Pick the scoped tool for the 85% of simple lookups and keep the coordinator path for the 15% that need real investigation. Reject \"give synthesis all the web search tools\": it cuts latency by breaking least privilege, and batching (B) or speculative caching (D) cannot predict what synthesis will need."
  },
  {
   "task": "2.4",
@@ -882,7 +926,7 @@
   "cmds": [
    "uv run simulator.py 5"
   ],
-  "see": ".mcp.json holds placeholders only. Your real ~/.claude.json stays untouched.",
+  "see": "First the scan: .mcp.json holds only ${GITHUB_TOKEN} and ${DOCS_API_KEY} placeholders. Then, live, Claude adds a team 'sentry' server to .mcp.json with ${SENTRY_TOKEN}, puts your personal token only in the git-ignored .claude/settings.local.json, and leaves your user-scope servers in ~/.claude.json alone.",
   "id": 23,
   "topic": 2,
   "try": "Set LAB_MODEL=claude-sonnet-5-5, rerun, and compare the result and the cost line in evidence/.",
@@ -901,7 +945,9 @@
   },
   "answer": "B",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": ".mcp.json is project scope, so git carries it to every teammate; personal servers live in user scope (~/.claude.json). Claude Code expands ${GITHUB_TOKEN} and ${DOCS_API_KEY} from each developer's own environment when it loads the file, so the committed text never holds a secret. The lab's scan finds those two placeholders and zero literal tokens, makes no API call and never writes to your real ~/.claude.json.",
+  "exam_tip": "Shared server, personal credential: commit the server to .mcp.json with ${VAR} expansion and keep solo experiments in user scope. Reject any option that pastes a literal token into the shared file, or parks a team server in one person's ~/.claude.json where teammates never see it."
  },
  {
   "task": "2.4",
@@ -937,7 +983,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The orderly-docs MCP server publishes its documents as resources, and list_catalog hands the agent the whole inventory in one call. With that inventory in hand, the agent goes straight to read_resource docs://runbook instead of spending turns on Glob, ls and speculative Reads. tool_log.jsonl shows that order, and the main context stays small because no exploratory file dumps enter it.",
+  "exam_tip": "Expect a scenario where an agent burns tool calls discovering content; the answer is an MCP resource catalogue that shows what exists up front. Blind grepping for the billing runbook is the trap: it gets there eventually, at the cost of calls and context the catalogue saves."
  },
  {
   "task": "2.5",
@@ -980,7 +1028,9 @@
    "B": "Loads every file into context, which is wasteful and pointless when Grep exists.",
    "C": "Works, but bypasses the purpose-built tool, depends on Bash permissions, and leaves fragile output parsing."
   },
-  "domain": 2
+  "domain": 2,
+  "explain": "Callers of calculate_total are text inside files, so only a content search finds them. The built-in Grep tool searches contents, its glob parameter narrows the search to *.py, and output_mode \"content\" returns each match with its file and line number in a single call. Glob matches only file names, and Bash grep would push the same search through Bash permissions and leave you parsing raw stdout.",
+  "exam_tip": "Map the job to the tool: file contents mean Grep, file names or paths mean Glob. Reject Glob on **/helperName.ts, which finds the definition rather than its callers, and reject Bash grep, which works but bypasses the purpose-built tool."
  },
  {
   "task": "2.5",
@@ -1016,7 +1066,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "Edit replaces one exact string and refuses when that string is not unique, because it cannot tell which occurrence you mean. In the run, `return total` sat in both line_total (line 9) and calculate_total (line 16), so the first Edit failed. The agent then Read the file and wrote it back whole with the quantize change on line 16 only, and pytest passed (2 passed).",
+  "exam_tip": "Retrying Edit with the same anchor fails the same way every time, so the exam rewards a change of approach. Choose Read then Write, or widen the anchor until it is unique, and never let the agent guess which occurrence to change."
  },
  {
   "task": "3.1",
@@ -1048,7 +1100,9 @@
   },
   "answer": "B",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The project CLAUDE.md pulls in docs/standards/testing.md through an @import, so Claude can quote its first bullet word for word: \"Every bug fix ships with a regression test that fails before the fix.\" Files in .claude/rules/ load by path: reading Button.test.tsx brings in tests.md and react-components.md, while reading src/api/orders.js brings in only api-handlers.md. Asking Claude to name its loaded rule files tells you exactly which instructions reached it for that file.",
+  "exam_tip": "Organise shared instructions in the project CLAUDE.md with @imports, and put area conventions in .claude/rules/ files that load by path. Reject the single giant file, which loads everything everywhere, and the home-folder ~/.claude/CLAUDE.md, which teammates never receive."
  },
  {
   "task": "3.2",
@@ -1082,7 +1136,9 @@
   },
   "answer": "A",
   "why": "Project-scoped custom slash commands should be stored in the .claude/commands/ directory within the repository. These commands are version-controlled and automatically available to all developers when they clone or pull the repo. Option B (~/.claude/commands/) is for personal commands that aren't shared via version control. Option C (CLAUDE.md) is for project instructions and context, not command definitions. Option D describes a configuration mechanism that doesn't exist in Claude Code.",
-  "wrong": {}
+  "wrong": {},
+  "explain": "Claude Code turns each Markdown file in the repo's .claude/commands/ into a slash command, so /review reaches every developer on clone or pull. The command file fixes the checklist and demands a closing `VERDICT: approve` or `VERDICT: request-changes`, which is why the output ends that way. Fed a diff that deletes the orders:read authorize() check from getOrder, it flags the security gap and returns request-changes.",
+  "exam_tip": "\"Available to every developer who clones the repo\" points straight to .claude/commands/ in the project. Reject ~/.claude/commands/ (personal, never shared through git), CLAUDE.md (instructions, not command definitions) and a .claude/config.json commands array, which does not exist."
  },
  {
   "task": "3.2",
@@ -1124,7 +1180,9 @@
    "B": "A loose .md file is not a skill. A skill needs its own directory with a SKILL.md .",
    "D": "Misdescribes both fields. argument-hint does not validate anything, and the video says allowed-tools is not a security boundary: use disallowed-tools or permission deny rules to remove tools."
   },
-  "domain": 3
+  "domain": 3,
+  "explain": "The SKILL.md frontmatter sets context: fork, so Claude runs the review in an isolated subagent context and hands back only its summary. The long evidence/runs/CS-02.json file is read inside that fork and never lands in your main conversation. allowed-tools: Read, Grep pre-approves the reads so the skill never stops to ask, and argument-hint: [case-id] shows the expected argument in autocomplete.",
+  "exam_tip": "Look for three markers: a directory holding SKILL.md, context: fork for noisy output, and allowed-tools for prompt-free reads. Option A's context: main floods the session, B's loose .md file is not a skill, and D fails because argument-hint validates nothing and allowed-tools is not a security boundary."
  },
  {
   "task": "3.3",
@@ -1167,7 +1225,9 @@
    "B": "Avoids duplication but applies the guidance far more broadly than needed.",
    "C": "Directory CLAUDE.md files suit guidance that follows directory boundaries. Here they mean duplication and drift, which the team explicitly wants to avoid."
   },
-  "domain": 3
+  "domain": 3,
+  "explain": "A rule file in .claude/rules/ with paths frontmatter loads only when Claude works on a file matching those globs. The lab plants a marker, TESTING-GUIDANCE-LOADED, in the guidance: variant D shows it on the test edit and not on the renderer.ts implementation edit, from a single copy. Root CLAUDE.md and an unscoped rule load every time, and per-folder CLAUDE.md files need three copies to reach the same tests.",
+  "exam_tip": "Guidance that follows a file pattern across the tree, such as tests beside their code, belongs in one .claude/rules/ file with a paths glob like \"**/*.test.ts\". A file name alone scopes nothing, so option A loads everywhere; root CLAUDE.md is too broad, and per-directory copies drift."
  },
  {
   "task": "3.4",
@@ -1210,7 +1270,9 @@
    "B": "Discovering an authorization architecture through test failures invites broad, risky rework. Direct execution suits small fixes.",
    "D": "A stronger model may reason better, but model choice does not replace the approval boundary that plan mode provides."
   },
-  "domain": 3
+  "domain": 3,
+  "explain": "Plan mode lets Claude read, search and propose, but blocks file edits until you approve the plan. The lab hashes every file before and after the run, so identical hashes prove Claude studied src/middleware/authorize.js and its callers without changing a line. You get a design to argue over before any code moves.",
+  "exam_tip": "Three triggers point to plan mode: an uncertain design, a change across many files, and a developer new to the code. Reject \"start editing and discover the architecture through test failures\", and ignore the pull of the opus alias, because a stronger model adds no approval boundary."
  },
  {
   "task": "3.4",
@@ -1253,7 +1315,9 @@
    "B": "Commits to a design before one has been chosen, then pays for it in reverts.",
    "D": "Accept-edits approves edits automatically, so review happens only after the changes are made."
   },
-  "domain": 3
+  "domain": 3,
+  "explain": "Plan mode and the editing modes form one workflow in one session. Phase 1 runs in plan mode, so the hash table shows nothing changed; phase 2 resumes the same session with acceptEdits, and the approved first step lands as real edits because the plan is still in context. Your approval is the switch from analysis to change.",
+  "exam_tip": "Separate two questions: when does analysis happen, and how are edits approved? Bypass-permissions and accept-edits answer only the second, so both repeat the earlier broad-rewrite failure; the answer is plan mode first, then approve into an editing mode."
  },
  {
   "task": "3.4",
@@ -1296,7 +1360,9 @@
    "B": "Planning overhead for a one-line, fully specified change.",
    "D": "Changes approval behaviour without adding anything this task needs."
   },
-  "domain": 3
+  "domain": 3,
+  "explain": "The whole change fits in one sentence: add a guard to a known function and run its test. With no design choice to make, Claude edits src/utils/quantity.js directly and runs node --test tests/quantity.test.js, and three passing tests confirm the fix. Asking directly skips the plan; it does not bypass permissions.",
+  "exam_tip": "If you can describe the diff in one sentence, skip plan mode and ask for the change plus its test. Don't over-correct after the plan-mode questions: B adds overhead here, and A and D only change approval behaviour, which this task never needed."
  },
  {
   "task": "3.5",
@@ -1339,7 +1405,9 @@
    "C": "With the criteria unresolved, this ships the false positives first and fixes them after CI failures, the expensive order.",
    "D": "Scheduled autonomous work cannot ask clarifying questions, and inferring requirements from PR chatter guesses at product decisions."
   },
-  "domain": 3
+  "domain": 3,
+  "explain": "In this run Claude writes into spec.md the questions it would have asked through AskUserQuestion, plus the files and interfaces involved, what stays out of scope and an end-to-end verification step. That file becomes the acceptance criteria, so a fresh implementation session builds against settled answers instead of guesses. Fuzzy criteria are what turn a CI reviewer into a false-positive machine, and the spec settles them first.",
+  "exam_tip": "Unresolved requirements call for an interview first: AskUserQuestion in an interactive session, a self-contained SPEC.md, then implementation in a fresh session. Option B looks clever but fails, because AskUserQuestion is not available to subagents delegated through the Agent tool, and a raw transcript makes a weak handoff."
  },
  {
   "task": "3.5",
@@ -1350,12 +1418,12 @@
   "trap": "Fix citations now, excerpts later, in separate runs.",
   "fix": "Plan mode with one request naming both defects and the checks.",
   "cmds": [
-   "uv run research_system.py --case UC-27"
+   "uv run plan_request.py"
   ],
-  "see": "You write one plan-mode request: both defects, shared interface, acceptance test.",
+  "see": "render.py prints the bug first: the citation twice and an empty excerpt line. Then three plan-mode runs: each separate request plans its own fix; the one detailed request plans a single shared claim-source interface across schema.py, synthesis_prompt.md and render.py, ending with an acceptance test. The separate requests cost two sessions of reading the same files.",
   "id": 35,
   "topic": 3,
-  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "try": "Run 1b again and compare which field name its plan keeps (quote or excerpt) with run 1a's. Then add a third symptom to the run 2 request in plan_request.py.",
   "topic_name": "Claude Code Configuration & Workflows",
   "task_title": "Apply iterative refinement techniques for progressive improvement",
   "sim_name": "Multi-Agent Research System",
@@ -1382,7 +1450,9 @@
    "C": "A broad, unplanned fix across three coupled files is likely to make inconsistent edits.",
    "D": "/clear and separate sessions suit unrelated tasks or polluted context, not coupled defects that need a shared mental model."
   },
-  "domain": 3
+  "domain": 3,
+  "explain": "Both defects come from one cause: the schema renamed excerpt to quote and split out the citation, but the synthesis prompt and the report template were never updated. Two separate requests start two sessions that each rediscover that cause, and each plan can settle the field names its own way. One detailed request in plan mode names both symptoms, the three files and the acceptance test, so Claude designs a single interface and proves it with one test.",
+  "exam_tip": "When linked defects share an interface, choose one detailed plan-mode request that names both symptoms, the shared contract and an acceptance test. Two independent requests, or jumping straight to edits, risk two incompatible fixes to the same schema."
  },
  {
   "task": "3.6",
@@ -1425,7 +1495,9 @@
    "C": "Output format does not make an interactive session non-interactive.",
    "D": "Timeouts and retries hide the hang and waste runner time. The job still depends on a human-in-the-loop mode."
   },
-  "domain": 3
+  "domain": 3,
+  "explain": "claude -p processes one prompt, writes the result to stdout and exits, so the runner never waits on a terminal. The evidence shows the run finishing in 6.7 seconds with exit code 0 and a single JSON envelope carrying a session_id, because the job pairs -p with --output-format json. The JSON flag shapes the output; -p is what makes the run non-interactive.",
+  "exam_tip": "A CI job that hangs with no one at the keyboard is stuck in interactive mode, so fix the mode with -p. Option C tempts most: --output-format json on plain claude still leaves an interactive session, and timeouts, retries or \"please exit\" instructions only hide the hang."
  },
  {
   "task": "3.6",
@@ -1468,7 +1540,9 @@
    "B": "A slash command packages the prompt but does not change the execution mode.",
    "C": "Instructions do not change how the CLI runs; it still waits on an interactive session."
   },
-  "domain": 3
+  "domain": 3,
+  "explain": "The job calls `claude -p /pr-check 418`, so the team's shared slash command runs inside print mode and returns in under 12 seconds with a clean exit and a session ID. The command file only packages the review prompt; it has no say in how the CLI runs. Without -p, the same /pr-check would wait for a terminal user until the runner timed out.",
+  "exam_tip": "Ask which option actually changes the execution mode: only -p (--print) does. Plan mode (A), a shared slash command (B) and a CLAUDE.md note (C) all leave an interactive session waiting, so reject them even when they sound like sensible team habits."
  },
  {
   "task": "4.1",
@@ -1511,7 +1585,9 @@
    "C": "Repackages the noise without reducing it, and buries the real bugs.",
    "D": "Confidence scores do not define what is worth reporting, and self-reported confidence is unreliable."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "\"Report only issues you are highly confident about\" draws no line between bugs and taste, and Claude can be confident that a variable name breaks local style. Categorical criteria (report production bugs, security flaws, broken edge cases and regressions; skip naming and style) give the model a testable rule. On stock/pricing.py that rule surfaces the None dereference in getPrice and drops the comments on names.",
+  "exam_tip": "When a reviewer is noisy, define what to report and what to skip instead of asking for more confidence. Option D's numeric confidence score is the trap: self-reported confidence is unreliable, and it still says nothing about what deserves a comment."
  },
  {
   "task": "4.1",
@@ -1522,12 +1598,12 @@
   "trap": "Disable the whole quality gate, or add \"be careful\".",
   "fix": "Omit the noisy category, then rebuild it with examples and evals.",
   "cmds": [
-   "uv run research_system.py --case UC-20"
+   "uv run quality_gate.py"
   ],
-  "see": "You write the revised category list and an eval plan with a measurable threshold.",
+  "see": "Run 1: the broad 'unsupported market claim' category flags the well-cited market findings (precision about 0.25). Run 2: with it left out, total false positives drop and missing citation and source conflict still catch every labelled case. Run 3: the rebuilt category is scored on the labelled set before it returns.",
   "id": 39,
   "topic": 4,
-  "try": "In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.",
+  "try": "Loosen REBUILT in quality_gate.py back towards the broad wording, rerun, and watch run 3's precision fall below the 0.9 bar.",
   "topic_name": "Prompt Engineering & Structured Output",
   "task_title": "Design prompts with explicit criteria to improve precision and reduce false positives",
   "sim_name": "Multi-Agent Research System",
@@ -1554,7 +1630,9 @@
    "C": "Throws away the categories that are working and the trust they earn.",
    "D": "Leaves the noise in place, and with it the erosion of trust in the whole report."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "The team's definition flags any market figure, so it fires on findings that already cite a source, and engineers stop trusting the whole report. Leaving that one category out of the active list removes its noise without losing the two categories that work. Rebuilding it with a tight definition and examples, then scoring precision and recall on labelled findings, gives an evidence-based bar for switching it back on.",
+  "exam_tip": "When one category floods a classifier with false positives, pick the option that pauses that category, keeps the accurate ones, and rebuilds it with definitions, examples and precision/recall evals. Strict JSON fixes format, not judgement; disabling everything or asking people to ignore warnings destroys trust."
  },
  {
   "task": "4.2",
@@ -1597,7 +1675,9 @@
    "C": "Untagged transcripts can teach accidental patterns, and they cost context.",
    "D": "Phrase checklists are brittle, and written criteria have already failed here."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "Written criteria describe a boundary in the abstract; tagged examples show Claude where it falls on requests that look alike. With three <example> blocks in .claude/commands/task.md, each giving a request, the chosen path and why the alternatives lose, the run classifies \"look into this error\" as investigate, \"can you improve this module\" as plan and \"clean this up\" on a named file as modify. The tags keep the examples apart from the live input, so Claude treats them as guidance, not as the request in front of it.",
+  "exam_tip": "Detailed criteria have already failed in this stem, so the next move is two to four tagged examples with reasoning against the plausible alternative. Reject option C's pile of untagged transcripts, which teaches accidental patterns and eats context, and D's phrase checklist, which repeats the approach that failed."
  },
  {
   "task": "4.3",
@@ -1640,7 +1720,9 @@
    "C": "Choosing the “closest” category is the false-precision problem itself.",
    "D": "Retrying until a listed value comes back forces more false precision, at extra cost."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "A closed enum with no honest exit forces the model to pick the closest category for vague text, while new source types escape the list altogether. Adding unclear and other, with other_detail whenever other is used, gives every passage a valid value: the run keeps all values inside the six-value enum, files vague passages as unclear and attaches a description to every other. The main field stays constrained, so downstream validation keeps passing.",
+  "exam_tip": "Build an escape hatch into the enum: unclear for thin evidence, other plus other_detail for new types. Reject \"pick the closest\" (C) and \"retry until a listed value comes back\" (D), which both buy false precision, and dropping the enum (B), which trades it for free text that breaks consumers."
  },
  {
   "task": "4.3",
@@ -1672,7 +1754,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "tool_choice is a Messages API parameter: \"auto\" lets Claude answer in prose, \"any\" makes it call some tool, and {\"type\": \"tool\", \"name\": \"extract_invoice\"} forces one named tool. The Agent SDK exposes no such setting, so the script puts the request in the system prompt and records what Claude actually did. An instruction is not a guarantee, which is why the evidence tells you to check that a tool_use block came back before you trust the output.",
+  "exam_tip": "With an unknown document type and several extraction schemas, pick tool_choice \"any\", and save the forced named tool for an extraction that must run first. Reject \"auto\", which lets Claude reply in prose, and reject any option that assumes a forced setting behaves the same on every model and surface without testing it."
  },
  {
   "task": "4.4",
@@ -1714,7 +1798,9 @@
    "C": "Strict tool use guarantees schema conformance, not operational correctness.",
    "D": "Throws away the guarantees that already fixed the format errors, a step backwards."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "The schema already guarantees shape, so the remaining errors are about meaning: a merchandise credit sitting in shipping_refund, or line items that do not add up to the total. A business-rule check runs on recommend_refund before process_refund fires, rejects violations by name and sends them back for correction. That is why the cash refund lands at exactly $105 and the $8 shipping stays as store credit; switch on --no-validation and nothing catches the misfiled amount.",
+  "exam_tip": "Once JSON parses and fields are present, stop tightening the schema: strict tool use enforces format, never operational correctness. Choose downstream invariant checks with specific feedback, and reject \"make every field required\", because it pushes Claude to invent values."
  },
  {
   "task": "4.4",
@@ -1746,7 +1832,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The validator separates errors a second attempt can fix from facts a retry can never supply. DOC-03's line items sum to 35.00 against a printed 38.00, a real gap from GST that the receipt never itemises, so the script keeps stated_total and calculated_total, sets conflict_detected and routes it to a human. DOC-07 points to a schedule A that is not attached, so Claude fills missing_information and the script skips the retry; only a format error earns a follow-up that resends the document, the failed extraction and the exact validation error.",
+  "exam_tip": "Ask one question before you retry: is the answer in the source? A DD/MM date is a format mismatch worth a retry with the error attached; data that lives in an absent attachment is not, so reject \"retry until something comes back\"."
  },
  {
   "task": "4.5",
@@ -1789,7 +1877,9 @@
    "B": "One unvalidated pass of the prompt improver, accepted without testing against criteria, gives no evidence that the disposition inconsistency is fixed.",
    "D": "JSON constraints may fix the missing fields (format), but not the inconsistent decisions (semantics), and errors are still discovered only after the full run."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "The pilot showed systematic defects, so the script measures the template against a representative evaluation set before anything reaches the 35,000-item batch. Batch requests run independently and you only see results after processing ends, which makes the batch a slow and costly place to find a prompt bug. The refined triage_template beats v0 on first-pass rate, and only it reports ready_for_batch true.",
+  "exam_tip": "When a pilot already shows inconsistent decisions, fix the prompt against an evaluation set first and batch second. Reject \"run it all tonight and resubmit bad rows by custom_id\": resubmission mops up residual errors, not known prompt defects."
  },
  {
   "task": "4.5",
@@ -1831,7 +1921,9 @@
    "C": "No batch worker executes your client tools.",
    "D": "Fabricating customer and order data in a refund workflow."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "Your MCP-backed customer and order tools are client tools, so Claude can only ask for them: the row ends with stop_reason \"tool_use\" and waits for a tool_result. Nothing inside the Message Batches API runs your code mid-request, and you collect results only after the batch ends. The script therefore matches each row by custom_id, runs the requested tool itself and continues the case in a follow-up request.",
+  "exam_tip": "Batches can request client tools but never execute them, so pick the design that batches the first pass and continues tool_use rows in later Messages API calls. Reject any option where a \"batch worker\" runs your backend or where client tools get relabelled as server tools."
  },
  {
   "task": "4.5",
@@ -1874,7 +1966,9 @@
    "C": "Gives up the 50% saving on a workload that doesn't need fast results.",
    "D": "Typical completion time is not a guarantee, so users could wait hours."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "The router asks one question: is a user waiting? interactive_upload blocks a person, so it stays on synchronous Messages API calls and records latency in seconds. nightly_archive gets reviewed the next business day, so it goes to the Message Batches API with a batch id and the 0.5 cost multiplier, accepting a processing window of up to 24 hours.",
+  "exam_tip": "Route by latency tolerance: blocking flows stay synchronous, overnight and next-day work goes to batch for the 50% saving. Reject options that lean on \"most batches finish within an hour\"; that is typical behaviour, not an SLA."
  },
  {
   "task": "4.6",
@@ -1917,7 +2011,9 @@
    "B": "A single merged pass by the agent that produced the synthesis adds no independence and dilutes attention across everything at once.",
    "C": "An extended self-review keeps the same reasoning context, along with its blind spots."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "A generator reviewing its own draft carries the same context and the same blind spots. Here the coordinator spawns fresh reviewer subagents in a single response, so they run in parallel, and each one sees only the claim-source bundle it was passed, because subagents share no session history. Contradictions between sections only surface when something compares them, which is why a separate integration pass follows the per-section reviews.",
+  "exam_tip": "Separate generation from review, then add a cross-section pass. Reject \"extended self-review\" (same context, same blind spots) and any option that expects reviewers to find excerpts in a shared session that does not exist."
  },
  {
   "task": "4.6",
@@ -1960,7 +2056,9 @@
    "C": "Self-reported confidence is uncalibrated, so confident errors slip through, and the task's shape is unchanged.",
    "D": "The same overloaded single pass, with even more competing demands added."
   },
-  "domain": 4
+  "domain": 4,
+  "explain": "Each reviewer gets a bundle smaller than the full synthesis, so attention stays on a few sources instead of thinning across all of them; recall drops as context grows. The chain runs as separate calls, so every intermediate output becomes a checkpoint you can log and score. Integration runs last because only then are the reviewed findings ready to compare for conflicts and coverage gaps.",
+  "exam_tip": "Pick the explicit prompt chain with source-level passes and a final integration pass when the question asks for loggable checkpoints. Reject voting across identical full-bundle reviewers: duplicating an overloaded review does not cure attention dilution."
  },
  {
   "task": "4.6",
@@ -1994,7 +2092,9 @@
   },
   "answer": "A",
   "why": "Splitting reviews into focused passes directly addresses the root cause: attention dilution when processing many files at once. File-by-file analysis ensures consistent depth, while a separate integration pass catches cross-file issues. Option B shifts burden to developers without improving the system. Option C misunderstands that larger context windows don't solve attention quality issues. Option D would actually suppress detection of real bugs by requiring consensus on issues that may only be caught intermittently.",
-  "wrong": {}
+  "wrong": {},
+  "explain": "Each per-file pass sees one file, so stock/jobs.py looks clean on its own and its review returns no findings. The broken contract spans two files: PR 418 added a required warehouse parameter to api.get_stock, while jobs.sync still calls it with only sku. Only the integration pass reads across file boundaries, so only it flags the TypeError that would crash the nightly sync on its first SKU.",
+  "exam_tip": "Fourteen files with uneven depth and contradictory comments point to attention dilution, so split into per-file passes plus one cross-file pass. Reject the bigger context window, and reject two-of-three voting, which hides bugs that show up only intermittently."
  },
  {
   "task": "5.1",
@@ -2036,7 +2136,9 @@
    "C": "An instruction to “remember” adds no durable context layer.",
    "D": "A recency trick that covers only the latest lookup. Facts about the other orders are still lost."
   },
-  "domain": 5
+  "domain": 5,
+  "explain": "Summarising older turns compresses exactly the order IDs and amounts that matter, so refunds drift between orders. The orchestration layer owns a CASE FACTS block, updates it as evidence arrives and opens every turn with it, so Claude reads exact values rather than a lossy summary. After three turns the facts still tie the single $45 refund to ORD-5503.",
+  "exam_tip": "Keep transactional facts as structured state your application owns and resends; let summaries cover small talk only. Reject \"tell the agent to remember\", which adds no durable context, and reject summarising more often, which loses more detail."
  },
  {
   "task": "5.1",
@@ -2047,12 +2149,12 @@
   "trap": "A bigger model, or summarise later.",
   "fix": "Wrap the tool so it returns only review-relevant fields.",
   "cmds": [
-   "uv run casekit.py --case UC-13"
+   "uv run payload_review.py"
   ],
-  "see": "Verbose payload: tens of kilobytes. Compact payload: a few hundred bytes.",
+  "see": "Verbose wrapper: analyze_file returns about 37,500 bytes, and Claude reads about 22,000 input tokens on the next turn. Compact wrapper: about 190 bytes and about 1,300 tokens. Both reviews name total_qty and low_stock and the same covering test.",
   "id": 52,
   "topic": 5,
-  "try": "Fix the loop in repo/stock/totals.py and the caller in repo/stock/jobs.py, rerun, and watch the blocking count fall.",
+  "try": "Add one more field to the compact payload in tools/file_analysis.py, rerun, and watch the compact token count move.",
   "topic_name": "Context Management & Reliability",
   "task_title": "Manage conversation context to preserve critical information across long interactions",
   "sim_name": "Claude Code for Continuous Integration",
@@ -2079,7 +2181,9 @@
    "B": "Treats the symptom later. Current payloads stay bloated, and needed older results may be cleared.",
    "D": "Cached tokens still count toward the context window."
   },
-  "domain": 5
+  "domain": 5,
+  "explain": "Every tool_result is appended to the conversation and read again on every later turn, so a 40-field payload costs context at each step of the review. The reviewer uses five fields; the compact wrapper returns only those, and the review comes out the same at a fraction of the tokens. Across a long pull request with many file analyses, that gap decides whether the review fits in the context window.",
+  "exam_tip": "When tool results bloat the context, change the tool wrapper to return only the fields the task needs. A bigger max_tokens budget changes output, not input; telling Claude to ignore fields still makes it read them; prompt caching cheapens repeated prefixes, not new tool results."
  },
  {
   "task": "5.1",
@@ -2122,7 +2226,9 @@
    "C": "Relies on the model finding the buried taxonomy again inside a long transcript.",
    "D": "max_tokens caps output. Sending the transcript unchanged keeps degrading recall."
   },
-  "domain": 5
+  "domain": 5,
+  "explain": "The taxonomy sits somewhere in a long resent transcript, but being present is not the same as being usable once recall degrades. The coordinator writes the taxonomy and source map to research_state.json and loads that compact file straight into the synthesis prompt. The synthesis packet quotes the state file, so later passes organise findings around the domain categories instead of generic ones.",
+  "exam_tip": "When early findings fade in a long run, choose an explicit state file the application reloads; the Messages API is stateless, so you assemble the context. Reject prompt caching, which saves cost but neither frees context nor restores attention."
  },
  {
   "task": "5.2",
@@ -2157,7 +2263,9 @@
   },
   "answer": "A",
   "why": "Adding explicit escalation criteria with few-shot examples directly addresses the root cause: unclear decision boundaries. This is the proportionate first response before adding infrastructure. Option B fails because LLM self-reported confidence is poorly calibrated—the agent is already incorrectly confident on hard cases. Option C is over-engineered, requiring labeled data and ML infrastructure when prompt optimization hasn't been tried. Option D solves a different problem entirely; sentiment doesn't correlate with case complexity, which is the actual issue.",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The system prompt spells out escalation criteria and pairs each with a short example, so Claude decides on case type rather than tone. CS-05's explicit request for a human escalates at once, CS-08's price match escalates because policy is silent on it, and CS-09's two Sofia Alvarez records trigger a request for another identifier. CS-10 sounds angry, yet ORD-5501 is routine, so the agent acknowledges the frustration and resolves it.",
+  "exam_tip": "Unclear decision boundaries call for explicit criteria plus few-shot examples, the proportionate first fix. Reject sentiment triggers (anger does not mean complexity) and self-reported confidence scores, because the agent is already confidently wrong on the hard cases."
  },
  {
   "task": "5.3",
@@ -2191,7 +2299,9 @@
   },
   "answer": "A",
   "why": "Structured error context gives the coordinator the information it needs to make intelligent recovery decisions—whether to retry with a modified query, try an alternative approach, or proceed with partial results. Option B's generic status hides valuable context from the coordinator, preventing informed decisions. Option C suppresses the error by marking failure as success, which prevents any recovery and risks incomplete research outputs. Option D terminates the entire workflow unnecessarily when recovery strategies could succeed.",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The search tool does not swallow the visual-arts timeout. It returns failure_type, the attempted query, partial_results and suggested alternatives, including reporting the topic as a coverage gap. The coordinator reads that structure, decides to proceed with what it has and carries the gap into the final report, so the run finishes instead of crashing or claiming full coverage.",
+  "exam_tip": "Choose structured error context that lets the coordinator choose to retry, rephrase or report a gap. Reject an empty result marked as success, which hides the failure, and reject a generic \"search unavailable\", which strips out the details recovery needs."
  },
  {
   "task": "5.4",
@@ -2227,7 +2337,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The caller search runs in an explore subagent with its own context window, so the main session never sees the raw grep hits and file reads, only the returned summary. The main agent then writes the conclusions to NOTES.md, which names calculate_total and its caller in src/legacy/report.py. Your session stays short, and the scratchpad keeps the findings safe from later context degradation.",
+  "exam_tip": "Delegate noisy discovery to a subagent and persist its findings in a scratchpad file. Reject reading everything in the main thread: verbose output crowds out the specifics you found earlier."
  },
  {
   "task": "5.4",
@@ -2238,12 +2350,12 @@
   "trap": "Paste dozens of modules into one conversation.",
   "fix": "Explore subagent with explicit scope, implement from its summary.",
   "cmds": [
-   "uv run extract.py --case UC-22"
+   "uv run discovery_delegate.py"
   ],
-  "see": "Prints the delegation prompt to paste into Claude Code. The main thread stays short.",
+  "see": "Run 1: the main thread makes the Read, Grep and Glob calls itself and holds about 36,000 characters of tool output. Run 2: the main thread makes one Agent call; the explorer subagent does the searching, and only its summary (about 1,000 characters) reaches the main thread. Both runs end with a plan naming the files to change.",
   "id": 57,
   "topic": 5,
-  "try": "Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.",
+  "try": "Raise the explorer's 10-line limit in discovery_delegate.py to 60 lines, rerun, and watch run 2's main-thread character count climb.",
   "topic_name": "Context Management & Reliability",
   "task_title": "Manage context effectively in large codebase exploration",
   "sim_name": "Structured Data Extraction",
@@ -2270,7 +2382,9 @@
    "C": "Importing every file floods the context even more.",
    "D": "Compacting after the fact is lossy, and the target-schema details may be summarised away."
   },
-  "domain": 5
+  "domain": 5,
+  "explain": "Every file the main thread reads stays in its context, so discovery crowds out the target you need at implementation time. A subagent has its own context: it does the searching and reading there and returns only a short summary. The main thread keeps the plan and the schema change in view, and the explorer's 30,000-plus characters never enter it.",
+  "exam_tip": "When exploration output floods the main conversation, delegate discovery to an Explore-style subagent that returns a concise summary, then plan in the main thread. A bigger context window or compacting afterwards only treats the symptom."
  },
  {
   "task": "5.4",
@@ -2306,7 +2420,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The crashed session exported its state to manifest.json: phase_completed, the old session_id and the full findings. The recovery prompt injects that manifest, so a brand-new session already knows the root cause and file locations. It skips Grep and the explore subagent, reads only src/billing/invoice.py and runs pytest to confirm.",
+  "exam_tip": "Crash recovery means each agent exports state to a known location and the coordinator loads the manifest on resume. Reject \"start exploring again\": it burns time and context and may reach different conclusions."
  },
  {
   "task": "5.5",
@@ -2349,7 +2465,9 @@
    "C": "Plan mode does not provide segmented validation or calibrated thresholds.",
    "D": "The aggregate rate is exactly the metric that masks the concentrated errors."
   },
-  "domain": 5
+  "domain": 5,
+  "explain": "A high overall acceptance rate hides errors that cluster in a few fields, so the documentation update emits one confidence score per field instead of one per file. The runner routes any field under 0.8 to human review, and holds function signatures and migration warnings to a stricter 0.95 bar. Reviewers now spend their time on the risky fields while low-risk fields flow through.",
+  "exam_tip": "Before cutting review, demand field-level confidence calibrated on labelled validation examples; a raw self-score becomes a routing signal only after calibration. Reject a fixed file-level threshold and any gate built on the aggregate acceptance rate."
  },
  {
   "task": "5.5",
@@ -2382,7 +2500,9 @@
   },
   "answer": "A",
   "why": "",
-  "wrong": {}
+  "wrong": {},
+  "explain": "The script scores each extraction against fixtures/labels.json and reports accuracy three ways: overall, by_field and by_document_type. Break one invoice total and the miss lands only in the invoice bucket, so by_document_type.invoice falls while the receipt and credit_note scores hold. The overall figure dips by less, because it averages the miss across every document, and that is how an aggregate hides a weak segment.",
+  "exam_tip": "Faced with \"97% overall, let's cut human review\", check accuracy by document type and by field first, then keep stratified sampling running. Reject any option that treats one aggregate number as proof that every segment is safe to automate."
  },
  {
   "task": "5.6",
@@ -2425,6 +2545,8 @@
    "C": "Full transcripts bloat the context, and inferring provenance is unreliable.",
    "D": "Inspecting more sources does not help when the handoff still drops the metadata."
   },
-  "domain": 5
+  "domain": 5,
+  "explain": "The synthesiser knows only what the handoff carries, and a prose summary plus a general source list drops which claim came from where. Document-analysis now returns structured claim records with document, page, date and a methodology note. With that metadata in hand, the report keeps the conflicting 41% and 55% figures side by side with their sources instead of blending them into one claim.",
+  "exam_tip": "Treat provenance as an interface contract: pick structured claim records from each subagent. Reject a bibliography pass at the end, which cannot recover distinctions lost upstream, and reject asking the synthesiser to infer provenance from full transcripts."
  }
 ]

@@ -192,7 +192,7 @@ def step4():
 
 # --------------------------------------------------------------------------- 5
 def step5():
-    print("== step 5: MCP scopes and environment expansion (no API call)")
+    print("== step 5: MCP scopes and environment expansion")
     proj = json.loads((WS / ".mcp.json").read_text())
     user = json.loads((WS / "user-claude.example.json").read_text())
     raw = (WS / ".mcp.json").read_text()
@@ -208,6 +208,53 @@ def step5():
     }
     save()
     print("   project servers:", state["steps"]["5"]["project_servers"], "| placeholders:", placeholders, "| literal secrets:", literal)
+    step5_live()
+
+
+FAKE_TOKEN = "sntrys_FAKE_lab23_do_not_commit_7f3a"
+
+def step5_live():
+    """Live: ask Claude Code to add a team MCP server when the request contains a personal token. Runs on a throwaway copy."""
+    print("== step 5, live: add a team Sentry MCP server, given a personal token")
+    tmp = Path(tempfile.mkdtemp(prefix="sim2-mcp-")) / "workspace"
+    shutil.copytree(WS, tmp, ignore=shutil.ignore_patterns("node_modules", ".git"))
+    user_cfg = Path.home() / ".claude.json"
+    def user_servers():  # user scope: the mcpServers entry only (Claude Code updates the rest of this file on every run)
+        try: return json.dumps(json.loads(user_cfg.read_text()).get("mcpServers", {}), sort_keys=True)
+        except (OSError, ValueError): return None
+    before = user_servers()
+    ask = (f"Add a 'sentry' MCP server for the whole team to this project. It runs `npx -y @sentry/mcp-server` and needs a "
+           f"SENTRY_TOKEN environment variable. My personal token is {FAKE_TOKEN}. Set it up so every teammate gets the server "
+           "from git but nobody's token is committed. Edit only files in this folder.")
+    # Only local settings load, so Claude Code doesn't try to start this workspace's own MCP servers while it edits them.
+    # .mcp.json is a protected file, so this throwaway copy runs with permissions bypassed. The deny rules still hold
+    # in that mode: Claude can't touch your real user-scope config.
+    r = simkit.run_agent(ask, cwd=tmp, mode="bypassPermissions", max_turns=10, tools=["Read", "Edit", "Write", "Glob"],
+                         disallowed=["Bash", "Edit(~/.claude.json)", "Write(~/.claude.json)", "Edit(~/.claude/**)", "Write(~/.claude/**)"],
+                         sources=("local",))
+    state["cost_usd"] = round(state["cost_usd"] + (r.get("total_cost_usd") or 0), 4)
+    cfg = json.loads((tmp / ".mcp.json").read_text())
+    sentry = cfg.get("mcpServers", {}).get("sentry", {})
+    holding = [p for p in tmp.rglob("*") if p.is_file() and FAKE_TOKEN in p.read_text(errors="ignore")]
+    subprocess.run(["git", "init", "-q"], cwd=tmp, capture_output=True)
+    def ignored(p):  # would git leave this file out of a commit? (.claude/settings.local.json and .env files usually are)
+        r = subprocess.run(["git", "check-ignore", "-q", str(p)], cwd=tmp, capture_output=True)
+        return r.returncode == 0 if r.returncode in (0, 1) else p.name in ("settings.local.json", ".env", ".env.local")
+    leaked = [str(p.relative_to(tmp)) for p in holding if not ignored(p)]
+    kept_local = [str(p.relative_to(tmp)) for p in holding if ignored(p)]
+    after = user_servers()
+    checks = [
+        {"check": "the project .mcp.json now has a 'sentry' server", "pass": bool(sentry)},
+        {"check": "its token is the ${SENTRY_TOKEN} placeholder", "pass": "${SENTRY_TOKEN}" in json.dumps(sentry)},
+        {"check": f"the personal token is in no file git would commit (committed: {', '.join(leaked) or 'none'}; git-ignored: {', '.join(kept_local) or 'none'})", "pass": not leaked},
+        {"check": "your user-scope MCP servers in ~/.claude.json are unchanged", "pass": before == after}]
+    state["steps"]["5"]["live"] = {"request": ask.replace(FAKE_TOKEN, "<personal token>"), "sentry_server": sentry, "files_with_token": leaked, "git_ignored_files_with_token": kept_local,
+                                   "reply": r.get("result"), "checks": checks, "cost_usd": r.get("total_cost_usd")}
+    save()
+    print(f"   sentry server: {json.dumps(sentry)}")
+    for c in checks: print(f"   {'PASS' if c['pass'] else 'FAIL'}  {c['check']}")
+    shutil.rmtree(tmp.parent, ignore_errors=True)
+    if not all(c["pass"] for c in checks): sys.exit(1)
 
 
 STEPS = {"1": step1, "2": step2, "3": step3, "4": step4, "5": step5}

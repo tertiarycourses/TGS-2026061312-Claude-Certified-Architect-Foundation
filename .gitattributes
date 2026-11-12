@@ -1,0 +1,5 @@
+# Windows learners: Git for Windows would turn these into CRLF, and sh then fails on "\r".
+*.sh       text eol=lf
+*.command  text eol=lf
+# Batch files must be CRLF, or cmd.exe can misread them.
+*.cmd      text eol=crlf

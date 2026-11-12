@@ -7,7 +7,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 | Course code | `TGS-2026061312` |
 | Programme | WSQ |
 | Duration | 2 days / 16 hours |
-| Courseware release | Trainer deck v2.5, Lesson Plan v2.4, Learner Guide v2.4 |
+| Courseware release | Trainer deck v2.11, Lesson Plan v2.6, Learner Guide v2.6 |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html) |
 | Funding | Up to 70% course fee funding for eligible learners and employers. Eligibility and current terms apply. |
 
@@ -48,14 +48,47 @@ Each simulator is one official exam scenario, written in Python on the [Claude A
 5. **[Claude Code for Continuous Integration](labs/simulators/simulator-5-ci-cd/)**: A reviewer in the pipeline that developers don't learn to ignore.
 6. **[Structured Data Extraction](labs/simulators/simulator-6-structured-extraction/)**: Messy documents in, trustworthy records out.
 
-```bash
-claude auth login      # first time only
-cd labs
-uv sync                # first time only
-uv run serve.py        # opens http://localhost:8765, or the next free port
+### Set up your laptop: Claude installs everything for you
+
+You need the Claude desktop app, signed in with a Pro, Max, Team or Enterprise plan. Windows and Mac work the same way. You don't install anything yourself.
+
+**1. Open Claude Code in the desktop app, on an empty folder**
+
+Open the Claude desktop app and click the **Code** tab. Under the prompt box, set the environment to **Local**, then click the folder control, choose **Open folder…** and create a new empty folder called `ccar-f`.
+
+Put the folder in your user folder, for example `C:\Users\<you>\ccar-f` or `/Users/<you>/ccar-f`. Keep it out of OneDrive, iCloud Drive and Dropbox, because file syncing stalls the simulators.
+
+**2. Paste this prompt (first time only)**
+
+```text
+Set up the Claude Certified Architect Foundation course simulators in this folder.
+Read https://raw.githubusercontent.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/master/labs/START-LABS.md
+and follow it step by step. Install anything that's missing for me.
 ```
 
-Each simulator page has **Start here** (the scenario in plain words, then steps to follow), **Play it live** (you act in the scenario and watch each step as it happens) and its **lab buttons**. Live runs use your Claude allowance.
+Claude installs Git and uv if you don't have them, copies the course into the folder with all its mock data, and opens a window titled *Claude Certified Architect simulators*. Approve each command Claude asks to run. The first time, a browser page asks you to approve the Claude sign-in. It takes about five minutes.
+
+**3. Every session after that: double-click to start**
+
+Double-click `labs\start-labs.cmd` on Windows, or `labs/start-labs.command` on Mac. The simulators open at http://localhost:8765, or the next free port. Keep that window open during class. Closing it stops the simulators.
+
+You can also ask Claude in the Code tab: *Start the course simulators.*
+
+<details>
+<summary>Prefer a terminal, or the desktop app won't cooperate?</summary>
+
+Install Claude Code in a terminal with the official installer:
+
+| System | Command |
+|---|---|
+| Windows (PowerShell) | `irm https://claude.ai/install.ps1 \| iex` |
+| Windows (CMD) | `curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd` |
+| Mac | `curl -fsSL https://claude.ai/install.sh \| bash` |
+
+Open a new terminal, make an empty `ccar-f` folder, `cd` into it, run `claude`, and paste the same prompts. If the install fails, ask the Claude desktop app in a normal chat: *"Help me install Claude Code in the terminal on my Windows laptop. Here's the error I see: …"*
+</details>
+
+Each simulator page opens straight on its first lab, with a button for every other lab in that simulator. Live runs use your Claude allowance.
 
 Every lab page has a built-in terminal, so you never need to open one. Prefer Claude Code? Open it in `labs` and type `/lab 9`.
 
@@ -155,9 +188,9 @@ Questions come from the SkillCertPro practice exam Part 1 (40 labs, third-party 
 
 ## In this repository
 
-- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.5.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.5.pdf)
-- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v2.4.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v2.4.pdf)
-- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v2.4.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v2.4.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v2.4.md)
+- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.11.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.11.pdf)
+- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v2.6.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v2.6.pdf)
+- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v2.6.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v2.6.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v2.6.md)
 - [The labs folder](labs/): simulators, lab instructions and saved evidence
 
 ## What isn't here

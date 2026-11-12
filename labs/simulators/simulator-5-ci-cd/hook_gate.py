@@ -54,6 +54,8 @@ def scratch():
     shutil.copytree(REPO, tmp)
     for leftover in ("ci/approvals.log", "ci/artifacts/tests-passed.json"):
         (tmp / leftover).unlink(missing_ok=True)
+    for sh in tmp.rglob("*.sh"):  # cloud sync and zip downloads drop the execute bit; Claude runs ./ci/approve_pr.sh
+        sh.chmod(sh.stat().st_mode | 0o111)
     return tmp
 
 
@@ -77,7 +79,8 @@ def scenario_denied():
 
 def scenario_allowed():
     work = scratch()
-    tests = subprocess.run(["./ci/run_tests.sh", "418"], cwd=work, capture_output=True, text=True)
+    sh = shutil.which("sh") or r"C:\Program Files\Git\bin\sh.exe"  # Windows: sh comes with Git for Windows
+    tests = subprocess.run([sh, "ci/run_tests.sh", "418"], cwd=work, capture_output=True, text=True)
     r = claude(work, PROMPT)
     out = {"scenario": "tests run first, artifact present", "test_runner": tests.stdout.strip(),
            "claude": r, "after": state(work), "denied": "DENIED" in (r["result"] or ""),

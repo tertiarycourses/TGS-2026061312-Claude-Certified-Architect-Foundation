@@ -534,7 +534,7 @@ async def run_case(uc: str, fresh: bool):
             import subprocess
             subprocess.run([sys.executable, "-B", str(HERE / "rules_sim.py")], cwd=HERE, check=False)
         else:
-            print(f"[{uc}] reusing evidence/rules_sim.json (pass --fresh to rerun)")
+            print(f"[{uc}] reusing evidence/rules_sim.json (--reuse given)")
         rs = json.loads(rs_file.read_text())["variants"]
         tok = lambda v, k: rs[v]["runs"][k]["token_seen"]
         out.update(command="uv run rules_sim.py", config_change=task.get("config_change"),
@@ -555,7 +555,7 @@ async def run_case(uc: str, fresh: bool):
             print(f"[{uc}] running mode={mode}")
             run = await run_mode(mode, prompt)
         else:
-            print(f"[{uc}] reusing evidence/run{'' if mode == 'broad' else '-' + mode}.json (pass --fresh to rerun)")
+            print(f"[{uc}] reusing evidence/run{'' if mode == 'broad' else '-' + mode}.json (--reuse given)")
         out.update(mode=mode, prompt=prompt, config_change=task.get("config_change"),
                    cost_usd=run["result"]["total_cost_usd"], rubric=evaluate(case, run))
     for r in out["rubric"]:
@@ -565,7 +565,7 @@ async def run_case(uc: str, fresh: bool):
 
 async def main():
     args = sys.argv[1:]
-    fresh = "--fresh" in args
+    fresh = "--reuse" not in args  # live by default: labs must show a real run; --reuse replays the saved one
     if "--case" in args:
         wanted = args[args.index("--case") + 1]
         ids = sorted(p.stem for p in CASES.glob("UC-*.json")) if wanted == "all" else [wanted]

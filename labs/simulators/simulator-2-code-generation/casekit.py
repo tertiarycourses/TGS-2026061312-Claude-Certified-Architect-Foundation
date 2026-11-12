@@ -35,6 +35,13 @@ MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
 SOURCE_DIRS = {"workspace": LAB / "workspace", "repo": LAB / "repo"}
 
 
+def find_sh():
+    """A POSIX sh: on Mac and Linux it's built in; on Windows it comes with Git for Windows."""
+    for c in (shutil.which("sh"), shutil.which("bash"), r"C:\Program Files\Git\bin\sh.exe", r"C:\Program Files (x86)\Git\bin\sh.exe"):
+        if c and os.path.exists(c): return c
+    return None
+
+
 def fill(s, ctx):
     for k, v in ctx.items():
         s = s.replace("{{" + k + "}}", str(v))
@@ -101,9 +108,10 @@ def run_claude(task, ctx, work, prev):
 
 
 def run_shell(task, ctx, work):
-    cmd = fill(task["cmd"], ctx)
+    cmd = fill(task["cmd"], ctx).replace("python3 ", f'"{Path(sys.executable).as_posix()}" ')  # Windows has no python3
     t0 = time.time()
-    proc = subprocess.run(cmd, cwd=work, shell=True, capture_output=True, text=True)
+    sh = find_sh()  # the case commands use sh pipes (| wc -c | tr), so run them in sh on every OS
+    proc = subprocess.run([sh, "-c", cmd] if sh else cmd, cwd=work, shell=not sh, capture_output=True, text=True, encoding="utf-8", errors="replace")
     return {"kind": "shell", "command": cmd, "exit_code": proc.returncode, "stdout": proc.stdout[-4000:],
             "stderr": proc.stderr[-1000:], "elapsed_s": round(time.time() - t0, 1)}
 

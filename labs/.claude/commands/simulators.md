@@ -1,4 +1,4 @@
 ---
-description: Start the six simulators website and open it in the browser.
+description: Install (first time) and start the six simulators website, then open it in the browser.
 ---
-From the `labs` folder, start `uv run serve.py` in the background with Bash. Tell the learner the address the server prints. It starts at http://localhost:8765 and moves up if that port is busy. Everything runs on their Claude login, with no API key. Do not stop the server unless the learner asks.
+Read `START-LABS.md` in the labs folder and follow it. Skip whatever is already done. On Windows, launch `start-labs.cmd` in its own window; on Mac, launch `start-labs.command`. Tell the learner to keep that window open, and give them the address it prints. Everything runs on their Claude login, with no API key.

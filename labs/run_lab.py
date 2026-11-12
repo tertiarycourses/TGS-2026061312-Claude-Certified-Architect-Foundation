@@ -12,7 +12,8 @@
 A lab is one exam situation. A simulator is the system it runs on. Every command runs
 from the simulator's own folder and writes to that simulator's evidence/ folder.
 """
-import argparse, json, subprocess, sys, textwrap
+import argparse, json, os, subprocess, sys, textwrap
+import costnote
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -100,12 +101,15 @@ def main():
         print(f"Noted: {pick}")
     sim = HERE / "simulators" / l["dir"]
     status = 0
+    ledger = costnote.new_ledger()  # each Claude run in this lab logs its estimated API cost here
+    env = dict(os.environ, **{costnote.ENV: ledger})
     for c in l["cmds"]:
         if c.startswith("#"):
             print("\n" + c)
             continue
-        print(f"\n$ {c}")
-        status = subprocess.call(c, shell=True, cwd=sim) or status
+        print(f"\n$ {c}", flush=True)
+        status = subprocess.call(c, shell=True, cwd=sim, env=env) or status
+    print("\n" + costnote.finish(ledger))
     reveal(l)
     evidence_note(l)
     print(f"\nSimulator exit status: {status}. Some gates exit non-zero on purpose; read the lab's guide.")

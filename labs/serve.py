@@ -27,4 +27,9 @@ def warm():  # an iCloud folder may hold only placeholders. Bring the simulators
             dirs[:] = [x for x in dirs if x not in {"work", ".venv", "__pycache__", "node_modules"}]
             pool.map(touch, [os.path.join(d, f) for f in files])
 threading.Thread(target=warm, daemon=True).start()
+os.environ.update(PYTHONUTF8="1", PYTHONIOENCODING="utf-8")  # Windows defaults to cp1252; every lab file is UTF-8
+if os.name == "nt":  # Git installed during setup isn't on this shell's PATH yet; Simulators 2 and 5 need git and sh
+    git = Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Git"
+    extra = [str(p) for p in (git / "cmd", git / "usr" / "bin") if p.is_dir()]
+    os.environ["PATH"] = os.pathsep.join(extra + [os.environ.get("PATH", "")])
 sys.exit(subprocess.call([sys.executable, "-m", "streamlit", "run", "app.py", "--server.port", str(port), "--server.address", "localhost", "--server.headless", "true" if a.no_open else "false"]))

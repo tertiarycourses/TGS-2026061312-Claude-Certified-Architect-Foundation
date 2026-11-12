@@ -1,7 +1,7 @@
 # Claude Certified Architect Foundation: Learner Guide
 
 **TGS Ref No:** TGS-2026061312  
-**Version:** 2.4, 6 November 2026
+**Version:** 2.6, 12 November 2026
 
 
 ## How to Use This Guide
@@ -45,6 +45,15 @@ uv sync
 uv run serve.py
 ```
 
+**Run Claude Code four ways.** Pick the one that suits you:
+
+- **Terminal:** `curl -fsSL https://claude.ai/install.sh | bash` on macOS, Linux or WSL. On Windows PowerShell: `irm https://claude.ai/install.ps1 | iex`
+- **IDE:** add the Claude Code extension to VS Code or Cursor, or the plugin to JetBrains.
+- **Desktop app:** download it for macOS or Windows from https://code.claude.com/docs/en/overview
+- **Cloud:** open https://claude.ai/code. Nothing to install. You need a Pro, Max, Ultra or Team plan, or an Enterprise premium or Chat + Claude Code seat. To work on your own repo, connect GitHub.
+
+**The simulators stay on your laptop.** A cloud session runs Claude Code on Anthropic's servers, so it can't open the lab pages. Install it locally to run `claude auth login` and the labs.
+
 **Watch the spend.** Live runs use your Claude allowance. On `claude-sonnet-5-5`, the default, Lab 1 costs one to three US cents and the long research run in Lab 3 about 40 cents. `claude-haiku-5-5` spends least.
 
 
@@ -60,6 +69,62 @@ Lab numbers follow the exam domains in the slides, so each simulator holds its o
 
 *Diagram: Play it live on Simulator 1*
 
+
+## The Exam at a Glance
+
+Five pages from the exam guide that change how you revise: how the domains connect, which domains each scenario tests, what is out of scope, the rules after the exam, and how Anthropic's own exercises map onto your simulators.
+
+### How the five domains connect
+
+The exam guide weights five domains at 27, 18, 20, 20 and 15 per cent. An agent (Domain 1) is only as good as the errors its tools return (Domain 2), and those errors decide when it escalates (Domain 5). Claude Code in CI (Domain 3) emits findings against a JSON schema (Domain 4), and review output is calibrated before people trust it (Domain 5). Many questions sit on these seams. *(Slide 15.)*
+
+### Which domains each scenario tests
+
+| Scenario | D1 | D2 | D3 | D4 | D5 |
+|---|---|---|---|---|---|
+| 1. Customer Support Resolution Agent | ● | ● |  |  | ● |
+| 2. Code Generation with Claude Code |  |  | ● |  | ● |
+| 3. Multi-Agent Research System | ● | ● |  |  | ● |
+| 4. Developer Productivity with Claude | ● | ● | ● |  |  |
+| 5. Claude Code for Continuous Integration |  |  | ● | ● |  |
+| 6. Structured Data Extraction |  |  |  | ● | ● |
+
+Domain 5 is only 15% of the score but appears in four of the six scenarios. *(Slide 19.)*
+
+### What the exam won't ask
+
+- Fine-tuning or training models
+- API authentication, billing, accounts
+- Deploying or hosting MCP servers
+- Claude's internals, training, weights
+- Constitutional AI, RLHF, safety training
+- Embeddings and vector databases
+- Computer use
+- Vision and image analysis
+- Streaming and server-sent events
+- Rate limits, quotas, pricing maths
+- OAuth and API key rotation
+- AWS, GCP or Azure configuration
+- Benchmarks and model comparisons
+- Token counting and tokenization
+- Prompt caching internals
+- Language and framework detail
+
+**Two edge cases.** Prompt caching is out of scope only beyond knowing it exists and when to use it. Programming languages are out of scope only beyond what you need to configure tools and schemas.
+
+### The rules after the exam
+
+- Pass mark: 720 on a 100 to 1,000 scale, against a fixed standard. Your report shows percent-correct by domain.
+- Retakes: wait 14, then 30, then 90 days. At most four attempts in a rolling 12 months, each at the full $125 fee.
+- Validity: 12 months. On-time renewal is free (non-proctored, Partner Academy).
+- Cancel or reschedule up to 24 hours before. Appeals within 14 days.
+
+### Anthropic's exercises, on your laptop
+
+- Exercise 1: Build a multi-tool agent with escalation logic. Simulator 1.
+- Exercise 2: Configure Claude Code for a team workflow. Simulators 2 and 4.
+- Exercise 3: Build a structured data extraction pipeline. Simulators 6 and 5.
+- Exercise 4: Design and debug a multi-agent research pipeline. Simulator 3.
 
 ## The Six Simulators
 
@@ -109,6 +174,18 @@ Official exam scenario: You are building a customer support resolution agent usi
 | 54 | 5.2 | In class | 55% first-contact resolution: calibrate with criteria and examples |
 
 
+**How the pieces connect: Refund powers, three guard rails** The loop decides, a hook enforces identity first, and every failure tells Claude what to do next. *(Slide 22.)*
+
+**Best answer vs tempting answer: Gate it in code, escalate on criteria, ask when names collide** *(Slide 23.)*
+
+| The situation | Best answer | Tempting, and wrong |
+|---|---|---|
+| Agent sometimes refunds before verifying identity | A gate in code: process_refund blocked until get_customer returns a verified id | Firmer system-prompt wording or more few-shot examples |
+| Claude mixes up two similar lookup tools | Expand each description: inputs, example queries, boundaries | A keyword router, or merging the tools first |
+| Escalates easy cases, attempts hard exceptions | Explicit escalation criteria plus few-shot examples | Self-rated confidence, sentiment scores, a classifier |
+| “Just get me a human” | Escalate now, with a structured handoff | Investigate first, or offer to try once more |
+| Lookup returns three customers named “J. Tan” | Ask for another identifier | Pick the most recent or most likely match |
+
 ### Simulator 2: Code Generation with Claude Code
 
 **Claude Code, configured so the whole team gets the same teammate.** Your team builds the **Orderly** web store with Claude Code. Everyone should get the same teammate: the same standards, commands and rules. You check what really reaches Claude, then give it real work on a copy of the repo.
@@ -152,6 +229,18 @@ Official exam scenario: You are using Claude Code to accelerate software develop
 | 40 | 4.2 | In class | "Clean this up" means three things: show which one you mean |
 | 59 | 5.5 | Self-practice | Acceptance looks great. Two fields don't. |
 
+
+**How the pieces connect: Clone the repo, get the teammate. Your home folder stays yours.** Anything the team needs lives in git. Anything in ~/.claude stays on one laptop. *(Slide 25.)*
+
+**Best answer vs tempting answer: Shared means in the repo. Big means plan first. Noisy means fork.** *(Slide 26.)*
+
+| The situation | Best answer | Tempting, and wrong |
+|---|---|---|
+| A /review command every developer gets on clone | .claude/commands/ or a project skill, committed | ~/.claude/commands/, CLAUDE.md, or a made-up config.json |
+| Rules for *.test.tsx files scattered everywhere | .claude/rules/ file with paths: ["**/*.test.tsx"] | A CLAUDE.md in every folder, or one huge root file |
+| Monolith to microservices, dozens of files | Plan mode first, then execute the plan | Direct execution, “let the boundaries emerge” |
+| One-line fix with a clear stack trace | Direct execution | Plan mode: overhead with nothing to decide |
+| An analysis skill floods the main conversation | context: fork in the skill's frontmatter | Asking Claude to keep its output short |
 
 ### Simulator 3: Multi-Agent Research System
 
@@ -198,6 +287,18 @@ Official exam scenario: You are building a multi-agent research system using the
 | 61 | 5.6 | In class | A vendor benchmark isn't a peer-reviewed study |
 
 
+**How the pieces connect: Each subagent knows only what the coordinator writes into its prompt** Subagents start with an empty context. The coordinator's prompt is everything they get. *(Slide 28.)*
+
+**Best answer vs tempting answer: Thin report? Fix the coordinator, not the workers.** *(Slide 29.)*
+
+| The situation | Best answer | Tempting, and wrong |
+|---|---|---|
+| Report on “creative industries” covers only visual arts | The decomposition was too narrow: fix the coordinator | Blaming the subagents that did their assigned job |
+| A search subagent times out | Structured error context back to the coordinator | “Unavailable”, empty-as-success, or killing the run |
+| Synthesis needs frequent simple fact checks | A scoped verify_fact tool; complex checks via the coordinator | Give synthesis every search tool |
+| Subagents run one after another | Several Task calls in one coordinator response | Spawning them across separate turns |
+| Two credible sources give different figures | Keep both, attributed, dated and annotated | Pick one, or average them |
+
 ### Simulator 4: Developer Productivity with Claude
 
 **Find your way around a legacy repo without drowning in it.** You've just joined a team that owns an **old billing repo**, and invoice totals come out with too many decimals. You've never seen this code. An agent helps you find your way around it, fix the defect and survive a crash, without drowning in files.
@@ -236,6 +337,18 @@ Official exam scenario: You are building developer productivity tools using the 
 | 56 | 5.4 | In class | Delegate the noisy search, keep a scratchpad |
 | 58 | 5.4 | Self-practice | Crash recovery from a manifest |
 
+
+**How the pieces connect: Explore a legacy repo the way a senior engineer would** Grep for the entry points, Read to trace. Don't read every file up front. *(Slide 31.)*
+
+**Best answer vs tempting answer: Grep for contents, Glob for names, and never retry a failed Edit as is** *(Slide 32.)*
+
+| The situation | Best answer | Tempting, and wrong |
+|---|---|---|
+| Find every caller of parseInvoice | Grep | Glob (names only), or reading every file |
+| Find all *.test.tsx files | Glob with **/*.test.tsx | Grep over file contents |
+| Edit fails: the anchor text appears three times | Read, then Write the full file, or widen the anchor | Retry the same Edit |
+| Agent greps instead of using the internal-docs MCP tool | Rewrite the MCP tool's description | Remove Grep |
+| A teammate changed 2 of the 20 files you analysed | Resume, and name the two changed files | Resume silently, or redo everything |
 
 ### Simulator 5: Claude Code for Continuous Integration
 
@@ -276,6 +389,18 @@ Official exam scenario: You are integrating Claude Code into your Continuous Int
 | 52 | 5.1 | Self-practice | 40-field tool results push the review to its limit |
 
 
+**How the pieces connect: Each stage removes one reason developers ignore the reviewer** Drop any one of them and the review still runs, but nobody reads it. *(Slide 34.)*
+
+**Best answer vs tempting answer: The reviewer gets ignored for reasons a bigger model won't fix** *(Slide 35.)*
+
+| The situation | Best answer | Tempting, and wrong |
+|---|---|---|
+| The pipeline hangs waiting for input | claude -p "…" | Invented fixes: CLAUDE_HEADLESS, --batch, piping /dev/null |
+| Developers ignore the bot: too many false positives | Explicit report/skip categories; switch off the noisiest | “Only report high-confidence issues” |
+| A 14-file PR gets uneven, contradictory feedback | Per-file passes plus a cross-file integration pass | A bigger context window, or three runs voting |
+| Cut cost on pre-merge checks and the nightly report | Batch the nightly report only | Batch both, or a batch-with-fallback hybrid |
+| The session that wrote the code also reviews it | An independent instance without the author's reasoning | Add “review critically” to the same session |
+
 ### Simulator 6: Structured Data Extraction
 
 **Messy documents in, trustworthy records out.** Invoices, receipts and credit notes arrive in every format. Claude turns each one into a clean record for the **accounts system**. The hard part isn't the JSON. It's knowing when the record is wrong, when a retry can help, and when a person has to look.
@@ -315,6 +440,18 @@ Official exam scenario: You are building a structured data extraction system usi
 | 60 | 5.5 | In class | The aggregate masks a segment: break it and watch |
 
 
+**How the pieces connect: Valid JSON is the floor. Meaning is checked after it.** Four gates between a messy document and a record someone downstream will trust. *(Slide 37.)*
+
+**Best answer vs tempting answer: Syntax is the schema's job. Meaning and missing data are yours.** *(Slide 38.)*
+
+| The situation | Best answer | Tempting, and wrong |
+|---|---|---|
+| JSON sometimes fails to parse | An extraction tool with a JSON schema | “Return only valid JSON” in the prompt |
+| Model invents a PO number the invoice doesn't have | Make the field optional or nullable | Keep it required and add “don't guess” |
+| Line items don't add up to the stated total | Semantic check, then retry with the specific error | A stricter schema: syntax isn't meaning |
+| Retries keep failing on “contract start date” | It isn't in the document: stop and route it | More retries, or more examples |
+| 97% accuracy overall, so cut human review? | Check accuracy by document type and field first | Auto-accept everything above a confidence cutoff |
+
 ## Topic 1: Agentic Architecture & Orchestration
 
 Loops, coordinators, hooks, sessions: how the agent decides and what stops it. This domain is 27% of the exam, the largest single share, so it gets the most labs. You get 7 task statements and 17 labs, on 6 simulators.
@@ -322,7 +459,7 @@ Loops, coordinators, hooks, sessions: how the agent decides and what stops it. T
 
 ### 1.1 The loop runs on stop_reason, and nothing else
 
-Exam task statement: Design and implement agentic loops for autonomous task execution. Parse the prose for "done" and your agent stops when it feels like stopping. Slides 26–29.
+Exam task statement: Design and implement agentic loops for autonomous task execution. Parse the prose for "done" and your agent stops when it feels like stopping. Slides 43–50.
 
 *Diagram: The loop runs on stop_reason, and nothing else*
 
@@ -334,9 +471,22 @@ Claude does not decide when your loop ends. `stop_reason` does. When it reads `t
 - Log decisions, tool calls, observations and the stop reason, so anyone can replay why the agent stopped.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **Claude decides. Your code does the work.** Four steps go round until stop_reason says end_turn. Know which steps are yours. *(Slide 46.)*
+- **Claude remembers nothing. The transcript is the memory.** Every call resends the whole conversation, and each lap makes it longer. *(Slide 47.)*
+- **Let the model pick the next tool. Don't write the tree.** A hard-coded if/elif works until a customer writes something you didn't plan for. *(Slide 48.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Your loop stops after 5 iterations regardless of state, and long research tasks are truncated. What is the right primary termination signal?
+  *Answer.* stop_reason == "end_turn". Continue while it is "tool_use". Keep a generous turn/budget cap only as a runaway guard, not as the mechanism that decides completion.
+- **Question.** A workflow always calls search → summarize → email in that order, regardless of input. Is that an agent?
+  *Answer.* No — it is a pre-configured sequence (a workflow / prompt chain). An agent lets the model choose the next tool from context. Use the fixed chain when the path is predictable; use an agent when the next step depends on what is discovered.
+
 #### Lab 1: Watch one refund go round the loop
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 28.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 49.
 
 *Diagram: Lab 1 on the Simulator 1 page*
 
@@ -351,7 +501,7 @@ Claude does not decide when your loop ends. `stop_reason` does. When it reads `t
 
 #### Lab 2: Claude re-asks because the tool_result never came back
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 29.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 50.
 
 *Diagram: Lab 2 on the Simulator 2 page*
 
@@ -366,7 +516,7 @@ Claude does not decide when your loop ends. `stop_reason` does. When it reads `t
 
 ### 1.2 One hub. Every message goes through it.
 
-Exam task statement: Orchestrate multi-agent systems with coordinator-subagent patterns. Subagents never talk to each other, so you can see, retry and reroute everything. Slides 30–32.
+Exam task statement: Orchestrate multi-agent systems with coordinator-subagent patterns. Subagents never talk to each other, so you can see, retry and reroute everything. Slides 51–54.
 
 *Diagram: One hub. Every message goes through it.*
 
@@ -377,9 +527,22 @@ Picture a hub with spokes. The coordinator breaks the job down, picks only the s
 - Read the synthesis for gaps, re-delegate targeted queries, and synthesise again until coverage holds.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **Spokes never talk to each other** Every result goes back through the coordinator, so you can see it, retry it and reroute it. *(Slide 52.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A synthesis subagent keeps producing reports without citations even though the search agent returned URLs. What is the most likely fix?
+  *Answer.* Pass the search results to the synthesis subagent in its prompt as structured data that separates content from metadata (claim, excerpt, URL, date). Subagents don't inherit the coordinator's context, and unstructured prose loses attribution.
+- **Question.** Four independent subagents run one after another, each in a separate coordinator turn. How do you cut latency without changing their work?
+  *Answer.* Have the coordinator emit all four Task (Agent) tool calls in a single response so they execute in parallel.
+- **Question.** Why route subagent-to-subagent information through the coordinator instead of letting subagents call each other?
+  *Answer.* Observability, consistent error handling and controlled information flow — the coordinator sees every hand-off and can decide what to retry, re-delegate or drop.
+
 #### Lab 3: Every subagent succeeds, and the report still misses half the topic
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 31.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 53.
 
 *Diagram: Lab 3 on the Simulator 3 page*
 
@@ -394,7 +557,7 @@ Picture a hub with spokes. The coordinator breaks the job down, picks only the s
 
 #### Lab 4: Same brief to every subagent, same findings four times
 
-**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 32.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 54.
 
 *Diagram: Lab 4 on the Simulator 6 page*
 
@@ -409,7 +572,7 @@ Picture a hub with spokes. The coordinator breaks the job down, picks only the s
 
 ### 1.3 The Task tool is how a coordinator spawns anything
 
-Exam task statement: Configure subagent invocation, context passing, and spawning. No "Task" in allowedTools means no subagents. A subagent sees only your prompt. Slides 33–38.
+Exam task statement: Configure subagent invocation, context passing, and spawning. No "Task" in allowedTools means no subagents. A subagent sees only your prompt. Slides 55–62.
 
 *Diagram: The Task tool is how a coordinator spawns anything*
 
@@ -422,9 +585,19 @@ Two facts carry this task. A coordinator spawns subagents with the Task tool, so
 - `AgentDefinition` sets each subagent's description, system prompt and tool restrictions. Cap depth, fan-out and child count, and have children reply in a typed envelope.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **“Synthesise the findings.” Which findings?** A subagent sees only the prompt you write. Paste in everything it needs. *(Slide 57.)*
+- **Hand over the source with the finding** Keep URL, document and page beside every claim, or the final report has nothing to cite. *(Slide 58.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A subagent writes a synthesis that cites nothing. Its prompt said only “Synthesise the findings.” What went wrong?
+  *Answer.* A subagent starts with an empty context and sees only its prompt. Pass the complete findings, each with its source, inside the Task prompt. The coordinator's allowedTools must also include Task, or it can't spawn subagents at all.
+
 #### Lab 5: A /parallel-review that can't fan out because Task isn't allowed
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 35.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 59.
 
 *Diagram: Lab 5 on the Simulator 2 page*
 
@@ -439,7 +612,7 @@ Two facts carry this task. A coordinator spawns subagents with the Task tool, so
 
 #### Lab 6: Same reviewers, same findings, and the PR comment loses them all
 
-**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 36.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 60.
 
 *Diagram: Lab 6 on the Simulator 5 page*
 
@@ -454,7 +627,7 @@ Two facts carry this task. A coordinator spawns subagents with the Task tool, so
 
 #### Lab 7: Polished report, weak citations: route information, not just tasks
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 37.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 61.
 
 *Diagram: Lab 7 on the Simulator 3 page*
 
@@ -469,7 +642,7 @@ Two facts carry this task. A coordinator spawns subagents with the Task tool, so
 
 #### Lab 8: Later subagents re-run searches the first ones already finished
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 38.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 62.
 
 *Diagram: Lab 8 on the Simulator 3 page*
 
@@ -484,7 +657,7 @@ Two facts carry this task. A coordinator spawns subagents with the Task tool, so
 
 ### 1.4 Identity before refund is code, not a polite request
 
-Exam task statement: Implement multi-step workflows with enforcement and handoff patterns. A prompt rule has a non-zero failure rate. A gate has none. Slides 39–43.
+Exam task statement: Implement multi-step workflows with enforcement and handoff patterns. A prompt rule has a non-zero failure rate. A gate has none. Slides 63–69.
 
 *Diagram: Identity before refund is code, not a polite request*
 
@@ -495,9 +668,23 @@ A prompt that says "verify identity first" fails some of the time. The exam guid
 - Handing off to a human? They cannot see the transcript. Send the customer ID, root cause, refund amount and recommended action.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **Does this rule need a guarantee?** Prompts steer most of the time. Code enforces every time. Choose by what a miss would cost. *(Slide 65.)*
+- **The human never saw the chat** Escalate with a summary they can act on in thirty seconds, not a transcript they don't have. *(Slide 66.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Two MCP tools return dates as 1730700000 and "2024-11-04T06:40:00Z", and the agent sometimes miscompares them. Where should you fix this?
+  *Answer.* In a PostToolUse hook that normalizes both into one format before the model processes the result. It's deterministic and keeps the prompt free of format-juggling instructions.
+- **Question.** Your policy forbids agent-issued refunds above $500. What implementation gives a guarantee?
+  *Answer.* A pre-execution hook on process_refund that denies calls with amount > 500 and redirects to escalate_to_human with a reason. A prompt rule is only probabilistic compliance.
+- **Question.** What must an escalation summary contain when the human agent can't read the transcript?
+  *Answer.* A self-contained structured record: customer ID, issue and root cause, relevant amounts/order IDs, what was already tried, and the recommended action.
+
 #### Lab 9: 12% of cases skip get_customer: fix it with a gate, not a sentence
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 41.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 67.
 
 *Diagram: Lab 9 on the Simulator 1 page*
 
@@ -512,7 +699,7 @@ A prompt that says "verify identity first" fails some of the time. The exam guid
 
 #### Lab 10: Approval must never post before the passing test artifact exists
 
-**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 42.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 68.
 
 *Diagram: Lab 10 on the Simulator 5 page*
 
@@ -527,7 +714,7 @@ A prompt that says "verify identity first" fails some of the time. The exam guid
 
 #### Lab 11: Claude guesses a field and submits without validating
 
-**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 43.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 69.
 
 *Diagram: Lab 11 on the Simulator 6 page*
 
@@ -542,7 +729,7 @@ A prompt that says "verify identity first" fails some of the time. The exam guid
 
 ### 1.5 PreToolUse decides. PostToolUse reshapes.
 
-Exam task statement: Apply Agent SDK hooks for tool call interception and data normalization. One hook stands before the tool, one after it, and neither depends on Claude's mood. Slides 44–48.
+Exam task statement: Apply Agent SDK hooks for tool call interception and data normalization. One hook stands before the tool, one after it, and neither depends on Claude's mood. Slides 70–75.
 
 *Diagram: PreToolUse decides. PostToolUse reshapes.*
 
@@ -554,9 +741,18 @@ Exam task statement: Apply Agent SDK hooks for tool call interception and data n
 Reach for a hook whenever a business rule must hold every time. A prompt gives you probable compliance. A hook gives you a guarantee. When a hook denies a call, the denial is explicit and logged, not hidden in prompt prose, and you keep both the original and the transformed payload.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **Two checkpoints on every tool call** PreToolUse sees the request before it runs. PostToolUse sees the result before Claude does. *(Slide 72.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A refund above $500 must never go through, and the prompt rule is ignored in a few per cent of runs. Where does the rule belong?
+  *Answer.* In a PreToolUse hook that denies process_refund above $500 and returns a reason, so Claude escalates instead. PostToolUse is for reshaping results, such as Unix timestamps to ISO 8601.
+
 #### Lab 12: The prompt forgot the $500 rule. The hook did not.
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 46.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 73.
 
 *Diagram: Lab 12 on the Simulator 1 page*
 
@@ -571,7 +767,7 @@ Reach for a hook whenever a business rule must hold every time. A prompt gives y
 
 #### Lab 13: Shrink noisy npm test output before Claude reads it
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 47.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 74.
 
 *Diagram: Lab 13 on the Simulator 2 page*
 
@@ -586,7 +782,7 @@ Reach for a hook whenever a business rule must hold every time. A prompt gives y
 
 #### Lab 14: rm -rf meets a hook, not a polite request
 
-**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 48.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 75.
 
 *Diagram: Lab 14 on the Simulator 4 page*
 
@@ -601,7 +797,7 @@ Reach for a hook whenever a business rule must hold every time. A prompt gives y
 
 ### 1.6 Known steps get a chain. Unknown ground gets a plan that adapts.
 
-Exam task statement: Design task decomposition strategies for complex workflows. Pick by whether you can list the steps before you start. Slides 49–50.
+Exam task statement: Design task decomposition strategies for complex workflows. Pick by whether you can list the steps before you start. Slides 76–77.
 
 *Diagram: Known steps get a chain. Unknown ground gets a plan that adapts.*
 
@@ -612,9 +808,16 @@ Ask one question: can you list the steps before you start? If yes, chain them. I
 - Make every subtask independently checkable and declare what it depends on.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** You must investigate an intermittent production bug in an unfamiliar service. Fixed chain or dynamic decomposition?
+  *Answer.* Dynamic. The useful next step depends on what each probe reveals; a fixed chain would either over-investigate or miss the path.
+- **Question.** A 14-file PR review flags a pattern as a bug in one file and approves identical code in another. What restructuring helps?
+  *Answer.* Split into focused per-file passes for local issues plus a separate cross-file integration pass. This removes attention dilution that causes inconsistent and contradictory findings.
+
 #### Lab 15: 60-page packets: section passes first, reconcile second
 
-**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 50.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 77.
 
 *Diagram: Lab 15 on the Simulator 6 page*
 
@@ -629,7 +832,7 @@ Ask one question: can you list the steps before you start? If yes, chain them. I
 
 ### 1.7 Resume when the facts still hold. Start fresh when they don't.
 
-Exam task statement: Manage session state, resumption, and forking. A resumed session trusts its old tool results, even when the code has moved on. Slides 51–53.
+Exam task statement: Manage session state, resumption, and forking. A resumed session trusts its old tool results, even when the code has moved on. Slides 78–81.
 
 *Diagram: Resume when the facts still hold. Start fresh when they don't.*
 
@@ -643,9 +846,20 @@ Exam task statement: Manage session state, resumption, and forking. A resumed se
 Long runs must also survive a restart. A checkpoint stores stable task state and the last verified transition. A stable idempotency key stops a refund or a ticket firing twice after a resume or a fork.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **Resume, fork or start fresh** Three ways back into a session. Each one suits a different morning. *(Slide 79.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** You want to try two different test strategies from the same 40-minute codebase analysis without re-running it. What do you use?
+  *Answer.* Fork the session (fork_session / --fork-session) once per strategy. Each fork starts from the shared history; the original stays intact.
+- **Question.** A week-old investigation session is resumed after a major refactor touched most files. Why is a fresh session better?
+  *Answer.* The history is full of stale tool results that the model will treat as current. Start fresh and inject a concise structured summary of conclusions that are still valid.
+
 #### Lab 16: Two attempts, one analysis: fork the session, checkpoint the files
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 52.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 80.
 
 *Diagram: Lab 16 on the Simulator 2 page*
 
@@ -660,7 +874,7 @@ Long runs must also survive a restart. A checkpoint stores stable task state and
 
 #### Lab 17: Resume, and say exactly which file changed
 
-**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 53.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 81.
 
 *Diagram: Lab 17 on the Simulator 4 page*
 
@@ -680,7 +894,7 @@ Tools are the agent's only hands. Describe them well and fail them clearly, and 
 
 ### 2.1 The description is the router
 
-Exam task statement: Design effective tool interfaces with clear descriptions and boundaries. Claude picks tools from what you wrote about them. Say little and it guesses. Slides 56–57.
+Exam task statement: Design effective tool interfaces with clear descriptions and boundaries. Claude picks tools from what you wrote about them. Say little and it guesses. Slides 84–87.
 
 *Diagram: The description is the router*
 
@@ -693,9 +907,21 @@ Claude picks a tool by reading what you wrote about it. Write little and it gues
 - Still misrouting? Read the system prompt. A keyword-sensitive instruction can override a well-written description.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **Claude reads the description, not your code** Name, description, input schema: the description decides which tool gets called. *(Slide 85.)*
+- **Fix the description first. Then reshape the toolset.** Merge steps the agent always chains, split a tool that hides three jobs, prefix by service. *(Slide 86.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A research agent has analyze_content and analyze_document with near-identical descriptions; web pages are often routed to the document tool. Best fix?
+  *Answer.* Remove the functional overlap: rename and re-describe (e.g. extract_web_results — “for HTML pages fetched from the web…”) so each tool has a distinct, explicit scope and a “use X instead when…” boundary.
+- **Question.** When is splitting one tool into several the right move?
+  *Answer.* When a generic tool does several distinct jobs with different inputs/outputs (extract vs summarize vs verify). Purpose-specific tools with clear contracts are easier to select and validate.
+
 #### Lab 18: One analyze_document tool does three jobs badly
 
-**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 57.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 87.
 
 *Diagram: Lab 18 on the Simulator 6 page*
 
@@ -710,7 +936,7 @@ Claude picks a tool by reading what you wrote about it. Write little and it gues
 
 ### 2.2 "Operation failed" tells the agent nothing it can use
 
-Exam task statement: Implement structured error responses for MCP tools. Name the failure, and the agent knows whether to retry, explain or escalate. Slides 58–61.
+Exam task statement: Implement structured error responses for MCP tools. Name the failure, and the agent knows whether to retry, explain or escalate. Slides 88–92.
 
 *Diagram: "Operation failed" tells the agent nothing it can use*
 
@@ -725,9 +951,20 @@ Exam task statement: Implement structured error responses for MCP tools. Name th
 | Query worked, nothing matched | Not an error | No | Report a valid empty result |
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **Write the error for the agent that has to read it** A bare "failed" leaves Claude guessing. A named error tells it to wait, fix, explain or escalate. *(Slide 90.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Why is a uniform “Operation failed” response harmful even if every failure is logged server-side?
+  *Answer.* The agent can't see the cause, so it can't choose between retrying, correcting input, explaining a policy or escalating. It wastes retries on non-retryable errors and gives customers unhelpful answers.
+- **Question.** A customer search returns zero rows. Should the tool set isError: true?
+  *Answer.* No. A query that ran and found nothing is a valid empty result. Reserve isError for access/execution failures so the agent can distinguish “nothing exists” from “couldn't check”.
+
 #### Lab 19: The refund failed. The customer was told it worked.
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 60.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 91.
 
 *Diagram: Lab 19 on the Simulator 1 page*
 
@@ -742,7 +979,7 @@ Exam task statement: Implement structured error responses for MCP tools. Name th
 
 #### Lab 20: Retry the timeout once, then answer from the real record
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. Self-practice, slide 61.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. Self-practice, slide 92.
 
 *Diagram: Lab 20 on the Simulator 1 page*
 
@@ -757,7 +994,7 @@ Exam task statement: Implement structured error responses for MCP tools. Name th
 
 ### 2.3 18 tools degrade selection. Give each agent 4 or 5.
 
-Exam task statement: Distribute tools appropriately across agents and configure tool choice. A synthesis agent holding a web-search tool will use it. Don't hand it one. Slides 62–65.
+Exam task statement: Distribute tools appropriately across agents and configure tool choice. A synthesis agent holding a web-search tool will use it. Don't hand it one. Slides 93–96.
 
 *Diagram: 18 tools degrade selection. Give each agent 4 or 5.*
 
@@ -774,9 +1011,16 @@ Give an agent 18 tools and it chooses worse than with 4 or 5. Give a synthesis a
 | `{"type": "tool", "name": "extract_metadata"}` | Must call that tool | One step has to run first. Handle the rest in follow-up turns |
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** You need the first step of every pipeline run to be extract_metadata, followed by enrichment tools. How?
+  *Answer.* Force it on the first request with tool_choice: {"type": "tool", "name": "extract_metadata"}, then handle enrichment in follow-up turns (typically with auto).
+- **Question.** Your extraction service has invoice, receipt and contract schemas as tools; the document type is unknown and text replies break the parser. Setting?
+  *Answer.* tool_choice: {"type": "any"} — the model must call one of the extraction tools but can choose the right schema.
+
 #### Lab 21: Review and test generation fight over one Claude call
 
-**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 64.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 95.
 
 *Diagram: Lab 21 on the Simulator 5 page*
 
@@ -791,7 +1035,7 @@ Give an agent 18 tools and it chooses worse than with 4 or 5. Give a synthesis a
 
 #### Lab 22: Give synthesis one narrow tool, not the whole web
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 65.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 96.
 
 *Diagram: Lab 22 on the Simulator 3 page*
 
@@ -806,7 +1050,7 @@ Give an agent 18 tools and it chooses worse than with 4 or 5. Give a synthesis a
 
 ### 2.4 Shared servers live in the repo. Secrets never do.
 
-Exam task statement: Integrate MCP servers into Claude Code and agent workflows. Commit .mcp.json with ${GITHUB_TOKEN}. Teammates get the tool, nobody gets your key. Slides 66–68.
+Exam task statement: Integrate MCP servers into Claude Code and agent workflows. Commit .mcp.json with ${GITHUB_TOKEN}. Teammates get the tool, nobody gets your key. Slides 97–100.
 
 *Diagram: Shared servers live in the repo. Secrets never do.*
 
@@ -830,9 +1074,20 @@ Commit the server. Never commit the token. Project scope goes in `.mcp.json`, sh
 - Expose catalogues (issue summaries, documentation hierarchies, database schemas) as MCP resources, so the agent sees what exists without exploratory calls.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **Local servers talk over stdio. Remote ones over HTTP.** Pick the transport by where the server runs, then keep the secret out of git. *(Slide 98.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Where should a shared Jira MCP server used by the whole team be configured, and how should its API token be supplied?
+  *Answer.* In the project's committed .mcp.json, with the token referenced as ${JIRA_TOKEN} so each developer supplies it from their environment. Prefer an existing community Jira server over writing one.
+- **Question.** An agent makes 10–15 list/search calls at the start of every task just to learn which documentation pages exist. What MCP design reduces this?
+  *Answer.* Expose the documentation hierarchy as an MCP resource (content catalog) so the agent can read the map directly, then call tools only for targeted retrieval.
+
 #### Lab 23: Commit the server, never the token
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 67.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 99.
 
 *Diagram: Lab 23 on the Simulator 2 page*
 
@@ -847,7 +1102,7 @@ Commit the server. Never commit the token. Project scope goes in `.mcp.json`, sh
 
 #### Lab 24: Read the catalogue before opening a single file
 
-**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 68.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 100.
 
 *Diagram: Lab 24 on the Simulator 4 page*
 
@@ -862,7 +1117,7 @@ Commit the server. Never commit the token. Project scope goes in `.mcp.json`, sh
 
 ### 2.5 Search narrows. Read confirms. Edit changes.
 
-Exam task statement: Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively. Reading every file up front is how you burn the context window on day one. Slides 69–72.
+Exam task statement: Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively. Reading every file up front is how you burn the context window on day one. Slides 101–104.
 
 *Diagram: Search narrows. Read confirms. Edit changes.*
 
@@ -878,9 +1133,16 @@ Exam task statement: Select and apply built-in tools (Read, Write, Edit, Bash, G
 Don't read everything up front. Grep for the entry point, then Read along the imports. To trace through a wrapper module, list every exported name, then search for each. Edit only once the evidence names the target. Matched paths, a focused diff and a test result are your proof.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Edit fails because the line return null; appears 9 times in the file. Options?
+  *Answer.* Include enough surrounding lines to make the match unique; if that's impractical, Read the file and Write the full modified content.
+- **Question.** A utility module re-exports 12 functions under new names. How do you find every consumer?
+  *Answer.* First identify all exported names from the wrapper (Read it), then Grep for each name across the codebase — searching only for the original function names would miss consumers.
+
 #### Lab 25: /find-callers needs Grep with a glob, not Bash
 
-**Goal:** pick an answer, then watch the right one work on Simulator 4. In class, slide 71.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. In class, slide 103.
 
 *Diagram: Lab 25 on the Simulator 4 page*
 
@@ -895,7 +1157,7 @@ Don't read everything up front. Grep for the entry point, then Read along the im
 
 #### Lab 26: Edit says the anchor isn't unique. Now what?
 
-**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 72.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 104.
 
 *Diagram: Lab 26 on the Simulator 4 page*
 
@@ -915,7 +1177,7 @@ Configure once, and every teammate and CI job gets the same Claude. This domain 
 
 ### 3.1 If it's in ~/.claude, your teammate never sees it
 
-Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization. "Works on my machine" now applies to instructions. /memory shows what loaded. Slides 75–77.
+Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization. "Works on my machine" now applies to instructions. /memory shows what loaded. Slides 107–109.
 
 *Diagram: If it's in ~/.claude, your teammate never sees it*
 
@@ -930,9 +1192,18 @@ Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scopi
 - Project CLAUDE.md holds stable cross-repository constraints and how to verify work. Say each thing once: instructions copied across scopes end up contradicting each other.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Terraform conventions should apply only when editing infrastructure files, which all live under terraform/. Lowest-token approach?
+  *Answer.* A rule file in .claude/rules/ with paths: ["terraform/**/*"], so it loads only when matching files are in play. (A terraform/CLAUDE.md also works for a single directory; the glob rule is the exam's preferred pattern and scales to scattered files.)
+- **Question.** Your 900-line root CLAUDE.md is hard to maintain and wastes context. Two refactors the exam expects you to know?
+  *Answer.* Split it into topic files under .claude/rules/ (testing.md, deployment.md…, path-scoped where possible) and use @import so each package's CLAUDE.md pulls in only the relevant standards.
+- **Question.** Two developers see different behaviour from the same repo. First diagnostic?
+  *Answer.* Run /memory in both sessions to see which memory files are loaded and spot user-level or local files that differ.
+
 #### Lab 27: Which instructions actually reached Claude?
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 77.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 109.
 
 *Diagram: Lab 27 on the Simulator 2 page*
 
@@ -947,7 +1218,7 @@ Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scopi
 
 ### 3.2 Skills run on demand. CLAUDE.md is always on.
 
-Exam task statement: Create and configure custom slash commands and skills. Put verbose workflows in a skill with context: fork, and your main session stays clean. Slides 78–80.
+Exam task statement: Create and configure custom slash commands and skills. Put verbose workflows in a skill with context: fork, and your main session stays clean. Slides 110–113.
 
 *Diagram: Skills run on demand. CLAUDE.md is always on.*
 
@@ -968,9 +1239,20 @@ argument-hint: <package path>
 - A good skill declares its inputs, workflow, outputs and how to verify the result.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **context: fork hides the work, not the answer** Same audit, same result. What changes is whose transcript the grep hits land in. *(Slide 111.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A brainstorming skill generates long lists of alternatives that crowd out the main task's context. Which frontmatter fixes it?
+  *Answer.* context: fork — the skill runs in an isolated subagent context and only its result returns to the main conversation.
+- **Question.** Developers keep invoking /migrate without the required table name. What helps?
+  *Answer.* Add argument-hint: [table-name] so autocomplete prompts for the parameter.
+
 #### Lab 28: A /review command the whole team gets through git
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 79.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 112.
 
 *Diagram: Lab 28 on the Simulator 2 page*
 
@@ -985,7 +1267,7 @@ argument-hint: <package path>
 
 #### Lab 29: Keep a noisy case review out of your main session
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 80.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 113.
 
 *Diagram: Lab 29 on the Simulator 1 page*
 
@@ -1000,7 +1282,7 @@ argument-hint: <package path>
 
 ### 3.3 Test files live everywhere, so scope the rule by glob
 
-Exam task statement: Apply path-specific rules for conditional convention loading. A paths: pattern follows the file. A folder CLAUDE.md stays stuck in its folder. Slides 81–83.
+Exam task statement: Apply path-specific rules for conditional convention loading. A paths: pattern follows the file. A folder CLAUDE.md stays stuck in its folder. Slides 114–116.
 
 *Diagram: Test files live everywhere, so scope the rule by glob*
 
@@ -1016,9 +1298,14 @@ Use the shared fixtures. Name each test after the behaviour it proves.
 Scope conventions separately: Python rules to Python paths, documentation rules to Markdown paths. Choose a subfolder CLAUDE.md only when a convention really does stop at one folder.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Testing conventions must apply to *.test.tsx files spread across every folder. What's the right mechanism?
+  *Answer.* A .claude/rules/ file with paths: ["**/*.test.tsx"] in its YAML frontmatter, so it loads only when Claude works on matching files. A CLAUDE.md in every directory is the tempting wrong answer.
+
 #### Lab 30: Testing rules for test files spread across every folder
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 83.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 116.
 
 *Diagram: Lab 30 on the Simulator 3 page*
 
@@ -1033,7 +1320,7 @@ Scope conventions separately: Python rules to Python paths, documentation rules 
 
 ### 3.4 Plan mode for blast radius. Direct for a known fix.
 
-Exam task statement: Determine when to use plan mode vs direct execution. A guard clause in one function needs no plan. An auth migration across 45 files does. Slides 84–88.
+Exam task statement: Determine when to use plan mode vs direct execution. A guard clause in one function needs no plan. An auth migration across 45 files does. Slides 117–121.
 
 *Diagram: Plan mode for blast radius. Direct for a known fix.*
 
@@ -1050,9 +1337,16 @@ Exam task statement: Determine when to use plan mode vs direct execution. A guar
 The deciding factors are ambiguity and blast radius. Plan mode lets you explore safely before you commit to changes, and that prevents costly rework. For a noisy discovery phase, the Explore subagent keeps the output out of your main conversation and hands back a summary.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A multi-phase task keeps exhausting the context window during the discovery phase. What Claude Code feature addresses this?
+  *Answer.* Delegate discovery to the Explore subagent so verbose search output stays in its own context and only a summary returns to the main session.
+- **Question.** Adding a date-format validation to one existing function: plan mode or direct?
+  *Answer.* Direct execution — the change is small, well understood and single-file; planning adds overhead without reducing risk.
+
 #### Lab 31: Replacing the auth layer: nobody agrees on the boundary, so plan
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 86.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 119.
 
 *Diagram: Lab 31 on the Simulator 2 page*
 
@@ -1067,7 +1361,7 @@ The deciding factors are ambiguity and blast radius. Plan mode lets you explore 
 
 #### Lab 32: Plan first, then approve into an editing mode
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 87.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 120.
 
 *Diagram: Lab 32 on the Simulator 2 page*
 
@@ -1082,7 +1376,7 @@ The deciding factors are ambiguity and blast radius. Plan mode lets you explore 
 
 #### Lab 33: One guard clause doesn't need a plan
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 88.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 121.
 
 *Diagram: Lab 33 on the Simulator 2 page*
 
@@ -1097,7 +1391,7 @@ The deciding factors are ambiguity and blast radius. Plan mode lets you explore 
 
 ### 3.5 Show the output you want. Prose gets interpreted.
 
-Exam task statement: Apply iterative refinement techniques for progressive improvement. Examples, failing tests and questions from Claude beat a longer paragraph when prose keeps getting misread. Slides 89–91.
+Exam task statement: Apply iterative refinement techniques for progressive improvement. Examples, failing tests and questions from Claude beat a longer paragraph when prose keeps getting misread. Slides 122–124.
 
 *Diagram: Show the output you want. Prose gets interpreted.*
 
@@ -1108,9 +1402,16 @@ Exam task statement: Apply iterative refinement techniques for progressive impro
 - Problems that interact go in one detailed message. Independent problems go one at a time.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Claude's date-parsing rewrite handles your described formats inconsistently across runs. Most effective next prompt?
+  *Answer.* Provide 2–3 concrete input/output examples covering the formats (including tricky ones). Examples communicate the transformation more reliably than more prose.
+- **Question.** Three bugs in a parser are independent of each other. One message or three?
+  *Answer.* Sequential is fine (and easier to verify) for independent issues. Bundle them in one detailed message only when the fixes interact.
+
 #### Lab 34: Unknown requirements? Let Claude interview you first
 
-**Goal:** pick an answer, then watch the right one work on Simulator 5. Self-practice, slide 90.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. Self-practice, slide 123.
 
 *Diagram: Lab 34 on the Simulator 5 page*
 
@@ -1125,7 +1426,7 @@ Exam task statement: Apply iterative refinement techniques for progressive impro
 
 #### Lab 35: Two linked defects go in one detailed request
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 91.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 124.
 
 *Diagram: Lab 35 on the Simulator 3 page*
 
@@ -1140,7 +1441,7 @@ Exam task statement: Apply iterative refinement techniques for progressive impro
 
 ### 3.6 CI has no keyboard, so run claude -p
 
-Exam task statement: Integrate Claude Code into CI/CD pipelines. Without print mode the job waits for an answer nobody will type, until the runner dies. Slides 92–95.
+Exam task statement: Integrate Claude Code into CI/CD pipelines. Without print mode the job waits for an answer nobody will type, until the runner dies. Slides 125–128.
 
 *Diagram: CI has no keyboard, so run claude -p*
 
@@ -1153,9 +1454,16 @@ CI has no keyboard. Without `-p`, the job waits for an answer nobody will type. 
 - Close the loop. The schema carries severity and evidence, the pipeline saves the artifact, and a severity gate sets an explicit exit status.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** You need review findings as JSON matching a fixed shape so a bot can post them as inline comments. Which CLI flags?
+  *Answer.* -p with --output-format json and --json-schema; read the conforming object from structured_output.
+- **Question.** Why run code review in a separate Claude instance from the one that generated the change?
+  *Answer.* The generating session retains its reasoning context and is less likely to question its own decisions; an independent instance without that context catches subtler issues.
+
 #### Lab 36: The nightly job hangs because nobody can press Enter
 
-**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 94.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 127.
 
 *Diagram: Lab 36 on the Simulator 5 page*
 
@@ -1170,7 +1478,7 @@ CI has no keyboard. Without `-p`, the job waits for an answer nobody will type. 
 
 #### Lab 37: A shared slash command still needs -p in CI
 
-**Goal:** pick an answer, then watch the right one work on Simulator 5. Self-practice, slide 95.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. Self-practice, slide 128.
 
 *Diagram: Lab 37 on the Simulator 5 page*
 
@@ -1190,7 +1498,7 @@ Criteria, examples, schemas, validators: the path from a nice answer to a reliab
 
 ### 4.1 "Be conservative" is not a criterion
 
-Exam task statement: Design prompts with explicit criteria to improve precision and reduce false positives. Name what to report and what to skip. One noisy category poisons trust in the rest. Slides 98–100.
+Exam task statement: Design prompts with explicit criteria to improve precision and reduce false positives. Name what to report and what to skip. One noisy category poisons trust in the rest. Slides 131–133.
 
 *Diagram: "Be conservative" is not a criterion*
 
@@ -1203,9 +1511,16 @@ Exam task statement: Design prompts with explicit criteria to improve precision 
 One noisy category teaches developers to ignore the accurate ones. Switch that category off while you repair its prompt, and trust comes back. For extraction, the same discipline means stating the required fields, the exclusions and what success looks like.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Why might “only report findings you are highly confident in” fail to reduce false positives?
+  *Answer.* It doesn't tell the model which kinds of issues are in or out of scope, and model self-assessed confidence is poorly calibrated. Specific categorical criteria change behaviour; confidence instructions mostly don't.
+- **Question.** One review category has a 60% dismissal rate and is dragging down trust in the others. Short-term action?
+  *Answer.* Temporarily disable that category while you improve its criteria/examples, then re-enable and measure.
+
 #### Lab 38: "Only high confidence" didn't quiet the reviewer
 
-**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 99.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 132.
 
 *Diagram: Lab 38 on the Simulator 5 page*
 
@@ -1220,7 +1535,7 @@ One noisy category teaches developers to ignore the accurate ones. Switch that c
 
 #### Lab 39: Switch off the one noisy category, keep the accurate ones
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 100.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 133.
 
 *Diagram: Lab 39 on the Simulator 3 page*
 
@@ -1235,7 +1550,7 @@ One noisy category teaches developers to ignore the accurate ones. Switch that c
 
 ### 4.2 Two to four examples draw the line prose can't
 
-Exam task statement: Apply few-shot prompting to improve output consistency and quality. Show the ambiguous case and the reasoning. Claude generalises to cases you never listed. Slides 101–102.
+Exam task statement: Apply few-shot prompting to improve output consistency and quality. Show the ambiguous case and the reasoning. Claude generalises to cases you never listed. Slides 134–135.
 
 *Diagram: Two to four examples draw the line prose can't*
 
@@ -1247,9 +1562,16 @@ When detailed instructions still give inconsistent output, two to four targeted 
 - For extraction, show varied structures such as inline citations against bibliographies. That reduces hallucination and empty required fields.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Review comments arrive in five different layouts despite a detailed format spec. Most effective fix?
+  *Answer.* Add a few examples showing the exact desired output (location, issue, severity, suggested fix). Examples outperform more prose for consistency.
+- **Question.** What should a few-shot example for an ambiguous case include beyond input and output?
+  *Answer.* The reasoning for choosing that action over plausible alternatives, so the model can generalize the judgement to new cases.
+
 #### Lab 40: "Clean this up" means three things: show which one you mean
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 102.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. In class, slide 135.
 
 *Diagram: Lab 40 on the Simulator 2 page*
 
@@ -1264,7 +1586,7 @@ When detailed instructions still give inconsistent output, two to four targeted 
 
 ### 4.3 The schema guarantees shape, never meaning
 
-Exam task statement: Enforce structured output using tool use and JSON schemas. Strict tool use ends JSON syntax errors. Totals that don't add up still get through. Slides 103–106.
+Exam task statement: Enforce structured output using tool use and JSON schemas. Strict tool use ends JSON syntax errors. Totals that don't add up still get through. Slides 136–139.
 
 *Diagram: The schema guarantees shape, never meaning*
 
@@ -1289,9 +1611,18 @@ Exam task statement: Enforce structured output using tool use and JSON schemas. 
 A recommendation pipeline needs all five of those fields. Without evidence and conflicts, a reviewer can't tell a sound call from a fluent one.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A schema marks publication_date as required; the model invents plausible dates for undated reports. Fix?
+  *Answer.* Make the field nullable/optional and instruct the model to return null when the source lacks it. Required fields pressure the model to fabricate.
+- **Question.** Which errors are worth a retry-with-feedback: (a) date in DD/MM instead of ISO, (b) contract value only stated in an unprovided appendix?
+  *Answer.* (a) — a format error the model can fix when told precisely what's wrong. (b) won't resolve; the information isn't in the input.
+- **Question.** New product categories keep appearing that your enum doesn't list. Schema pattern?
+  *Answer.* Add "other" to the enum plus a category_detail string (and "unclear" for ambiguous cases).
+
 #### Lab 41: Vague passages forced into a category they don't fit
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 105.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 138.
 
 *Diagram: Lab 41 on the Simulator 3 page*
 
@@ -1306,7 +1637,7 @@ A recommendation pipeline needs all five of those fields. Without evidence and c
 
 #### Lab 42: Know your tool_choice options, and check what came back
 
-**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 106.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 139.
 
 *Diagram: Lab 42 on the Simulator 6 page*
 
@@ -1321,7 +1652,7 @@ A recommendation pipeline needs all five of those fields. Without evidence and c
 
 ### 4.4 Retry with the error, or stop if the data isn't there
 
-Exam task statement: Implement validation, retry, and feedback loops for extraction quality. No prompt can recover a schedule that was never attached. Slides 107–109.
+Exam task statement: Implement validation, retry, and feedback loops for extraction quality. No prompt can recover a schedule that was never attached. Slides 140–142.
 
 *Diagram: Retry with the error, or stop if the data isn't there*
 
@@ -1335,9 +1666,14 @@ Exam task statement: Implement validation, retry, and feedback loops for extract
 A useful retry sends the original document, the failed extraction and the exact validation errors. Cap the retries and aim them at specific fields, and route anything still unresolved to human review. Extract `calculated_total` beside `stated_total` and a `conflict_detected` flag so the record checks itself. Add a `detected_pattern` field to findings, so you can see which constructs developers keep dismissing.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Validation keeps failing on a contract start date. Should you retry again?
+  *Answer.* Only if the information is in the document. Retry with the document, the failed output and the exact error when the fault is format or reasoning. If the date isn't there, stop: return null and route it to human review.
+
 #### Lab 43: Valid JSON, wrong refund: add business rules
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 108.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 141.
 
 *Diagram: Lab 43 on the Simulator 1 page*
 
@@ -1352,7 +1688,7 @@ A useful retry sends the original document, the failed extraction and the exact 
 
 #### Lab 44: Retry when the format is wrong, stop when the data is absent
 
-**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 109.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 142.
 
 *Diagram: Lab 44 on the Simulator 6 page*
 
@@ -1367,7 +1703,7 @@ A useful retry sends the original document, the failed extraction and the exact 
 
 ### 4.5 Half the price, up to 24 hours, no tool loop
 
-Exam task statement: Design efficient batch processing strategies. Message Batches suit work nobody is waiting for. Prove the prompt before you scale it. Slides 110–114.
+Exam task statement: Design efficient batch processing strategies. Message Batches suit work nobody is waiting for. Prove the prompt before you scale it. Slides 143–148.
 
 *Diagram: Half the price, up to 24 hours, no tool loop*
 
@@ -1380,9 +1716,20 @@ Three numbers define the Message Batches API: 50% cheaper, up to 24 hours, no la
 - In your own chunked workflows, keep a manifest: stable item IDs, bounded batches and per-item status, so one failure cannot corrupt the ordered result.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **custom_id is the only thread back to your request** Batch results come back in any order. Match on the id, and resubmit only what failed. *(Slide 145.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** 1,000 documents batched; 37 fail with context-length errors. What's the efficient recovery?
+  *Answer.* Resubmit only those 37 (by custom_id) after chunking them; don't resubmit the whole batch.
+- **Question.** Can a batched request run a multi-step tool-use loop?
+  *Answer.* No — the batch API doesn't support executing tools mid-request and returning results. Use synchronous calls for agentic loops.
+
 #### Lab 45: Prove the template before 35,000 transcripts
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 112.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 146.
 
 *Diagram: Lab 45 on the Simulator 1 page*
 
@@ -1397,7 +1744,7 @@ Three numbers define the Message Batches API: 50% cheaper, up to 24 hours, no la
 
 #### Lab 46: Client tools can't run inside a batch
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. Self-practice, slide 113.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. Self-practice, slide 147.
 
 *Diagram: Lab 46 on the Simulator 1 page*
 
@@ -1412,7 +1759,7 @@ Three numbers define the Message Batches API: 50% cheaper, up to 24 hours, no la
 
 #### Lab 47: Nightly job on Batches, upload flow stays synchronous
 
-**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 114.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 148.
 
 *Diagram: Lab 47 on the Simulator 6 page*
 
@@ -1427,7 +1774,7 @@ Three numbers define the Message Batches API: 50% cheaper, up to 24 hours, no la
 
 ### 4.6 The author is the worst reviewer of their own draft
 
-Exam task statement: Design multi-instance and multi-pass review architectures. Fresh eyes and focused passes catch what self-review and longer thinking miss. Slides 115–119.
+Exam task statement: Design multi-instance and multi-pass review architectures. Fresh eyes and focused passes catch what self-review and longer thinking miss. Slides 149–153.
 
 *Diagram: The author is the worst reviewer of their own draft*
 
@@ -1438,9 +1785,16 @@ The session that wrote the draft still holds its reasoning, so it defends its ow
 - Give the reviewer an adversarial brief: find unsupported claims. Log disagreements and adjudicate them against evidence. Never average them away.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Why doesn't enabling extended thinking for self-review fix the problem?
+  *Answer.* The reviewer still carries the generator's reasoning context and assumptions. Independence (a separate instance without that context) is what improves detection.
+- **Question.** A 14-file PR gets deep comments on some files and superficial ones on others. Restructure?
+  *Answer.* Per-file local passes plus a separate cross-file integration pass.
+
 #### Lab 48: The author reviewing its own draft misses its own errors
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 117.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 151.
 
 *Diagram: Lab 48 on the Simulator 3 page*
 
@@ -1455,7 +1809,7 @@ The session that wrote the draft still holds its reasoning, so it defends its ow
 
 #### Lab 49: Source-level passes first, integration second
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 118.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 152.
 
 *Diagram: Lab 49 on the Simulator 3 page*
 
@@ -1470,7 +1824,7 @@ The session that wrote the draft still holds its reasoning, so it defends its ow
 
 #### Lab 50: 14 files, shallow comments: split the review
 
-**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 119.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. In class, slide 153.
 
 *Diagram: Lab 50 on the Simulator 5 page*
 
@@ -1490,7 +1844,7 @@ Long sessions forget. Multi-agent runs lie by omission. Here is how to stop both
 
 ### 5.1 Facts live outside the summary
 
-Exam task statement: Manage conversation context to preserve critical information across long interactions. "About $45" is how a refund lands on the wrong order. Slides 122–126.
+Exam task statement: Manage conversation context to preserve critical information across long interactions. "About $45" is how a refund lands on the wrong order. Slides 156–160.
 
 *Diagram: Facts live outside the summary*
 
@@ -1503,9 +1857,16 @@ A summary turns an exact refund into "about $45", and a refund lands on the wron
 - When the next agent has little room, make upstream agents return key facts, citations and relevance scores, not reasoning chains.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A synthesis agent sees 12 long subagent reports and keeps ignoring findings from reports 4–9. Mitigation?
+  *Answer.* Put a key-findings summary at the start of the aggregated input, organize details under explicit section headers, and have upstream agents return condensed structured findings rather than verbose prose.
+- **Question.** Why keep transactional facts outside the summarized history?
+  *Answer.* Summaries lose precision (amounts, dates, expectations). A persistent structured facts block preserves exact values for every subsequent turn.
+
 #### Lab 51: Refund amount jumped to the wrong order
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 124.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 158.
 
 *Diagram: Lab 51 on the Simulator 1 page*
 
@@ -1520,7 +1881,7 @@ A summary turns an exact refund into "about $45", and a refund lands on the wron
 
 #### Lab 52: 40-field tool results push the review to its limit
 
-**Goal:** pick an answer, then watch the right one work on Simulator 5. Self-practice, slide 125.
+**Goal:** pick an answer, then watch the right one work on Simulator 5. Self-practice, slide 159.
 
 *Diagram: Lab 52 on the Simulator 5 page*
 
@@ -1535,7 +1896,7 @@ A summary turns an exact refund into "about $45", and a refund lands on the wron
 
 #### Lab 53: Taxonomy drift: write it to a state file
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 126.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. Self-practice, slide 160.
 
 *Diagram: Lab 53 on the Simulator 3 page*
 
@@ -1550,7 +1911,7 @@ A summary turns an exact refund into "about $45", and a refund lands on the wron
 
 ### 5.2 Escalate on triggers, not on tone
 
-Exam task statement: Design effective escalation and ambiguity resolution patterns. Anger and a confidence score predict nothing. Three triggers do. Slides 127–129.
+Exam task statement: Design effective escalation and ambiguity resolution patterns. Anger and a confidence score predict nothing. Three triggers do. Slides 161–163.
 
 *Diagram: Escalate on triggers, not on tone*
 
@@ -1565,9 +1926,16 @@ Exam task statement: Design effective escalation and ambiguity resolution patter
 Sentiment and self-reported confidence don't predict how complex a case is. Put explicit escalation criteria and few-shot examples in the system prompt instead.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A calm customer asks “Can I speak to a person?” about a simple address change. What does the agent do?
+  *Answer.* Escalate immediately. Explicit requests for a human are honored without first attempting the task.
+- **Question.** Why is “escalate when self-reported confidence < 6/10” a weak design?
+  *Answer.* LLM self-reported confidence is poorly calibrated; the agent is often confidently wrong on the hard cases. Explicit criteria with examples address the actual decision boundary.
+
 #### Lab 54: 55% first-contact resolution: calibrate with criteria and examples
 
-**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 129.
+**Goal:** pick an answer, then watch the right one work on Simulator 1. In class, slide 163.
 
 *Diagram: Lab 54 on the Simulator 1 page*
 
@@ -1582,7 +1950,7 @@ Sentiment and self-reported confidence don't predict how complex a case is. Put 
 
 ### 5.3 Say what failed, what you tried, what you still have
 
-Exam task statement: Implement error propagation strategies across multi-agent systems. A blank result pretending to be success is the most expensive bug in a pipeline. Slides 130–131.
+Exam task statement: Implement error propagation strategies across multi-agent systems. A blank result pretending to be success is the most expensive bug in a pipeline. Slides 164–166.
 
 *Diagram: Say what failed, what you tried, what you still have*
 
@@ -1594,9 +1962,20 @@ Send the coordinator four things: the failure type, what you attempted, the part
 - Annotate the synthesis: which findings are well supported, and which areas have gaps because a source was down.
 
 
+**Diagrams.** More on this task from the trainer deck:
+
+- **The failure travels up with everything the subagent knows** Retry locally first. If that fails, hand the coordinator enough to choose the next move. *(Slide 165.)*
+
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Two reputable sources give different market-size figures. What should the document-analysis subagent do?
+  *Answer.* Include both values with their source attribution and dates, explicitly annotate the conflict, and let the coordinator decide how to reconcile before synthesis.
+- **Question.** Which is worse for the coordinator: a generic “search unavailable” error or an empty result marked success?
+  *Answer.* Both are bad; empty-as-success is worse because it is indistinguishable from a true negative and prevents any recovery. Return structured error context instead.
+
 #### Lab 55: The search timed out: tell the coordinator everything
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 131.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 166.
 
 *Diagram: Lab 55 on the Simulator 3 page*
 
@@ -1611,7 +1990,7 @@ Send the coordinator four things: the failure type, what you attempted, the part
 
 ### 5.4 Delegate the noise, keep the signal
 
-Exam task statement: Manage context effectively in large codebase exploration. When answers drift to "typical patterns", your context has already degraded. Slides 132–135.
+Exam task statement: Manage context effectively in large codebase exploration. When answers drift to "typical patterns", your context has already degraded. Slides 167–170.
 
 *Diagram: Delegate the noise, keep the signal*
 
@@ -1624,9 +2003,16 @@ When answers drift towards "typical patterns" and away from the classes you foun
 - Use `/compact` when verbose discovery fills the session. Keep the retrieval trace and a durable summary as evidence of what was read.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** A coordinator crashes mid-way through a four-agent analysis. What design lets it resume without redoing completed work?
+  *Answer.* Each agent exports structured state to a known location; the coordinator maintains a manifest, loads it on restart and injects relevant state into the agents' prompts.
+- **Question.** Why summarize phase-1 findings before spawning phase-2 subagents?
+  *Answer.* Subagents start with isolated context; injecting a concise summary gives them the necessary background without flooding them with raw phase-1 output.
+
 #### Lab 56: Delegate the noisy search, keep a scratchpad
 
-**Goal:** pick an answer, then watch the right one work on Simulator 4. In class, slide 133.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. In class, slide 168.
 
 *Diagram: Lab 56 on the Simulator 4 page*
 
@@ -1641,7 +2027,7 @@ When answers drift towards "typical patterns" and away from the classes you foun
 
 #### Lab 57: Keep discovery out of the main thread
 
-**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 134.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. Self-practice, slide 169.
 
 *Diagram: Lab 57 on the Simulator 6 page*
 
@@ -1656,7 +2042,7 @@ When answers drift towards "typical patterns" and away from the classes you foun
 
 #### Lab 58: Crash recovery from a manifest
 
-**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 135.
+**Goal:** pick an answer, then watch the right one work on Simulator 4. Self-practice, slide 170.
 
 *Diagram: Lab 58 on the Simulator 4 page*
 
@@ -1671,7 +2057,7 @@ When answers drift towards "typical patterns" and away from the classes you foun
 
 ### 5.5 97% overall can hide the one field that fails
 
-Exam task statement: Design human review workflows and confidence calibration. Slice accuracy by document type and field before you remove a single reviewer. Slides 136–138.
+Exam task statement: Design human review workflows and confidence calibration. Slice accuracy by document type and field before you remove a single reviewer. Slides 171–173.
 
 *Diagram: 97% overall can hide the one field that fails*
 
@@ -1683,9 +2069,16 @@ Exam task statement: Design human review workflows and confidence calibration. S
 - High-impact uncertainty crosses an explicit human-review threshold before any production action. Route it to a named role, such as the refunds supervisor, not to "a human". Record who approved it, when, and what they decided.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Why sample high-confidence extractions at all if they're auto-accepted?
+  *Answer.* To measure the actual error rate of what you're not reviewing and to detect novel error patterns or drift that confidence scores don't flag.
+- **Question.** Reviewers can handle 5% of volume. How do you prioritize?
+  *Answer.* Route items with low calibrated field-level confidence and those with ambiguous or contradictory sources first; keep a small stratified sample of the rest for measurement.
+
 #### Lab 59: Acceptance looks great. Two fields don't.
 
-**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 137.
+**Goal:** pick an answer, then watch the right one work on Simulator 2. Self-practice, slide 172.
 
 *Diagram: Lab 59 on the Simulator 2 page*
 
@@ -1700,7 +2093,7 @@ Exam task statement: Design human review workflows and confidence calibration. S
 
 #### Lab 60: The aggregate masks a segment: break it and watch
 
-**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 138.
+**Goal:** pick an answer, then watch the right one work on Simulator 6. In class, slide 173.
 
 *Diagram: Lab 60 on the Simulator 6 page*
 
@@ -1715,7 +2108,7 @@ Exam task statement: Design human review workflows and confidence calibration. S
 
 ### 5.6 The source travels with the claim, all the way to the report
 
-Exam task statement: Preserve information provenance and handle uncertainty in multi-source synthesis. Summaries drop attribution first. Structured claim records can't lose it. Slides 139–141.
+Exam task statement: Preserve information provenance and handle uncertainty in multi-source synthesis. Summaries drop attribution first. Structured claim records can't lose it. Slides 174–176.
 
 *Diagram: The source travels with the claim, all the way to the report*
 
@@ -1729,9 +2122,14 @@ Summaries drop attribution first, so make the source travel with the claim. Have
 - Prove it. Write five acceptance checks anyone can observe, such as every claim has a source ID, or the approval record names a person, a time and a decision.
 
 
+**Check yourself.** Answer each before you run the labs below, then check the answer.
+
+- **Question.** Two credible sources report different market sizes. What does the synthesis agent do?
+  *Answer.* Keep both, each attributed with its source and date, and mark the conflict. Don't pick one or average them: the claim-source mapping has to survive every handoff to the report.
+
 #### Lab 61: A vendor benchmark isn't a peer-reviewed study
 
-**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 141.
+**Goal:** pick an answer, then watch the right one work on Simulator 3. In class, slide 176.
 
 *Diagram: Lab 61 on the Simulator 3 page*
 
@@ -1743,6 +2141,35 @@ Summaries drop attribution first, so make the source travel with the claim. Have
 
 > **Test it:** In fixtures/sources.json replace the visual-arts TIMEOUT with [] and rerun: a valid empty result must not read as a failure.
 
+
+## Exam Day and After
+
+### How to think on exam day
+
+When two options both work, pick the one that fixes the stated root cause with the least new machinery:
+
+- Sharper tool descriptions, before a new routing layer.
+- A hook when compliance must be guaranteed, not a firmer prompt.
+- Explicit review criteria, before a separate classifier.
+- An independent reviewer, not the author reviewing itself.
+
+**Invented features.** A CLAUDE_HEADLESS environment variable, a --batch CLI flag and a commands array in .claude/config.json don't exist.
+
+**Names that drifted.** The Task tool now appears as Agent, and custom commands have merged into skills.
+
+### Where the practice questions land
+
+SkillCertPro's practice exam, Part 1 (unofficial): 11, 4, 9, 10 and 6 questions across Domains 1 to 5. Domain 2 is 18% of the exam but only 4 of the 40. Labs 18 to 26 close the gap.
+
+### A five-week study plan
+
+| Week | Focus | Hands-on |
+|---|---|---|
+| Week 1 (D1 · 27%) | Loop, orchestration, hooks, sessions | Exercise 1 on Simulator 1 |
+| Week 2 (D2 + D5 · 33%) | Tools, MCP, errors, context, escalation | Exercise 4 on Simulator 3 |
+| Week 3 (D3 · 20%) | CLAUDE.md, rules, skills, CI flags | Exercise 2 on Simulators 2 and 4 |
+| Week 4 (D4 · 20%) | Structured output, batches, review | Exercise 3 on Simulator 6 |
+| Week 5 (Review) | Official sample questions, then the practice exam | Revisit any domain under about 75% |
 
 ## Quick Command Reference
 
@@ -1760,6 +2187,43 @@ Summaries drop attribution first, so make the source travel with the claim. Have
 | `export LAB_MODEL=claude-sonnet-5-5` | Choose the model for terminal runs |
 | `claude -p "..." --output-format json` | What a real CI job runs. The exam asks about this, and Simulator 5 explains each flag |
 
+
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| Agentic loop | Send messages and tools to Claude, run the tools it asks for, send the results back, and repeat until stop_reason is end_turn. |
+| stop_reason | The field that says why Claude stopped: tool_use (run the tools and continue) or end_turn (the task is done). The only reliable loop signal. |
+| tool_use / tool_result | Claude's request to call a tool, and the reply your code sends back with the matching tool_use_id, in a user turn. |
+| Coordinator | The hub agent that decomposes the task, delegates to subagents, merges their results and re-delegates gaps. Subagents never talk to each other. |
+| Subagent | An agent spawned for one part of the work, with an isolated context: it sees only the prompt it is given. |
+| Task tool (Agent) | The tool a coordinator uses to spawn subagents; it must be in allowedTools. Newer docs show it as Agent. |
+| allowedTools / allowed-tools | The list of tools an agent or skill may use. Scope it to the role. |
+| Hook (PreToolUse, PostToolUse) | Code that runs before a tool call (allow, deny or ask, with a reason) or after it (reshape the result). Deterministic, unlike a prompt. |
+| Prerequisite gate | Code that refuses a tool call until an earlier step has succeeded, such as no refund until the customer is verified. |
+| Handoff summary | The structured record sent with an escalation: customer id, root cause, amount, recommended action, so a human can act without the transcript. |
+| MCP (Model Context Protocol) | The standard for connecting tools and data to Claude. Servers expose tools (actions) and resources (catalogues to read). |
+| .mcp.json | Project-scope MCP server configuration, committed to the repo, with ${VAR} placeholders for credentials. |
+| isError, errorCategory, isRetryable | Structured error fields a tool returns so the agent can tell a transient failure from a validation, business or permission error. |
+| tool_choice | auto (Claude may answer in text), any (must call some tool), a named tool (must call that one), none (no tools). |
+| CLAUDE.md | Instruction files Claude Code loads: user (~/.claude), project (repo root, shared) and directory level. |
+| .claude/rules/ | Rule files with paths: globs in YAML frontmatter; each loads only for files that match. |
+| Skill (SKILL.md) | A reusable workflow Claude Code runs on demand. Frontmatter sets context: fork, allowed-tools and argument-hint. |
+| context: fork | Runs a skill in an isolated subagent context, so its verbose work stays out of your main conversation; only the result returns. |
+| Plan mode | Claude Code explores and proposes a plan without editing. Use it for large or ambiguous changes; use direct execution for a known fix. |
+| claude -p | Non-interactive (print) mode for CI. Pair with --output-format json and --json-schema for machine-readable findings. |
+| --resume / fork_session | Continue a named session, or branch one baseline into independent sessions to compare approaches. |
+| Few-shot examples | Two to four worked input-output examples that show the model where a line falls when prose can't. |
+| JSON schema / strict | The shape a tool's input or an extraction must take. strict: true guarantees the syntax, not the meaning. |
+| Validation-retry loop | Check the output (schema and business rules), and retry with the document, the failed output and the specific error, only when a retry can fix it. |
+| Message Batches API | Asynchronous processing at half the price, up to 24 hours, no multi-turn tool use. Results return in any order. |
+| custom_id | The id on each batch request that ties its result back to it. |
+| Multi-pass review | Per-file passes for local issues plus a separate integration pass across files, by an independent reviewer. |
+| Scratchpad file / manifest | Files that hold findings or agent state outside the context window, so long sessions stay accurate and a crash can resume. |
+| /compact | Claude Code command that summarises the conversation to free the context window. |
+| Escalation trigger | A real reason to hand over to a person: the customer asks, the policy is silent, or no progress is possible. Not tone or a confidence score. |
+| Provenance | The source, document, page and date that travel with every claim, so the final report can cite it. |
+| Stratified sampling | Checking a random sample from each segment (document type, field) to measure error rates an overall average hides. |
 
 ## Support
 
