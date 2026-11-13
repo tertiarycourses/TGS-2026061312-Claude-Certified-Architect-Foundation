@@ -22,18 +22,21 @@ export function asCurl(body) {
 }
 
 // One Messages API call. Throws an Error with a readable message on any API error.
+// s.apiKey is the key the learner saved in the sidebar (kept in this browser's localStorage);
+// MODEL above pins every call in every lab to claude-haiku-5-5.
 export async function callClaude(s, body) {
   if (s.stopped) throw new Error("Stopped.");
   s.requests.push({ model: MODEL, max_tokens: 4096, ...body });
+  s.onRequest?.(s.requests.at(-1));                        // the page shows the request being sent
   const res = await fetch(API, {
     method: "POST",
     headers: {
-      "x-api-key": s.apiKey,
+      "x-api-key": s.apiKey,                                 // YOUR API key, from the sidebar box
       "anthropic-version": "2023-06-01",
       "anthropic-dangerous-direct-browser-access": "true",   // lets the browser call the API with your own key
       "content-type": "application/json",
     },
-    body: JSON.stringify({ model: MODEL, max_tokens: 4096, ...body }),
+    body: JSON.stringify({ model: MODEL, max_tokens: 4096, ...body }),   // model: "claude-haiku-5-5"
   });
   const data = await res.json();
   if (!res.ok) {
@@ -66,7 +69,7 @@ export async function runAgent(s, o) {
   const maxTurns = o.maxTurns || 8;
   let resp = null, turn = 0;
   for (turn = 1; turn <= maxTurns; turn++) {
-    s.log(`${indent}${tag}Turn ${turn}: sending the conversation to Claude${turn > 1 ? ", with the tool results appended" : ""}`, "turn");
+    s.log(`${indent}${tag}Turn ${turn}: POST /v1/messages · model ${MODEL} · ${messages.length} message${messages.length > 1 ? "s" : ""}${turn > 1 ? " (tool results appended)" : ""}`, "turn");
     s.step("call");
     resp = await callClaude(s, {
       system: o.system, messages,

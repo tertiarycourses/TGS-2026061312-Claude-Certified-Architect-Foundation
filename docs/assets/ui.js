@@ -13,14 +13,16 @@ export const getKey = () => localStorage.getItem(KEY) || "";
 
 // The loop every lab runs, as learners see it while it runs. Each line's id matches the step the engine reports.
 const LOOP = [
-  ["", "messages = [ the user's message ]"],
-  ["", "for turn in 1 .. maxTurns:                    # a hard turn cap"],
-  ["call", "    response = claude(messages, tools)          # POST /v1/messages"],
-  ["check", "    if response.stop_reason != \"tool_use\":"],
-  ["stop", "        break                                  # end_turn: Claude has finished"],
-  ["tool", "    for each tool_use block: result = run_tool()   # a hook may block it"],
-  ["append", "    messages += [ Claude's turn, every tool_result ]  # then go round again"],
-];
+  ["", "messages = [ user message ]"],
+  ["", "for turn in 1..10:              # turn cap"],
+  ["call", "  r = claude(model=\"claude-haiku-5-5\","],
+  ["call", "             api_key=YOUR_KEY,"],
+  ["call", "             messages, tools)  # POST"],
+  ["check", "  if r.stop_reason != \"tool_use\":"],
+  ["stop", "    break                       # end_turn"],
+  ["tool", "  results = run_tools(r)        # hooks"],
+  ["append", "  messages += [r, results]      # go again"],
+]
 const LOOP_HTML = LOOP.map(([id, t]) => `<span data-step="${id}">${esc(t)}</span>`).join("\n");
 
 async function data() {
@@ -39,23 +41,31 @@ function sidebar(D, here) {
     <div class="course">Claude Certified Architect Foundation</div>
     <div class="keybox">
       <div>Anthropic API key: <span class="keystate"></span></div>
-      <input type="password" id="key" placeholder="sk-ant-..." autocomplete="off">
-      <div class="row"><button id="save">Save key</button><button id="test">Test</button><button id="clear">Clear</button></div>
+      <div class="keyrow"><input type="password" id="key" placeholder="sk-ant-..." autocomplete="off" spellcheck="false"><button id="show" title="Show or hide the key">Show</button></div>
+      <div class="row"><button id="save">Save</button><button id="test">Test</button><button id="clear">Clear</button></div>
+      <div id="keymsg" class="keymsg"></div>
       <div class="caption" style="margin-top:6px">Saved only in this browser and sent only to Anthropic. Every lab calls <code>claude-haiku-5-5</code>.</div>
     </div>
     <nav><h4>Start</h4><a href="index.html" class="${here === 0 ? "on" : ""}">All topics and simulators</a>
     <h4>Day 1 · one lab per task statement</h4>${nav}
     <h4>Day 2 · build it yourself</h4>${D.day2.map((l) => `<a class="task" href="guides/${l.slug}.html"><b>Lab ${l.id}</b> · ${esc(l.short)}</a>`).join("")}
     <h4>After class</h4><a href="${EXAM}">Practice exam</a><a href="${REPO}">GitHub repository</a></nav>`;
-  const show = () => { const k = getKey(); const st = $(".keystate"); st.textContent = k ? `saved (…${k.slice(-4)})` : "not set"; st.className = "keystate " + (k ? "ok" : "no"); };
+  const msg = (text, ok) => { const m = $("#keymsg"); m.textContent = text; m.className = "keymsg " + (ok === undefined ? "" : ok ? "ok" : "no"); };
+  const show = () => { const k = getKey(); const st = $(".keystate"); st.textContent = k ? "saved" : "not set"; st.className = "keystate " + (k ? "ok" : "no"); $("#key").value = k; };
   show();
-  $("#save").onclick = () => { const v = $("#key").value.trim(); if (!v.startsWith("sk-ant-")) { alert("That doesn't look like an Anthropic API key (it starts with sk-ant-)."); return; } localStorage.setItem(KEY, v); $("#key").value = ""; show(); };
-  $("#clear").onclick = () => { localStorage.removeItem(KEY); show(); };
+  $("#show").onclick = () => { const i = $("#key"); const hidden = i.type === "password"; i.type = hidden ? "text" : "password"; $("#show").textContent = hidden ? "Hide" : "Show"; };
+  $("#save").onclick = () => {
+    const v = $("#key").value.trim();
+    if (!v.startsWith("sk-ant-")) { msg("That doesn't look like an Anthropic API key. It starts with sk-ant-.", false); return; }
+    localStorage.setItem(KEY, v); show(); msg("Key saved in this browser. Press Test to check it.", true);
+  };
+  $("#clear").onclick = () => { localStorage.removeItem(KEY); show(); msg("Key removed from this browser.", true); };
   $("#test").onclick = async () => {
-    const k = getKey(); if (!k) { alert("Save a key first."); return; }
+    const k = getKey(); if (!k) { msg("Save a key first.", false); return; }
+    msg("Testing: one short call to claude-haiku-5-5…");
     const s = E.makeSession(k, () => {});
-    try { await E.callClaude(s, { max_tokens: 20, messages: [{ role: "user", content: "Say OK." }] }); alert("Key works: claude-haiku-5-5 answered."); }
-    catch (e) { alert(e.message); }
+    try { await E.callClaude(s, { max_tokens: 20, messages: [{ role: "user", content: "Say OK." }] }); msg("Key works: claude-haiku-5-5 answered.", true); }
+    catch (e) { msg(e.message, false); }
   };
 }
 
@@ -91,6 +101,8 @@ export async function lab() {
   const sharedSrc = await Promise.all(shared.map((f) => fetch(`sims/shared/${f}`).then((r) => r.text())));
   const engineSrc = await fetch("assets/engine.js").then((r) => r.text());
   const loop = engineSrc.slice(engineSrc.indexOf("export async function runAgent"), engineSrc.indexOf("// A small in-memory repository"));
+  const callSrc = engineSrc.slice(engineSrc.indexOf("export const MODEL"), engineSrc.indexOf("export function makeSession")) + "...\n\n" +
+    engineSrc.slice(engineSrc.indexOf("// One Messages API call."), engineSrc.indexOf("export const short"));
   const prev = D.labs.find((x) => x.id === n - 1), next = D.labs.find((x) => x.id === n + 1);
   document.title = `Lab ${n}: ${l.title}`;
   $("main").innerHTML = `
@@ -115,10 +127,18 @@ export async function lab() {
       <div><div class="caption"><b>The code running</b>: the agentic loop, with the line executing now highlighted</div><pre class="code loop" id="loop">${LOOP_HTML}</pre></div>
       <div><div class="caption"><b>Live output</b> from Claude Haiku 5.5</div><pre class="console" id="out">Press Simulate it live. The output appears here line by line.</pre></div>
     </div>
+    <div class="box apibox"><h4>The API request being sent now</h4><pre class="code wrap" id="apireq">POST https://api.anthropic.com/v1/messages
+x-api-key: ${getKey() ? "sk-ant-…" + esc(getKey().slice(-4)) + "   (your key from the sidebar)" : "(no key saved yet)"}
+anthropic-version: 2023-06-01
+content-type: application/json
+
+{ "model": "claude-haiku-5-5", "max_tokens": 4096, "system": "…", "tools": [ … ], "messages": [ … ] }</pre>
+      <div class="caption">Every turn sends the whole conversation again: the API keeps no memory between calls.</div></div>
     <details><summary>See the full code this lab runs</summary>
-      <div class="caption">The lab (sims/lab-${pad}.js):</div><pre class="code">${esc(src)}</pre>
+      <div class="caption"><b>1. How every call reaches Claude</b> (assets/engine.js): the model is pinned to <code>claude-haiku-5-5</code>, and your API key from the sidebar goes in the <code>x-api-key</code> header.</div><pre class="code wrap">${esc(callSrc)}</pre>
+      <div class="caption"><b>2. This lab</b> (sims/lab-${pad}.js): the scenario, tools and checks. It calls Claude through the loop below.</div><pre class="code wrap">${esc(src)}</pre>
       ${shared.map((f, i) => `<details><summary>Shared simulator code: sims/shared/${f}</summary><pre class="code">${esc(sharedSrc[i])}</pre></details>`).join("")}
-      <details><summary>The agentic loop every lab uses: runAgent() in assets/engine.js</summary><pre class="code">${esc(loop)}</pre></details>
+      <details open><summary><b>3. The agentic loop</b> every lab uses: runAgent() in assets/engine.js</summary><pre class="code wrap">${esc(loop)}</pre></details>
     </details>
     <div id="result"></div>
     <div class="navrow">${prev ? `<a href="lab.html?n=${prev.id}">◀ Lab ${prev.id}: Task ${esc(prev.task)}</a>` : "<span></span>"}${next ? `<a href="lab.html?n=${next.id}">Lab ${next.id}: Task ${esc(next.task)} ▶</a>` : "<span></span>"}</div>
@@ -142,6 +162,20 @@ export async function lab() {
     const out = $("#out"); out.innerHTML = ""; $("#result").innerHTML = "";
     const log = (t, kind = "") => { const sp = document.createElement("span"); sp.className = (/^\s{4}/.test(t) || /subagent/.test(t) ? "sub " : "") + kind; sp.textContent = t + "\n"; out.appendChild(sp); out.scrollTop = out.scrollHeight; };
     session = E.makeSession(key, log);
+    session.onRequest = (b) => {
+      const last = b.messages.at(-1); const lc = Array.isArray(last.content) ? last.content : [{ type: "text" }];
+      const lastDesc = lc.every((c) => c.type === "tool_result") ? `${lc.length} tool_result${lc.length > 1 ? "s" : ""}` : "the user's message";
+      $("#apireq").textContent = `POST https://api.anthropic.com/v1/messages     (call ${session ? session.requests.length : ""})
+x-api-key: sk-ant-…${key.slice(-4)}   (your key from the sidebar)
+anthropic-version: 2023-06-01
+content-type: application/json
+
+{
+  "model": "${b.model}",
+  "max_tokens": ${b.max_tokens},${b.system ? `\n  "system": "${E.short(b.system, 70).replace(/"/g, "'")}",` : ""}${b.tools ? `\n  "tools": [ ${b.tools.map((t) => t.name).join(", ")} ],` : ""}${b.tool_choice ? `\n  "tool_choice": ${JSON.stringify(b.tool_choice)},` : ""}
+  "messages": [ ${b.messages.length} message${b.messages.length > 1 ? "s" : ""}: the whole conversation so far, ending with ${lastDesc} ]
+}`;
+    };
     session.step = (id) => { document.querySelectorAll("#loop span").forEach((x) => x.classList.toggle("hot", x.dataset.step === id)); };
     $("#run").textContent = "■ Stop"; $("#run").classList.add("stop");
     let res = null;
