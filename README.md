@@ -7,7 +7,8 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 | Course code | `TGS-2026061312` |
 | Programme | WSQ |
 | Duration | 2 days / 16 hours |
-| Courseware release | Trainer deck v2.11, Lesson Plan v2.6, Learner Guide v2.6 |
+| Courseware release | Trainer deck v3.0, Lesson Plan v2.7, Learner Guide v2.7 |
+| Lab guides | [All 40 labs on GitHub Pages](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html) |
 | Funding | Up to 70% course fee funding for eligible learners and employers. Eligibility and current terms apply. |
 
@@ -15,7 +16,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 
 ## About the course
 
-You learn architecture judgement for agentic systems: when a prompt is enough, when a rule must live in code, and how to prove a system stays useful when tools fail, context grows and confidence runs out. Each topic teaches a concept, then you test it straight away on a working simulator.
+You learn architecture judgement for agentic systems: when a prompt is enough, when a rule must live in code, and how to prove a system stays useful when tools fail, context grows and confidence runs out. Day 1 covers the six exam scenarios and the five domains: for each of the 30 task statements you answer an exam-style question, then watch the answer work live on a simulator. Day 2 opens the code: API calls with curl and the Python SDK, a hand-written agent loop, subagents, an MCP server, Claude Code in CI, batches, caching and error handling.
 
 ## Learning outcomes
 
@@ -39,7 +40,7 @@ By the end of the course, you will be able to:
 
 ## Six simulators
 
-Each simulator is one official exam scenario, written in Python on the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) and run with [uv](https://docs.astral.sh/uv/). It runs on this laptop through your own Claude login, with no API key. The customers and data are fake. Claude is real.
+Each simulator is one official exam scenario, written in Python on the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) and run with [uv](https://docs.astral.sh/uv/). It runs on your laptop with your own Anthropic API key, and every Claude call uses `claude-haiku-5-5`. The customers and data are fake. Claude is real.
 
 1. **[Customer Support Resolution Agent](labs/simulators/simulator-1-customer-support/)**: Your agent has refund powers. Prove it knows when not to use them.
 2. **[Code Generation with Claude Code](labs/simulators/simulator-2-code-generation/)**: Claude Code, configured so the whole team gets the same teammate.
@@ -48,17 +49,15 @@ Each simulator is one official exam scenario, written in Python on the [Claude A
 5. **[Claude Code for Continuous Integration](labs/simulators/simulator-5-ci-cd/)**: A reviewer in the pipeline that developers don't learn to ignore.
 6. **[Structured Data Extraction](labs/simulators/simulator-6-structured-extraction/)**: Messy documents in, trustworthy records out.
 
-### Set up your laptop: Claude installs everything for you
+### Set up your laptop
 
-You need the Claude desktop app, signed in with a Pro, Max, Team or Enterprise plan. Windows and Mac work the same way. You don't install anything yourself.
+You need an Anthropic API key (it starts with `sk-ant-`; create one at https://console.anthropic.com). Every lab calls `claude-haiku-5-5`, so a whole lab usually costs under one US cent. Windows and Mac work the same way.
 
-**1. Open Claude Code in the desktop app, on an empty folder**
+**1. Get the course (first time only)**
 
-Open the Claude desktop app and click the **Code** tab. Under the prompt box, set the environment to **Local**, then click the folder control, choose **Open folder…** and create a new empty folder called `ccar-f`.
-
-Put the folder in your user folder, for example `C:\Users\<you>\ccar-f` or `/Users/<you>/ccar-f`. Keep it out of OneDrive, iCloud Drive and Dropbox, because file syncing stalls the simulators.
-
-**2. Paste this prompt (first time only)**
+- **Option A, clone:** `git clone https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation.git`
+- **Option B, download:** on this page click **Code → Download ZIP** and unzip it.
+- **Option C, let Claude do it:** open Claude Code on an empty folder outside OneDrive, iCloud Drive and Dropbox, and paste:
 
 ```text
 Set up the Claude Certified Architect Foundation course simulators in this folder.
@@ -66,132 +65,103 @@ Read https://raw.githubusercontent.com/tertiarycourses/TGS-2026061312-Claude-Cer
 and follow it step by step. Install anything that's missing for me.
 ```
 
-Claude installs Git and uv if you don't have them, copies the course into the folder with all its mock data, and opens a window titled *Claude Certified Architect simulators*. Approve each command Claude asks to run. The first time, a browser page asks you to approve the Claude sign-in. It takes about five minutes.
+**2. Save your API key once**
 
-**3. Every session after that: double-click to start**
+Double-click `labs\set-api-key.cmd` (Windows) or `labs/set-api-key.command` (Mac), or run `uv run set_api_key.py` in `labs`. The key is saved to `labs/.env` on your laptop only and is never committed. You can also paste it into the **Anthropic API key** box in the simulator website's sidebar.
 
-Double-click `labs\start-labs.cmd` on Windows, or `labs/start-labs.command` on Mac. The simulators open at http://localhost:8765, or the next free port. Keep that window open during class. Closing it stops the simulators.
+**3. Start the simulators (Day 1)**
 
-You can also ask Claude in the Code tab: *Start the course simulators.*
+Double-click `labs\start-labs.cmd` on Windows, or `labs/start-labs.command` on Mac. The simulators open at http://localhost:8765, or the next free port. Keep that window open during class.
 
-<details>
-<summary>Prefer a terminal, or the desktop app won't cooperate?</summary>
+**4. Run the code labs (Day 2)**
 
-Install Claude Code in a terminal with the official installer:
-
-| System | Command |
-|---|---|
-| Windows (PowerShell) | `irm https://claude.ai/install.ps1 \| iex` |
-| Windows (CMD) | `curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd` |
-| Mac | `curl -fsSL https://claude.ai/install.sh \| bash` |
-
-Open a new terminal, make an empty `ccar-f` folder, `cd` into it, run `claude`, and paste the same prompts. If the install fails, ask the Claude desktop app in a normal chat: *"Help me install Claude Code in the terminal on my Windows laptop. Here's the error I see: …"*
-</details>
-
-Each simulator page opens straight on its first lab, with a button for every other lab in that simulator. Live runs use your Claude allowance.
-
-Every lab page has a built-in terminal, so you never need to open one. Prefer Claude Code? Open it in `labs` and type `/lab 9`.
-
-Simulator 6 and the batch labs run the Message Batches workflow locally, so they show the steps but not the 50% discount or the 24-hour window.
+Open a terminal in a lab folder, for example `labs/lab-31-first-api-call-to-agent-loop`, and follow its README: `uv run agent_loop.py` for Python, `./call_claude.sh` for shell (Git Bash on Windows).
 
 ## Labs
 
-In a lab, you pick an answer, see at once why it is right or wrong, then watch the right answer work. Numbers follow the exam domains, so each simulator holds its own set. Lab 9 means the same thing on the slide, on the simulator page, in its PDF and in the Learner Guide. You run 33 of them in class.
+Every lab has its own folder with a step-by-step `README.md` and `README.pdf`. Browse them all on the [lab site](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/).
 
-Questions come from the SkillCertPro practice exam Part 1 (40 labs, third-party and unofficial, reconstructed from a video transcript, so treat them as practice material and never as real exam items), the official sample questions in the exam guide (7 labs) and the exam guide's task statements (14 labs).
+### Day 1: one exam-style question and one live simulation per task statement
 
-### Topic 1: Agentic Architecture & Orchestration
-
-| Lab | Task | Simulator | What you find out |
-|---|---|---|---|
-| 1 | 1.1 | 1 | [Watch one refund go round the loop](labs/topic-1-agentic-architecture/lab-01-watch-one-refund-go-round-the-loop.pdf) |
-| 2 | 1.1 | 2 | [Claude re-asks because the tool_result never came back](labs/topic-1-agentic-architecture/lab-02-claude-re-asks-because-the-tool-result-never-cam.pdf) |
-| 3 | 1.2 | 3 | [Every subagent succeeds, and the report still misses half the topic](labs/topic-1-agentic-architecture/lab-03-every-subagent-succeeds-and-the-report-still-mis.pdf) |
-| 4 | 1.2 | 6 | [Same brief to every subagent, same findings four times](labs/topic-1-agentic-architecture/lab-04-same-brief-to-every-subagent-same-findings-four.pdf) |
-| 5 | 1.3 | 2 | [A /parallel-review that can't fan out because Task isn't allowed](labs/topic-1-agentic-architecture/lab-05-a-parallel-review-that-can-t-fan-out-because-tas.pdf) |
-| 6 | 1.3 | 5 | [Same reviewers, same findings, and the PR comment loses them all](labs/topic-1-agentic-architecture/lab-06-same-reviewers-same-findings-and-the-pr-comment.pdf) |
-| 7 | 1.3 | 3 | [Polished report, weak citations: route information, not just tasks](labs/topic-1-agentic-architecture/lab-07-polished-report-weak-citations-route-information.pdf) |
-| 8 | 1.3 | 3 | [Later subagents re-run searches the first ones already finished](labs/topic-1-agentic-architecture/lab-08-later-subagents-re-run-searches-the-first-ones-a.pdf) |
-| 9 | 1.4 | 1 | [12% of cases skip get_customer: fix it with a gate, not a sentence](labs/topic-1-agentic-architecture/lab-09-12-of-cases-skip-get-customer-fix-it-with-a-gate.pdf) |
-| 10 | 1.4 | 5 | [Approval must never post before the passing test artifact exists](labs/topic-1-agentic-architecture/lab-10-approval-must-never-post-before-the-passing-test.pdf) |
-| 11 | 1.4 | 6 | [Claude guesses a field and submits without validating](labs/topic-1-agentic-architecture/lab-11-claude-guesses-a-field-and-submits-without-valid.pdf) |
-| 12 | 1.5 | 1 | [The prompt forgot the $500 rule. The hook did not.](labs/topic-1-agentic-architecture/lab-12-the-prompt-forgot-the-500-rule-the-hook-did-not.pdf) |
-| 13 | 1.5 | 2 | [Shrink noisy npm test output before Claude reads it](labs/topic-1-agentic-architecture/lab-13-shrink-noisy-npm-test-output-before-claude-reads.pdf) |
-| 14 | 1.5 | 4 | [rm -rf meets a hook, not a polite request](labs/topic-1-agentic-architecture/lab-14-rm-rf-meets-a-hook-not-a-polite-request.pdf) |
-| 15 | 1.6 | 6 | [60-page packets: section passes first, reconcile second](labs/topic-1-agentic-architecture/lab-15-60-page-packets-section-passes-first-reconcile-s.pdf) |
-| 16 | 1.7 | 2 | [Two attempts, one analysis: fork the session, checkpoint the files](labs/topic-1-agentic-architecture/lab-16-two-attempts-one-analysis-fork-the-session-check.pdf) |
-| 17 | 1.7 | 4 | [Resume, and say exactly which file changed](labs/topic-1-agentic-architecture/lab-17-resume-and-say-exactly-which-file-changed.pdf) |
-
-### Topic 2: Tool Design & MCP Integration
+**Topic 1: Agentic Architecture & Orchestration**
 
 | Lab | Task | Simulator | What you find out |
 |---|---|---|---|
-| 18 | 2.1 | 6 | [One analyze_document tool does three jobs badly](labs/topic-2-tool-design-and-mcp/lab-18-one-analyze-document-tool-does-three-jobs-badly.pdf) |
-| 19 | 2.2 | 1 | [The refund failed. The customer was told it worked.](labs/topic-2-tool-design-and-mcp/lab-19-the-refund-failed-the-customer-was-told-it-worke.pdf) |
-| 20 | 2.2 | 1 | [Retry the timeout once, then answer from the real record](labs/topic-2-tool-design-and-mcp/lab-20-retry-the-timeout-once-then-answer-from-the-real.pdf) |
-| 21 | 2.3 | 5 | [Review and test generation fight over one Claude call](labs/topic-2-tool-design-and-mcp/lab-21-review-and-test-generation-fight-over-one-claude.pdf) |
-| 22 | 2.3 | 3 | [Give synthesis one narrow tool, not the whole web](labs/topic-2-tool-design-and-mcp/lab-22-give-synthesis-one-narrow-tool-not-the-whole-web.pdf) |
-| 23 | 2.4 | 2 | [Commit the server, never the token](labs/topic-2-tool-design-and-mcp/lab-23-commit-the-server-never-the-token.pdf) |
-| 24 | 2.4 | 4 | [Read the catalogue before opening a single file](labs/topic-2-tool-design-and-mcp/lab-24-read-the-catalogue-before-opening-a-single-file.pdf) |
-| 25 | 2.5 | 4 | [/find-callers needs Grep with a glob, not Bash](labs/topic-2-tool-design-and-mcp/lab-25-find-callers-needs-grep-with-a-glob-not-bash.pdf) |
-| 26 | 2.5 | 4 | [Edit says the anchor isn't unique. Now what?](labs/topic-2-tool-design-and-mcp/lab-26-edit-says-the-anchor-isn-t-unique-now-what.pdf) |
+| 1 | 1.1 | 1 | [Watch one refund go round the loop](labs/lab-01-watch-one-refund-go-round-the-loop/) |
+| 2 | 1.2 | 3 | [Every subagent succeeds, and the report still misses half the topic](labs/lab-02-every-subagent-succeeds-and-the-report/) |
+| 3 | 1.3 | 2 | [A /parallel-review that can't fan out because Task isn't allowed](labs/lab-03-a-parallel-review-that-can-t-fan-out/) |
+| 4 | 1.4 | 1 | [12% of cases skip get_customer: fix it with a gate, not a sentence](labs/lab-04-12-of-cases-skip-get-customer-fix-it/) |
+| 5 | 1.5 | 1 | [The prompt forgot the $500 rule. The hook did not.](labs/lab-05-the-prompt-forgot-the-500-rule-the-hook/) |
+| 6 | 1.6 | 6 | [60-page packets: section passes first, reconcile second](labs/lab-06-60-page-packets-section-passes-first/) |
+| 7 | 1.7 | 2 | [Two attempts, one analysis: fork the session, checkpoint the files](labs/lab-07-two-attempts-one-analysis-fork-the/) |
 
-### Topic 3: Claude Code Configuration & Workflows
+**Topic 2: Tool Design & MCP Integration**
 
 | Lab | Task | Simulator | What you find out |
 |---|---|---|---|
-| 27 | 3.1 | 2 | [Which instructions actually reached Claude?](labs/topic-3-claude-code-configuration/lab-27-which-instructions-actually-reached-claude.pdf) |
-| 28 | 3.2 | 2 | [A /review command the whole team gets through git](labs/topic-3-claude-code-configuration/lab-28-a-review-command-the-whole-team-gets-through-git.pdf) |
-| 29 | 3.2 | 1 | [Keep a noisy case review out of your main session](labs/topic-3-claude-code-configuration/lab-29-keep-a-noisy-case-review-out-of-your-main-sessio.pdf) |
-| 30 | 3.3 | 3 | [Testing rules for test files spread across every folder](labs/topic-3-claude-code-configuration/lab-30-testing-rules-for-test-files-spread-across-every.pdf) |
-| 31 | 3.4 | 2 | [Replacing the auth layer: nobody agrees on the boundary, so plan](labs/topic-3-claude-code-configuration/lab-31-replacing-the-auth-layer-nobody-agrees-on-the-bo.pdf) |
-| 32 | 3.4 | 2 | [Plan first, then approve into an editing mode](labs/topic-3-claude-code-configuration/lab-32-plan-first-then-approve-into-an-editing-mode.pdf) |
-| 33 | 3.4 | 2 | [One guard clause doesn't need a plan](labs/topic-3-claude-code-configuration/lab-33-one-guard-clause-doesn-t-need-a-plan.pdf) |
-| 34 | 3.5 | 5 | [Unknown requirements? Let Claude interview you first](labs/topic-3-claude-code-configuration/lab-34-unknown-requirements-let-claude-interview-you-fi.pdf) |
-| 35 | 3.5 | 3 | [Two linked defects go in one detailed request](labs/topic-3-claude-code-configuration/lab-35-two-linked-defects-go-in-one-detailed-request.pdf) |
-| 36 | 3.6 | 5 | [The nightly job hangs because nobody can press Enter](labs/topic-3-claude-code-configuration/lab-36-the-nightly-job-hangs-because-nobody-can-press-e.pdf) |
-| 37 | 3.6 | 5 | [A shared slash command still needs -p in CI](labs/topic-3-claude-code-configuration/lab-37-a-shared-slash-command-still-needs-p-in-ci.pdf) |
+| 8 | 2.1 | 6 | [One analyze_document tool does three jobs badly](labs/lab-08-one-analyze-document-tool-does-three/) |
+| 9 | 2.2 | 1 | [The refund failed. The customer was told it worked.](labs/lab-09-the-refund-failed-the-customer-was-told/) |
+| 10 | 2.3 | 5 | [Review and test generation fight over one Claude call](labs/lab-10-review-and-test-generation-fight-over/) |
+| 11 | 2.4 | 2 | [Commit the server, never the token](labs/lab-11-commit-the-server-never-the-token/) |
+| 12 | 2.5 | 4 | [/find-callers needs Grep with a glob, not Bash](labs/lab-12-find-callers-needs-grep-with-a-glob-not/) |
 
-### Topic 4: Prompt Engineering & Structured Output
+**Topic 3: Claude Code Configuration & Workflows**
 
 | Lab | Task | Simulator | What you find out |
 |---|---|---|---|
-| 38 | 4.1 | 5 | ["Only high confidence" didn't quiet the reviewer](labs/topic-4-prompt-engineering/lab-38-only-high-confidence-didn-t-quiet-the-reviewer.pdf) |
-| 39 | 4.1 | 3 | [Switch off the one noisy category, keep the accurate ones](labs/topic-4-prompt-engineering/lab-39-switch-off-the-one-noisy-category-keep-the-accur.pdf) |
-| 40 | 4.2 | 2 | ["Clean this up" means three things: show which one you mean](labs/topic-4-prompt-engineering/lab-40-clean-this-up-means-three-things-show-which-one.pdf) |
-| 41 | 4.3 | 3 | [Vague passages forced into a category they don't fit](labs/topic-4-prompt-engineering/lab-41-vague-passages-forced-into-a-category-they-don-t.pdf) |
-| 42 | 4.3 | 6 | [Know your tool_choice options, and check what came back](labs/topic-4-prompt-engineering/lab-42-know-your-tool-choice-options-and-check-what-cam.pdf) |
-| 43 | 4.4 | 1 | [Valid JSON, wrong refund: add business rules](labs/topic-4-prompt-engineering/lab-43-valid-json-wrong-refund-add-business-rules.pdf) |
-| 44 | 4.4 | 6 | [Retry when the format is wrong, stop when the data is absent](labs/topic-4-prompt-engineering/lab-44-retry-when-the-format-is-wrong-stop-when-the-dat.pdf) |
-| 45 | 4.5 | 1 | [Prove the template before 35,000 transcripts](labs/topic-4-prompt-engineering/lab-45-prove-the-template-before-35-000-transcripts.pdf) |
-| 46 | 4.5 | 1 | [Client tools can't run inside a batch](labs/topic-4-prompt-engineering/lab-46-client-tools-can-t-run-inside-a-batch.pdf) |
-| 47 | 4.5 | 6 | [Nightly job on Batches, upload flow stays synchronous](labs/topic-4-prompt-engineering/lab-47-nightly-job-on-batches-upload-flow-stays-synchro.pdf) |
-| 48 | 4.6 | 3 | [The author reviewing its own draft misses its own errors](labs/topic-4-prompt-engineering/lab-48-the-author-reviewing-its-own-draft-misses-its-ow.pdf) |
-| 49 | 4.6 | 3 | [Source-level passes first, integration second](labs/topic-4-prompt-engineering/lab-49-source-level-passes-first-integration-second.pdf) |
-| 50 | 4.6 | 5 | [14 files, shallow comments: split the review](labs/topic-4-prompt-engineering/lab-50-14-files-shallow-comments-split-the-review.pdf) |
+| 13 | 3.1 | 2 | [Which instructions actually reached Claude?](labs/lab-13-which-instructions-actually-reached/) |
+| 14 | 3.2 | 1 | [Keep a noisy case review out of your main session](labs/lab-14-keep-a-noisy-case-review-out-of-your/) |
+| 15 | 3.3 | 3 | [Testing rules for test files spread across every folder](labs/lab-15-testing-rules-for-test-files-spread/) |
+| 16 | 3.4 | 2 | [Replacing the auth layer: nobody agrees on the boundary, so plan](labs/lab-16-replacing-the-auth-layer-nobody-agrees/) |
+| 17 | 3.5 | 3 | [Two linked defects go in one detailed request](labs/lab-17-two-linked-defects-go-in-one-detailed/) |
+| 18 | 3.6 | 5 | [The nightly job hangs because nobody can press Enter](labs/lab-18-the-nightly-job-hangs-because-nobody-can/) |
 
-### Topic 5: Context Management & Reliability
+**Topic 4: Prompt Engineering & Structured Output**
 
 | Lab | Task | Simulator | What you find out |
 |---|---|---|---|
-| 51 | 5.1 | 1 | [Refund amount jumped to the wrong order](labs/topic-5-context-and-reliability/lab-51-refund-amount-jumped-to-the-wrong-order.pdf) |
-| 52 | 5.1 | 5 | [40-field tool results push the review to its limit](labs/topic-5-context-and-reliability/lab-52-40-field-tool-results-push-the-review-to-its-lim.pdf) |
-| 53 | 5.1 | 3 | [Taxonomy drift: write it to a state file](labs/topic-5-context-and-reliability/lab-53-taxonomy-drift-write-it-to-a-state-file.pdf) |
-| 54 | 5.2 | 1 | [55% first-contact resolution: calibrate with criteria and examples](labs/topic-5-context-and-reliability/lab-54-55-first-contact-resolution-calibrate-with-crite.pdf) |
-| 55 | 5.3 | 3 | [The search timed out: tell the coordinator everything](labs/topic-5-context-and-reliability/lab-55-the-search-timed-out-tell-the-coordinator-everyt.pdf) |
-| 56 | 5.4 | 4 | [Delegate the noisy search, keep a scratchpad](labs/topic-5-context-and-reliability/lab-56-delegate-the-noisy-search-keep-a-scratchpad.pdf) |
-| 57 | 5.4 | 6 | [Keep discovery out of the main thread](labs/topic-5-context-and-reliability/lab-57-keep-discovery-out-of-the-main-thread.pdf) |
-| 58 | 5.4 | 4 | [Crash recovery from a manifest](labs/topic-5-context-and-reliability/lab-58-crash-recovery-from-a-manifest.pdf) |
-| 59 | 5.5 | 2 | [Acceptance looks great. Two fields don't.](labs/topic-5-context-and-reliability/lab-59-acceptance-looks-great-two-fields-don-t.pdf) |
-| 60 | 5.5 | 6 | [The aggregate masks a segment: break it and watch](labs/topic-5-context-and-reliability/lab-60-the-aggregate-masks-a-segment-break-it-and-watch.pdf) |
-| 61 | 5.6 | 3 | [A vendor benchmark isn't a peer-reviewed study](labs/topic-5-context-and-reliability/lab-61-a-vendor-benchmark-isn-t-a-peer-reviewed-study.pdf) |
+| 19 | 4.1 | 5 | ["Only high confidence" didn't quiet the reviewer](labs/lab-19-only-high-confidence-didn-t-quiet-the/) |
+| 20 | 4.2 | 2 | ["Clean this up" means three things: show which one you mean](labs/lab-20-clean-this-up-means-three-things-show/) |
+| 21 | 4.3 | 6 | [Know your tool_choice options, and check what came back](labs/lab-21-know-your-tool-choice-options-and-check/) |
+| 22 | 4.4 | 6 | [Retry when the format is wrong, stop when the data is absent](labs/lab-22-retry-when-the-format-is-wrong-stop-when/) |
+| 23 | 4.5 | 1 | [Prove the template before 35,000 transcripts](labs/lab-23-prove-the-template-before-35-000/) |
+| 24 | 4.6 | 5 | [14 files, shallow comments: split the review](labs/lab-24-14-files-shallow-comments-split-the/) |
+
+**Topic 5: Context Management & Reliability**
+
+| Lab | Task | Simulator | What you find out |
+|---|---|---|---|
+| 25 | 5.1 | 1 | [Refund amount jumped to the wrong order](labs/lab-25-refund-amount-jumped-to-the-wrong-order/) |
+| 26 | 5.2 | 1 | [55% first-contact resolution: calibrate with criteria and examples](labs/lab-26-55-first-contact-resolution-calibrate/) |
+| 27 | 5.3 | 3 | [The search timed out: tell the coordinator everything](labs/lab-27-the-search-timed-out-tell-the/) |
+| 28 | 5.4 | 4 | [Delegate the noisy search, keep a scratchpad](labs/lab-28-delegate-the-noisy-search-keep-a/) |
+| 29 | 5.5 | 6 | [The aggregate masks a segment: break it and watch](labs/lab-29-the-aggregate-masks-a-segment-break-it/) |
+| 30 | 5.6 | 3 | [A vendor benchmark isn't a peer-reviewed study](labs/lab-30-a-vendor-benchmark-isn-t-a-peer-reviewed/) |
+
+### Day 2: run the code
+
+| Lab | Tasks | What you build |
+|---|---|---|
+| 31 | 1.1 | [From one API call to a working agent loop](labs/lab-31-first-api-call-to-agent-loop/) |
+| 32 | 1.2, 1.3 | [Be the coordinator: brief your subagents or they work blind](labs/lab-32-coordinator-and-subagents/) |
+| 33 | 2.1, 2.3 | [Write the tool description Claude actually reads](labs/lab-33-tool-design-and-tool-choice/) |
+| 34 | 2.4 | [Build an MCP server once, plug it into any agent](labs/lab-34-build-an-mcp-server/) |
+| 35 | 3.2, 3.3 | [Teach Claude Code your repo: a /review skill and a rule that loads only for tests](labs/lab-35-skills-and-path-rules/) |
+| 36 | 3.6 | [Put Claude Code in the pipeline and let the exit code decide](labs/lab-36-claude-code-in-ci/) |
+| 37 | 4.3 | [Valid JSON is the floor: check the meaning yourself](labs/lab-37-structured-output/) |
+| 38 | 4.5 | [Half price, no hurry: triage tickets with the Batches API](labs/lab-38-message-batches/) |
+| 39 | 5.1 | [Keep the facts, cache the handbook](labs/lab-39-context-and-prompt-caching/) |
+| 40 | 5.3 | [When a subagent fails, tell the coordinator everything](labs/lab-40-error-propagation/) |
+
+Questions come from the exam guide's task statements and official samples, and from SkillCertPro's Part 1 practice exam (third-party and unofficial, so treat them as practice material, never as real exam items). After the course, sit the [practice exam](https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations) under timed conditions.
 
 ## In this repository
 
-- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.11.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v2.11.pdf)
-- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v2.6.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v2.6.pdf)
-- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v2.6.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v2.6.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v2.6.md)
-- [The labs folder](labs/): simulators, lab instructions and saved evidence
+- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.0.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.0.pdf)
+- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v2.7.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v2.7.pdf)
+- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v2.7.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v2.7.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v2.7.md)
+- [The labs folder](labs/): 40 lab folders and the six simulators
+- [`docs/`](docs/): the [lab site](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) on GitHub Pages
 
 ## What isn't here
 
