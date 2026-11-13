@@ -14,7 +14,7 @@ I read `src/cart.js`. It has two functions: `subtotal`, which sums `priceCents *
 
 Project-folder files in my context:
 
-**`/Users/alfredang/ccar-f/day2/lab-35-skills-and-path-rules/project/CLAUDE.md`** is the only one. It contains three rules:
+**`labs/lab-35-skills-and-path-rules/project/CLAUDE.md`** is the only one. It contains three rules:
 1. Node.js 20, no external dependencies. Run tests with `node --test`.
 2. Money is stored in integer cents. Never use floating-point dollars.
 3. Keep functions small and pure; side effects live in `src/store.js`.
@@ -26,13 +26,13 @@ I read `src/cart.test.js`. It has one test, `subtotal adds items`, which asserts
 
 Two project-folder files put instructions in my context:
 
-1. **`/Users/alfredang/ccar-f/day2/lab-35-skills-and-path-rules/project/CLAUDE.md`**
+1. **`labs/lab-35-skills-and-path-rules/project/CLAUDE.md`**
    - Use Node.js 20 with no external dependencies.
    - Run tests with `node --test`.
    - Store money as integer cents. Never use floating-point dollars.
    - Keep functions small and pure. Side effects live in `src/store.js`.
 
-2. **`/Users/alfredang/ccar-f/day2/lab-35-skills-and-path-rules/project/.claude/rules/testing.md`**
+2. **`labs/lab-35-skills-and-path-rules/project/.claude/rules/testing.md`**
    - Use one `describe` per exported function, and start test names with "returns" or "throws".
    - Every money test checks cents, never dollars.
    - Keep network and clock out of tests by injecting them.
