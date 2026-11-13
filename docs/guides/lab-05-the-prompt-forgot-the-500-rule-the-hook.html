@@ -1,0 +1,149 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 5: The prompt forgot the $500 rule. The hook did not.</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-05-the-prompt-forgot-the-500-rule-the-hook">Open the folder on GitHub</a><a class="btn alt" href="../lab.html?n=5">Open Lab 5 in the simulator</a><a class="btn alt" href="lab-05-the-prompt-forgot-the-500-rule-the-hook.pdf">Download the PDF</a></p><h1>Lab 5: The prompt forgot the $500 rule. The hook did not.</h1>
+<blockquote>
+<p>Day 1 · Topic 1: Agentic Architecture &amp; Orchestration · Task statement 1.5 · Simulator 1: Customer Support Resolution Agent · About 15 minutes · Claude Haiku 5.5</p>
+</blockquote>
+<h2>Goal</h2>
+<p>Task statement 1.5: <strong>Apply Agent SDK hooks for tool call interception and data normalization.</strong> You answer one exam-style question, then run the Customer Support Resolution Agent simulator once and watch the right answer work with a real Claude call.</p>
+<h2>Open this lab</h2>
+<ul>
+<li><strong>In the simulator website:</strong> start the simulators (double-click <code>labs/start-labs.command</code> on Mac or <code>labs\start-labs.cmd</code> on Windows), then open <a href="http://localhost:8765/sim1?lab=5">http://localhost:8765/sim1?lab=5</a>. It opens Simulator 1 on Lab 5. If the start window shows a different port, use that one.</li>
+<li><strong>In a terminal, one click:</strong> double-click <code>run-lab.command</code> (Mac) or <code>run-lab.cmd</code> (Windows) in this folder. It runs <code>uv run support_agent.py --case CS-02 --prompt prompts/system-noguard.md --tag noguard</code> from <code>simulators/simulator-1-customer-support</code>.</li>
+<li><strong>The code it runs:</strong> <a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/blob/master/labs/simulators/simulator-1-customer-support/support_agent.py">simulators/simulator-1-customer-support/support_agent.py</a>, with the case file <a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/blob/master/labs/simulators/simulator-1-customer-support/cases/CS-02.json">simulators/simulator-1-customer-support/cases/CS-02.json</a>. The lab folder holds the instructions; the simulator folder holds the code, so all its labs share one working system.</li>
+</ul>
+<h2>The scenario</h2>
+<p>You are building a customer support resolution agent using the Claude Agent SDK. The agent handles high-ambiguity requests like returns, billing disputes, and account issues. It has access to your backend systems through custom Model Context Protocol (MCP) tools (get_customer, lookup_order, process_refund, escalate_to_human). Your target is 80%+ first-contact resolution while knowing when to escalate.</p>
+<h2>The question</h2>
+<p>Arjun wants a full refund on a $780 standing desk. Automatic refunds stop at $500. Someone has edited the system prompt, and the $500 rule is gone. What still stops the refund?</p>
+<ul>
+<li><strong>A.</strong> A refund limit stated only in the system prompt, restored from version control.</li>
+<li><strong>B.</strong> A few-shot example in the prompt showing the agent escalating a $600 refund.</li>
+<li><strong>C.</strong> A PreToolUse hook that denies any process_refund above $500 and redirects the agent to escalate_to_human.</li>
+<li><strong>D.</strong> A PostToolUse hook that logs every refund above $500 for the finance team to review.</li>
+</ul>
+<p>Pick your answer before you run anything. The answer and the reasoning are at the end, under <strong>Check your answer</strong>.</p>
+<h2>Before you start (once per laptop)</h2>
+<ul>
+<li>The course folder is on your laptop (Day 1 setup), and you have an Anthropic API key. It starts with <code>sk-ant-</code>.</li>
+<li>The simulators are running. <strong>Windows:</strong> double-click <code>labs\start-labs.cmd</code>. <strong>Mac:</strong> double-click <code>labs/start-labs.command</code>. The first time, the window asks for your API key and saves it to <code>labs/.env</code>. Keep that window open during class.</li>
+<li>Your browser opens the simulators at http://localhost:8765. If that port is busy the window prints another address, such as http://localhost:8766.</li>
+</ul>
+<h2>Steps in the simulator website</h2>
+<ol>
+<li>Look at the left sidebar. It should say <strong>Anthropic API key saved</strong>. If it says <strong>No API key yet: paste it here</strong>, paste your key into the <strong>Anthropic API key</strong> box and press <strong>Save key</strong>.</li>
+<li>In the left menu, click <strong>1. Customer Support Resolution Agent</strong>.</li>
+<li>Click <strong>Lab 5</strong> in the row of lab buttons. You can also pick it from <strong>Jump to any lab</strong>.</li>
+<li>Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open <strong>Why the other answers fall short</strong> to see each distractor's flaw.</li>
+<li>Under <strong>Watch the right answer work</strong>, open <strong>See the code this lab runs</strong> if you want to read the script first.</li>
+<li>Press <strong>▶ Simulate it live</strong>. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.</li>
+<li>When it finishes, read <strong>Read your result</strong>: what this run showed, <strong>What to look for</strong>, <strong>Why it happens</strong> and the <strong>Exam tip</strong>.</li>
+</ol>
+<h2>Or run it from a terminal</h2>
+<p>Open a terminal in the <code>labs</code> folder. <strong>Windows:</strong> in File Explorer, open <code>labs</code>, click the address bar, type <code>powershell</code> and press Enter. <strong>Mac:</strong> right-click the <code>labs</code> folder and choose <strong>New Terminal at Folder</strong>. Then:</p>
+<pre><code>cd simulators/simulator-1-customer-support
+uv run support_agent.py --case CS-02 --prompt prompts/system-noguard.md --tag noguard
+</code></pre>
+<p>Or let the course tool print the question, run the command and show the reasoning in one go: <code>uv run run_lab.py 5</code> from the <code>labs</code> folder.</p>
+<h2>What you will see</h2>
+<p>What to look for: The prompt has lost its $500 rule, so the model tries $780. The hook denies it.</p>
+<p>These lines are from our own run of this lab on Claude Haiku 5.5. Your wording will differ, because Claude writes each reply fresh; the tool calls, decisions and checks should match.</p>
+<pre><code>  connected: claude-haiku-5-5, tools: escalate_to_human, get_customer, lookup_order, process_refund, recommend_refund
+Turn 1: sending the conversation to Claude
+  -&gt; get_customer({&quot;email&quot;: &quot;arjun@example.com&quot;, &quot;name&quot;: &quot;Arjun&quot;})
+  stop_reason: tool_use -&gt; CONTINUE: run the tool, append its result, call Claude again
+  &lt;- result: {&quot;customer_id&quot;: &quot;C-1002&quot;, &quot;name&quot;: &quot;Arjun Rao&quot;, &quot;email&quot;: &quot;arjun@example.com&quot;, &quot;tier&quot;: &quot;plus&quot;, &quot;created_at&quot;: &quot;2023-11-02T08:15:00Z&quot;, &quot;stat…
+Turn 2: sending the conversation to Claude, with the tool results appended
+  -&gt; lookup_order({&quot;order_id&quot;: &quot;ORD-5502&quot;, &quot;customer_id&quot;: &quot;C-1002&quot;})
+  stop_reason: tool_use -&gt; CONTINUE: run the tool, append its result, call Claude again
+  &lt;- result: {&quot;order_id&quot;: &quot;ORD-5502&quot;, &quot;customer_id&quot;: &quot;C-1002&quot;, &quot;amount&quot;: 780.0, &quot;item&quot;: &quot;Standing desk&quot;, &quot;placed_at&quot;: &quot;2026-10-20T10:00:00Z&quot;, &quot;status…
+Turn 3: sending the conversation to Claude, with the tool results appended
+  claude: Verified customer C-1002. ORD-5502 shows a damage photo on file, one charge, and a $780.00 amount. Next I'll validate the full refund.
+  -&gt; recommend_refund({&quot;order_id&quot;: &quot;ORD-5502&quot;, &quot;item_adjustments&quot;: [{&quot;sku&quot;: &quot;WHOLE&quot;, &quot;amount&quot;: 780}], &quot;shipping_refund&quot;: 0, &quot;mercha…)
+...
+  refund check: recommend_refund {&quot;order_id&quot;: &quot;ORD-5502&quot;, &quot;item_adjustments&quot;: [{&quot;sku&quot;: &quot;WHOLE&quot;, &quot;amount&quot;: 780}], &quot;shipping_refund&quot;: 0, &quot;merchan -&gt; va…
+  reply: CASE FACTS | - Customer: C-1002 (Arjun Rao, Plus, active) | - Order: ORD-5502, standing desk, $780.00, delivered, ETA 2026-10-25 | - Damage …
+Estimated API cost: US$0.0016 for 1 Claude run on Claude Haiku 5.5, billed to your Anthropic API key.
+</code></pre>
+<p>How to read the output:</p>
+<table>
+<thead>
+<tr>
+<th>Output line</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>connected: claude-haiku-5-5, tools: …</code></td>
+<td>The run started on Claude Haiku 5.5 and lists the tools Claude may call.</td>
+</tr>
+<tr>
+<td><code>Turn N: sending the conversation to Claude</code></td>
+<td>One trip round the agent loop: the whole conversation so far goes to the Claude API.</td>
+</tr>
+<tr>
+<td><code>-&gt; tool_name({...})</code></td>
+<td>Claude asked to call a tool, with these inputs.</td>
+</tr>
+<tr>
+<td><code>&lt;- result: …</code> / <code>!! tool error: …</code></td>
+<td>The tool's answer, appended to the conversation for Claude's next turn. <code>!!</code> marks an error or a hook that blocked the call.</td>
+</tr>
+<tr>
+<td><code>stop_reason: tool_use</code> / <code>end_turn</code></td>
+<td>Why Claude stopped: <code>tool_use</code> means run the tool and loop again; <code>end_turn</code> means Claude has finished.</td>
+</tr>
+<tr>
+<td><code>(subagent)</code></td>
+<td>The line came from a subagent working in its own context, not the main conversation.</td>
+</tr>
+<tr>
+<td><code>PASS</code> / <code>FAIL</code></td>
+<td>The simulator's automatic checks on what Claude actually did.</td>
+</tr>
+<tr>
+<td><code>Estimated API cost</code></td>
+<td>What the run cost on your API key at Haiku 5.5 prices.</td>
+</tr>
+</tbody>
+</table>
+<h2>Why it happens</h2>
+<p>The no-guard prompt has lost the $500 line, so the model goes ahead and requests process_refund for $780. The PreToolUse hook checks the amount in code, denies the call and tells the agent to call escalate_to_human instead. Arjun gets an escalation ticket, not a refund, because the limit never depended on the prompt.</p>
+<h2>Check your answer</h2>
+<p><strong>The answer is C.</strong> A PreToolUse hook that denies any process_refund above $500 and redirects the agent to escalate_to_human.</p>
+<p>Only code that runs before the tool call can guarantee the limit; a PreToolUse hook enforces it even when the prompt has been edited.</p>
+<ul>
+<li><strong>A</strong> falls short: A prompt-only rule disappears the moment someone edits the prompt, which is exactly what happened here.</li>
+<li><strong>B</strong> falls short: Examples steer behaviour probabilistically; they are still prompt text and give no guarantee.</li>
+<li><strong>D</strong> falls short: A PostToolUse hook runs after the refund has already been issued; logging it does not stop it.</li>
+</ul>
+<h2>Try this</h2>
+<p>Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.</p>
+<h2>How the exam tests this</h2>
+<p>When a rule must hold even after someone edits the prompt, choose the PreToolUse hook. A refund cap that lives only in the system prompt fails the moment that line disappears.</p>
+<p>The question is written for this course from the exam guide's task statement. Evidence from your run is saved in <code>labs/simulators/simulator-1-customer-support/evidence/</code>.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

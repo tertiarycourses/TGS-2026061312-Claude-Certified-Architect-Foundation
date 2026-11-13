@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 11: Commit the server, never the token</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-11-commit-the-server-never-the-token">Open the folder on GitHub</a><a class="btn alt" href="../lab.html?n=11">Open Lab 11 in the simulator</a><a class="btn alt" href="lab-11-commit-the-server-never-the-token.pdf">Download the PDF</a></p><h1>Lab 11: Commit the server, never the token</h1>
+<blockquote>
+<p>Day 1 · Topic 2: Tool Design &amp; MCP Integration · Task statement 2.4 · Simulator 2: Code Generation with Claude Code · About 15 minutes · Claude Haiku 5.5</p>
+</blockquote>
+<h2>Goal</h2>
+<p>Task statement 2.4: <strong>Integrate MCP servers into Claude Code and agent workflows.</strong> You answer one exam-style question, then run the Code Generation with Claude Code simulator once and watch the right answer work with a real Claude call.</p>
+<h2>Open this lab</h2>
+<ul>
+<li><strong>In the simulator website:</strong> start the simulators (double-click <code>labs/start-labs.command</code> on Mac or <code>labs\start-labs.cmd</code> on Windows), then open <a href="http://localhost:8765/sim2?lab=11">http://localhost:8765/sim2?lab=11</a>. It opens Simulator 2 on Lab 11. If the start window shows a different port, use that one.</li>
+<li><strong>In a terminal, one click:</strong> double-click <code>run-lab.command</code> (Mac) or <code>run-lab.cmd</code> (Windows) in this folder. It runs <code>uv run simulator.py 5</code> from <code>simulators/simulator-2-code-generation</code>.</li>
+<li><strong>The code it runs:</strong> <a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/blob/master/labs/simulators/simulator-2-code-generation/simulator.py">simulators/simulator-2-code-generation/simulator.py</a>. The lab folder holds the instructions; the simulator folder holds the code, so all its labs share one working system.</li>
+</ul>
+<h2>The scenario</h2>
+<p>You are using Claude Code to accelerate software development. Your team uses it for code generation, refactoring, debugging, and documentation. You need to integrate it into your development workflow with custom slash commands, CLAUDE.md configurations, and understand when to use plan mode vs direct execution.</p>
+<h2>The question</h2>
+<p>Your team needs the same GitHub and docs MCP servers, but each token is personal. Where does the configuration go?</p>
+<ul>
+<li><strong>A.</strong> Commit .mcp.json with each server's token pasted in, or keep the servers in your own ~/.claude.json.</li>
+<li><strong>B.</strong> Write the servers into the project CLAUDE.md so Claude reads the connection details on every request.</li>
+<li><strong>C.</strong> Ask each developer to add the servers by hand in user scope, and share the tokens in the team chat.</li>
+<li><strong>D.</strong> Commit both servers to the project .mcp.json with ${GITHUB_TOKEN}-style variables, and keep personal experiments in user scope.</li>
+</ul>
+<p>Pick your answer before you run anything. The answer and the reasoning are at the end, under <strong>Check your answer</strong>.</p>
+<h2>Before you start (once per laptop)</h2>
+<ul>
+<li>The course folder is on your laptop (Day 1 setup), and you have an Anthropic API key. It starts with <code>sk-ant-</code>.</li>
+<li>The simulators are running. <strong>Windows:</strong> double-click <code>labs\start-labs.cmd</code>. <strong>Mac:</strong> double-click <code>labs/start-labs.command</code>. The first time, the window asks for your API key and saves it to <code>labs/.env</code>. Keep that window open during class.</li>
+<li>Your browser opens the simulators at http://localhost:8765. If that port is busy the window prints another address, such as http://localhost:8766.</li>
+</ul>
+<h2>Steps in the simulator website</h2>
+<ol>
+<li>Look at the left sidebar. It should say <strong>Anthropic API key saved</strong>. If it says <strong>No API key yet: paste it here</strong>, paste your key into the <strong>Anthropic API key</strong> box and press <strong>Save key</strong>.</li>
+<li>In the left menu, click <strong>2. Code Generation with Claude Code</strong>.</li>
+<li>Click <strong>Lab 11</strong> in the row of lab buttons. You can also pick it from <strong>Jump to any lab</strong>.</li>
+<li>Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open <strong>Why the other answers fall short</strong> to see each distractor's flaw.</li>
+<li>Under <strong>Watch the right answer work</strong>, open <strong>See the code this lab runs</strong> if you want to read the script first.</li>
+<li>Press <strong>▶ Simulate it live</strong>. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.</li>
+<li>When it finishes, read <strong>Read your result</strong>: what this run showed, <strong>What to look for</strong>, <strong>Why it happens</strong> and the <strong>Exam tip</strong>.</li>
+</ol>
+<h2>Or run it from a terminal</h2>
+<p>Open a terminal in the <code>labs</code> folder. <strong>Windows:</strong> in File Explorer, open <code>labs</code>, click the address bar, type <code>powershell</code> and press Enter. <strong>Mac:</strong> right-click the <code>labs</code> folder and choose <strong>New Terminal at Folder</strong>. Then:</p>
+<pre><code>cd simulators/simulator-2-code-generation
+uv run simulator.py 5
+</code></pre>
+<p>Or let the course tool print the question, run the command and show the reasoning in one go: <code>uv run run_lab.py 11</code> from the <code>labs</code> folder.</p>
+<h2>What you will see</h2>
+<p>What to look for: First the scan: .mcp.json holds only ${GITHUB_TOKEN} and ${DOCS_API_KEY} placeholders. Then, live, Claude adds a team 'sentry' server to .mcp.json with "SENTRY_TOKEN": "${SENTRY_TOKEN}", greps the project to prove the token string is in no file, and leaves your user-scope servers in ~/.claude.json alone. Four PASS lines confirm it.</p>
+<p>These lines are from our own run of this lab on Claude Haiku 5.5. Your wording will differ, because Claude writes each reply fresh; the tool calls, decisions and checks should match.</p>
+<pre><code>  connected: claude-haiku-5-5, tools: 23 available
+Turn 1: sending the conversation to Claude
+  -&gt; Glob({&quot;pattern&quot;: &quot;**/*&quot;, &quot;path&quot;: &quot;&lt;temp copy&gt;/works…)
+  -&gt; Glob({&quot;pattern&quot;: &quot;.*&quot;, &quot;path&quot;: &quot;&lt;temp copy&gt;/workspa…)
+  stop_reason: tool_use -&gt; CONTINUE: run the tool, append its result, call Claude again
+  &lt;- result: .claude/commands/find-callers.md .claude/commands/review.md .claude/commands/task.md .claude/rules/api-handlers.md .claude/rules/db-mode…
+  &lt;- result: .gitignore .mcp.json
+Turn 2: sending the conversation to Claude, with the tool results appended
+  claude: There's already a `.mcp.json` and a `.gitignore`. I'll read both, plus the README and the example user config, before changing anything.
+  -&gt; Read({&quot;file_path&quot;: &quot;&lt;temp copy&gt;/workspace/.mcp.json…)
+  -&gt; Read({&quot;file_path&quot;: &quot;&lt;temp copy&gt;/workspace/.gitignor…)
+  -&gt; Read({&quot;file_path&quot;: &quot;&lt;temp copy&gt;/workspace/README.md…)
+...
+   sentry server: {&quot;command&quot;: &quot;npx&quot;, &quot;args&quot;: [&quot;-y&quot;, &quot;@sentry/mcp-server&quot;], &quot;env&quot;: {&quot;SENTRY_TOKEN&quot;: &quot;${SENTRY_TOKEN}&quot;}}
+   PASS  the project .mcp.json now has a 'sentry' server
+   PASS  its token is the ${SENTRY_TOKEN} placeholder
+   PASS  the personal token is in no file git would commit (committed: none; git-ignored: none)
+   PASS  your user-scope MCP servers in ~/.claude.json are unchanged
+Estimated API cost: US$0.0043 for 1 Claude run on Claude Haiku 5.5, billed to your Anthropic API key.
+</code></pre>
+<p>How to read the output:</p>
+<table>
+<thead>
+<tr>
+<th>Output line</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>connected: claude-haiku-5-5, tools: …</code></td>
+<td>The run started on Claude Haiku 5.5 and lists the tools Claude may call.</td>
+</tr>
+<tr>
+<td><code>Turn N: sending the conversation to Claude</code></td>
+<td>One trip round the agent loop: the whole conversation so far goes to the Claude API.</td>
+</tr>
+<tr>
+<td><code>-&gt; tool_name({...})</code></td>
+<td>Claude asked to call a tool, with these inputs.</td>
+</tr>
+<tr>
+<td><code>&lt;- result: …</code> / <code>!! tool error: …</code></td>
+<td>The tool's answer, appended to the conversation for Claude's next turn. <code>!!</code> marks an error or a hook that blocked the call.</td>
+</tr>
+<tr>
+<td><code>stop_reason: tool_use</code> / <code>end_turn</code></td>
+<td>Why Claude stopped: <code>tool_use</code> means run the tool and loop again; <code>end_turn</code> means Claude has finished.</td>
+</tr>
+<tr>
+<td><code>(subagent)</code></td>
+<td>The line came from a subagent working in its own context, not the main conversation.</td>
+</tr>
+<tr>
+<td><code>PASS</code> / <code>FAIL</code></td>
+<td>The simulator's automatic checks on what Claude actually did.</td>
+</tr>
+<tr>
+<td><code>Estimated API cost</code></td>
+<td>What the run cost on your API key at Haiku 5.5 prices.</td>
+</tr>
+</tbody>
+</table>
+<h2>Why it happens</h2>
+<p>.mcp.json is project scope, so git carries it to every teammate; personal servers live in user scope (~/.claude.json). Claude Code expands ${GITHUB_TOKEN} and ${DOCS_API_KEY} from each developer's own environment when it loads the file, so the committed text never holds a secret. The lab's scan finds those two placeholders and zero literal tokens, makes no API call and never writes to your real ~/.claude.json.</p>
+<h2>Check your answer</h2>
+<p><strong>The answer is D.</strong> Commit both servers to the project .mcp.json with ${GITHUB_TOKEN}-style variables, and keep personal experiments in user scope.</p>
+<p>Project-scope .mcp.json travels with git so everyone gets the same servers, and ${VAR} expansion reads each developer's own token at load time.</p>
+<ul>
+<li><strong>A</strong> falls short: A literal token in a committed file leaks a secret; a server in one person's ~/.claude.json never reaches teammates.</li>
+<li><strong>B</strong> falls short: CLAUDE.md holds instructions, not MCP server configuration; Claude Code does not start servers from it.</li>
+<li><strong>C</strong> falls short: Hand configuration drifts between machines, and sharing tokens in chat is a credential leak.</li>
+</ul>
+<h2>Try this</h2>
+<p>Rerun it and compare with the saved evidence/ copy: Claude's wording changes from run to run, the decision should not.</p>
+<h2>How the exam tests this</h2>
+<p>Shared server, personal credential: commit the server to .mcp.json with ${VAR} expansion and keep solo experiments in user scope. Reject any option that pastes a literal token into the shared file, or parks a team server in one person's ~/.claude.json where teammates never see it.</p>
+<p>The question is written for this course from the exam guide's task statement. Evidence from your run is saved in <code>labs/simulators/simulator-2-code-generation/evidence/</code>.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

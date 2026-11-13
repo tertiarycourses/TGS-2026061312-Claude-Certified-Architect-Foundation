@@ -1,0 +1,38 @@
+[
+ {
+  "n": 1,
+  "name": "Customer Support Resolution Agent",
+  "tagline": "Your agent has refund powers. Prove it knows when not to use them.",
+  "scenario": "You are building a customer support resolution agent using the Claude Agent SDK. The agent handles high-ambiguity requests like returns, billing disputes, and account issues. It has access to your backend systems through custom Model Context Protocol (MCP) tools (get_customer, lookup_order, process_refund, escalate_to_human). Your target is 80%+ first-contact resolution while knowing when to escalate."
+ },
+ {
+  "n": 2,
+  "name": "Code Generation with Claude Code",
+  "tagline": "Claude Code, configured so the whole team gets the same teammate.",
+  "scenario": "You are using Claude Code to accelerate software development. Your team uses it for code generation, refactoring, debugging, and documentation. You need to integrate it into your development workflow with custom slash commands, CLAUDE.md configurations, and understand when to use plan mode vs direct execution."
+ },
+ {
+  "n": 3,
+  "name": "Multi-Agent Research System",
+  "tagline": "One coordinator, four specialists, zero invented citations.",
+  "scenario": "You are building a multi-agent research system using the Claude Agent SDK. A coordinator agent delegates to specialized subagents: one searches the web, one analyzes documents, one synthesizes findings, and one generates reports. The system researches topics and produces comprehensive, cited reports."
+ },
+ {
+  "n": 4,
+  "name": "Developer Productivity with Claude",
+  "tagline": "Find your way around a legacy repo without drowning in it.",
+  "scenario": "You are building developer productivity tools using the Claude Agent SDK. The agent helps engineers explore unfamiliar codebases, understand legacy systems, generate boilerplate code, and automate repetitive tasks. It uses the built-in tools (Read, Write, Bash, Grep, Glob) and integrates with Model Context Protocol (MCP) servers."
+ },
+ {
+  "n": 5,
+  "name": "Claude Code for Continuous Integration",
+  "tagline": "A reviewer in the pipeline that developers don't learn to ignore.",
+  "scenario": "You are integrating Claude Code into your Continuous Integration/Continuous Deployment (CI/CD) pipeline. The system runs automated code reviews, generates test cases, and provides feedback on pull requests. You need to design prompts that provide actionable feedback and minimize false positives."
+ },
+ {
+  "n": 6,
+  "name": "Structured Data Extraction",
+  "tagline": "Messy documents in, trustworthy records out.",
+  "scenario": "You are building a structured data extraction system using Claude. The system extracts information from unstructured documents, validates the output using JavaScript Object Notation (JSON) schemas, and maintains high accuracy. It must handle edge cases gracefully and integrate with downstream systems."
+ }
+]

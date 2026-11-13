@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 21: Know your tool_choice options, and check what came back</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-21-know-your-tool-choice-options-and-check">Open the folder on GitHub</a><a class="btn alt" href="../lab.html?n=21">Open Lab 21 in the simulator</a><a class="btn alt" href="lab-21-know-your-tool-choice-options-and-check.pdf">Download the PDF</a></p><h1>Lab 21: Know your tool_choice options, and check what came back</h1>
+<blockquote>
+<p>Day 1 · Topic 4: Prompt Engineering &amp; Structured Output · Task statement 4.3 · Simulator 6: Structured Data Extraction · About 15 minutes · Claude Haiku 5.5</p>
+</blockquote>
+<h2>Goal</h2>
+<p>Task statement 4.3: <strong>Enforce structured output using tool use and JSON schemas.</strong> You answer one exam-style question, then run the Structured Data Extraction simulator once and watch the right answer work with a real Claude call.</p>
+<h2>Open this lab</h2>
+<ul>
+<li><strong>In the simulator website:</strong> start the simulators (double-click <code>labs/start-labs.command</code> on Mac or <code>labs\start-labs.cmd</code> on Windows), then open <a href="http://localhost:8765/sim6?lab=21">http://localhost:8765/sim6?lab=21</a>. It opens Simulator 6 on Lab 21. If the start window shows a different port, use that one.</li>
+<li><strong>In a terminal, one click:</strong> double-click <code>run-lab.command</code> (Mac) or <code>run-lab.cmd</code> (Windows) in this folder. It runs <code>uv run extract.py --tool-choice forced --max-docs 2</code> from <code>simulators/simulator-6-structured-extraction</code>.</li>
+<li><strong>The code it runs:</strong> <a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/blob/master/labs/simulators/simulator-6-structured-extraction/extract.py">simulators/simulator-6-structured-extraction/extract.py</a>. The lab folder holds the instructions; the simulator folder holds the code, so all its labs share one working system.</li>
+</ul>
+<h2>The scenario</h2>
+<p>You are building a structured data extraction system using Claude. The system extracts information from unstructured documents, validates the output using JavaScript Object Notation (JSON) schemas, and maintains high accuracy. It must handle edge cases gracefully and integrate with downstream systems.</p>
+<h2>The question</h2>
+<p>Extraction has to come back as a tool call, and you don't know the document type in advance. How do you control whether Claude calls a tool?</p>
+<ul>
+<li><strong>A.</strong> Assume a forced tool_choice setting behaves the same on every model and surface, and skip the check.</li>
+<li><strong>B.</strong> Leave tool_choice on auto and add "always use the tool" to the system prompt.</li>
+<li><strong>C.</strong> Ask for the JSON in plain text and parse it with a regular expression.</li>
+<li><strong>D.</strong> Know the tool_choice options (auto, any, a named tool), pick the one that fits, and check that a tool_use block actually came back on your model.</li>
+</ul>
+<p>Pick your answer before you run anything. The answer and the reasoning are at the end, under <strong>Check your answer</strong>.</p>
+<h2>Before you start (once per laptop)</h2>
+<ul>
+<li>The course folder is on your laptop (Day 1 setup), and you have an Anthropic API key. It starts with <code>sk-ant-</code>.</li>
+<li>The simulators are running. <strong>Windows:</strong> double-click <code>labs\start-labs.cmd</code>. <strong>Mac:</strong> double-click <code>labs/start-labs.command</code>. The first time, the window asks for your API key and saves it to <code>labs/.env</code>. Keep that window open during class.</li>
+<li>Your browser opens the simulators at http://localhost:8765. If that port is busy the window prints another address, such as http://localhost:8766.</li>
+</ul>
+<h2>Steps in the simulator website</h2>
+<ol>
+<li>Look at the left sidebar. It should say <strong>Anthropic API key saved</strong>. If it says <strong>No API key yet: paste it here</strong>, paste your key into the <strong>Anthropic API key</strong> box and press <strong>Save key</strong>.</li>
+<li>In the left menu, click <strong>6. Structured Data Extraction</strong>.</li>
+<li>Click <strong>Lab 21</strong> in the row of lab buttons. You can also pick it from <strong>Jump to any lab</strong>.</li>
+<li>Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open <strong>Why the other answers fall short</strong> to see each distractor's flaw.</li>
+<li>Under <strong>Watch the right answer work</strong>, open <strong>See the code this lab runs</strong> if you want to read the script first.</li>
+<li>Press <strong>▶ Simulate it live</strong>. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.</li>
+<li>When it finishes, read <strong>Read your result</strong>: what this run showed, <strong>What to look for</strong>, <strong>Why it happens</strong> and the <strong>Exam tip</strong>.</li>
+</ol>
+<h2>Or run it from a terminal</h2>
+<p>Open a terminal in the <code>labs</code> folder. <strong>Windows:</strong> in File Explorer, open <code>labs</code>, click the address bar, type <code>powershell</code> and press Enter. <strong>Mac:</strong> right-click the <code>labs</code> folder and choose <strong>New Terminal at Folder</strong>. Then:</p>
+<pre><code>cd simulators/simulator-6-structured-extraction
+uv run extract.py --tool-choice forced --max-docs 2
+</code></pre>
+<p>Or let the course tool print the question, run the command and show the reasoning in one go: <code>uv run run_lab.py 21</code> from the <code>labs</code> folder.</p>
+<h2>What you will see</h2>
+<p>What to look for: The script sends tool_choice {"type": "tool", "name": "extract_invoice"} to the real Messages API. Claude Haiku 5.5 accepts it, both documents come back as extract_invoice tool_use blocks (stop_reason tool_use), and the script still checks that a tool_use block arrived before trusting it.</p>
+<p>These lines are from our own run of this lab on Claude Haiku 5.5. Your wording will differ, because Claude writes each reply fresh; the tool calls, decisions and checks should match.</p>
+<pre><code>  -&gt; extract_invoice({&quot;invoice_id&quot;: &quot;INV-2041&quot;, &quot;vendor&quot;: &quot;Harbour Office Supplies Pte Ltd&quot;, &quot;issue_date&quot;: &quot;2026-10-03&quot;, &quot;due_date…)
+  stop_reason: tool_use
+  -&gt; extract_invoice({&quot;invoice_id&quot;: &quot;INV-2042&quot;, &quot;vendor&quot;: &quot;Meridian Catering&quot;, &quot;issue_date&quot;: &quot;2026-10-05&quot;, &quot;due_date&quot;: null, &quot;curr…)
+  stop_reason: tool_use
+...
+tool_choice in use: {'type': 'tool', 'name': 'extract_invoice'}
+DOC-01 invoice     attempts=1 errors=0 conflict=False -&gt; auto_accept
+DOC-02 invoice     attempts=1 errors=0 conflict=False -&gt; human_review
+accuracy: {&quot;overall&quot;: 100, &quot;by_field&quot;: {&quot;stated_total&quot;: 100, &quot;due_date&quot;: 100, &quot;vendor&quot;: 100}, &quot;by_document_type&quot;: {&quot;invoice&quot;: 100}}
+routing: {'auto_accept': ['DOC-01'], 'human_review': ['DOC-02']}
+Estimated API cost: US$0.0009 for 2 Claude runs on Claude Haiku 5.5, billed to your Anthropic API key.
+</code></pre>
+<p>How to read the output:</p>
+<table>
+<thead>
+<tr>
+<th>Output line</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>connected: claude-haiku-5-5, tools: …</code></td>
+<td>The run started on Claude Haiku 5.5 and lists the tools Claude may call.</td>
+</tr>
+<tr>
+<td><code>Turn N: sending the conversation to Claude</code></td>
+<td>One trip round the agent loop: the whole conversation so far goes to the Claude API.</td>
+</tr>
+<tr>
+<td><code>-&gt; tool_name({...})</code></td>
+<td>Claude asked to call a tool, with these inputs.</td>
+</tr>
+<tr>
+<td><code>&lt;- result: …</code> / <code>!! tool error: …</code></td>
+<td>The tool's answer, appended to the conversation for Claude's next turn. <code>!!</code> marks an error or a hook that blocked the call.</td>
+</tr>
+<tr>
+<td><code>stop_reason: tool_use</code> / <code>end_turn</code></td>
+<td>Why Claude stopped: <code>tool_use</code> means run the tool and loop again; <code>end_turn</code> means Claude has finished.</td>
+</tr>
+<tr>
+<td><code>(subagent)</code></td>
+<td>The line came from a subagent working in its own context, not the main conversation.</td>
+</tr>
+<tr>
+<td><code>PASS</code> / <code>FAIL</code></td>
+<td>The simulator's automatic checks on what Claude actually did.</td>
+</tr>
+<tr>
+<td><code>Estimated API cost</code></td>
+<td>What the run cost on your API key at Haiku 5.5 prices.</td>
+</tr>
+</tbody>
+</table>
+<h2>Why it happens</h2>
+<p>tool_choice is a Messages API parameter: "auto" lets Claude answer in prose, "any" makes it call some tool, {"type": "tool", "name": "extract_invoice"} forces one named tool, and "none" forbids tools. Support is model-specific: Claude Haiku 5.5 accepts the forced forms, while Claude Opus 5.5 and Sonnet 5.5 reject "any" and named tools with a 400, so you steer them with "auto", strict tools and the prompt. Whatever you send, check that a tool_use block came back before you read its input.</p>
+<h2>Check your answer</h2>
+<p><strong>The answer is D.</strong> Know the tool_choice options (auto, any, a named tool), pick the one that fits, and check that a tool_use block actually came back on your model.</p>
+<p>auto lets Claude answer in prose, any makes it call some tool and a named tool forces one; support differs across models, so test it and verify the tool_use block.</p>
+<ul>
+<li><strong>A</strong> falls short: Forced tool_choice is rejected by some current models; assuming it works everywhere fails in production.</li>
+<li><strong>B</strong> falls short: An instruction raises the odds but guarantees nothing; auto still allows a prose answer.</li>
+<li><strong>C</strong> falls short: Free-text JSON gives no schema guarantee and breaks on the first formatting change.</li>
+</ul>
+<h2>Try this</h2>
+<p>Change DOC-04's printed total in fixtures/invoices.txt, rerun, and watch by_document_type.invoice fall while the others hold.</p>
+<h2>How the exam tests this</h2>
+<p>With an unknown document type and several extraction schemas, pick tool_choice "any", and save the forced named tool for an extraction that must run first. Reject "auto", which lets Claude reply in prose, and reject any option that assumes a forced setting behaves the same on every model and surface without testing it.</p>
+<p>The question is written for this course from the exam guide's task statement. Evidence from your run is saved in <code>labs/simulators/simulator-6-structured-extraction/evidence/</code>.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

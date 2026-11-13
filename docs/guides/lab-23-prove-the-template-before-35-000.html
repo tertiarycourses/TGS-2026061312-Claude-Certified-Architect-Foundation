@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 23: Prove the template before 35,000 transcripts</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-23-prove-the-template-before-35-000">Open the folder on GitHub</a><a class="btn alt" href="../lab.html?n=23">Open Lab 23 in the simulator</a><a class="btn alt" href="lab-23-prove-the-template-before-35-000.pdf">Download the PDF</a></p><h1>Lab 23: Prove the template before 35,000 transcripts</h1>
+<blockquote>
+<p>Day 1 · Topic 4: Prompt Engineering &amp; Structured Output · Task statement 4.5 · Simulator 1: Customer Support Resolution Agent · About 15 minutes · Claude Haiku 5.5</p>
+</blockquote>
+<h2>Goal</h2>
+<p>Task statement 4.5: <strong>Design efficient batch processing strategies.</strong> You answer one exam-style question, then run the Customer Support Resolution Agent simulator once and watch the right answer work with a real Claude call.</p>
+<h2>Open this lab</h2>
+<ul>
+<li><strong>In the simulator website:</strong> start the simulators (double-click <code>labs/start-labs.command</code> on Mac or <code>labs\start-labs.cmd</code> on Windows), then open <a href="http://localhost:8765/sim1?lab=23">http://localhost:8765/sim1?lab=23</a>. It opens Simulator 1 on Lab 23. If the start window shows a different port, use that one.</li>
+<li><strong>In a terminal, one click:</strong> double-click <code>run-lab.command</code> (Mac) or <code>run-lab.cmd</code> (Windows) in this folder. It runs <code>uv run triage.py --pilot</code> from <code>simulators/simulator-1-customer-support</code>.</li>
+<li><strong>The code it runs:</strong> <a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/blob/master/labs/simulators/simulator-1-customer-support/triage.py">simulators/simulator-1-customer-support/triage.py</a>. The lab folder holds the instructions; the simulator folder holds the code, so all its labs share one working system.</li>
+</ul>
+<h2>The scenario</h2>
+<p>You are building a customer support resolution agent using the Claude Agent SDK. The agent handles high-ambiguity requests like returns, billing disputes, and account issues. It has access to your backend systems through custom Model Context Protocol (MCP) tools (get_customer, lookup_order, process_refund, escalate_to_human). Your target is 80%+ first-contact resolution while knowing when to escalate.</p>
+<h2>The question</h2>
+<p>Before enabling overnight processing of 35,000 archived support transcripts through the Message Batches API, a pilot of 30 transcripts shows inconsistent disposition decisions and missing rationale fields in some outputs. A product manager proposes running the full archive now and resubmitting bad rows the next day. What should this team do next?</p>
+<ul>
+<li><strong>A.</strong> Submit the full archive as one batch, review the ended results, and resubmit rows whose disposition or fields are wrong.</li>
+<li><strong>B.</strong> Run the prompt improver once on the current template, accept the revised prompt, and start the full overnight batch.</li>
+<li><strong>C.</strong> Add stricter JSON output constraints, keep the current instructions, and use the batch results to discover decision errors.</li>
+<li><strong>D.</strong> Create a representative evaluation set, refine the templated prompt against clear criteria, and rerun it before submitting the full batch.</li>
+</ul>
+<p>Pick your answer before you run anything. The answer and the reasoning are at the end, under <strong>Check your answer</strong>.</p>
+<h2>Before you start (once per laptop)</h2>
+<ul>
+<li>The course folder is on your laptop (Day 1 setup), and you have an Anthropic API key. It starts with <code>sk-ant-</code>.</li>
+<li>The simulators are running. <strong>Windows:</strong> double-click <code>labs\start-labs.cmd</code>. <strong>Mac:</strong> double-click <code>labs/start-labs.command</code>. The first time, the window asks for your API key and saves it to <code>labs/.env</code>. Keep that window open during class.</li>
+<li>Your browser opens the simulators at http://localhost:8765. If that port is busy the window prints another address, such as http://localhost:8766.</li>
+</ul>
+<h2>Steps in the simulator website</h2>
+<ol>
+<li>Look at the left sidebar. It should say <strong>Anthropic API key saved</strong>. If it says <strong>No API key yet: paste it here</strong>, paste your key into the <strong>Anthropic API key</strong> box and press <strong>Save key</strong>.</li>
+<li>In the left menu, click <strong>1. Customer Support Resolution Agent</strong>.</li>
+<li>Click <strong>Lab 23</strong> in the row of lab buttons. You can also pick it from <strong>Jump to any lab</strong>.</li>
+<li>Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open <strong>Why the other answers fall short</strong> to see each distractor's flaw.</li>
+<li>Under <strong>Watch the right answer work</strong>, open <strong>See the code this lab runs</strong> if you want to read the script first.</li>
+<li>Press <strong>▶ Simulate it live</strong>. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.</li>
+<li>When it finishes, read <strong>Read your result</strong>: what this run showed, <strong>What to look for</strong>, <strong>Why it happens</strong> and the <strong>Exam tip</strong>.</li>
+</ol>
+<h2>Or run it from a terminal</h2>
+<p>Open a terminal in the <code>labs</code> folder. <strong>Windows:</strong> in File Explorer, open <code>labs</code>, click the address bar, type <code>powershell</code> and press Enter. <strong>Mac:</strong> right-click the <code>labs</code> folder and choose <strong>New Terminal at Folder</strong>. Then:</p>
+<pre><code>cd simulators/simulator-1-customer-support
+uv run triage.py --pilot
+</code></pre>
+<p>Or let the course tool print the question, run the command and show the reasoning in one go: <code>uv run run_lab.py 23</code> from the <code>labs</code> folder.</p>
+<h2>What you will see</h2>
+<p>What to look for: The refined template reports it is ready for the overnight batch.</p>
+<p>These lines are from our own run of this lab on Claude Haiku 5.5. Your wording will differ, because Claude writes each reply fresh; the tool calls, decisions and checks should match.</p>
+<pre><code>  connected: claude-haiku-5-5, tools: StructuredOutput
+Turn 1: sending the conversation to Claude
+  -&gt; StructuredOutput({&quot;transcript_id&quot;: &quot;T-001&quot;, &quot;disposition&quot;: &quot;resolved&quot;, &quot;rationale&quot;: &quot;The customer reported that order ORD-5501…)
+  stop_reason: tool_use -&gt; CONTINUE: run the tool, append its result, call Claude again
+  &lt;- result: Structured output provided successfully
+  connected: claude-haiku-5-5, tools: StructuredOutput
+Turn 1: sending the conversation to Claude
+  -&gt; StructuredOutput({&quot;transcript_id&quot;: &quot;T-002&quot;, &quot;disposition&quot;: &quot;resolved&quot;, &quot;rationale&quot;: &quot;The agent confirmed the duplicate $45 cha…)
+  stop_reason: tool_use -&gt; CONTINUE: run the tool, append its result, call Claude again
+  &lt;- result: Structured output provided successfully
+  connected: claude-haiku-5-5, tools: StructuredOutput
+Turn 1: sending the conversation to Claude
+...
+ok  T-003 disposition=escalated refund_total=0 attempts=1
+ok  T-004 disposition=escalated refund_total=0 attempts=1
+ok  T-005 disposition=escalated refund_total=0 attempts=1
+ok  T-006 disposition=unresolved refund_total=0 attempts=1
+ok  T-007 disposition=resolved refund_total=0 attempts=1
+ok  T-008 disposition=resolved refund_total=0 attempts=1
+ok  T-009 disposition=resolved refund_total=0 attempts=1
+ok  T-010 disposition=resolved refund_total=165 attempts=1
+first-pass success 10/10 · disposition accuracy 90.0% · refund accuracy 90.0% · cost $0.005
+ready for the overnight batch
+Estimated API cost: US$0.0051 for 10 Claude runs on Claude Haiku 5.5, billed to your Anthropic API key.
+</code></pre>
+<p>How to read the output:</p>
+<table>
+<thead>
+<tr>
+<th>Output line</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>connected: claude-haiku-5-5, tools: …</code></td>
+<td>The run started on Claude Haiku 5.5 and lists the tools Claude may call.</td>
+</tr>
+<tr>
+<td><code>Turn N: sending the conversation to Claude</code></td>
+<td>One trip round the agent loop: the whole conversation so far goes to the Claude API.</td>
+</tr>
+<tr>
+<td><code>-&gt; tool_name({...})</code></td>
+<td>Claude asked to call a tool, with these inputs.</td>
+</tr>
+<tr>
+<td><code>&lt;- result: …</code> / <code>!! tool error: …</code></td>
+<td>The tool's answer, appended to the conversation for Claude's next turn. <code>!!</code> marks an error or a hook that blocked the call.</td>
+</tr>
+<tr>
+<td><code>stop_reason: tool_use</code> / <code>end_turn</code></td>
+<td>Why Claude stopped: <code>tool_use</code> means run the tool and loop again; <code>end_turn</code> means Claude has finished.</td>
+</tr>
+<tr>
+<td><code>(subagent)</code></td>
+<td>The line came from a subagent working in its own context, not the main conversation.</td>
+</tr>
+<tr>
+<td><code>PASS</code> / <code>FAIL</code></td>
+<td>The simulator's automatic checks on what Claude actually did.</td>
+</tr>
+<tr>
+<td><code>Estimated API cost</code></td>
+<td>What the run cost on your API key at Haiku 5.5 prices.</td>
+</tr>
+</tbody>
+</table>
+<h2>Why it happens</h2>
+<p>The pilot showed systematic defects, so the script measures the template against a representative evaluation set before anything reaches the 35,000-item batch. Batch requests run independently and you only see results after processing ends, which makes the batch a slow and costly place to find a prompt bug. The refined triage_template beats v0 on first-pass rate, and only it reports ready_for_batch true.</p>
+<h2>Check your answer</h2>
+<p><strong>The answer is D.</strong> Create a representative evaluation set, refine the templated prompt against clear criteria, and rerun it before submitting the full batch.</p>
+<p>For a large asynchronous workload the goal is to maximise first-pass success before scale. The video frames prompt engineering as an evaluation loop: define success criteria, build tests that mirror real inputs (routine returns, billing disputes, explicit requests for a human, policy edge cases, messy customer language), iterate on the prompt, validate, then ship. Prompt templates separate fixed instructions from variables such as transcript , customer_history and policy_excerpt , and Console evaluations let you compare prompt versions across test cases. Batch requests are processed independently and asynchronously, so a batch is a poor place to discover preventable prompt defects at full volume. Structured outputs help format reliability, but semantic correctness still needs evaluation.</p>
+<ul>
+<li><strong>A</strong> falls short: Uses the 35,000-item batch as the test harness. The pilot already shows systematic defects, so most of the rework is preventable; resubmitting failures by custom_id is for residual errors, not known prompt problems.</li>
+<li><strong>B</strong> falls short: One unvalidated pass of the prompt improver, accepted without testing against criteria, gives no evidence that the disposition inconsistency is fixed.</li>
+<li><strong>C</strong> falls short: JSON constraints may fix the missing fields (format), but not the inconsistent decisions (semantics), and errors are still discovered only after the full run.</li>
+</ul>
+<h2>Try this</h2>
+<p>Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.</p>
+<h2>How the exam tests this</h2>
+<p>When a pilot already shows inconsistent decisions, fix the prompt against an evaluation set first and batch second. Reject "run it all tonight and resubmit bad rows by custom_id": resubmission mops up residual errors, not known prompt defects.</p>
+<p>The question is a third-party practice question (SkillCertPro, unofficial, reconstructed from a video). Evidence from your run is saved in <code>labs/simulators/simulator-1-customer-support/evidence/</code>.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

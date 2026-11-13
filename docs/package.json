@@ -1,0 +1,1 @@
+{ "private": true, "type": "module", "description": "Lets Node load the lab modules for tools/test_lab.mjs. Not needed by the browser." }
