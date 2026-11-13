@@ -216,7 +216,8 @@ content-type: application/json
       const who = t.label ? `${esc(t.label)} · ` : "";
       if (t.stop_reason === "tool_use") {
         const tools = t.tools.map((x) => `<code>${esc(x.name)}</code>${x.denied ? " (blocked by a hook)" : x.isError ? " (returned an error)" : ""}`).join(", ");
-        return `<li><b>${who}Turn ${t.turn} · stop_reason: <code>tool_use</code>.</b> Claude asked for ${tools}. The loop ran ${t.tools.length > 1 ? "them" : "it"}, appended the result${t.tools.length > 1 ? "s" : ""}, and called Claude again.</li>`;
+        const goesOn = trace.some((x) => x !== t && x.label === t.label && x.turn === t.turn + 1);
+        return `<li><b>${who}Turn ${t.turn} · stop_reason: <code>tool_use</code>.</b> Claude asked for ${tools}. ${goesOn ? `The loop ran ${t.tools.length > 1 ? "them" : "it"}, appended the result${t.tools.length > 1 ? "s" : ""}, and called Claude again.` : "This step was a single call: the code read the tool call's input as its answer."}</li>`;
       }
       if (t.stop_reason === "end_turn") return `<li><b>${who}Turn ${t.turn} · stop_reason: <code>end_turn</code>.</b> Claude finished${t.label ? " and handed its answer back" : ""}, so the loop stopped.${t.label ? "" : " That reply is the final output."}</li>`;
       if (t.stop_reason === "max_tokens") return `<li><b>${who}Turn ${t.turn} · stop_reason: <code>max_tokens</code>.</b> The reply hit its token limit and was cut off.</li>`;
@@ -226,7 +227,7 @@ content-type: application/json
       <div class="box final"><h4>Claude's final output</h4><div>${md(finalText || "(No text reply. Read the live output above.)").replace(/\n/g, "<br>")}</div></div>
       <h2>4 · The observation explained</h2>
       <div class="box"><h4>Turn by turn</h4><ol>${trace.map(explainTurn).join("")}</ol>
-        <div class="caption">${main.length} turn${main.length === 1 ? "" : "s"} of the main loop${trace.length > main.length ? `, plus ${trace.length - main.length} subagent turns` : ""}. The loop never reads Claude's wording to decide what to do next: <code>stop_reason</code> is the signal.</div></div>
+        <div class="caption">${main.length} turn${main.length === 1 ? "" : "s"} of the main loop${trace.length > main.length ? `, plus ${trace.length - main.length} turns in labelled steps or subagents` : ""}. The loop never reads Claude's wording to decide what to do next: <code>stop_reason</code> is the signal.</div></div>
       <div class="box"><h4>Checks on what Claude actually did</h4><div class="checks">${(res.checks || []).map((c) => `<div class="${c.pass ? "pass" : "fail"}">${c.pass ? "✔ PASS" : "✘ FAIL"} · ${esc(c.label)}</div>`).join("")}</div>
         ${(res.checks || []).some((c) => !c.pass) ? `<div class="caption">Claude writes each run fresh, so a check can occasionally miss. Read the output, then run it again.</div>` : ""}</div>
       <details><summary>Every Claude call as curl (${reqs.length} call${reqs.length === 1 ? "" : "s"}): copy one into a terminal to send the same request yourself</summary>
