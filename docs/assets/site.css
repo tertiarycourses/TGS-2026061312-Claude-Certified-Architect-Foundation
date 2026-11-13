@@ -33,7 +33,7 @@ pre.console{background:var(--ink);color:#EDEBE6;padding:14px 16px;border-radius:
 pre.console .turn{color:#F2D398;font-weight:700}pre.console .stop{color:#9AD6C8}pre.console .call{color:#fff;font-weight:700}
 pre.console .result{color:#C9C4B8}pre.console .error,pre.console .deny{color:#F0A58A;font-weight:700}pre.console .reply{color:#fff}pre.console .note{color:#9AD6C8}pre.console .sub{color:#B7A9F2}
 pre.code{background:#1E1D1A;color:#EDEBE6;padding:12px 14px;border-radius:6px;font-size:.8em;max-height:520px;overflow:auto;white-space:pre;margin:4px 0}
-pre.code.loop{line-height:1.75;min-height:220px}pre.code.loop span{display:inline-block;width:100%;padding:0 4px;border-radius:3px;transition:background .2s}
+pre.code.loop{line-height:1.6;min-height:220px;white-space:pre-wrap}pre.code.loop span{display:inline-block;width:100%;padding:0 4px;border-radius:3px;transition:background .2s}
 pre.code.loop span.hot{background:var(--orange);color:#fff}
 .checks div{padding:6px 10px;border-radius:5px;margin:4px 0;font-weight:600}.checks .pass{background:var(--mint)}.checks .fail{background:var(--rose)}
 .box{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}.box h4{margin:0 0 6px}.box ol{margin:4px 0;padding-left:22px}.box li{margin:4px 0}

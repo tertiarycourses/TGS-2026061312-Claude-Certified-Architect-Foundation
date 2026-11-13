@@ -83,7 +83,9 @@ export async function lab() {
   const l = D.labs.find((x) => x.id === n); sidebar(D, n);
   if (!l) { $("main").innerHTML = "<h1>Lab not found</h1>"; return; }
   const pad = String(n).padStart(2, "0");
-  const spec = (await import(`../sims/lab-${pad}.js`)).default;
+  let spec;
+  try { spec = (await import(`../sims/lab-${pad}.js`)).default; }
+  catch { $("main").innerHTML = `<div class="kicker">Topic ${l.topic}: ${esc(l.topic_name)}</div><h1>Lab ${n}: ${esc(l.title)}</h1><div class="task-card" style="--c:${COL[l.topic]}"><div class="lbl">Task statement ${l.task}</div><b>${esc(l.task_title)}</b></div><div class="fb no">This lab's live simulation is being built and will appear here shortly. Lab 1 is ready now.</div>`; return; }
   const src = await fetch(`sims/lab-${pad}.js`).then((r) => r.text());
   const shared = [...src.matchAll(/from "\.\/shared\/([\w-]+\.js)"/g)].map((m) => m[1]);
   const sharedSrc = await Promise.all(shared.map((f) => fetch(`sims/shared/${f}`).then((r) => r.text())));
