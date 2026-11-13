@@ -1,0 +1,29 @@
+$ uv run -q research_errors.py
+Turn 1: search_source(industry_reports) -> {"source": "industry_reports", "status": "ok", "findings": ["Gartner (2026): 41% of retailers run AI chat for 
+Turn 1: search_source(academic) -> {"source": "academic", "status": "ok", "findings": ["Field study, 3 retailers: AI chat resolved 52% of evening
+Turn 1: search_source(news) -> ERROR {"source": "news", "status": "error", "error_type": "timeout", "attempted": "news archive query 'AI chat retai
+
+=== Brief
+**Brief: Is AI chat effective for after-hours retail support?**
+
+1. **Adoption:** Gartner (2026) reports 41% of retailers run AI chat for after-hours support. This measures adoption, not effectiveness.
+2. **Academic evidence:** A field study of 3 retailers found AI chat resolved 52% of evening tickets without a human. The sample is very small, so this is a preliminary signal, not a general finding.
+3. **News evidence:** A Straits Times report (2 Nov 2026) says one local retailer saw 30% fewer complaints after an AI chat pilot. This is a single anecdote with no published method.
+4. **Overall:** Early evidence suggests AI chat can resolve a substantial share of after-hours tickets and may reduce complaints, but effectiveness is not established across retailers.
+5. **Gaps:** (a) **News coverage is incomplete.** The news search timed out and returned only one partial result, so other reporting may exist. (b) The industry search returned one statistic with no effectiveness metrics. (c) Academic evidence covers only 3 retailers. (d) No source reports customer satisfaction, cost, or escalation-quality outcomes. (e) I did not verify the Gartner or Straits Times figures beyond the search summaries.
+
+$ uv run -q research_errors.py --generic
+Turn 1: search_source(industry_reports) -> {"source": "industry_reports", "status": "ok", "findings": ["Gartner (2026): 41% of retailers run AI chat for 
+Turn 1: search_source(academic) -> {"source": "academic", "status": "ok", "findings": ["Field study, 3 retailers: AI chat resolved 52% of evening
+Turn 1: search_source(news) -> ERROR "search failed"
+Turn 2: search_source(news) -> ERROR "search failed"
+
+=== Brief
+**Brief: Is AI chat effective for after-hours retail support?**
+
+1. **Adoption (industry reports):** Gartner (2026) reports 41% of retailers run AI chat for after-hours support. This measures adoption, not effectiveness.
+2. **Resolution (academic):** A field study of 3 retailers found AI chat resolved 52% of evening tickets without a human. The sample is very small, and the study does not report customer satisfaction, escalation quality, or cost.
+3. **Overall read:** Early evidence suggests AI chat can handle roughly half of after-hours tickets, but the evidence base is thin and does not establish that it is effective in the sense of satisfying customers.
+4. **GAP, news coverage:** The news search failed twice, so I have no news evidence on customer reception, failures, or reported outcomes. Treat this brief as incomplete.
+5. **GAP, scope:** Only one industry source and one three-retailer study were found. Conclusions about effectiveness across retail segments, and about satisfaction versus resolution rate, remain unverified; re-run the news search before relying on this.
+

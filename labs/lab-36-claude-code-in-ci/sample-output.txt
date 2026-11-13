@@ -1,0 +1,11 @@
+$ ./ci_review.sh; echo "exit code: $?"
+HIGH   src/payments.js:2  refund() never checks the refund against the order's paid amount, so refunds can exceed what was paid and repeated calls keep accumulating into refundedCents. The code's own '// BUG' comment at line 4 flags this.
+       fix: Before updating, check (order.refundedCents || 0) + amountCents <= paidCents and throw otherwise. Confirm the paid-total field name on the order model first, since it is not visible in this file.
+HIGH   src/payments.js:3  The only input guard is amountCents <= 0, which lets NaN, undefined and strings through. refund(order, NaN) or refund(order, undefined) sets refundedCents to NaN; refund(order, "50") concatenates to the string "050", so a later refund of 100 yields "050100". Fractional cents such as 0.5 are also accepted despite the integer-cents contract.
+       fix: Require Number.isInteger(amountCents) && amountCents > 0 before any arithmetic, and throw on failure.
+LOW    src/payments.js:10  formatCents renders negative amounts as "$-0.05" for -5 rather than "-$0.05". Display-only, but a negative balance or credit would show in the wrong form.
+       fix: Handle the sign separately: const sign = c < 0 ? "-" : ""; return sign + "$" + (Math.abs(c) / 100).toFixed(2);
+
+3 findings, 2 high. Cost $0.0138, turns 4
+exit code: 1
+

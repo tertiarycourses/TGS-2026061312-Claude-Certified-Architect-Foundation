@@ -1,0 +1,15 @@
+$ uv run -q cached_support.py
+Order record: 40 fields from the system, 5 kept
+
+Turn 1: cache write 1402, cache read 0, uncached 183
+  Customer: Hi, I'm Mei Ling. My rug from ORD-5508 is the wrong colour. Can I swap it?
+  Agent   : Hi Mei Ling, I'm sorry the rug arrived in the wrong colour. I can help with that. Before I can discuss your order, I need to verify your identity. Could you please send the email address on your account? I already have your order number, so that's the second check. Once you're verified, I'll check w
+
+Turn 2: cache write 0, cache read 1402, uncached 1131
+  Customer: Actually, just refund me instead. How much do I get back?
+  Agent   : Yes, I can process a refund instead. The rug is SGD 480.00. Before I can discuss the order, I still need to verify your identity. Please send the email address on your account. I already have your order number, so that completes the check. Once you're verified, I'll request the refund of SGD 480.00 
+
+Turn 3: cache write 0, cache read 1402, uncached 1984
+  Customer: And who collects it? It's really heavy.
+  Agent   : Our courier collects it, so you won't need to move it yourself. Rugs over 20 kg are collected, and at 24 kg this one qualifies. I still need to verify your identity before I can book the collection. Please send the email address on your account. Your order number is already on file, so that complete
+

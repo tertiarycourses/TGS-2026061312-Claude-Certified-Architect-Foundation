@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 3: A /parallel-review that can&#x27;t fan out because Task isn&#x27;t allowed</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-03-a-parallel-review-that-can-t-fan-out">Open the folder on GitHub</a><a class="btn alt" href="lab-03-a-parallel-review-that-can-t-fan-out.pdf">Download the PDF</a></p><h1>Lab 3: A /parallel-review that can't fan out because Task isn't allowed</h1>
+<blockquote>
+<p>Day 1 · Topic 1: Agentic Architecture &amp; Orchestration · Task statement 1.3 · Simulator 2: Code Generation with Claude Code · About 15 minutes · Claude Haiku 5.5</p>
+</blockquote>
+<h2>Goal</h2>
+<p>Task statement 1.3: <strong>Configure subagent invocation, context passing, and spawning.</strong> You answer one exam-style question, then run the Code Generation with Claude Code simulator once and watch the right answer work with a real Claude call.</p>
+<h2>The scenario</h2>
+<p>You are using Claude Code to accelerate software development. Your team uses it for code generation, refactoring, debugging, and documentation. You need to integrate it into your development workflow with custom slash commands, CLAUDE.md configurations, and understand when to use plan mode vs direct execution.</p>
+<h2>The question</h2>
+<p>A custom /parallel-review command starts an SDK run in a repository pinned to a pre-v2.1.63 Claude Code configuration, where subagent delegation is performed with Task . It should fan out across specialized review subagents. The current SDK options auto-approve only Read, Grep, and Glob, and each run pauses at the first attempted subagent delegation with an interactive permission prompt. What should the team change?</p>
+<ul>
+<li><strong>A.</strong> Remove delegation tools from allowed tools and rely on permission prompts.</li>
+<li><strong>B.</strong> Add Agent only to the worker subagents' tools list for nested calls.</li>
+<li><strong>C.</strong> Add Task delegation guidance to CLAUDE.md for the project repository.</li>
+<li><strong>D.</strong> Add Task to the coordinator SDK run's allowedTools / allowed_tools list.</li>
+</ul>
+<p>Pick your answer before you run anything. The answer and the reasoning are at the end, under <strong>Check your answer</strong>.</p>
+<h2>Before you start (once per laptop)</h2>
+<ul>
+<li>The course folder is on your laptop (Day 1 setup), and you have an Anthropic API key. It starts with <code>sk-ant-</code>.</li>
+<li>The simulators are running. <strong>Windows:</strong> double-click <code>labs\start-labs.cmd</code>. <strong>Mac:</strong> double-click <code>labs/start-labs.command</code>. The first time, the window asks for your API key and saves it to <code>labs/.env</code>. Keep that window open during class.</li>
+<li>Your browser opens the simulators at http://localhost:8765. If that port is busy the window prints another address, such as http://localhost:8766.</li>
+</ul>
+<h2>Steps in the simulator website</h2>
+<ol>
+<li>Look at the left sidebar. It should say <strong>Anthropic API key saved</strong>. If it says <strong>No API key yet: paste it here</strong>, paste your key into the <strong>Anthropic API key</strong> box and press <strong>Save key</strong>.</li>
+<li>In the left menu, click <strong>2. Code Generation with Claude Code</strong>.</li>
+<li>Click <strong>Lab 3</strong> in the row of lab buttons. You can also pick it from <strong>Jump to any lab</strong>.</li>
+<li>Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open <strong>Why the other answers fall short</strong> to see each distractor's flaw.</li>
+<li>Under <strong>Watch the right answer work</strong>, open <strong>See the code this lab runs</strong> if you want to read the script first.</li>
+<li>Press <strong>▶ Simulate it live</strong>. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.</li>
+<li>When it finishes, read <strong>Read your result</strong>: what this run showed, <strong>What to look for</strong>, <strong>Why it happens</strong> and the <strong>Exam tip</strong>.</li>
+</ol>
+<h2>Or run it from a terminal</h2>
+<p>Open a terminal in the <code>labs</code> folder. <strong>Windows:</strong> in File Explorer, open <code>labs</code>, click the address bar, type <code>powershell</code> and press Enter. <strong>Mac:</strong> right-click the <code>labs</code> folder and choose <strong>New Terminal at Folder</strong>. Then:</p>
+<pre><code>cd simulators/simulator-2-code-generation
+uv run casekit.py --case UC-25
+</code></pre>
+<p>Or let the course tool print the question, run the command and show the reasoning in one go: <code>uv run run_lab.py 3</code> from the <code>labs</code> folder.</p>
+<h2>What you will see</h2>
+<p>What to look for: Delegation disallowed: no reviewer spawns. Allowed: the subagent runs and its answer comes back.</p>
+<p>These lines are from our own run of this lab on Claude Haiku 5.5. Your wording will differ, because Claude writes each reply fresh; the tool calls, decisions and checks should match.</p>
+<pre><code>  connected: claude-haiku-5-5, tools: 25 available
+Turn 1: sending the conversation to Claude
+  -&gt; ListAgents({})
+  -&gt; ToolSearch({&quot;query&quot;: &quot;select:Agent&quot;, &quot;max_results&quot;: 3})
+  stop_reason: tool_use -&gt; CONTINUE: run the tool, append its result, call Claude again
+  &lt;- result: This session is workspace-89 [77ac44] — the name other sessions use to message it (it is not listed below; a message to it would be a me…
+  &lt;- result: No matching deferred tools found. Note: these configured MCP servers failed to connect, so their tools are unavailable for this session:…
+Turn 2: sending the conversation to Claude, with the tool results appended
+  claude: DELEGATION BLOCKED I have no agent-spawning tool in this session, and no peer session is named `style-reviewer`. I did not review `src/util…
+  stop_reason: end_turn -&gt; STOP: Claude has finished, so the loop ends
+  connected: claude-haiku-5-5, tools: 26 available
+Turn 1: sending the conversation to Claude
+...
+   UC-25 t1: success  $0.00
+   UC-25 t2: success  $0.00
+   PASS - without the delegation tool the fan-out cannot happen
+   PASS - with Agent (Task before v2.1.63) in the allowed list the reviewer's verdict comes back
+   PASS - learner can state that allowedTools auto-approves and is not a hard allowlist  (reviewed against the expected answer)
+Estimated API cost: US$0.0089 for 3 Claude runs on Claude Haiku 5.5, billed to your Anthropic API key.
+</code></pre>
+<p>How to read the output:</p>
+<table>
+<thead>
+<tr>
+<th>Output line</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>connected: claude-haiku-5-5, tools: …</code></td>
+<td>The run started on Claude Haiku 5.5 and lists the tools Claude may call.</td>
+</tr>
+<tr>
+<td><code>Turn N: sending the conversation to Claude</code></td>
+<td>One trip round the agent loop: the whole conversation so far goes to the Claude API.</td>
+</tr>
+<tr>
+<td><code>-&gt; tool_name({...})</code></td>
+<td>Claude asked to call a tool, with these inputs.</td>
+</tr>
+<tr>
+<td><code>&lt;- result: …</code> / <code>!! tool error: …</code></td>
+<td>The tool's answer, appended to the conversation for Claude's next turn. <code>!!</code> marks an error or a hook that blocked the call.</td>
+</tr>
+<tr>
+<td><code>stop_reason: tool_use</code> / <code>end_turn</code></td>
+<td>Why Claude stopped: <code>tool_use</code> means run the tool and loop again; <code>end_turn</code> means Claude has finished.</td>
+</tr>
+<tr>
+<td><code>(subagent)</code></td>
+<td>The line came from a subagent working in its own context, not the main conversation.</td>
+</tr>
+<tr>
+<td><code>PASS</code> / <code>FAIL</code></td>
+<td>The simulator's automatic checks on what Claude actually did.</td>
+</tr>
+<tr>
+<td><code>Estimated API cost</code></td>
+<td>What the run cost on your API key at Haiku 5.5 prices.</td>
+</tr>
+</tbody>
+</table>
+<h2>Why it happens</h2>
+<p>allowedTools auto-approves only what it lists, so with Read, Grep and Glob alone the first delegation call drops into an interactive permission prompt and the run stalls. Add the delegation tool to the coordinator's list and the subagent spawns, runs and returns its answer. The simulator uses the current tool name, Agent; the exam's pinned pre-v2.1.63 setup calls the same tool Task.</p>
+<h2>Check your answer</h2>
+<p><strong>The answer is D.</strong> Add Task to the coordinator SDK run's allowedTools / allowed_tools list.</p>
+<p>In this legacy configuration delegation goes through Task , so the coordinator run must auto-approve it. The subagents are defined. The problem is that the first delegation is not auto-approved and falls into interactive permission handling. Current docs describe the tool as Agent (renamed from Task in v2.1.63), so current configurations should generally use Agent . Also note that allowedTools auto-approves the listed tools but is not a hard allow-list on its own: unlisted tools fall through to the permission mode or callback unless they are denied.</p>
+<ul>
+<li><strong>A</strong> falls short: The opposite of the fix: the permission prompts are what stall the run.</li>
+<li><strong>B</strong> falls short: Wrong tool name for this pinned version, and on the wrong agent: the coordinator is the one doing the delegating.</li>
+<li><strong>C</strong> falls short: Guidance text grants no permission.</li>
+</ul>
+<h2>Try this</h2>
+<p>Rerun it and compare with the saved evidence/ copy: Claude's wording changes from run to run, the decision should not.</p>
+<h2>How the exam tests this</h2>
+<p>Grant the delegation tool on the coordinator, because the coordinator is the one delegating. Reject CLAUDE.md guidance, which grants no permission, and reject adding Agent to the workers in a configuration that still uses Task.</p>
+<p>The question is a third-party practice question (SkillCertPro, unofficial, reconstructed from a video). Evidence from your run is saved in <code>labs/simulators/simulator-2-code-generation/evidence/</code>.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

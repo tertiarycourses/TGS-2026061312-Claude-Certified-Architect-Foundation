@@ -1,0 +1,41 @@
+$ ./run.sh
+== Step 1: run the project skill /review on src/cart.js
+| line | severity | finding | fix |
+|---|---|---|---|
+| 8-9 | high | `applyDiscount` returns dollars, not cents. Input is cents, but the result is divided by 100, so `applyDiscount(10000, 10)` returns `90` instead of `9000`. The caller gets a money value in the wrong unit. | Return cents: `return Math.round((totalCents * (100 - percent)) / 100);` |
+| 7-9 | high | Breaks the CLAUDE.md rule "Money is stored in integer cents. Never use floating-point dollars." The function converts to dollars with `/ 100` and does the discount in float. | Stay in integer cents as in the fix above. Multiply first, then divide once and round. |
+| 7 | low | Leftover `// BUG on purpose` comment marks a known defect. It will mislead readers once the code is fixed. | Delete the comment when the fix lands. |
+| 3 | low | `subtotal` trusts `priceCents` and `qty` to be integers. A fractional or string value would silently produce a non-integer total. | Validate inputs with `Number.isInteger` at the boundary, or document the contract in the header comment. |
+
+VERDICT: FAIL
+
+== Step 2: which rules load for a SOURCE file?
+I read `src/cart.js`. It has two functions: `subtotal`, which sums `priceCents * qty`, and `applyDiscount`, which converts cents to dollars with floating-point math before rounding back.
+
+Project-folder files in my context:
+
+**`/Users/alfredang/ccar-f/day2/lab-35-skills-and-path-rules/project/CLAUDE.md`** is the only one. It contains three rules:
+1. Node.js 20, no external dependencies. Run tests with `node --test`.
+2. Money is stored in integer cents. Never use floating-point dollars.
+3. Keep functions small and pure; side effects live in `src/store.js`.
+
+`applyDiscount` in `src/cart.js` breaks rule 2. It divides by 100 and multiplies by a float percentage, which the file's own comment flags as a deliberate bug. I haven't changed it because you only asked me to read the file. Let me know if you want it fixed to use integer cents.
+
+== Step 3: which rules load for a TEST file?
+I read `src/cart.test.js`. It has one test, `subtotal adds items`, which asserts that `subtotal([{ priceCents: 250, qty: 2 }])` equals `500`.
+
+Two project-folder files put instructions in my context:
+
+1. **`/Users/alfredang/ccar-f/day2/lab-35-skills-and-path-rules/project/CLAUDE.md`**
+   - Use Node.js 20 with no external dependencies.
+   - Run tests with `node --test`.
+   - Store money as integer cents. Never use floating-point dollars.
+   - Keep functions small and pure. Side effects live in `src/store.js`.
+
+2. **`/Users/alfredang/ccar-f/day2/lab-35-skills-and-path-rules/project/.claude/rules/testing.md`**
+   - Use one `describe` per exported function, and start test names with "returns" or "throws".
+   - Every money test checks cents, never dollars.
+   - Keep network and clock out of tests by injecting them.
+
+The existing test doesn't follow the testing rules. It has no `describe` block, and its name starts with "subtotal" rather than "returns" or "throws". I haven't changed it. Say if you want it brought in line with the rules.
+

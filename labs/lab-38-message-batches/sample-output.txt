@@ -1,0 +1,17 @@
+$ uv run -q batch_triage.py
+Submitted batch msgbatch_01LrJnQhS7GULUYLdiB7eVew with 5 requests. Status: in_progress
+  00:09:40  in_progress: 5 processing, 0 succeeded, 0 errored
+  00:09:55  in_progress: 5 processing, 0 succeeded, 0 errored
+  00:10:11  in_progress: 5 processing, 0 succeeded, 0 errored
+  00:10:26  in_progress: 5 processing, 0 succeeded, 0 errored
+  00:10:42  in_progress: 5 processing, 0 succeeded, 0 errored
+  00:10:57  in_progress: 5 processing, 0 succeeded, 0 errored
+  00:11:12  in_progress: 5 processing, 0 succeeded, 0 errored
+  00:11:28  ended: 0 processing, 5 succeeded, 0 errored
+
+T-101: refund    medium Lamp arrived cracked; customer requests money back for order ORD-5501.
+T-103: billing   high   Customer charged twice for order ORD-5520, demands same-day fix
+T-105: exchange  medium Customer received wrong-colour rug (ORD-5508), requests swap
+T-102: account   low    User asks how to change the email address on their account.
+T-104: shipping  low    Customer asks whether shipping to Malaysia is available and delivery timeframe.
+

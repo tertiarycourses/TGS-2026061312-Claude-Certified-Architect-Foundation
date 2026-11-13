@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "orders": {
+      "command": "uv",
+      "args": ["run", "-q", "order_server.py"],
+      "env": { "ORDERS_API_TOKEN": "${ORDERS_API_TOKEN}" }
+    }
+  }
+}

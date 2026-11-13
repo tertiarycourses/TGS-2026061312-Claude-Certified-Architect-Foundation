@@ -1,0 +1,30 @@
+$ uv run -q tool_design.py
+
+== VAGUE descriptions
+   WRONG get_info   <- Where is my parcel for ORD-5501?
+   OK    get_info   <- Is jane@example.com a Gold tier member?
+   WRONG get_info   <- How much did I pay for ORD-5502?
+   OK    get_info   <- Is account CUS-0042 verified yet?
+   wrong picks: 2 of 4
+
+== CLEAR descriptions
+   OK    fetch_data <- Where is my parcel for ORD-5501?
+   OK    get_info   <- Is jane@example.com a Gold tier member?
+   OK    fetch_data <- How much did I pay for ORD-5502?
+   OK    get_info   <- Is account CUS-0042 verified yet?
+   wrong picks: 0 of 4
+
+$ uv run -q tool_choice.py
+
+tool_choice=auto  stop_reason=tool_use
+   tool calls: ["lookup_order({'order_id': 'ORD-5501'})"]
+   text      : (no text: content blocks were ['thinking', 'tool_use'])
+
+tool_choice=any   stop_reason=tool_use
+   tool calls: ["lookup_order({'order_id': 'ORD-5501'})", "extract_complaint({'order_id': 'ORD-5501', 'issue': 'Lamp arrived cracked', 'wants': 'unclear'})"]
+   text      : (no text: content blocks were ['tool_use', 'tool_use'])
+
+tool_choice=tool  stop_reason=tool_use
+   tool calls: ["extract_complaint({'order_id': 'ORD-5501', 'issue': 'Lamp arrived cracked', 'wants': 'unclear'})"]
+   text      : (no text: content blocks were ['tool_use'])
+

@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 31: From one API call to a working agent loop</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-31-first-api-call-to-agent-loop">Open the folder on GitHub</a><a class="btn alt" href="lab-31-first-api-call-to-agent-loop.pdf">Download the PDF</a></p><h1>Lab 31: From one API call to a working agent loop</h1>
+<blockquote>
+<p>Day 2 · Topic 1: Agentic Architecture &amp; Orchestration · Task statement 1.1 · Code lab · Claude Haiku 5.5</p>
+</blockquote>
+<p><strong>Ten lines of loop are the whole agent. Write them yourself and watch stop_reason drive every turn.</strong></p>
+<h2>What you'll do</h2>
+<p>Call Claude Haiku 5.5 three ways (curl, Python, TypeScript), read stop_reason, then write the agentic loop by hand: tool_use means run the tool and go round again, end_turn means stop.</p>
+<h2>What's in this folder</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>call_claude.sh</code></td>
+<td>curl: the raw HTTP request</td>
+</tr>
+<tr>
+<td><code>call_claude.py</code></td>
+<td>the same call with the Python SDK</td>
+</tr>
+<tr>
+<td><code>typescript/call_claude.ts</code></td>
+<td>the same call with the TypeScript SDK</td>
+</tr>
+<tr>
+<td><code>agent_loop.py</code></td>
+<td>a two-tool refund agent with a hand-written loop</td>
+</tr>
+</tbody>
+</table>
+<h2>Before you start</h2>
+<ul>
+<li>Open a terminal in the labs folder. Windows: use Git Bash for the .sh scripts (it comes with Git); PowerShell is fine for the Python ones.</li>
+<li>Set your Anthropic API key once, if you haven't already. It is saved to labs/.env on your laptop and never uploaded. Run <code>uv run set_api_key.py</code>.</li>
+<li>Go into this lab's folder. Run <code>cd lab-31-first-api-call-to-agent-loop</code>.</li>
+</ul>
+<p>You need uv (https://docs.astral.sh/uv/) for the Python scripts. Every call uses Claude Haiku 5.5 and costs a fraction of a US cent.</p>
+<h2>Steps</h2>
+<p><strong>Step 1.</strong> Make the call with nothing but curl. Look at stop_reason, usage and the content block types.</p>
+<pre><code>./call_claude.sh
+</code></pre>
+<p><strong>Step 2.</strong> Make the same call with the Python SDK. Same fields, now as Python objects.</p>
+<pre><code>uv run call_claude.py
+</code></pre>
+<p><strong>Step 3.</strong> Give Claude only 20 tokens. The answer stops mid-thought and stop_reason says max_tokens.</p>
+<pre><code>uv run call_claude.py &quot;Explain the agent loop&quot; 20
+</code></pre>
+<p><strong>Step 4.</strong> Optional: the TypeScript SDK (Node.js 20+).</p>
+<pre><code>cd typescript &amp;&amp; npm install &amp;&amp; npm start
+</code></pre>
+<p><strong>Step 5.</strong> Run the agent loop. Claude asks for lookup_order, then check_refund_policy, then answers.</p>
+<pre><code>uv run agent_loop.py
+</code></pre>
+<p><strong>Step 6.</strong> Run it on an order outside the 30-day window and check that the answer follows the tool result.</p>
+<pre><code>uv run agent_loop.py &quot;Order ORD-5502 arrived broken. Can I get my money back?&quot;
+</code></pre>
+<h2>What you should see</h2>
+<p>From a live run on Claude Haiku 5.5 (your wording will differ; the behaviour should not):</p>
+<ul>
+<li><code>Turn 1: stop_reason=tool_use  -&gt;  lookup_order({"order_id": "ORD-5501"})</code></li>
+<li><code>Turn 2: stop_reason=tool_use  -&gt;  check_refund_policy({"amount": 120.0, "days_since_delivery": 4})</code></li>
+<li><code>Turn 3: stop_reason=end_turn  -&gt;  "Yes, you're eligible for a refund..."</code></li>
+<li><code>With max_tokens 20: stop_reason max_tokens and content blocks ['thinking']: no text at all.</code></li>
+</ul>
+<p>The full output of our run is in <code>sample-output.txt</code>.</p>
+<h2>The key lines, explained</h2>
+<p>In <code>agent_loop.py</code>, look for the <code>KEY</code> comments:</p>
+<ul>
+<li><strong>KEY 1.</strong> messages is the whole memory. The API is stateless, so your code keeps and resends the history.</li>
+<li><strong>KEY 2.</strong> A turn cap. A confused loop stops at 8 turns instead of running up your bill.</li>
+<li><strong>KEY 3.</strong> Append Claude's entire turn (thinking and tool_use blocks included), not just the text.</li>
+<li><strong>KEY 4.</strong> The only exit test: stop_reason. tool_use means continue; end_turn (or max_tokens) means stop.</li>
+<li><strong>KEY 5.</strong> Every tool_result goes back in ONE user message, matched to its tool_use_id.</li>
+</ul>
+<h2>The code: <code>agent_loop.py</code></h2>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.10&quot;
+# dependencies = [&quot;anthropic&gt;=2.0&quot;, &quot;python-dotenv&gt;=1.0&quot;]
+# ///
+&quot;&quot;&quot;Lab 31, step 2: the agentic loop, written by hand.
+Claude asks for tools; your code runs them and appends every result; the loop stops on end_turn.
+Run:  uv run agent_loop.py
+      uv run agent_loop.py &quot;Order ORD-5502 arrived broken. Can I get my money back?&quot; &quot;&quot;&quot;
+import json
+import sys
+import anthropic
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv(usecwd=True))
+client = anthropic.Anthropic()
+MODEL = &quot;claude-haiku-5-5&quot;
+
+ORDERS = {&quot;ORD-5501&quot;: {&quot;item&quot;: &quot;Ceramic lamp&quot;, &quot;amount&quot;: 120.0, &quot;status&quot;: &quot;delivered&quot;, &quot;days_since_delivery&quot;: 4},
+          &quot;ORD-5502&quot;: {&quot;item&quot;: &quot;Standing desk&quot;, &quot;amount&quot;: 640.0, &quot;status&quot;: &quot;delivered&quot;, &quot;days_since_delivery&quot;: 41}}
+
+TOOLS = [
+    {&quot;name&quot;: &quot;lookup_order&quot;,
+     &quot;description&quot;: &quot;Get one order by its ID (format ORD-NNNN): item, amount, status, days since delivery.&quot;,
+     &quot;input_schema&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;properties&quot;: {&quot;order_id&quot;: {&quot;type&quot;: &quot;string&quot;}}, &quot;required&quot;: [&quot;order_id&quot;]}},
+    {&quot;name&quot;: &quot;check_refund_policy&quot;,
+     &quot;description&quot;: &quot;Check whether an order amount and age qualify for a refund. Call after lookup_order.&quot;,
+     &quot;input_schema&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;properties&quot;: {&quot;amount&quot;: {&quot;type&quot;: &quot;number&quot;}, &quot;days_since_delivery&quot;: {&quot;type&quot;: &quot;integer&quot;}},
+                      &quot;required&quot;: [&quot;amount&quot;, &quot;days_since_delivery&quot;]}},
+]
+
+
+def run_tool(name, args):
+    if name == &quot;lookup_order&quot;:
+        return ORDERS.get(args[&quot;order_id&quot;], {&quot;error&quot;: f&quot;No order {args['order_id']}&quot;})
+    if name == &quot;check_refund_policy&quot;:
+        ok = args[&quot;days_since_delivery&quot;] &lt;= 30
+        return {&quot;eligible&quot;: ok, &quot;reason&quot;: &quot;within 30 days&quot; if ok else &quot;outside the 30-day window&quot;}
+    return {&quot;error&quot;: f&quot;unknown tool {name}&quot;}
+
+
+</code></pre>
+<pre><code class="language-python">question = sys.argv[1] if len(sys.argv) &gt; 1 else &quot;My lamp from order ORD-5501 arrived cracked. Can I get a refund?&quot;
+messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: question}]          # KEY 1: the API is stateless; you keep the history
+
+for turn in range(1, 9):                                     # KEY 2: a turn cap, so a confused loop can't run forever
+    response = client.messages.create(model=MODEL, max_tokens=2048, tools=TOOLS, messages=messages)
+    print(f&quot;Turn {turn}: stop_reason={response.stop_reason}&quot;)
+    messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})   # KEY 3: append Claude's whole turn
+
+    if response.stop_reason != &quot;tool_use&quot;:                   # KEY 4: end_turn (or anything else) ends the loop
+        print(&quot;\n&quot; + &quot;&quot;.join(b.text for b in response.content if b.type == &quot;text&quot;))
+        break
+
+    results = []
+    for block in response.content:
+        if block.type == &quot;tool_use&quot;:
+            output = run_tool(block.name, block.input)
+            print(f&quot;   tool {block.name}({json.dumps(block.input)}) -&gt; {json.dumps(output)}&quot;)
+            results.append({&quot;type&quot;: &quot;tool_result&quot;, &quot;tool_use_id&quot;: block.id, &quot;content&quot;: json.dumps(output)})
+    messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: results})    # KEY 5: every result goes back, in one user message
+</code></pre>
+<h2>Try this</h2>
+<p>Delete the line that appends the tool results and run again. Claude asks for the same tool over and over: it never saw the answer.</p>
+<h2>How this shows up in the exam</h2>
+<p>Task 1.1: continue on tool_use, stop on end_turn, append every result. Parsing Claude's text for 'done' or capping iterations as the main stop rule are the tempting wrong answers.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

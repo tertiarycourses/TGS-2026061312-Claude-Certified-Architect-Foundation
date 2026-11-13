@@ -1,0 +1,60 @@
+$ ./call_claude.sh
+{
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 29,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "output_tokens": 259,
+    "output_tokens_details": {
+      "thinking_tokens": 134
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  },
+  "blocks": [
+    "thinking",
+    "text"
+  ],
+  "text": "`stop_reason` tells the agent loop why the model stopped generating, such as `end_turn` (the model finished its answer), `tool_use` (it wants a tool run before continuing), or `max_tokens` (the output was cut off). The loop uses this signal to decide whether to execute tool calls and send results back, return the final response, or handle a truncated or otherwise incomplete output."
+}
+
+$ uv run -q call_claude.py
+stop_reason   : end_turn
+usage         : 29 in / 234 out
+content blocks: ['thinking', 'text']
+
+`stop_reason` tells the agent loop why the model stopped generating, such as `end_turn` when it has finished, `tool_use` when it has requested a tool call, or `max_tokens` when it hit the output limit. The loop uses this signal to decide whether to execute tools and continue, stop and return the result, or handle a truncated response.
+
+$ uv run -q call_claude.py "Explain the agent loop" 20
+stop_reason   : max_tokens
+usage         : 16 in / 20 out
+content blocks: ['thinking']
+
+$ uv run -q agent_loop.py
+Turn 1: stop_reason=tool_use
+   tool lookup_order({"order_id": "ORD-5501"}) -> {"item": "Ceramic lamp", "amount": 120.0, "status": "delivered", "days_since_delivery": 4}
+Turn 2: stop_reason=tool_use
+   tool check_refund_policy({"amount": 120.0, "days_since_delivery": 4}) -> {"eligible": true, "reason": "within 30 days"}
+Turn 3: stop_reason=end_turn
+
+Yes, you're eligible for a refund. Order ORD-5501 is for a ceramic lamp that cost $120.00. It was delivered 4 days ago, which is within the 30-day refund window.
+
+I'm sorry the lamp arrived cracked. If you'd like, I can help with the next steps for the refund.
+
+$ uv run -q agent_loop.py "Order ORD-5502 arrived broken. Can I get my money back?"
+Turn 1: stop_reason=tool_use
+   tool lookup_order({"order_id": "ORD-5502"}) -> {"item": "Standing desk", "amount": 640.0, "status": "delivered", "days_since_delivery": 41}
+Turn 2: stop_reason=tool_use
+   tool check_refund_policy({"amount": 640.0, "days_since_delivery": 41}) -> {"eligible": false, "reason": "outside the 30-day window"}
+Turn 3: stop_reason=end_turn
+
+I'm sorry your standing desk arrived broken. Unfortunately, order ORD-5502 isn't eligible for a refund. It was delivered 41 days ago, and our refund window is 30 days.
+
+You could still contact customer support and explain that the desk arrived damaged. They may be able to offer a replacement, a partial refund, or an exception, though I can't guarantee any of those. If you have photos of the damage and the packaging, have them ready.
+

@@ -1,0 +1,24 @@
+$ uv run -q extract_invoices.py
+Method: strict tool use
+
+INV-1001  ACME Supplies Pte Ltd  total 405.50  due 3 Dec 2026
+   OK
+
+INV-1002  Bright Print  total 229.00  due None
+   REVIEW: no due date in the source
+
+INV-1003  Nova Cloud Services  total 390.00  due 2026-11-21
+   REVIEW: lines add to 340.00 but total says 390.00
+
+$ uv run -q extract_invoices.py --parse
+Method: messages.parse (output_config.format)
+
+INV-1001  ACME Supplies Pte Ltd  total 405.50  due 3 Dec 2026
+   OK
+
+INV-1002  Bright Print  total 229.00  due None
+   REVIEW: no due date in the source
+
+INV-1003  Nova Cloud Services  total 390.00  due 2026-11-21
+   REVIEW: lines add to 340.00 but total says 390.00
+

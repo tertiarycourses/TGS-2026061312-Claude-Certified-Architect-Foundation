@@ -1,0 +1,83 @@
+$ uv run -q coordinator.py
+Coordinator turn 1: stop_reason=tool_use, subagents launched: 3
+   -> demand analyst: Assess whether there is enough evening demand to justify adding evening chat support. Use only the source text. Note any limits of the data.
+      context passed: 'survey: "Q3 survey, 1,240 customers: 61% want chat support after 6pm; 22% would pay for priority support."\ntickets: "Ticket log Jul-Sep: 38%'
+   -> cost analyst: Compare the monthly cost of a human evening chat shift versus an AI chat agent pilot. Calculate the annual difference and state what each option does and does not cover based on the source text. Note what is unknown.
+      context passed: 'costs: "Staffing quote: evening chat shift costs SGD 14,500/month; an AI chat agent pilot costs SGD 3,200/month."\nNo other cost data is avai'
+   -> risk analyst: Identify the main risks of each option (human evening shift vs AI chat pilot) and what a low-cost pilot test would need to measure to decide between them. Base this only on the source facts; flag assumptions clearly.
+      context passed: 'survey: "Q3 survey, 1,240 customers: 61% want chat support after 6pm; 22% would pay for priority support."\ntickets: "Ticket log Jul-Sep: 38%'
+Coordinator turn 2: stop_reason=end_turn, subagents launched: 0
+
+=== Recommendation
+**Recommendation: Run the AI chat pilot first, with a clear handoff to humans. Don't commit to the SGD 14,500/month human evening shift yet.**
+
+**Why evening support is worth fixing**
+- 61% of 1,240 surveyed customers want chat after 6pm, and 22% would pay for priority support.
+- 38% of Jul–Sep tickets arrive between 6pm and 11pm.
+- The median first response after 6pm is 9h 40m, so evening customers wait most of a day for a reply.
+
+The demand signal is real enough to act on. It isn't yet strong enough to justify a permanent, fully staffed shift.
+
+**Why the AI pilot first**
+- **Cost:** The pilot is SGD 3,200/month versus SGD 14,500 for the human shift, a difference of SGD 11,300/month or about SGD 135,600/year. That gap is the main reason to test the AI option first.
+- **Reversibility:** A pilot can be scaled up or stopped. A staffed shift is a fixed commitment.
+- **Measurable:** A pilot can produce cost per resolved ticket and response times, which can be compared directly with the baseline.
+
+**Caveats**
+- The cost comparison is not like-for-like. The sources don't say what either option covers, how many hours, what resolution rate the AI achieves, how long the pilot runs, or what it costs after the pilot. The annual figure assumes the pilot price holds.
+- Survey interest is not proof of use. The survey asked about "chat support," not AI chat, so customers may accept chat but reject a bot.
+- The 9h 40m delay is not linked to churn or satisfaction in the data, so the business value of faster replies is still an assumption.
+- The 11pm–6am window isn't covered by any source.
+
+**Pilot design (4–6 weeks, assumed feasible)**
+1. Route a share of 6pm–11pm chats to the AI, with a guaranteed human handoff or next-morning follow-up for anything it can't resolve. Use a control group for comparison.
+2. Offer priority support at test prices and measure actual purchases, not survey intent.
+3. Track:
+   - Median and 90th-percentile first response time, compared with 9h 40m.
+   - AI containment rate and escalation rate.
+   - Accuracy of a sampled set of AI answers.
+   - CSAT and 7-day repeat-contact rate, AI vs. human vs. baseline.
+   - Cost per resolved evening ticket, including the AI fee plus escalation staffing.
+   - Priority-support take-up at each price.
+
+**Decision rules (thresholds for you to set)**
+- **Scale the AI** if containment and CSAT are acceptable, accuracy is high, and cost per resolved ticket is well below the human shift's.
+- **Choose the human shift** if containment is low, CSAT drops, or repeat contacts rise, and priority-support take-up justifies the higher cost.
+- **Consider a hybrid** if the AI handles simple tickets and humans cover complex ones during part of the evening.
+
+Before the pilot starts, pull three numbers: total monthly ticket volume (to convert the 38% into a count), the category mix of evening tickets (to estimate what share the AI can handle), and the channel mix.
+
+$ uv run -q coordinator.py --thin
+Coordinator turn 1: stop_reason=tool_use, subagents launched: 3
+   -> demand analyst: Evaluate evening chat support demand.
+      context passed: 'Evaluate evening chat support demand.'
+   -> cost analyst: Compare the cost of a human evening chat shift against an AI chat agent pilot.
+      context passed: 'Compare the cost of a human evening chat shift against an AI chat agent pilot.'
+   -> risk analyst: Assess the risks of choosing an AI chat pilot versus a human evening shift for evening support.
+      context passed: 'Assess the risks of choosing an AI chat pilot versus a human evening shift for evening support.'
+Coordinator turn 2: stop_reason=end_turn, subagents launched: 0
+
+=== Recommendation
+**Recommendation: run a scoped AI chat pilot with guaranteed human handoff, not a full human evening shift yet.** Set a 60–90 day checkpoint to decide whether to add staff.
+
+**Why evening support is worth fixing**
+- 61% of surveyed customers want chat support after 6pm (survey, n=1,240).
+- 38% of tickets arrive between 6pm and 11pm (Jul–Sep ticket log), so the evening window is a large share of volume.
+- The median first response after 6pm is 9h 40m. That is the core problem.
+
+**Why the AI pilot first**
+- Cost: a human evening shift is SGD 14,500/month. The AI pilot is SGD 3,200/month, about 22% of the human cost and SGD 11,300/month less.
+- Risk: an AI agent can give confidently wrong answers and mishandle sensitive or urgent cases. A pilot limited to simple, well-defined queries, with a clear route to a human, contains that risk.
+- Reversibility: the pilot can be scaled up or shut down. A staffed shift is a fixed commitment.
+
+**Conditions for the pilot**
+- Scope: start with low-risk query types. Exclude complaints, account changes, and vulnerable customers.
+- Handoff: define clear triggers for escalation to a human. Confirm who handles escalations after 6pm. The SGD 3,200 pilot fee does not include the cost of those escalations, so the true comparison depends on the escalation rate.
+- Measure: track resolution rate, repeat contacts, and CSAT, not just containment. Containment alone can hide customers who gave up.
+- Set exit criteria before launch. For example: evening first response under a target such as 1 hour, resolution and CSAT at or above day-shift levels, and an error rate below an agreed threshold.
+- If the pilot misses those criteria, fund a human shift. The survey suggests 22% of customers would pay for priority support, which could help offset that cost.
+
+**Limits of this analysis**
+- The three analysts I ran were given only the task names and none of the source figures, so their outputs were generic. The figures above come from the source data directly, and the reasoning is mine.
+- Key unknowns: the AI pilot's accuracy and containment rate on your own tickets, the evening escalation volume, and the cost of after-hours escalation staff. Any of these could change the answer. If the pilot can't resolve a meaningful share of evening tickets without escalation, the saving shrinks quickly.
+

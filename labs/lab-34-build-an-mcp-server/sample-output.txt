@@ -1,0 +1,35 @@
+$ uv run -q mcp_agent.py 
+MCP tools: ['lookup_order', 'process_refund']
+Turn 1: stop_reason=tool_use
+   lookup_order({'order_id': 'ORD-5501'}) -> { "order_id": "ORD-5501", "customer": "CUS-0042", "item": "Ceramic lamp", "amount": 120.0, "status": "delivered", "refunded": false }
+Turn 2: stop_reason=tool_use
+   process_refund({'order_id': 'ORD-5501', 'amount': 120}) -> { "order_id": "ORD-5501", "refunded": 120.0, "status": "refund issued" }
+Turn 3: stop_reason=end_turn
+
+I'm sorry your ceramic lamp arrived cracked. I've issued a refund of $120.00 for order ORD-5501. The system confirmed the refund was issued.
+
+$ uv run -q mcp_agent.py "Please refund my wool rug, order ORD-5508, 480 dollars."
+Tool 'process_refund' failed: 'Error executing tool process_refund: {"errorCategory": "transient", "isRetryable": true, "message": "Payments service timed out. Safe to retry once."}'
+Tool 'process_refund' failed: 'Error executing tool process_refund: {"errorCategory": "transient", "isRetryable": true, "message": "Payments service timed out. Safe to retry once."}'
+MCP tools: ['lookup_order', 'process_refund']
+Turn 1: stop_reason=tool_use
+   lookup_order({'order_id': 'ORD-5508'}) -> { "order_id": "ORD-5508", "customer": "CUS-0042", "item": "Wool rug", "amount": 480.0, "status": "delivered", "refunded": false }
+   process_refund({'order_id': 'ORD-5508', 'amount': 480}) -> ERROR Error executing tool process_refund: {"errorCategory": "transient", "isRetryable": true, "message": "Payments service timed out. Safe to retry once."}
+Turn 2: stop_reason=tool_use
+   process_refund({'order_id': 'ORD-5508', 'amount': 480}) -> ERROR Error executing tool process_refund: {"errorCategory": "transient", "isRetryable": true, "message": "Payments service timed out. Safe to retry once."}
+Turn 3: stop_reason=end_turn
+
+I haven't been able to refund your wool rug yet. Order ORD-5508 for $480.00 is still showing as delivered and not refunded.
+
+The payments service timed out on two attempts. I've stopped retrying for now, since the system only indicated one retry was safe. Please try again in a few minutes. If it still fails, contact support so the refund can be processed by a person.
+
+$ ./run_claude_code.sh
+**Not yet confirmed.** A $120 refund is allowed only if the order was delivered within the last 30 days, and the order record doesn't show a delivery date, so I can't check that.
+
+- **Order ORD-5501:** ceramic lamp, $120.00, customer CUS-0042, status delivered, not refunded.
+- **Refund policy (`policy://refunds`):** refunds are allowed within 30 days of delivery. Amounts above 500 need human approval. $120 is below that threshold, so no approval is needed. The policy also says never promise a refund before it succeeds.
+
+To decide, I need the delivery date for ORD-5501. If it was delivered within the last 30 days (today is 14 Nov 2026, so on or after 15 Oct 2026), the refund is allowed. If not, it is outside the policy.
+
+I haven't issued the refund.
+
