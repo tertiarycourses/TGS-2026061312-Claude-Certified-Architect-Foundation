@@ -2,39 +2,45 @@
 
 ## How to Use This Guide
 
-Read a concept, then test it. Day 1 follows the exam's 30 task statements: for each one you read the idea, answer an exam-style question with four options, then watch the right answer work once, live, on a simulator. Day 2 opens the code behind each domain. Keep this guide open beside the simulator website: it is also your open-book reference for both assessment papers.
+Read a concept, then test it. Day 1 follows the exam's 30 task statements: for each one you read the idea, answer an exam-style question with four options, then watch the right answer work live in your browser and read the code behind it. Day 2 is eleven hands-on Python builds. Keep this guide open beside the simulator site: it is also your open-book reference for both assessment papers.
 
-A simulator is one working system from an official exam scenario, running on your laptop against a mock backend. A Day 1 lab is one task statement: the question, then one live run that calls Claude Haiku 5.5 with your own API key and shows each step as it happens. A Day 2 lab is a short program you read, run and change.
+A simulator is one working system from an official exam scenario, with a simulated backend (customers, orders, repositories). It runs in your browser on the simulator site (https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/). A Day 1 lab is one task statement: the question, then one live run that calls Claude Haiku 5.5 with your own API key and shows every turn, tool call and stop_reason as it happens. A Day 2 lab is a short program you build, run and change.
 
 The Day 1 questions come from the exam guide's task statements and official sample questions, and from the SkillCertPro Part 1 practice exam. SkillCertPro is third-party and unofficial, so treat its questions as practice, not as real exam items. Each one is written here with four options, like the exam.
 
-The Case Study has five tasks, one per learning outcome. Each task names a lab and asks for one screenshot from your own live run, then your written answer. So get comfortable running labs and taking screenshots now: Cmd+Shift+4 on a Mac, Win+Shift+S on Windows.
+The Case Study has five tasks, one per learning outcome. Each task names a lab and asks for one screenshot from your own live run, then a 2–3 sentence answer about what your run shows. So get comfortable running labs and taking screenshots now: Cmd+Shift+4 on a Mac, Win+Shift+S on Windows.
 
-### Three ways to run a lab
+### Ways to run a Day 1 lab
 
-- **Website:** open the simulator, press the lab, click your answer, then press Simulate it live. Each lab page has a built-in terminal.
+- **In your browser (the class default):** open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=4 (any lab number), click your answer, then press Simulate it live. Nothing to install.
 
-- **Terminal:** from the labs folder, uv run run_lab.py 4 prints the question, takes your answer, runs it and explains it.
+- **On your laptop (optional):** the six Python simulators run the same labs locally: double-click labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows), or run-lab in a lab's folder.
 
-- **Claude Code:** from the labs folder, type /lab 4 and Claude walks you through it.
+- **Claude Code (optional):** from the labs folder, type /lab 4 and Claude walks you through it.
 
 ## Before You Start
 
-Ten minutes here saves every lab later. Every simulator is Python on the Claude Agent SDK, and every Day 2 lab is Python or shell on the Anthropic SDK. All of them call Claude Haiku 5.5 through your own Anthropic API key.
+Ten minutes here saves every lab later. Every lab calls Claude Haiku 5.5 with your own Anthropic API key. Get one from the Claude Console (https://platform.claude.com/); it starts with sk-ant-.
 
-1.	Get the course: clone or download https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation (or ask Claude to do it with labs/START-LABS.md).
+**Day 1: nothing to install.**
 
-2.	Install uv from https://docs.astral.sh/uv/ and Git. On Windows, Git Bash comes with Git and runs the .sh scripts.
+1.	Open the simulator site: https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/
 
-3.	Get an Anthropic API key from the Claude Console (https://platform.claude.com/). It starts with sk-ant-.
+2.	In the left sidebar, paste your key into the Anthropic API key box, press Save, then Test. The line under the buttons says Key works when it is ready. The key is kept only in this browser and is sent only to Anthropic.
 
-4.	Start the simulators: double-click labs\start-labs.cmd (Windows) or labs/start-labs.command (Mac). The first time, the window asks for your API key, saves it to labs/.env, installs everything with uv sync and opens http://localhost:8765 (or the next free port). Keep that window open during class.
+3.	Pick a topic, a task statement and its lab in the sidebar. Every lab page works the same way.
 
-5.	Check the left sidebar of the website. It should read Anthropic API key saved. If not, paste your key into the Anthropic API key box and press Save key, or run uv run set_api_key.py from the labs folder.
+**Day 2: Python on your laptop.**
 
-6.	Open the labs site for every lab's steps and PDF: https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/
+1.	Get the course: clone or download https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation.
 
-Keep the key private. It lives only in labs/.env on your laptop, which git ignores. Never paste it into a web page, a slide, a chat or a commit.
+2.	Install uv from https://docs.astral.sh/uv/ and Git. On Windows, Git Bash comes with Git and runs the .sh scripts. Labs 36 and 37 also need Claude Code.
+
+3.	In the labs folder, save your key once: uv run set_api_key.py (or double-click set-api-key.command or set-api-key.cmd). It goes to labs/.env, which git ignores.
+
+4.	Open a lab folder and follow its README, for example labs/lab-31-first-api-call-to-agent-loop: uv run call_claude.py proves your key works.
+
+Keep the key private. Never paste it into a slide, a chat, a document or a commit. On a shared computer, press Clear in the simulator's sidebar when you finish.
 
 **Run Claude Code four ways.** Pick the one that suits you:
 
@@ -46,13 +52,15 @@ Keep the key private. It lives only in labs/.env on your laptop, which git ignor
 
 **Cloud:** open https://claude.ai/code. Nothing to install. You need a Pro, Max, Ultra or Team plan, or an Enterprise premium or Chat + Claude Code seat. To work on your own repo, connect GitHub.
 
-The simulators and the code labs stay on your laptop, so install Claude Code locally. A cloud session runs on Anthropic's servers and can't open them. The Day 2 shell labs pass your key to Claude Code for you.
+The Day 2 builds run on your laptop, so install Claude Code locally for Labs 36 and 37. A cloud session runs on Anthropic's servers and can't open your files. The Day 2 shell labs pass your key to Claude Code for you.
 
 **Watch the spend.** Every lab uses claude-haiku-5-5, at US$0.10 per million input tokens and US$0.50 per million output tokens. A lab usually costs under one US cent.
 
-### What is on each simulator page
+### What is on each lab page
 
-Each simulator page has the scenario, Start here (its steps), Play it live, and its labs. Lab numbers follow the task statements: Lab 1 is task 1.1, Lab 8 is task 2.1, and Lab 30 is task 5.6, so the number means the same thing on the slides, in this guide and on the website. Labs 31 to 40 are the Day 2 code labs.
+Every Day 1 lab page runs in the same order: 1. the task statement and the exam-style question; 2. Simulate it live, with the agentic loop drawn as a diagram, the loop's code with the running line highlighted, the live output and the API request being sent; 3. Claude's final output; 4. the observation explained, turn by turn on stop_reason, then the checks, Why it happens and the Exam tip. See the full code this lab runs shows the model, the API call and the lab's own code.
+
+Lab numbers follow the task statements: Lab 1 is task 1.1, Lab 8 is task 2.1, and Lab 30 is task 5.6, so the number means the same thing on the slides, in this guide and on the site. Labs 31 to 41 are the Day 2 builds.
 
 | Lab | Task | Simulator | Title |
 |---|---|---|---|
@@ -509,11 +517,11 @@ Trainer deck v3.0, slide 39
 
 ## Topic 1: Agentic Architecture & Orchestration
 
-Loops, coordinators, hooks, sessions: how the agent decides and what stops it. This domain is 27% of the exam, the largest single share, so it gets the most labs. You get 7 task statements and 7 labs, one per task statement, on 4 simulators, then code Labs 31 and 32 on Day 2.
+Loops, coordinators, hooks, sessions: how the agent decides and what stops it. This domain is 27% of the exam, the largest single share, so it gets the most labs. You get 7 task statements and 7 labs, one per task statement, on 4 simulators in your browser, then build Labs 31, 32 and 33 on Day 2.
 
 ### 1.1 The loop runs on stop_reason, and nothing else
 
-Exam task statement: Design and implement agentic loops for autonomous task execution. Parse the prose for "done" and your agent stops when it feels like stopping. Slides 45–52.
+Exam task statement: Design and implement agentic loops for autonomous task execution. Parse the prose for "done" and your agent stops when it feels like stopping. Slides 45–53.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image5.jpg)
 
@@ -559,11 +567,11 @@ Trainer deck v3.0, slide 50
 
 #### Lab 1: Watch one refund go round the loop
 
-**Goal.** Task statement 1.1. Answer one exam-style question, then watch the right answer work once, live, on Simulator 1: Customer Support Resolution Agent. Slides 51 and 52.
+**Goal.** Task statement 1.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 51 to 53.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image122.png)
 
-Lab 1 on the Simulator 1 page: the question, your answer buttons and the Simulate it live button.
+Lab 1 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** A customer writes in: the ceramic lamp in ORD-5501 arrived cracked, and they want a refund. Your agent has its tools and a loop that keeps calling Claude. When should that loop stop?
 
@@ -577,32 +585,48 @@ Lab 1 on the Simulator 1 page: the question, your answer buttons and the Simulat
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=1, or choose Topic 1, Task 1.1, Lab 1 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 1. Customer Support Resolution Agent.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 1 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Copy a file in cases/ to a new CS id, change the customer's message and expected disposition, rerun with --case, then score it with evaluate.py.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim1?lab=1, or double-click run-lab in the lab's folder.
+
+**The code.** One POST per turn; stop_reason decides what's next
 
 ```
-cd simulators/simulator-1-customer-support
-uv run support_agent.py --case CS-01
+body = {"model": "claude-haiku-5-5",        # KEY 1
+        "system": SYSTEM, "tools": TOOLS,
+        "messages": messages}
+r = POST(API_URL, headers={"x-api-key": key}, # KEY 2
+         json=body)
+messages.append(r.content)                   # KEY 3
+if r.stop_reason != "tool_use":              # KEY 4
+    break
+messages.append([run(b) for b in r.content
+                 if b.type == "tool_use"])
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 1
+- **KEY 1:** The model, every call. claude-haiku-5-5, plus system, tools, history.
 
-| Test it After the run, check the output for this: Real stop_reason on every turn: tool_use after get_customer, lookup_order, recommend_refund and process_refund, each result appended, then end_turn stops the loop with a $120 refund. |
+- **KEY 2:** Your key in a header. x-api-key carries the key you saved.
+
+- **KEY 3:** Keep Claude's whole turn. Every tool_use block stays in the history.
+
+- **KEY 4:** stop_reason decides. tool_use: run the tool. end_turn: stop.
+
+| Test it After the run, check the output for this: Each turn POSTs the whole conversation to claude-haiku-5-5. stop_reason is tool_use after get_customer, lookup_order, recommend_refund and process_refund, each result is appended, then end_turn stops the loop with a $120 refund. |
 |---|
 
 **Check your answer.** B. stop_reason is the loop's control signal: tool_use means run the tool and call Claude again with the result appended; end_turn means Claude has finished.
@@ -615,7 +639,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 1.2 One hub. Every message goes through it.
 
-Exam task statement: Orchestrate multi-agent systems with coordinator-subagent patterns. Subagents never talk to each other, so you can see, retry and reroute everything. Slides 53–56.
+Exam task statement: Orchestrate multi-agent systems with coordinator-subagent patterns. Subagents never talk to each other, so you can see, retry and reroute everything. Slides 54–58.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image8.jpg)
 
@@ -633,7 +657,7 @@ Picture a hub with spokes. The coordinator breaks the job down, picks only the s
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image107.jpg)
 
-Trainer deck v3.0, slide 54
+Trainer deck v3.0, slide 55
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -651,11 +675,11 @@ Trainer deck v3.0, slide 54
 
 #### Lab 2: Every subagent succeeds, and the report still misses half the topic
 
-**Goal.** Task statement 1.2. Answer one exam-style question, then watch the right answer work once, live, on Simulator 3: Multi-Agent Research System. Slides 55 and 56.
+**Goal.** Task statement 1.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 56 to 58.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image123.png)
 
-Lab 2 on the Simulator 3 page: the question, your answer buttons and the Simulate it live button.
+Lab 2 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** After running the system on the topic "impact of AI on creative industries," you observe that each subagent completes successfully: the web search agent finds relevant articles, the document analysis agent summarizes papers correctly, and the synthesis agent produces coherent output. However, the final reports cover only visual arts, completely missing music, writing, and film production. When you examine the coordinator's logs, you see it decomposed the topic into three subtasks: "AI in digital art creation," "AI in graphic design," and "AI in photography." What is the most likely root cause?
 
@@ -669,32 +693,48 @@ Lab 2 on the Simulator 3 page: the question, your answer buttons and the Simulat
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=2, or choose Topic 1, Task 1.2, Lab 2 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 3. Multi-Agent Research System.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 2 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Edit BROAD in this lab's code to drop 'film/TV' from the sector list and run it again: the subagents still all succeed, and film disappears from the report. Coverage is decided by the coordinator's plan.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim3?lab=2, or double-click run-lab in the lab's folder.
+
+**The code.** Coverage is decided by the coordinator's plan
 
 ```
-cd simulators/simulator-3-multi-agent-research
-uv run research_system.py
+BROAD = ("Decompose broadly: music, writing, "    # KEY 1
+         "film/TV and visual arts. Spawn one "
+         "web-search agent per sector in one turn.")
+coordinator = Agent(system=BROAD, tools=[Agent_tool])
+def agent_tool(subagent_type, prompt):           # KEY 2
+    sub = run_agent(system=WEB_SEARCH,
+                    prompt=prompt,               # KEY 3
+                    tools=[search_web], max_turns=3)
+    return sub.text
+covered = {c.sector for c in all_search_calls}   # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 2
+- **KEY 1:** The plan sets the scope. Name every sector, or no one researches it.
 
-| Test it After the run, check the output for this: The broad plan searches music, writing, film and visual arts, and the report names any gap. |
+- **KEY 2:** One subagent per sector. Spawned together in one coordinator turn.
+
+- **KEY 3:** Empty context. A subagent knows only the prompt it is given.
+
+- **KEY 4:** Measure coverage in code. Compare the sectors searched with the topic.
+
+| Test it After the run, check the output for this: Narrow plan: three web-search subagents all succeed, but every search lands in visual arts, so the report has no music, writing or film. Broad plan: four subagents, one per sector, and the report cites the music, writing and film figures and ends with a Coverage line. |
 |---|
 
 **Check your answer.** B. The coordinator's logs reveal the root cause directly: it decomposed "creative industries" into only visual arts subtasks (digital art, graphic design, photography), completely omitting music, writing, and film. The subagents executed their assigned tasks correctly, the problem is what they were assigned. Options A, C, and D incorrectly blame downstream agents that are working correctly within their assigned scope.
@@ -707,7 +747,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 1.3 The Task tool is how a coordinator spawns anything
 
-Exam task statement: Configure subagent invocation, context passing, and spawning. No "Task" in allowedTools means no subagents. A subagent sees only your prompt. Slides 57–62.
+Exam task statement: Configure subagent invocation, context passing, and spawning. No "Task" in allowedTools means no subagents. A subagent sees only your prompt. Slides 59–65.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image11.jpg)
 
@@ -729,13 +769,13 @@ Two facts carry this task. A coordinator spawns subagents with the Task tool, so
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image108.jpg)
 
-Trainer deck v3.0, slide 59
+Trainer deck v3.0, slide 61
 
 **Hand over the source with the finding.** Keep URL, document and page beside every claim, or the final report has nothing to cite.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image109.jpg)
 
-Trainer deck v3.0, slide 60
+Trainer deck v3.0, slide 62
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -745,11 +785,11 @@ Trainer deck v3.0, slide 60
 
 #### Lab 3: A /parallel-review that can't fan out because Task isn't allowed
 
-**Goal.** Task statement 1.3. Answer one exam-style question, then watch the right answer work once, live, on Simulator 2: Code Generation with Claude Code. Slides 61 and 62.
+**Goal.** Task statement 1.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 63 to 65.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image124.png)
 
-Lab 3 on the Simulator 2 page: the question, your answer buttons and the Simulate it live button.
+Lab 3 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** A custom /parallel-review command starts an SDK run in a repository pinned to a pre-v2.1.63 Claude Code configuration, where subagent delegation is performed with Task . It should fan out across specialized review subagents. The current SDK options auto-approve only Read, Grep, and Glob, and each run pauses at the first attempted subagent delegation with an interactive permission prompt. What should the team change?
 
@@ -763,32 +803,50 @@ Lab 3 on the Simulator 2 page: the question, your answer buttons and the Simulat
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=3, or choose Topic 1, Task 1.3, Lab 3 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 2. Code Generation with Claude Code.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 3 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Change DELEGATE to "Agent" at the top of this lab's code (the current Claude Code name) and keep "Task" in allowedTools for run 2: the delegation is refused again, because allowedTools matches tool names exactly.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim2?lab=3, or double-click run-lab in the lab's folder.
+
+**The code.** The coordinator must auto-approve its delegation tool
 
 ```
-cd simulators/simulator-2-code-generation
-uv run casekit.py --case UC-25
+options = ClaudeAgentOptions(
+    allowed_tools=["Read", "Grep", "Glob",
+                   "Task"],                     # KEY 1
+    agents={"style-reviewer": reviewer},        # KEY 2
+)
+def permission(name):                           # KEY 3
+    if name in options.allowed_tools:
+        return allow()                     # auto-approved
+    return ask_human(name)   # headless: no one answers
+
+query("/parallel-review src/utils/quantity.js",
+      options)                                  # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 3
+- **KEY 1:** Task on the coordinator. The one delegating must auto-approve it.
 
-| Test it After the run, check the output for this: Delegation disallowed: no reviewer spawns. Allowed: the subagent runs and its answer comes back. |
+- **KEY 2:** Agents defined is not enough. A defined subagent still needs Task approved.
+
+- **KEY 3:** Auto-approve, not allow-list. Unlisted tools fall through to a prompt.
+
+- **KEY 4:** Same command, now fans out. The reviewer's VERDICT comes back.
+
+| Test it After the run, check the output for this: Run 1 (allowedTools Read, Grep, Glob): Claude calls Task, the call drops to a permission prompt nobody can answer, no reviewer spawns, and the reply is DELEGATION BLOCKED. Run 2 (Task added to the coordinator's allowedTools): the style-reviewer subagent spawns, reads quantity.js, and its VERDICT line comes back. |
 |---|
 
 **Check your answer.** D. In this legacy configuration delegation goes through Task , so the coordinator run must auto-approve it. The subagents are defined. The problem is that the first delegation is not auto-approved and falls into interactive permission handling. Current docs describe the tool as Agent (renamed from Task in v2.1.63), so current configurations should generally use Agent . Also note that allowedTools auto-approves the listed tools but is not a hard allow-list on its own: unlisted tools fall through to the permission mode or callback unless they are denied.
@@ -801,7 +859,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 1.4 Identity before refund is code, not a polite request
 
-Exam task statement: Implement multi-step workflows with enforcement and handoff patterns. A prompt rule has a non-zero failure rate. A gate has none. Slides 63–68.
+Exam task statement: Implement multi-step workflows with enforcement and handoff patterns. A prompt rule has a non-zero failure rate. A gate has none. Slides 66–72.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image16.jpg)
 
@@ -819,13 +877,13 @@ A prompt that says "verify identity first" fails some of the time. The exam guid
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image110.jpg)
 
-Trainer deck v3.0, slide 65
+Trainer deck v3.0, slide 68
 
 **The human never saw the chat.** Escalate with a summary they can act on in thirty seconds, not a transcript they don't have.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image111.jpg)
 
-Trainer deck v3.0, slide 66
+Trainer deck v3.0, slide 69
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -843,11 +901,11 @@ Trainer deck v3.0, slide 66
 
 #### Lab 4: 12% of cases skip get_customer: fix it with a gate, not a sentence
 
-**Goal.** Task statement 1.4. Answer one exam-style question, then watch the right answer work once, live, on Simulator 1: Customer Support Resolution Agent. Slides 67 and 68.
+**Goal.** Task statement 1.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 70 to 72.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image125.png)
 
-Lab 4 on the Simulator 1 page: the question, your answer buttons and the Simulate it live button.
+Lab 4 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Production data shows that in 12% of cases, your agent skips get_customer entirely and calls lookup_order using only the customer's stated name, occasionally leading to misidentified accounts and incorrect refunds. What change would most effectively address this reliability issue?
 
@@ -861,32 +919,52 @@ Lab 4 on the Simulator 1 page: the question, your answer buttons and the Simulat
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=4, or choose Topic 1, Task 1.4, Lab 4 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 1. Customer Support Resolution Agent.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 4 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Edit LEAN in this lab's code to add "Always call get_customer first." and run it several times: phase 1 now usually verifies first, but only the gate makes it certain. Then add process_refund to the tools and ask for a refund before verifying: the same gate blocks it.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim1?lab=4, or double-click run-lab in the lab's folder.
+
+**The code.** A gate in code puts get_customer first, every time
 
 ```
-cd simulators/simulator-1-customer-support
-uv run support_agent.py --case CS-03
+verified = None
+def pre_tool_use(name, args):                   # KEY 1
+    order_call = name in ("lookup_order", "process_refund")
+    if order_call and (verified is None or
+            args.customer_id != verified):      # KEY 2
+        return deny("Call get_customer first, then "
+                    "pass its customer_id")     # KEY 3
+    return allow()
+
+def post_tool_use(name, result):
+    global verified
+    if name == "get_customer" and result.customer_id:
+        verified = result.customer_id           # KEY 4
+    return normalise(result)
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 4
+- **KEY 1:** Runs before every call. The hook sees each tool call before it executes.
 
-| Test it After the run, check the output for this: get_customer comes first, then the order lookup. |
+- **KEY 2:** Checks state, not wording. No verified id on the call: the order call is blocked.
+
+- **KEY 3:** Denial tells Claude why. Claude reads the reason, verifies, then retries.
+
+- **KEY 4:** Only a real result opens it. The id comes from get_customer, not the message.
+
+| Test it After the run, check the output for this: Phase 1 (no gate): lookup_order runs on the order number Mei Lin volunteered, with no verified customer_id. Phase 2 (same prompt, gate on): the PreToolUse hook blocks that first lookup_order, Claude calls get_customer, and only then does lookup_order run with customer_id C-1001 and answer: shipped, due 2026-11-09. |
 |---|
 
 **Check your answer.** A. When a specific tool sequence is required for critical business logic (like verifying customer identity before processing refunds), programmatic enforcement provides deterministic guarantees that prompt-based approaches cannot. Options B and C rely on probabilistic LLM compliance, which is insufficient when errors have financial consequences. Option D addresses tool availability rather than tool ordering, which is not the actual problem.
@@ -899,7 +977,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 1.5 PreToolUse decides. PostToolUse reshapes.
 
-Exam task statement: Apply Agent SDK hooks for tool call interception and data normalization. One hook stands before the tool, one after it, and neither depends on Claude's mood. Slides 69–73.
+Exam task statement: Apply Agent SDK hooks for tool call interception and data normalization. One hook stands before the tool, one after it, and neither depends on Claude's mood. Slides 73–78.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image20.jpg)
 
@@ -916,7 +994,7 @@ Reach for a hook whenever a business rule must hold every time. A prompt gives y
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image112.jpg)
 
-Trainer deck v3.0, slide 71
+Trainer deck v3.0, slide 75
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -926,11 +1004,11 @@ Trainer deck v3.0, slide 71
 
 #### Lab 5: The prompt forgot the $500 rule. The hook did not.
 
-**Goal.** Task statement 1.5. Answer one exam-style question, then watch the right answer work once, live, on Simulator 1: Customer Support Resolution Agent. Slides 72 and 73.
+**Goal.** Task statement 1.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 76 to 78.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image126.png)
 
-Lab 5 on the Simulator 1 page: the question, your answer buttons and the Simulate it live button.
+Lab 5 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Arjun wants a full refund on a $780 standing desk. Automatic refunds stop at $500. Someone has edited the system prompt, and the $500 rule is gone. What still stops the refund?
 
@@ -944,32 +1022,50 @@ Lab 5 on the Simulator 1 page: the question, your answer buttons and the Simulat
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=5, or choose Topic 1, Task 1.5, Lab 5 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 1. Customer Support Resolution Agent.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 5 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Change LIMIT in this lab's code to 1000 and run it again: the hook now allows the $780 refund, which shows that the limit lives in code, not in the prompt. Then try a PostToolUse hook instead: it can only log a refund that has already been paid.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim1?lab=5, or double-click run-lab in the lab's folder.
+
+**The code.** The prompt lost the $500 rule. The hook still holds it.
 
 ```
-cd simulators/simulator-1-customer-support
-uv run support_agent.py --case CS-02 --prompt prompts/system-noguard.md --tag noguard
+LIMIT = 500
+def pre_tool_use(name, args):                   # KEY 1
+    if name == "process_refund" \
+       and args["amount"] > LIMIT:              # KEY 2
+        return deny(
+            f"Refunds above ${LIMIT} need a human. "
+            "Call escalate_to_human instead.")  # KEY 3
+    return allow()
+
+run_agent(system=SYSTEM_NOGUARD,                # KEY 4
+          tools=support_tools,
+          pre_tool_use=pre_tool_use)
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 5
+- **KEY 1:** Before the tool runs. A PreToolUse hook can stop the call; PostToolUse can't.
 
-| Test it After the run, check the output for this: The prompt has lost its $500 rule, so the model tries $780. The hook denies it. |
+- **KEY 2:** The limit lives in code. Deleting a prompt line cannot remove it.
+
+- **KEY 3:** Deny and redirect. The reason sends Claude to escalate_to_human.
+
+- **KEY 4:** Same edited prompt. Only the hook differs between the two phases.
+
+| Test it After the run, check the output for this: Phase 1 (no hook): the edited prompt lets process_refund pay Arjun $780. Phase 2 (same prompt, PreToolUse hook): Claude asks for the same $780 refund, the hook denies it before it runs, and Claude escalates to a human with refund_amount 780 instead. |
 |---|
 
 **Check your answer.** C. Only code that runs before the tool call can guarantee the limit; a PreToolUse hook enforces it even when the prompt has been edited.
@@ -982,7 +1078,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 1.6 Known steps get a chain. Unknown ground gets a plan that adapts.
 
-Exam task statement: Design task decomposition strategies for complex workflows. Pick by whether you can list the steps before you start. Slides 74–76.
+Exam task statement: Design task decomposition strategies for complex workflows. Pick by whether you can list the steps before you start. Slides 79–82.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image24.jpg)
 
@@ -1006,11 +1102,11 @@ Ask one question: can you list the steps before you start? If yes, chain them. I
 
 #### Lab 6: 60-page packets: section passes first, reconcile second
 
-**Goal.** Task statement 1.6. Answer one exam-style question, then watch the right answer work once, live, on Simulator 6: Structured Data Extraction. Slides 75 and 76.
+**Goal.** Task statement 1.6. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 80 to 82.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image127.png)
 
-Lab 6 on the Simulator 6 page: the question, your answer buttons and the Simulate it live button.
+Lab 6 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Production evaluation shows accuracy drops on 60-page packets with predictable sections, such as intake forms, narrative notes, invoices, and attachments. The current single-pass extraction often captures fields within individual sections, but produces duplicate entities, inconsistent totals, and occasional schema-valid output with incorrect relationships. Which task-decomposition strategy should this team use first?
 
@@ -1024,32 +1120,51 @@ Lab 6 on the Simulator 6 page: the question, your answer buttons and the Simulat
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=6, or choose Topic 1, Task 1.6, Lab 6 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 6. Structured Data Extraction.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 6 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Change TOTAL DUE in the Attachments copy to 165.00 (build it from a modified DOC01 in SECTIONS) and run it again: reconciliation now flags a cross-section total conflict on INV-2041, a check that only makes sense once every section's record exists.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim6?lab=6, or double-click run-lab in the lab's folder.
+
+**The code.** Extract each section, then reconcile the whole packet
 
 ```
-cd simulators/simulator-6-structured-extraction
-uv run extract.py --case UC-31
+records = []
+for name, text in sections:                     # KEY 1
+    if not has_financial_doc(text): continue
+    records += extract(f"[section: {name}]\n{text}")
+merged = {}
+for r in records:                               # KEY 2
+    validate(r, SCHEMA)
+    key = r.invoice_id
+    if key in merged:                           # KEY 3
+        if merged[key].total != r.stated_total:
+            conflicts.append(key)               # KEY 4
+        merged[key].also_seen_in.append(r.source)
+    else: merged[key] = r
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 6
+- **KEY 1:** Local first. Each pass sees one section, a small evidence set.
 
-| Test it After the run, check the output for this: Single pass: one record for three documents. Section pipeline: four section records, reconciled into three unique invoices (CN-118, INV-2041, INV-2043) with one duplicate merged. |
+- **KEY 2:** Global second. Reconcile only once every section record exists.
+
+- **KEY 3:** Deduplicate by id. INV-2041 in Attachments merges into one record.
+
+- **KEY 4:** Cross-section totals. A copy with a different total is flagged.
+
+| Test it After the run, check the output for this: Phase 1, the single pass, returns its own list of records for the whole packet (three in our runs), with nothing showing that INV-2041 appeared twice or that its totals were ever compared. Phase 2's section passes (Invoices, Credits, Attachments) return four records, and the reconciliation pass merges them into three unique documents (CN-118, INV-2041, INV-2043), merges the Attachments copy as one duplicate, and finds every total consistent. |
 |---|
 
 **Check your answer.** C. For predictable workflows, a fixed sequential decomposition beats asking one prompt to do everything: local first, global second. Section passes focus on less evidence and make failures easier to isolate. The reconciliation pass handles constraints that only make sense once every partial extraction exists, such as deduplication, totals, dates and relationships across sections.
@@ -1062,7 +1177,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 1.7 Resume when the facts still hold. Start fresh when they don't.
 
-Exam task statement: Manage session state, resumption, and forking. A resumed session trusts its old tool results, even when the code has moved on. Slides 77–80.
+Exam task statement: Manage session state, resumption, and forking. A resumed session trusts its old tool results, even when the code has moved on. Slides 83–87.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image26.jpg)
 
@@ -1081,7 +1196,7 @@ Long runs must also survive a restart. A checkpoint stores stable task state and
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image113.jpg)
 
-Trainer deck v3.0, slide 78
+Trainer deck v3.0, slide 84
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -1095,11 +1210,11 @@ Trainer deck v3.0, slide 78
 
 #### Lab 7: Two attempts, one analysis: fork the session, checkpoint the files
 
-**Goal.** Task statement 1.7. Answer one exam-style question, then watch the right answer work once, live, on Simulator 2: Code Generation with Claude Code. Slides 79 and 80.
+**Goal.** Task statement 1.7. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 85 to 87.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image128.png)
 
-Lab 7 on the Simulator 2 page: the question, your answer buttons and the Simulate it live button.
+Lab 7 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** After a long plan-mode investigation, a developer saves the session ID before making changes. They want to test a minimal patch and a larger refactor from the same analysed context, but both attempts will touch overlapping files in the same working directory. Which approach best supports independent exploration without confusing conversation history with file state?
 
@@ -1113,32 +1228,48 @@ Lab 7 on the Simulator 2 page: the question, your answer buttons and the Simulat
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=7, or choose Topic 1, Task 1.7, Lab 7 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 2. Code Generation with Claude Code.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 7 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Comment out the restore() call before attempt B and run it again: B now starts from A's patched formatDate.js, because a forked session copies the conversation, not the files.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim2?lab=7, or double-click run-lab in the lab's folder.
+
+**The code.** Fork the conversation, checkpoint the files
 
 ```
-cd simulators/simulator-2-code-generation
-uv run casekit.py --case UC-5
+base = run(PLAN_PROMPT, mode="plan")
+saved_id = base.session_id                      # KEY 1
+checkpoint = snapshot(workdir)                  # KEY 2
+a = run("Attempt A: minimal patch",
+        resume=saved_id, fork_session=True)     # KEY 3
+restore(workdir, checkpoint)                    # KEY 4
+b = run("Attempt B: larger refactor",
+        resume=saved_id, fork_session=True)
+assert len({saved_id, a.session_id,
+            b.session_id}) == 3
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 7
+- **KEY 1:** Save the analysed session. The valuable asset is the conversation.
 
-| Test it After the run, check the output for this: Three session ids. Attempt B starts from restored files, so attempt A never leaks in. |
+- **KEY 2:** Checkpoint before edits. A session is not a file-system snapshot.
+
+- **KEY 3:** Fork each attempt. New id, copied history, original untouched.
+
+- **KEY 4:** Restore before attempt B. Otherwise B starts from A's edited files.
+
+| Test it After the run, check the output for this: Three session ids: the plan-mode baseline and two forks of it. Attempt A edits only formatDate.js; the checkpoint is restored before attempt B, so B starts from the original files (no trace of A's patch), creates src/utils/dates.js and updates the callers. The baseline's history is unchanged at the end. |
 |---|
 
 **Check your answer.** D. Forking fits when the valuable asset is the prior conversation: prompts, tool calls, results and Claude's analysis. A fork starts a new session (with its own ID) from a copy of the existing history, and the original stays unchanged. The boundary to remember is that a session is not a file-system snapshot . Forks editing the same working directory change the real files, which every session using that directory then sees. To revert, use file checkpointing, which tracks the file-editing tools (Write, Edit, NotebookEdit) but not arbitrary changes made through shell commands. Use resume for a specific earlier session ID, and fork when you need an independent branch. (For reference: claude --resume <id> --fork-session in the CLI, fork_session in the exam guide.)
@@ -1151,11 +1282,11 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ## Topic 2: Tool Design & MCP Integration
 
-Tools are the agent's only hands. Describe them well and fail them clearly, and Claude picks correctly. This domain is 18% of the exam. You get 5 task statements and 5 labs, one per task statement, on 5 simulators, then code Labs 33 and 34 on Day 2.
+Tools are the agent's only hands. Describe them well and fail them clearly, and Claude picks correctly. This domain is 18% of the exam. You get 5 task statements and 5 labs, one per task statement, on 5 simulators in your browser, then build Labs 34 and 35 on Day 2.
 
 ### 2.1 The description is the router
 
-Exam task statement: Design effective tool interfaces with clear descriptions and boundaries. Claude picks tools from what you wrote about them. Say little and it guesses. Slides 83–87.
+Exam task statement: Design effective tool interfaces with clear descriptions and boundaries. Claude picks tools from what you wrote about them. Say little and it guesses. Slides 90–95.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image29.jpg)
 
@@ -1177,13 +1308,13 @@ Claude picks a tool by reading what you wrote about it. Write little and it gues
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image114.jpg)
 
-Trainer deck v3.0, slide 84
+Trainer deck v3.0, slide 91
 
 **Fix the description first. Then reshape the toolset.** Merge steps the agent always chains, split a tool that hides three jobs, prefix by service.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image115.jpg)
 
-Trainer deck v3.0, slide 85
+Trainer deck v3.0, slide 92
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -1197,11 +1328,11 @@ Trainer deck v3.0, slide 85
 
 #### Lab 8: One analyze_document tool does three jobs badly
 
-**Goal.** Task statement 2.1. Answer one exam-style question, then watch the right answer work once, live, on Simulator 6: Structured Data Extraction. Slides 86 and 87.
+**Goal.** Task statement 2.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 93 to 95.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image129.png)
 
-Lab 8 on the Simulator 6 page: the question, your answer buttons and the Simulate it live button.
+Lab 8 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** The current implementation exposes one client tool named analyze_document with parameters for document text, requested operation, and desired format. In evaluation runs, Claude sometimes uses it to produce summaries when the downstream validator expected extracted fields, and sometimes attempts claim verification without passing the source excerpt needed for validation. What redesign best improves tool selection and downstream reliability without creating unnecessary tool sprawl?
 
@@ -1215,32 +1346,49 @@ Lab 8 on the Simulator 6 page: the question, your answer buttons and the Simulat
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=8, or choose Topic 2, Task 2.1, Lab 8 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 6. Structured Data Extraction.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 8 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: In this file, delete the line "Do NOT use it when a downstream system expects structured fields" from summarize_document's description and run it again: watch whether any document drifts into a summary.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim6?lab=8, or double-click run-lab in the lab's folder.
+
+**The code.** Split the catch-all tool into jobs Claude can tell apart
 
 ```
-cd simulators/simulator-6-structured-extraction
-uv run extract.py --case UC-11
+# before: one tool, three jobs behind a parameter
+analyze_document(document_text, operation, format)  # KEY 1
+
+# after: a few tools that don't overlap
+extract_invoice(invoice_id, vendor, line_items, ...) # KEY 2
+  "Record one financial document as structured data"
+summarize_document(summary)
+  "Only when a person asked. Do NOT use when a
+   downstream system expects fields"              # KEY 3
+verify_claim_against_source(claim, source_excerpt) # KEY 4
+  "Requires the exact excerpt; never call without"
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 8
+- **KEY 1:** One tool hides three jobs. No field in its schema can carry invoice data.
 
-| Test it After the run, check the output for this: The generic tool drifts into summaries. The split set calls extract_invoice with valid fields. |
+- **KEY 2:** The schema is the contract. The validator gets the fields it expects.
+
+- **KEY 3:** Say when NOT to use. Descriptions drive which tool Claude picks.
+
+- **KEY 4:** Require what the job needs. Verification can't run without its excerpt.
+
+| Test it After the run, check the output for this: The catch-all analyze_document tool sends only document_text, operation and format, so the validator gets no invoice fields and the verify request carries no excerpt, while the split set calls extract_invoice on every document with a payload the validator accepts and quotes DOC-01 when verifying the claim. |
 |---|
 
 **Check your answer.** B. Split an overly generic tool into a small number of purpose-specific tools that don't overlap, such as extraction, summarisation and source-backed verification. Each description should say what the tool does, when to use it and when not to, what the parameters mean, and any caveats. Descriptions are a primary driver of tool selection. The input_schema is the contract for what Claude sends, so a verification tool can require the source excerpt. strict: true can enforce schema conformance, but semantic validation is still needed downstream.
@@ -1253,7 +1401,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 2.2 "Operation failed" tells the agent nothing it can use
 
-Exam task statement: Implement structured error responses for MCP tools. Name the failure, and the agent knows whether to retry, explain or escalate. Slides 88–92.
+Exam task statement: Implement structured error responses for MCP tools. Name the failure, and the agent knows whether to retry, explain or escalate. Slides 96–101.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image31.jpg)
 
@@ -1273,7 +1421,7 @@ Exam task statement: Implement structured error responses for MCP tools. Name th
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image116.jpg)
 
-Trainer deck v3.0, slide 90
+Trainer deck v3.0, slide 98
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -1287,11 +1435,11 @@ Trainer deck v3.0, slide 90
 
 #### Lab 9: The refund failed. The customer was told it worked.
 
-**Goal.** Task statement 2.2. Answer one exam-style question, then watch the right answer work once, live, on Simulator 1: Customer Support Resolution Agent. Slides 91 and 92.
+**Goal.** Task statement 2.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 99 to 101.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image130.png)
 
-Lab 9 on the Simulator 1 page: the question, your answer buttons and the Simulate it live button.
+Lab 9 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** A refund operation sometimes fails because the order is outside the return window, but the agent treats the MCP response as a successful refund and tells the customer it was completed. What change should this team make to communicate the tool failure correctly?
 
@@ -1305,32 +1453,47 @@ Lab 9 on the Simulator 1 page: the question, your answer buttons and the Simulat
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=9, or choose Topic 2, Task 2.2, Lab 9 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 1. Customer Support Resolution Agent.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 9 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: In the shared support.js, make process_refund return the same failure as a plain result (drop isError: true, keep an error field), run it again, and compare what the reply tells Sofia.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim1?lab=9, or double-click run-lab in the lab's folder.
+
+**The code.** A failed refund must come back as isError: true
 
 ```
-cd simulators/simulator-1-customer-support
-uv run support_agent.py --case CS-11
+def process_refund(order_id, amount):
+    if outside_return_window(order_id):
+        return CallToolResult(                   # KEY 1
+            isError=True,
+            content={"errorCategory": "business",  # KEY 2
+                     "isRetryable": False,         # KEY 3
+                     "message": "outside the 30-day window",
+                     "customer_message": "..."})   # KEY 4
+    return CallToolResult(content=issue(order_id, amount))
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 9
+- **KEY 1:** isError: true, in the result. The call worked; the business action failed.
 
-| Test it After the run, check the output for this: The refund on ORD-5508 is never issued, and the reply never claims it was. |
+- **KEY 2:** Say what kind of failure. business, validation, permission or transient.
+
+- **KEY 3:** Say whether to retry. A closed window won't open on a second try.
+
+- **KEY 4:** Give the recovery words. The agent explains the rule, never a refund.
+
+| Test it After the run, check the output for this: process_refund on ORD-5508 comes back isError: true with errorCategory business and isRetryable false, so no refund is issued, Claude does not retry, and the final reply explains the closed return window instead of claiming the $140 was refunded. |
 |---|
 
 **Check your answer.** B. In MCP a tool call can succeed at the protocol level yet fail at the business-logic level. The pattern is to return a CallToolResult with isError: true and put useful recovery context in the content. Failures differ (policy violation, invalid date, missing order, permission denied), and structured details let the agent pick the next step: explain the rule, correct the input, retry a transient error, or escalate. Spelling and value both matter: camelCase isError , set to true .
@@ -1343,7 +1506,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 2.3 18 tools degrade selection. Give each agent 4 or 5.
 
-Exam task statement: Distribute tools appropriately across agents and configure tool choice. A synthesis agent holding a web-search tool will use it. Don't hand it one. Slides 93–96.
+Exam task statement: Distribute tools appropriately across agents and configure tool choice. A synthesis agent holding a web-search tool will use it. Don't hand it one. Slides 102–106.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image34.jpg)
 
@@ -1373,11 +1536,11 @@ Give an agent 18 tools and it chooses worse than with 4 or 5. Give a synthesis a
 
 #### Lab 10: Review and test generation fight over one Claude call
 
-**Goal.** Task statement 2.3. Answer one exam-style question, then watch the right answer work once, live, on Simulator 5: Claude Code for Continuous Integration. Slides 95 and 96.
+**Goal.** Task statement 2.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 5: Claude Code for Continuous Integration, and read the code that runs it. Slides 104 to 106.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image131.png)
 
-Lab 10 on the Simulator 5 page: the question, your answer buttons and the Simulate it live button.
+Lab 10 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** The system uses one Claude call for pull request review, test generation, and PR metadata updates. Logs show the review phase sometimes invokes test-writing tools for non-testable style comments, then returns prose instead of the structured finding object your pipeline expects. What change best improves tool-selection reliability while preserving automated test generation elsewhere in the pipeline?
 
@@ -1391,32 +1554,50 @@ Lab 10 on the Simulator 5 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=10, or choose Topic 2, Task 2.3, Lab 10 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 5. Claude Code for Continuous Integration.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 10 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Give the review step write_test_file as well and change its tool_choice to {"type": "any"}: run it a few times and see whether a test file ever appears where you wanted findings.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim5?lab=10, or double-click run-lab in the lab's folder.
+
+**The code.** Give each CI step only its tools, then force the report
 
 ```
-cd simulators/simulator-5-ci-cd
-uv run casekit.py --case UC-15
+# trap: one step, every tool, tool_choice auto
+claude(tools=[report_findings, write_test_file,
+              update_pr_labels])                  # KEY 1
+
+# review step: one tool, and it must be called
+claude(tools=[report_findings],                   # KEY 2
+       tool_choice={"type": "tool",
+                    "name": "report_findings"})   # KEY 3
+
+# test step: its own tool, its own contract   KEY 4
+claude(tools=[propose_tests],
+       tool_choice={"type": "tool", "name": "propose_tests"})
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 10
+- **KEY 1:** Extra tools invite drift. Review can drift into writing tests or labels.
 
-| Test it After the run, check the output for this: Review gets read-only tools and the finding schema. Tests get their own. No prose comes back. |
+- **KEY 2:** Scope tools to the role. Review holds no test-writing tool at all.
+
+- **KEY 3:** Force the reporting tool. A named tool_choice means no prose comes back.
+
+- **KEY 4:** Tests keep their own step. Test generation still runs, with its schema.
+
+| Test it After the run, check the output for this: The shared step mixes review, test writing and PR labels in one conversation, while the scoped review step is forced to call report_findings and flags the range(1, ...) loop, and the separate test step skips the scenario test_total_counts_all_items already covers. |
 |---|
 
 **Check your answer.** C. Scope tool access to the role performing each step. A review step that only produces findings should not hold test-writing or PR-label tools, because every extra tool raises the chance of an irrelevant call. Descriptions are the main steering mechanism, but they are no substitute for removing unrelated tools. tool_choice: {"type": "tool", "name": …} forces the named reporting tool, so the pipeline gets structured findings, while a separate test-generation step keeps its file-writing tools.
@@ -1429,7 +1610,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 2.4 Shared servers live in the repo. Secrets never do.
 
-Exam task statement: Integrate MCP servers into Claude Code and agent workflows. Commit .mcp.json with ${GITHUB_TOKEN}. Teammates get the tool, nobody gets your key. Slides 97–100.
+Exam task statement: Integrate MCP servers into Claude Code and agent workflows. Commit .mcp.json with ${GITHUB_TOKEN}. Teammates get the tool, nobody gets your key. Slides 107–111.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image37.jpg)
 
@@ -1452,7 +1633,7 @@ Commit the server. Never commit the token. Project scope goes in .mcp.json, shar
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image117.jpg)
 
-Trainer deck v3.0, slide 98
+Trainer deck v3.0, slide 108
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -1466,11 +1647,11 @@ Trainer deck v3.0, slide 98
 
 #### Lab 11: Commit the server, never the token
 
-**Goal.** Task statement 2.4. Answer one exam-style question, then watch the right answer work once, live, on Simulator 2: Code Generation with Claude Code. Slides 99 and 100.
+**Goal.** Task statement 2.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 109 to 111.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image132.png)
 
-Lab 11 on the Simulator 2 page: the question, your answer buttons and the Simulate it live button.
+Lab 11 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Your team needs the same GitHub and docs MCP servers, but each token is personal. Where does the configuration go?
 
@@ -1484,32 +1665,50 @@ Lab 11 on the Simulator 2 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=11, or choose Topic 2, Task 2.4, Lab 11 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 2. Code Generation with Claude Code.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 11 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Change the request to "add a sentry server just for my own experiments" and run it again: does Claude reach for user scope (~/.claude.json, blocked here by a deny rule) instead of the shared .mcp.json?
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim2?lab=11, or double-click run-lab in the lab's folder.
+
+**The code.** Commit the MCP server; each developer brings the token
 
 ```
-cd simulators/simulator-2-code-generation
-uv run simulator.py 5
+// .mcp.json: project scope, committed with git     KEY 1
+{ "mcpServers": {
+    "sentry": {
+      "command": "npx",
+      "args": ["-y", "@sentry/mcp-server"],
+      "env": {
+        "SENTRY_TOKEN": "${SENTRY_TOKEN}" } } } }  // KEY 2
+
+// each developer's shell, never committed           KEY 3
+export SENTRY_TOKEN=sntrys_...
+
+// ~/.claude.json: user scope, your experiments only  KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 11
+- **KEY 1:** Project scope travels. .mcp.json in git gives everyone the server.
 
-| Test it After the run, check the output for this: First the scan: .mcp.json holds only ${GITHUB_TOKEN} and ${DOCS_API_KEY} placeholders. Then, live, Claude adds a team 'sentry' server to .mcp.json with "SENTRY_TOKEN": "${SENTRY_TOKEN}", greps the project to prove the token string is in no file, and leaves your user-scope servers in ~/.claude.json alone. Four PASS lines confirm it. |
+- **KEY 2:** A placeholder, not a secret. ${VAR} expands from the environment at load.
+
+- **KEY 3:** Tokens stay personal. Each developer exports their own token.
+
+- **KEY 4:** User scope is personal. Solo experiments never reach teammates.
+
+| Test it After the run, check the output for this: Claude adds a team 'sentry' server to .mcp.json with SENTRY_TOKEN set to ${SENTRY_TOKEN}, greps for your token to show no committed file holds it, and leaves ~/.claude.json alone, so the same file expands to a different token for each developer. |
 |---|
 
 **Check your answer.** D. Project-scope .mcp.json travels with git so everyone gets the same servers, and ${VAR} expansion reads each developer's own token at load time.
@@ -1522,7 +1721,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 2.5 Search narrows. Read confirms. Edit changes.
 
-Exam task statement: Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively. Reading every file up front is how you burn the context window on day one. Slides 101–104.
+Exam task statement: Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively. Reading every file up front is how you burn the context window on day one. Slides 112–116.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image40.jpg)
 
@@ -1549,11 +1748,11 @@ Don't read everything up front. Grep for the entry point, then Read along the im
 
 #### Lab 12: /find-callers needs Grep with a glob, not Bash
 
-**Goal.** Task statement 2.5. Answer one exam-style question, then watch the right answer work once, live, on Simulator 4: Developer Productivity with Claude. Slides 103 and 104.
+**Goal.** Task statement 2.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 4: Developer Productivity with Claude, and read the code that runs it. Slides 114 to 116.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image133.png)
 
-Lab 12 on the Simulator 4 page: the question, your answer buttons and the Simulate it live button.
+Lab 12 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** A payments platform's developer-productivity team is adding a /find-callers command that should locate every reference to a renamed helper function, limit the search to TypeScript source files, and return enough context for a developer to jump directly to each match. Which Claude Code built-in tool configuration should the command use?
 
@@ -1567,32 +1766,48 @@ Lab 12 on the Simulator 4 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=12, or choose Topic 2, Task 2.5, Lab 12 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 4. Developer Productivity with Claude.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 12 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Change the request to "find every file named after the helper" and run it again: Claude should switch to Glob, because that question is about file NAMES, not contents.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim4?lab=12, or double-click run-lab in the lab's folder.
+
+**The code.** Callers live inside files: search contents with Grep
 
 ```
-cd simulators/simulator-4-developer-productivity
-uv run explorer.py --case UC-37
+# /find-callers calculate_total
+Grep(pattern="calculate_total",          # KEY 1
+     glob="**/*.py",                     # KEY 2
+     output_mode="content", -n=true)     # KEY 3
+# -> src/legacy/report.py:5: return {...calculate_total(...
+#    validation.py:6: computed = calculate_total(...
+
+# not this: Glob matches NAMES only
+Glob("**/calculate_total.py")  # -> no files       KEY 4
+# not this: Bash("grep -rn ...")  shell + permissions
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 12
+- **KEY 1:** Grep searches contents. A caller is a line of code, not a file name.
 
-| Test it After the run, check the output for this: One Grep call for calculate_total, scoped to Python files (a *.py glob or type py) with output_mode content, returning file, line and match. No grep through Bash, no whole-file reads. Three PASS lines confirm it. |
+- **KEY 2:** A glob scopes the search. Only Python files; docs/ stays out.
+
+- **KEY 3:** content mode gives lines. file:line: text, ready to jump to.
+
+- **KEY 4:** Glob and Bash are traps. Names only, or a shell you must parse.
+
+| Test it After the run, check the output for this: One Grep call for calculate_total, scoped to Python files (a *.py glob or type py) with output_mode content, returns every match as file:line: text; no grep through Bash, no whole-file reads, and docs/architecture.txt stays out of the answer. |
 |---|
 
 **Check your answer.** B. Grep is the built-in tool for searching file contents such as function names, error messages and imports. Callers of a helper are content inside files. Glob finds files by path or name pattern (for example **/*.test.ts ). Grep with output_mode: "content" returns matching lines with file and line number, and its glob filter limits the search to TypeScript. The built-in Grep tool is not the same as shell grep through Bash, which goes through Bash permissions.
@@ -1605,11 +1820,11 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ## Topic 3: Claude Code Configuration & Workflows
 
-Configure once, and every teammate and CI job gets the same Claude. This domain is 20% of the exam. You get 6 task statements and 6 labs, one per task statement, on 4 simulators, then code Labs 35 and 36 on Day 2.
+Configure once, and every teammate and CI job gets the same Claude. This domain is 20% of the exam. You get 6 task statements and 6 labs, one per task statement, on 4 simulators in your browser, then build Labs 36 and 37 on Day 2.
 
 ### 3.1 If it's in ~/.claude, your teammate never sees it
 
-Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization. "Works on my machine" now applies to instructions. /memory shows what loaded. Slides 107–110.
+Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization. "Works on my machine" now applies to instructions. /memory shows what loaded. Slides 119–123.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image43.jpg)
 
@@ -1641,11 +1856,11 @@ Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scopi
 
 #### Lab 13: Which instructions actually reached Claude?
 
-**Goal.** Task statement 3.1. Answer one exam-style question, then watch the right answer work once, live, on Simulator 2: Code Generation with Claude Code. Slides 109 and 110.
+**Goal.** Task statement 3.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 121 to 123.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image134.png)
 
-Lab 13 on the Simulator 2 page: the question, your answer buttons and the Simulate it live button.
+Lab 13 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** A teammate says Claude keeps ignoring the test conventions. How do you organise the instructions, and how do you find out which ones reached Claude for a test file?
 
@@ -1659,32 +1874,50 @@ Lab 13 on the Simulator 2 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=13, or choose Topic 3, Task 3.1, Lab 13 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 2. Code Generation with Claude Code.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 13 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Add `src/api/**/*.test.*` to the paths in tests.md (in your head or a copy of the workspace) and predict which rules a Read of src/api/orders.test.js would load before you check.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim2?lab=13, or double-click run-lab in the lab's folder.
+
+**The code.** Shared rules in git, area rules by path, then ask
 
 ```
-cd simulators/simulator-2-code-generation
-uv run simulator.py 1
+# CLAUDE.md  (project: in git, reaches everyone)  # KEY 1
+@docs/standards/testing.md                        # KEY 2
+@docs/standards/review-criteria.md
+
+# .claude/rules/tests.md
+---
+paths: ["**/*.test.*"]                            # KEY 3
+---
+Name tests it("<verb> <outcome> when <condition>")
+
+> Read src/components/Button.test.tsx. Which      # KEY 4
+  .claude/rules/ files are loaded now?
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 13
+- **KEY 1:** Project file, shared by git. ~/.claude/CLAUDE.md reaches only you.
 
-| Test it After the run, check the output for this: Claude quotes the imported standard and names the rule files in context. |
+- **KEY 2:** @import keeps it modular. Standards live in their own files.
+
+- **KEY 3:** paths: loads by file. Test rules load only for test files.
+
+- **KEY 4:** Ask what loaded. Claude names the rules in its context.
+
+| Test it After the run, check the output for this: Claude quotes the testing standard that reached it through CLAUDE.md's @import, then names tests.md and react-components.md for Button.test.tsx but only api-handlers.md for orders.js: the rules that loaded by path. |
 |---|
 
 **Check your answer.** C. The project CLAUDE.md and its @imports reach everyone through git, path-scoped rules load only for matching files, and asking Claude to name its loaded rules shows what actually reached it.
@@ -1697,7 +1930,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 3.2 Skills run on demand. CLAUDE.md is always on.
 
-Exam task statement: Create and configure custom slash commands and skills. Put verbose workflows in a skill with context: fork, and your main session stays clean. Slides 111–114.
+Exam task statement: Create and configure custom slash commands and skills. Put verbose workflows in a skill with context: fork, and your main session stays clean. Slides 124–128.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image45.jpg)
 
@@ -1720,7 +1953,7 @@ CLAUDE.md is always loaded, so it holds universal standards. A skill loads on de
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image118.jpg)
 
-Trainer deck v3.0, slide 112
+Trainer deck v3.0, slide 125
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -1734,11 +1967,11 @@ Trainer deck v3.0, slide 112
 
 #### Lab 14: Keep a noisy case review out of your main session
 
-**Goal.** Task statement 3.2. Answer one exam-style question, then watch the right answer work once, live, on Simulator 1: Customer Support Resolution Agent. Slides 113 and 114.
+**Goal.** Task statement 3.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 126 to 128.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image135.png)
 
-Lab 14 on the Simulator 1 page: the question, your answer buttons and the Simulate it live button.
+Lab 14 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** This team wants an on-demand Claude Code workflow named /case_review for support engineers. The workflow produces lengthy exploratory notes, should run outside the main conversation context, should let Claude read and search project files without repeated permission prompts, and should show the expected case ID when developers invoke it. Which setup best fits these requirements?
 
@@ -1752,32 +1985,48 @@ Lab 14 on the Simulator 1 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=14, or choose Topic 3, Task 3.2, Lab 14 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 1. Customer Support Resolution Agent.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 14 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Change allowed-tools to just Read and run it again: watch whether the review still Greps cases/ and gets flagged as not pre-approved.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim1?lab=14, or double-click run-lab in the lab's folder.
+
+**The code.** context: fork keeps a noisy skill out of your session
 
 ```
-cd simulators/simulator-1-customer-support
-uv run case_review.py CS-02
+.claude/skills/case_review/SKILL.md      # KEY 1
+---
+name: case_review
+description: Review one support case run
+context: fork                             # KEY 2
+allowed-tools: Read, Grep                 # KEY 3
+argument-hint: [case-id]                  # KEY 4
+---
+1. Read evidence/runs/$ARGUMENTS.json
+2. Reply in at most 12 lines: PASS or FAIL per check
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 14
+- **KEY 1:** A directory with SKILL.md. A loose case_review.md is not a skill.
 
-| Test it After the run, check the output for this: The review returns as a summary. The evidence JSON stays out of the session. |
+- **KEY 2:** fork isolates the noise. Only the summary reaches your session.
+
+- **KEY 3:** Pre-approved, not a fence. Reads run without a permission prompt.
+
+- **KEY 4:** A hint, not a validator. Autocomplete shows [case-id].
+
+| Test it After the run, check the output for this: With context: main the 9.7 KB evidence file lands in your conversation; with context: fork a (subagent) reads it and your session receives only the PASS/FAIL summary. |
 |---|
 
 **Check your answer.** C. Skills are directories containing a required SKILL.md with YAML frontmatter and Markdown instructions. A project skill under .claude/skills/<name>/SKILL.md can be invoked as /<name> . context: fork is the key setting, because it runs the exploratory work in an isolated subagent context instead of cluttering the main conversation. allowed-tools pre-approves Read and Grep while the skill runs. argument-hint shows the expected argument during autocomplete. It is not a schema validator, so argument validation must happen elsewhere.
@@ -1790,7 +2039,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 3.3 Test files live everywhere, so scope the rule by glob
 
-Exam task statement: Apply path-specific rules for conditional convention loading. A paths: pattern follows the file. A folder CLAUDE.md stays stuck in its folder. Slides 115–118.
+Exam task statement: Apply path-specific rules for conditional convention loading. A paths: pattern follows the file. A folder CLAUDE.md stays stuck in its folder. Slides 129–133.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image48.jpg)
 
@@ -1809,11 +2058,11 @@ Scope conventions separately: Python rules to Python paths, documentation rules 
 
 #### Lab 15: Testing rules for test files spread across every folder
 
-**Goal.** Task statement 3.3. Answer one exam-style question, then watch the right answer work once, live, on Simulator 3: Multi-Agent Research System. Slides 117 and 118.
+**Goal.** Task statement 3.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 131 to 133.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image136.png)
 
-Lab 15 on the Simulator 3 page: the question, your answer buttons and the Simulate it live button.
+Lab 15 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** This team uses Claude Code to maintain the research system's TypeScript repository. Citation-verification tests, report-rendering tests, and orchestration tests live beside implementation files across multiple top-level folders. The team wants the same testing guidance to apply only when Claude Code is working on test files, without duplicating guidance in every package. What should they do?
 
@@ -1827,32 +2076,48 @@ Lab 15 on the Simulator 3 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=15, or choose Topic 3, Task 3.3, Lab 15 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 3. Multi-Agent Research System.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 15 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Change variant D's glob to "orchestration/**" in your head: which of the two edits would now carry the token, and why is that the wrong scope for tests spread across every folder?
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim3?lab=15, or double-click run-lab in the lab's folder.
+
+**The code.** One rule file, scoped by paths, reaches every test
 
 ```
-cd simulators/simulator-3-multi-agent-research
-uv run rules_sim.py D
+.claude/rules/testing.md                 # KEY 1
+---
+paths: ["**/*.test.ts"]                  # KEY 2
+---
+# Testing guidance
+- Tests sit beside the implementation.
+- Never weaken an existing assertion.
+
+# no frontmatter = loads for every file  # KEY 3
+# CLAUDE.md per folder = 3 copies drift  # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 15
+- **KEY 1:** Topic rules live here. Separate from broad CLAUDE.md memory.
 
-| Test it After the run, check the output for this: The rule loads for the test edit only, from one copy. |
+- **KEY 2:** A glob crosses folders. Matches tests wherever they sit.
+
+- **KEY 3:** The file name scopes nothing. Without paths it loads always.
+
+- **KEY 4:** Copies drift. One rule file replaces three CLAUDE.md.
+
+| Test it After the run, check the output for this: Variant D's one rule file (paths: **/*.test.ts) loads when Claude reads orchestrator.test.ts, so that reply opens with TESTING-GUIDANCE-LOADED; the renderer.ts edit gets no token. Variant A, the same file without frontmatter, puts the token on the renderer.ts edit too. |
 |---|
 
 **Check your answer.** D. Claude Code separates broad project memory ( CLAUDE.md or .claude/CLAUDE.md ) from topic rules in .claude/rules/ . A rule file can carry YAML frontmatter with a paths field of glob patterns (for example "**/*.test.ts" ), so one rule matches files by extension, directory or both. That fits conventions that cut across the tree, such as tests placed beside their code.
@@ -1865,7 +2130,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 3.4 Plan mode for blast radius. Direct for a known fix.
 
-Exam task statement: Determine when to use plan mode vs direct execution. A guard clause in one function needs no plan. An auth migration across 45 files does. Slides 119–122.
+Exam task statement: Determine when to use plan mode vs direct execution. A guard clause in one function needs no plan. An auth migration across 45 files does. Slides 134–138.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image50.jpg)
 
@@ -1893,11 +2158,11 @@ The deciding factors are ambiguity and blast radius. Plan mode lets you explore 
 
 #### Lab 16: Replacing the auth layer: nobody agrees on the boundary, so plan
 
-**Goal.** Task statement 3.4. Answer one exam-style question, then watch the right answer work once, live, on Simulator 2: Code Generation with Claude Code. Slides 121 and 122.
+**Goal.** Task statement 3.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 136 to 138.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image137.png)
 
-Lab 16 on the Simulator 2 page: the question, your answer buttons and the Simulate it live button.
+Lab 16 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** A payments platform team is replacing its homegrown authorization layer with a policy engine across API handlers, middleware, and tests. Engineers disagree about where the policy boundary should live, and the developer assigned to it is unfamiliar with several affected packages. Which workflow should they choose before implementation?
 
@@ -1911,32 +2176,47 @@ Lab 16 on the Simulator 2 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=16, or choose Topic 3, Task 3.4, Lab 16 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 2. Code Generation with Claude Code.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 16 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Rerun it and compare the two plans: do both name orders.js as a caller? Then ask yourself which boundary option you would approve, which is the decision plan mode hands back to you.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim2?lab=16, or double-click run-lab in the lab's folder.
+
+**The code.** Plan mode: research and a plan, no edit until you approve
 
 ```
-cd simulators/simulator-2-code-generation
-uv run casekit.py --case UC-8
+claude --permission-mode plan                 # KEY 1
+> Replace authorize.js with a policy engine.
+  Engineers disagree on the boundary.
+
+Read(src/middleware/authorize.js)             # KEY 2
+Grep("authorize\(")  -> src/api/orders.js
+Edit(...)  -> blocked: plan mode is active    # KEY 3
+ExitPlanMode(plan)    -> waits for approval   # KEY 4
+files hashed before == after
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 16
+- **KEY 1:** Pick the mode first. Uncertain, multi-file, unfamiliar: plan.
 
-| Test it After the run, check the output for this: Files hash the same before and after: a plan, with no edits. |
+- **KEY 2:** Research is allowed. Read, Grep and Glob run as normal.
+
+- **KEY 3:** Edits are blocked. Not one source file changes.
+
+- **KEY 4:** You approve the plan. Only then does implementation start.
+
+| Test it After the run, check the output for this: The same request twice: in direct execution nothing stops an edit (Claude may rewrite files before anyone has chosen a boundary); in plan mode it reads authorize.js and its callers, any edit is blocked, it submits a plan through ExitPlanMode, and every file hashes the same afterwards. |
 |---|
 
 **Check your answer.** D. Plan mode separates investigation from implementation. It is a documented permission mode in which Claude researches the codebase, may run exploratory shell commands under the normal permission flow, and writes a plan. Source files are not edited until the plan is approved. Anthropic's best practices recommend planning when the approach is uncertain, the change spans multiple files, or the developer is unfamiliar with the code. All three apply here.
@@ -1949,7 +2229,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 3.5 Show the output you want. Prose gets interpreted.
 
-Exam task statement: Apply iterative refinement techniques for progressive improvement. Examples, failing tests and questions from Claude beat a longer paragraph when prose keeps getting misread. Slides 123–125.
+Exam task statement: Apply iterative refinement techniques for progressive improvement. Examples, failing tests and questions from Claude beat a longer paragraph when prose keeps getting misread. Slides 139–142.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image54.jpg)
 
@@ -1975,11 +2255,11 @@ Exam task statement: Apply iterative refinement techniques for progressive impro
 
 #### Lab 17: Two linked defects go in one detailed request
 
-**Goal.** Task statement 3.5. Answer one exam-style question, then watch the right answer work once, live, on Simulator 3: Multi-Agent Research System. Slides 124 and 125.
+**Goal.** Task statement 3.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 140 to 142.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image138.png)
 
-Lab 17 on the Simulator 3 page: the question, your answer buttons and the Simulate it live button.
+Lab 17 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** After a refactor, generated reports show two linked defects: citations render twice in the final report, and some evidence excerpts disappear when the synthesis subagent's output is passed to the report generator. The likely cause spans the claim–source schema, the synthesis prompt, and the report template, and the acceptance test should confirm that each claim appears once with its evidence excerpt and source URL. How should this team use Claude Code to address the defects most effectively?
 
@@ -1993,32 +2273,47 @@ Lab 17 on the Simulator 3 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=17, or choose Topic 3, Task 3.5, Lab 17 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 3. Multi-Agent Research System.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 17 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Compare the field names in the two separate plans: does 1a keep the citation inside the claim while 1b moves it to its own field? That disagreement is what one shared request prevents.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim3?lab=17, or double-click run-lab in the lab's folder.
+
+**The code.** Linked defects: one detailed request, in plan mode
 
 ```
-cd simulators/simulator-3-multi-agent-research
-uv run plan_request.py
+claude --permission-mode plan                  # KEY 1
+> Two linked defects since the claim-source     # KEY 2
+  refactor: citations render twice, and
+  excerpts disappear between synthesis and
+  the report. Likely spans report/schema.py,     # KEY 3
+  synthesis_prompt.md and render.py.
+  Plan ONE fix, agree the shared interface,
+  and finish with an acceptance test: each       # KEY 4
+  claim once, with its excerpt, one citation.
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 17
+- **KEY 1:** Plan before editing. Uncertain cause across several files.
 
-| Test it After the run, check the output for this: render.py prints the bug first: the citation twice and an empty excerpt line. Then three plan-mode runs: each separate request plans its own fix; the one detailed request plans a single shared claim-source interface across schema.py, synthesis_prompt.md and render.py, ending with an acceptance test. The separate requests cost two sessions of reading the same files. |
+- **KEY 2:** Both symptoms together. They share one cause: the schema.
+
+- **KEY 3:** Name the affected areas. Claude reads the right three files.
+
+- **KEY 4:** Say what fixed means. An acceptance test proves both fixes.
+
+| Test it After the run, check the output for this: render.py prints the bug first (the citation twice, an empty excerpt line). Then three plan-mode runs: two separate requests each re-read the same files to plan their own fix; the one detailed request plans a single claim-source interface across schema.py, synthesis_prompt.md and render.py and ends with an acceptance test. |
 |---|
 
 **Check your answer.** B. Match the workflow to how the work depends on itself. These fixes interact, so splitting them early lets each session assume something different about the shared interface between synthesis and report generation. A strong request describes the symptoms, likely affected areas, constraints, what “fixed” means and how to verify it, and asks Claude to run the checks and iterate. Plan mode is the right start because the change is uncertain and spans several files.
@@ -2031,7 +2326,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 3.6 CI has no keyboard, so run claude -p
 
-Exam task statement: Integrate Claude Code into CI/CD pipelines. Without print mode the job waits for an answer nobody will type, until the runner dies. Slides 126–129.
+Exam task statement: Integrate Claude Code into CI/CD pipelines. Without print mode the job waits for an answer nobody will type, until the runner dies. Slides 143–147.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image57.jpg)
 
@@ -2059,11 +2354,11 @@ CI has no keyboard. Without -p, the job waits for an answer nobody will type. Ad
 
 #### Lab 18: The nightly job hangs because nobody can press Enter
 
-**Goal.** Task statement 3.6. Answer one exam-style question, then watch the right answer work once, live, on Simulator 5: Claude Code for Continuous Integration. Slides 128 and 129.
+**Goal.** Task statement 3.6. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 5: Claude Code for Continuous Integration, and read the code that runs it. Slides 145 to 147.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image139.png)
 
-Lab 18 on the Simulator 5 page: the question, your answer buttons and the Simulate it live button.
+Lab 18 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Your CI job runs a nightly support-triage check and needs Claude Code to process a prompt, write the result to standard output, and exit without waiting for a developer. The current job launches Claude Code and intermittently hangs in the runner. What change best fits this automated workflow?
 
@@ -2077,32 +2372,48 @@ Lab 18 on the Simulator 5 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=18, or choose Topic 3, Task 3.6, Lab 18 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 5. Claude Code for Continuous Integration.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 18 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Lower --max-turns to 1 and run it again: Claude can't finish reading both files, so print mode exits with subtype error_max_turns and exit code 1. The job fails fast instead of hanging.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim5?lab=18, or double-click run-lab in the lab's folder.
+
+**The code.** CI runs claude -p: one prompt, stdout, exit
 
 ```
-cd simulators/simulator-5-ci-cd
-uv run casekit.py --case UC-18
+# hangs: interactive, waits for the next message
+claude "Triage... then exit."              # KEY 1
+
+# CI: print mode
+claude -p "Nightly triage: read stock/jobs.py" \  # KEY 2
+  --output-format json \                    # KEY 3
+  --json-schema "$(cat triage.schema.json)" \
+  --max-turns 5 \                           # KEY 4
+  --allowedTools "Read,Grep,Glob" > out.json
+jq -r .structured_output.verdict out.json
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 18
+- **KEY 1:** A prompt can't change mode. Plain claude waits for the next message.
 
-| Test it After the run, check the output for this: One JSON envelope on stdout, and the process exits well inside the job timeout. |
+- **KEY 2:** -p makes it non-interactive. One prompt, result on stdout, exit.
+
+- **KEY 3:** JSON shapes the output. It does not make the run exit.
+
+- **KEY 4:** Cap the turns. A confused run fails fast, never hangs.
+
+| Test it After the run, check the output for this: Plain claude answers, then sits at the > prompt until the runner kills it (exit 124, nothing on stdout), even with --output-format json and a please-exit instruction. claude -p prints one JSON envelope with a session_id and a schema-valid verdict, then exits with code 0. |
 |---|
 
 **Check your answer.** A. The key distinction is between an interactive session and print mode. claude -p "query" runs the request non-interactively and then exits, which suits scripts and CI/CD. It behaves like a Unix tool, reading stdin and writing stdout. If the job later needs machine-readable output, combine print mode with --output-format json . Structured output does not replace non-interactive mode.
@@ -2115,11 +2426,11 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ## Topic 4: Prompt Engineering & Structured Output
 
-Criteria, examples, schemas, validators: the path from a nice answer to a reliable one. This domain is 20% of the exam. You get 6 task statements and 6 labs, one per task statement, on 4 simulators, then code Labs 37 and 38 on Day 2.
+Criteria, examples, schemas, validators: the path from a nice answer to a reliable one. This domain is 20% of the exam. You get 6 task statements and 6 labs, one per task statement, on 4 simulators in your browser, then build Labs 38 and 39 on Day 2.
 
 ### 4.1 "Be conservative" is not a criterion
 
-Exam task statement: Design prompts with explicit criteria to improve precision and reduce false positives. Name what to report and what to skip. One noisy category poisons trust in the rest. Slides 132–134.
+Exam task statement: Design prompts with explicit criteria to improve precision and reduce false positives. Name what to report and what to skip. One noisy category poisons trust in the rest. Slides 150–153.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image60.jpg)
 
@@ -2143,11 +2454,11 @@ One noisy category teaches developers to ignore the accurate ones. Switch that c
 
 #### Lab 19: "Only high confidence" didn't quiet the reviewer
 
-**Goal.** Task statement 4.1. Answer one exam-style question, then watch the right answer work once, live, on Simulator 5: Claude Code for Continuous Integration. Slides 133 and 134.
+**Goal.** Task statement 4.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 5: Claude Code for Continuous Integration, and read the code that runs it. Slides 151 to 153.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image140.png)
 
-Lab 19 on the Simulator 5 page: the question, your answer buttons and the Simulate it live button.
+Lab 19 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** After several weeks, developers say the reviewer is noisy. Examples show comments about variable names, preferred assertion styles, and missing tests mixed with a few real null dereferences and authorization bypasses. The current prompt says, “Report only issues you are highly confident about.” What prompt change would most directly improve review usefulness?
 
@@ -2161,32 +2472,49 @@ Lab 19 on the Simulator 5 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=19, or choose Topic 4, Task 4.1, Lab 19 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 5. Claude Code for Continuous Integration.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 19 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Delete the line "formatting, naming, import order, unused imports" from the criteria in sims/shared/t4-ci.js, rerun, and watch the naming comments come back.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim5?lab=19, or double-click run-lab in the lab's folder.
+
+**The code.** Define what to report, not how sure to be
 
 ```
-cd simulators/simulator-5-ci-cd
-uv run casekit.py --case UC-39
+vague = "...Report only issues you are highly confident."
+rules = """Report ONLY:                              # KEY 1
+- bug: crashes on input the caller can pass
+- security: untrusted input reaches SQL or shell
+Do NOT report:                                 # KEY 2
+- formatting, naming, import order
+- missing tests
+Severity: medium = None not handled            # KEY 3
+"""
+for prompt in (vague, rules):                  # KEY 4
+    review(pr_418_files, prompt, schema)
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 19
+- **KEY 1:** Testable report rules. Bugs, security, data loss, broken contracts.
 
-| Test it After the run, check the output for this: Vague prompt: comments on names. Criteria: the None dereference in getPrice, nothing on naming. |
+- **KEY 2:** Explicit skip rules. Naming and style are named and excluded.
+
+- **KEY 3:** Severity by example. Each level anchored on a concrete case.
+
+- **KEY 4:** Same files, same schema. Only the prompt changes between the runs.
+
+| Test it After the run, check the output for this: Same three files, same schema, two prompts. The broad scope filtered by "highly confident" still posts naming and unused-import comments; the explicit report-and-skip rules keep the three real bugs and drop every naming and style comment. |
 |---|
 
 **Check your answer.** A. The failure is not missing confidence metadata. The prompt draws no clear line between actionable correctness findings and preference comments. “High confidence” is subjective: a model can be very confident that a variable name breaks local style. Claude Code Code Review is calibrated by default for correctness (bugs that would break production), not formatting or missing tests. Make the boundary concrete: report production breakage, security risk, mishandled edge cases and regressions, and skip style, naming and preference unless the team has made them review objectives.
@@ -2199,7 +2527,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 4.2 Two to four examples draw the line prose can't
 
-Exam task statement: Apply few-shot prompting to improve output consistency and quality. Show the ambiguous case and the reasoning. Claude generalises to cases you never listed. Slides 135–137.
+Exam task statement: Apply few-shot prompting to improve output consistency and quality. Show the ambiguous case and the reasoning. Claude generalises to cases you never listed. Slides 154–157.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image63.jpg)
 
@@ -2225,11 +2553,11 @@ When detailed instructions still give inconsistent output, two to four targeted 
 
 #### Lab 20: "Clean this up" means three things: show which one you mean
 
-**Goal.** Task statement 4.2. Answer one exam-style question, then watch the right answer work once, live, on Simulator 2: Code Generation with Claude Code. Slides 136 and 137.
+**Goal.** Task statement 4.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 155 to 157.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image141.png)
 
-Lab 20 on the Simulator 2 page: the question, your answer buttons and the Simulate it live button.
+Lab 20 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Your team's Claude Code skill (custom slash command), invoked as /task , is meant to decide whether to investigate, plan, or modify code. In evals, ambiguous requests such as “clean this up”, “look into this error”, and “can you improve this module” produce inconsistent behavior. Detailed written criteria have not stabilized the boundary. What should you change next?
 
@@ -2243,32 +2571,47 @@ Lab 20 on the Simulator 2 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=20, or choose Topic 4, Task 4.2, Lab 20 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 2. Code Generation with Claude Code.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 20 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Delete the third <example> (the modify one) from EXAMPLES in sims/lab-20.js and rerun: watch whether "clean this up" still lands on modify.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim2?lab=20, or double-click run-lab in the lab's folder.
+
+**The code.** Show the boundary with 2–4 tagged examples
 
 ```
-cd simulators/simulator-2-code-generation
-uv run casekit.py --case UC-23
+---
+description: investigate, plan or modify
+---
+<example>                                      # KEY 1
+request: "look into why the header prints undefined"
+path: investigate
+why: unknown cause; an edit could hit the wrong file
+</example>                                     # KEY 2
+<example> ... "make invoice.ts better" -> plan ...
+<example> ... "drop the unused import" -> modify ...
+Request: $ARGUMENTS                            # KEY 3
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 20
+- **KEY 1:** Tagged examples. Each in its own <example> block.
 
-| Test it After the run, check the output for this: The three ambiguous requests classify as investigate, plan and modify. |
+- **KEY 2:** Reasoning vs alternative. Why plan beats modify, not just the answer.
+
+- **KEY 3:** Live input kept apart. The request sits outside the examples.
+
+| Test it After the run, check the output for this: Each ambiguous request runs twice through each version of /task. With three tagged examples (on different requests and files), "look into this error" -> investigate, "can you improve this module" -> plan and "clean this up" on a named file -> modify, every time, each naming the alternative it rejected. |
 |---|
 
 **Check your answer.** C. When a prompt fails at an ambiguous decision boundary, targeted examples usually beat more abstract instructions. The useful pattern shows why one action was chosen over a plausible alternative, such as planning instead of editing. Examples should mirror real requests, be relevant and diverse, and sit in their own tags so Claude can tell reusable guidance apart from the live input.
@@ -2281,7 +2624,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 4.3 The schema guarantees shape, never meaning
 
-Exam task statement: Enforce structured output using tool use and JSON schemas. Strict tool use ends JSON syntax errors. Totals that don't add up still get through. Slides 138–141.
+Exam task statement: Enforce structured output using tool use and JSON schemas. Strict tool use ends JSON syntax errors. Totals that don't add up still get through. Slides 158–162.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image65.jpg)
 
@@ -2318,11 +2661,11 @@ A recommendation pipeline needs all five of those fields. Without evidence and c
 
 #### Lab 21: Know your tool_choice options, and check what came back
 
-**Goal.** Task statement 4.3. Answer one exam-style question, then watch the right answer work once, live, on Simulator 6: Structured Data Extraction. Slides 140 and 141.
+**Goal.** Task statement 4.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 160 to 162.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image142.png)
 
-Lab 21 on the Simulator 6 page: the question, your answer buttons and the Simulate it live button.
+Lab 21 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Extraction has to come back as a tool call, and you don't know the document type in advance. How do you control whether Claude calls a tool?
 
@@ -2336,32 +2679,50 @@ Lab 21 on the Simulator 6 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=21, or choose Topic 4, Task 4.3, Lab 21 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 6. Structured Data Extraction.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 21 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Add a fourth tool, record_other_document (document_kind, summary), rerun, and see where tool_choice any now files the price notice.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim6?lab=21, or double-click run-lab in the lab's folder.
+
+**The code.** auto may talk, any must call, a named tool is forced
 
 ```
-cd simulators/simulator-6-structured-extraction
-uv run extract.py --tool-choice forced --max-docs 2
+tools = [extract_invoice, extract_receipt,
+         extract_credit_note]                  # strict: true
+r = claude(doc, tools,
+           tool_choice={"type": "auto"})       # KEY 1
+r = claude(doc, tools,
+           tool_choice={"type": "any"})        # KEY 2
+r = claude(doc, tools, tool_choice={"type": "tool",
+           "name": "extract_invoice",          # KEY 3
+           "disable_parallel_tool_use": True})
+block = next((b for b in r.content            # KEY 4
+              if b.type == "tool_use"), None)
+if block is None: raise NoExtraction(r)
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 21
+- **KEY 1:** auto. Claude may answer in prose instead.
 
-| Test it After the run, check the output for this: The script sends tool_choice {"type": "tool", "name": "extract_invoice"} to the real Messages API. Claude Haiku 5.5 accepts it, both documents come back as extract_invoice tool_use blocks (stop_reason tool_use), and the script still checks that a tool_use block arrived before trusting it. |
+- **KEY 2:** any. Some tool must be called; Claude picks.
+
+- **KEY 3:** A named tool. Forces that schema; one call.
+
+- **KEY 4:** Always check. No tool_use block, no data.
+
+| Test it After the run, check the output for this: auto: the invoice comes back as a tool_use block, the price notice as prose, and the check catches it. any: every document comes back as a tool call, the receipt and credit note on their own schemas, and even the price notice is forced into extract_invoice. Forced: exactly one extract_invoice block. |
 |---|
 
 **Check your answer.** D. auto lets Claude answer in prose, any makes it call some tool and a named tool forces one; support differs across models, so test it and verify the tool_use block.
@@ -2374,7 +2735,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 4.4 Retry with the error, or stop if the data isn't there
 
-Exam task statement: Implement validation, retry, and feedback loops for extraction quality. No prompt can recover a schedule that was never attached. Slides 142–144.
+Exam task statement: Implement validation, retry, and feedback loops for extraction quality. No prompt can recover a schedule that was never attached. Slides 163–166.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image68.jpg)
 
@@ -2395,11 +2756,11 @@ A useful retry sends the original document, the failed extraction and the exact 
 
 #### Lab 22: Retry when the format is wrong, stop when the data is absent
 
-**Goal.** Task statement 4.4. Answer one exam-style question, then watch the right answer work once, live, on Simulator 6: Structured Data Extraction. Slides 143 and 144.
+**Goal.** Task statement 4.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 164 to 166.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image143.png)
 
-Lab 22 on the Simulator 6 page: the question, your answer buttons and the Simulate it live button.
+Lab 22 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Validation fails on two documents: a date written DD/MM, and a receipt whose total doesn't match its line items. Which is worth a retry?
 
@@ -2413,32 +2774,48 @@ Lab 22 on the Simulator 6 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=22, or choose Topic 4, Task 4.4, Lab 22 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 6. Structured Data Extraction.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 22 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Change DOC-03's printed total to 35.00 in sims/shared/t4-extract.js and rerun: the conflict disappears and DOC-03 is auto-accepted on the first attempt.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim6?lab=22, or double-click run-lab in the lab's folder.
+
+**The code.** Retry a format error; route a source conflict
 
 ```
-cd simulators/simulator-6-structured-extraction
-uv run extract.py
+for attempt in range(1, MAX_RETRIES + 2):      # KEY 1
+    ext = claude(doc, failed, errors,
+                 tool_choice=extract_invoice)
+    errors = validate(ext, doc)                # KEY 2
+    if not errors: return accept(ext)
+    if all(e.kind == "conflict" for e in errors) \
+       and every_amount_printed(ext, doc):     # KEY 3
+        return human_review(ext)       # in the source
+    failed = ext                               # KEY 4
+return human_review(ext)                       # cap hit
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 22
+- **KEY 1:** A capped retry loop. Two retries at most, then a human.
 
-| Test it After the run, check the output for this: One line per document. DOC-03 keeps both totals (line items 35.00, printed 38.00), is not retried because the gap is real data, and goes to human review. DOC-07 names the missing schedule A in missing_information and goes to a human without a retry. Haiku got every format right first time in our run, so no retry fired; a format error would be retried with the document, the failed extraction and the exact error. |
+- **KEY 2:** Validate after schema. ISO dates, grounding, arithmetic.
+
+- **KEY 3:** Answer not in source?. Route it to a human; never retry.
+
+- **KEY 4:** Retry with the evidence. Document, failed extraction, exact error.
+
+| Test it After the run, check the output for this: Part 1: "retry until it validates" on DOC-03 either invents an amount the receipt never prints or keeps failing. Part 2, one line per document: DOC-01's DD/MM dates fail format validation and one retry with the exact error fixes them; DOC-03's totals (line items 35.00, printed 38.00) conflict in the receipt itself, so it is not retried and goes to human review with both totals kept. |
 |---|
 
 **Check your answer.** C. A retry with the error attached fixes format mistakes; when the information is not in the source, retrying only invents data, so flag it for review.
@@ -2451,7 +2828,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 4.5 Half the price, up to 24 hours, no tool loop
 
-Exam task statement: Design efficient batch processing strategies. Message Batches suit work nobody is waiting for. Prove the prompt before you scale it. Slides 145–149.
+Exam task statement: Design efficient batch processing strategies. Message Batches suit work nobody is waiting for. Prove the prompt before you scale it. Slides 167–172.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image71.jpg)
 
@@ -2473,7 +2850,7 @@ Three numbers define the Message Batches API: 50% cheaper, up to 24 hours, no la
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image119.jpg)
 
-Trainer deck v3.0, slide 147
+Trainer deck v3.0, slide 169
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -2487,11 +2864,11 @@ Trainer deck v3.0, slide 147
 
 #### Lab 23: Prove the template before 35,000 transcripts
 
-**Goal.** Task statement 4.5. Answer one exam-style question, then watch the right answer work once, live, on Simulator 1: Customer Support Resolution Agent. Slides 148 and 149.
+**Goal.** Task statement 4.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 170 to 172.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image144.png)
 
-Lab 23 on the Simulator 1 page: the question, your answer buttons and the Simulate it live button.
+Lab 23 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Before enabling overnight processing of 35,000 archived support transcripts through the Message Batches API, a pilot of 30 transcripts shows inconsistent disposition decisions and missing rationale fields in some outputs. A product manager proposes running the full archive now and resubmitting bad rows the next day. What should this team do next?
 
@@ -2505,32 +2882,48 @@ Lab 23 on the Simulator 1 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=23, or choose Topic 4, Task 4.5, Lab 23 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 1. Customer Support Resolution Agent.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 23 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Delete the "clarified" criterion line from TEMPLATE_V1 in sims/shared/t4-triage.js, rerun the pilot, and watch whether T-006 still passes the gate.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim1?lab=23, or double-click run-lab in the lab's folder.
+
+**The code.** Pilot the template on an eval set, then batch
 
 ```
-cd simulators/simulator-1-customer-support
-uv run triage.py --pilot
+eval_set = pick_representative(archive)        # KEY 1
+for tpl in (v0, v1):
+    reqs = [{"custom_id": f"{tpl.v}-{t.id}",       # KEY 2
+             "params": render(tpl, t)} for t in eval_set]
+    got = {r.custom_id: r for r in run_sync(reqs)}
+    score = grade(got, labels)                 # KEY 3
+    if score == len(eval_set): break
+batch = [{"custom_id": t.id,
+          "params": render(tpl, t)} for t in archive]
+client.messages.batches.create(requests=batch)  # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 23
+- **KEY 1:** A representative eval set. Routine, human request, edge cases.
 
-| Test it After the run, check the output for this: The refined template reports it is ready for the overnight batch. |
+- **KEY 2:** custom_id on every request. Results come back in any order.
+
+- **KEY 3:** A gate on clear criteria. Ship only a template that passes.
+
+- **KEY 4:** Batch last, not first. 35,000 rows only after the pilot passes.
+
+| Test it After the run, check the output for this: Seven representative transcripts go out as live synchronous requests keyed by custom_id and are joined back by custom_id. Template v0, with no criteria, labels the delivery question and the refused late return "unresolved", so the gate says not ready; the refined v1 template scores 7/7, and only then is the batch built, clearly marked as not sent. |
 |---|
 
 **Check your answer.** D. For a large asynchronous workload the goal is to maximise first-pass success before scale. The video frames prompt engineering as an evaluation loop: define success criteria, build tests that mirror real inputs (routine returns, billing disputes, explicit requests for a human, policy edge cases, messy customer language), iterate on the prompt, validate, then ship. Prompt templates separate fixed instructions from variables such as transcript , customer_history and policy_excerpt , and Console evaluations let you compare prompt versions across test cases. Batch requests are processed independently and asynchronously, so a batch is a poor place to discover preventable prompt defects at full volume. Structured outputs help format reliability, but semantic correctness still needs evaluation.
@@ -2543,7 +2936,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 4.6 The author is the worst reviewer of their own draft
 
-Exam task statement: Design multi-instance and multi-pass review architectures. Fresh eyes and focused passes catch what self-review and longer thinking miss. Slides 150–153.
+Exam task statement: Design multi-instance and multi-pass review architectures. Fresh eyes and focused passes catch what self-review and longer thinking miss. Slides 173–177.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image75.jpg)
 
@@ -2567,11 +2960,11 @@ The session that wrote the draft still holds its reasoning, so it defends its ow
 
 #### Lab 24: 14 files, shallow comments: split the review
 
-**Goal.** Task statement 4.6. Answer one exam-style question, then watch the right answer work once, live, on Simulator 5: Claude Code for Continuous Integration. Slides 152 and 153.
+**Goal.** Task statement 4.6. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 5: Claude Code for Continuous Integration, and read the code that runs it. Slides 175 to 177.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image145.png)
 
-Lab 24 on the Simulator 5 page: the question, your answer buttons and the Simulate it live button.
+Lab 24 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** A pull request modifies 14 files across the stock tracking module. Your single-pass review analyzing all files together produces inconsistent results: detailed feedback for some files but superficial comments for others, obvious bugs missed, and contradictory feedback, flagging a pattern as problematic in one file while approving identical code elsewhere in the same PR. How should you restructure the review?
 
@@ -2585,32 +2978,48 @@ Lab 24 on the Simulator 5 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=24, or choose Topic 4, Task 4.6, Lab 24 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 5. Claude Code for Continuous Integration.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 24 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: Add stock/pricing.py to CHANGES in sims/shared/t4-ci.js (lines 10 and 12), rerun, and check that its None crash shows up in its own per-file pass, not in the integration pass.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim5?lab=24, or double-click run-lab in the lab's folder.
+
+**The code.** Per-file passes for depth, one pass for the seams
 
 ```
-cd simulators/simulator-5-ci-cd
-uv run ci_review.py
+findings = []
+for f in changed_files:                        # KEY 1
+    findings += review(f, criteria,
+                       pass_="per-file")       # sees one file
+findings += review(changed_files, criteria,    # KEY 2
+                   pass_="integration",
+                   only="cross-file issues")   # KEY 3
+blocking = [x for x in findings
+            if x.severity in ("critical", "high")]
+sys.exit(1 if blocking else 0)                 # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 24
+- **KEY 1:** One file per pass. Full attention on each file; same depth.
 
-| Test it After the run, check the output for this: Only the integration pass finds the jobs.py call with the old signature. |
+- **KEY 2:** A separate seam pass. Reads every file for cross-file data flow.
+
+- **KEY 3:** No repeats. Integration reports only what spans files.
+
+- **KEY 4:** A severity gate. Critical or high findings fail the build.
+
+| Test it After the run, check the output for this: Four focused per-file passes run side by side, each blind to the other files: they catch the f-string SQL and the range(1, …) off-by-one, and the jobs.py pass sees nothing wrong. Only the integration pass finds jobs.py calling get_stock(sku) without the new warehouse argument. |
 |---|
 
 **Check your answer.** A. Splitting reviews into focused passes directly addresses the root cause: attention dilution when processing many files at once. File-by-file analysis ensures consistent depth, while a separate integration pass catches cross-file issues. Option B shifts burden to developers without improving the system. Option C misunderstands that larger context windows don't solve attention quality issues. Option D would actually suppress detection of real bugs by requiring consensus on issues that may only be caught intermittently.
@@ -2623,11 +3032,11 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ## Topic 5: Context Management & Reliability
 
-Long sessions forget. Multi-agent runs lie by omission. Here is how to stop both. This domain is 15% of the exam, and it decides whether everything above survives production. You get 6 task statements and 6 labs, one per task statement, on 4 simulators, then code Labs 39 and 40 on Day 2.
+Long sessions forget. Multi-agent runs lie by omission. Here is how to stop both. This domain is 15% of the exam, and it decides whether everything above survives production. You get 6 task statements and 6 labs, one per task statement, on 4 simulators in your browser, then build Labs 40 and 41 on Day 2.
 
 ### 5.1 Facts live outside the summary
 
-Exam task statement: Manage conversation context to preserve critical information across long interactions. "About $45" is how a refund lands on the wrong order. Slides 156–159.
+Exam task statement: Manage conversation context to preserve critical information across long interactions. "About $45" is how a refund lands on the wrong order. Slides 180–184.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image79.jpg)
 
@@ -2655,11 +3064,11 @@ A summary turns an exact refund into "about $45", and a refund lands on the wron
 
 #### Lab 25: Refund amount jumped to the wrong order
 
-**Goal.** Task statement 5.1. Answer one exam-style question, then watch the right answer work once, live, on Simulator 1: Customer Support Resolution Agent. Slides 158 and 159.
+**Goal.** Task statement 5.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 182 to 184.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image146.png)
 
-Lab 25 on the Simulator 1 page: the question, your answer buttons and the Simulate it live button.
+Lab 25 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Production transcripts from the support resolution agent show that, after long conversations involving multiple orders, the agent sometimes applies a refund amount from one issue to a different order after older turns have been summarized. What change would most effectively preserve the critical issue details across the session?
 
@@ -2673,32 +3082,49 @@ Lab 25 on the Simulator 1 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=25, or choose Topic 5, Task 5.1, Lab 25 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 1. Customer Support Resolution Agent.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 25 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: In docs/sims/lab-25.js change the third customer turn to "Refund the lamp now, keep the double charge for later" and rerun: with the facts block the refund moves to $120 on ORD-5501, and only there.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim1?lab=25, or double-click run-lab in the lab's folder.
+
+**The code.** The app owns the case facts, not the summary
 
 ```
-cd simulators/simulator-1-customer-support
-uv run support_agent.py --case CS-12
+facts = {"customer_id": None, "orders": {}}     # KEY 1
+def post_tool_use(name, result):
+    if name == "lookup_order":                  # KEY 2
+        facts["orders"][result["order_id"]] = {
+            "amount": result["amount"],
+            "charges": result["charges"]}
+history = summarise(old_turns)                  # lossy
+prompt = ("CASE FACTS:\n" + json.dumps(facts) # KEY 3
+          + "\nSummary: " + history
+          + "\nCustomer: " + new_message)
+run_agent(SYSTEM, prompt, tools)                # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 25
+- **KEY 1:** Structured state you own. Order ids, amounts, refunds: outside the transcript.
 
-| Test it After the run, check the output for this: After three turns the only refund is $45 on ORD-5503. |
+- **KEY 2:** Fill it from tool results. Exact values come from the backend, not prose.
+
+- **KEY 3:** Resend it every turn. The summary may drop amounts; the block cannot.
+
+- **KEY 4:** Same agent, same tools. Only the context it reads has changed.
+
+| Test it After the run, check the output for this: The app's CASE FACTS block keeps ORD-5501 $120, ORD-5503 $45 × 2 charges and ORD-5504 exact after the older turns are compacted, and with it the only refund is $45 on ORD-5503 (the lamp stays deferred). |
 |---|
 
 **Check your answer.** B. Separate critical case state from the conversational transcript. A structured facts block (customer_id, order_id, disputed amount, refund status, customer statements, policy decisions, open issues) is updated by the orchestration layer as evidence arrives and supplied whenever decisions depend on exact facts. The Agent SDK adds session persistence and automatic compaction, but compaction and summarisation are lossy for precise transactional details. Use summaries for low-value dialogue and keep exact data as structured state your application owns.
@@ -2711,7 +3137,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 5.2 Escalate on triggers, not on tone
 
-Exam task statement: Design effective escalation and ambiguity resolution patterns. Anger and a confidence score predict nothing. Three triggers do. Slides 160–163.
+Exam task statement: Design effective escalation and ambiguity resolution patterns. Anger and a confidence score predict nothing. Three triggers do. Slides 185–189.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image83.jpg)
 
@@ -2737,11 +3163,11 @@ Sentiment and self-reported confidence don't predict how complex a case is. Put 
 
 #### Lab 26: 55% first-contact resolution: calibrate with criteria and examples
 
-**Goal.** Task statement 5.2. Answer one exam-style question, then watch the right answer work once, live, on Simulator 1: Customer Support Resolution Agent. Slides 162 and 163.
+**Goal.** Task statement 5.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 187 to 189.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image147.png)
 
-Lab 26 on the Simulator 1 page: the question, your answer buttons and the Simulate it live button.
+Lab 26 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Your agent achieves 55% first-contact resolution, well below the 80% target. Logs show it escalates straightforward cases (standard damage replacements with photo evidence) while attempting to autonomously handle complex situations requiring policy exceptions. What's the most effective way to improve escalation calibration?
 
@@ -2755,32 +3181,50 @@ Lab 26 on the Simulator 1 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=26, or choose Topic 5, Task 5.2, Lab 26 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 1. Customer Support Resolution Agent.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 26 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: In docs/sims/lab-26.js make CS-10 say "I want to talk to a person" and rerun: the criteria now escalate it at once, before any lookup_order, because an explicit request for a human is a named criterion.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim1?lab=26, or double-click run-lab in the lab's folder.
+
+**The code.** Escalate on named criteria, never on tone
 
 ```
-cd simulators/simulator-1-customer-support
-uv run support_agent.py --case CS-08
+## Escalation criteria                          # KEY 1
+- The customer explicitly asks for a human.
+- Policy is silent: competitor price matching.
+- Any refund above $500.
+Do not escalate because the customer sounds    # KEY 2
+upset: acknowledge, then resolve.
+Examples:                                       # KEY 3
+- "Match the $170 price I saw elsewhere?"
+   -> policy is silent, escalate.
+- "I am furious, where is ORD-5504?"
+   -> acknowledge, look it up, answer.
+escalate_to_human(root_cause, refund_amount=0)  # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 26
+- **KEY 1:** Name the escalation cases. Explicit request, policy gap, limit, ambiguity.
 
-| Test it After the run, check the output for this: The competitor price match on ORD-5507 is a policy gap, so the agent calls escalate_to_human (ticket HS-0001) and refunds $0 instead of improvising a discount. |
+- **KEY 2:** Tone is not a trigger. Anger does not mean the case is complex.
+
+- **KEY 3:** Few-shot examples. One line per boundary, escalate versus resolve.
+
+- **KEY 4:** Hand off, don't improvise. The policy gap goes to a human with $0 paid.
+
+| Test it After the run, check the output for this: With explicit criteria and examples, the competitor price match on ORD-5507 escalates (ticket HS-0001, $0 refunded) and the angry but routine ORD-5501 tracking question is answered without escalation. |
 |---|
 
 **Check your answer.** A. Adding explicit escalation criteria with few-shot examples directly addresses the root cause: unclear decision boundaries. This is the proportionate first response before adding infrastructure. Option B fails because LLM self-reported confidence is poorly calibrated, the agent is already incorrectly confident on hard cases. Option C is over-engineered, requiring labeled data and ML infrastructure when prompt optimization hasn't been tried. Option D solves a different problem entirely; sentiment doesn't correlate with case complexity, which is the actual issue.
@@ -2793,7 +3237,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 5.3 Say what failed, what you tried, what you still have
 
-Exam task statement: Implement error propagation strategies across multi-agent systems. A blank result pretending to be success is the most expensive bug in a pipeline. Slides 164–167.
+Exam task statement: Implement error propagation strategies across multi-agent systems. A blank result pretending to be success is the most expensive bug in a pipeline. Slides 190–194.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image85.jpg)
 
@@ -2813,7 +3257,7 @@ Send the coordinator four things: the failure type, what you attempted, the part
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image120.jpg)
 
-Trainer deck v3.0, slide 165
+Trainer deck v3.0, slide 191
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -2827,11 +3271,11 @@ Trainer deck v3.0, slide 165
 
 #### Lab 27: The search timed out: tell the coordinator everything
 
-**Goal.** Task statement 5.3. Answer one exam-style question, then watch the right answer work once, live, on Simulator 3: Multi-Agent Research System. Slides 166 and 167.
+**Goal.** Task statement 5.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 192 to 194.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image148.png)
 
-Lab 27 on the Simulator 3 page: the question, your answer buttons and the Simulate it live button.
+Lab 27 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** The web search subagent times out while researching a complex topic. You need to design how this failure information flows back to the coordinator agent. Which error propagation approach best enables intelligent recovery?
 
@@ -2845,32 +3289,49 @@ Lab 27 on the Simulator 3 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=27, or choose Topic 5, Task 5.3, Lab 27 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 3. Multi-Agent Research System.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 27 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: In docs/sims/shared/t5-research.js replace visual_arts: "TIMEOUT" with visual_arts: [] and rerun: a valid empty result is not an error, so the report should say no sources were found rather than name a timeout.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim3?lab=27, or double-click run-lab in the lab's folder.
+
+**The code.** A timeout is information: send all of it up
 
 ```
-cd simulators/simulator-3-multi-agent-research
-uv run research_system.py
+try:                                            # KEY 1
+    hits = web.search(query, timeout=3)
+except Timeout:
+    return {"isError": True,                    # KEY 2
+            "failure_type": "timeout",
+            "attempted_query": query,
+            "partial_results": fetched_so_far,  # KEY 3
+            "alternatives": ["narrower query",
+                             "proceed with partial",
+                             "report a coverage gap"]}
+# never: return {"status": "ok", "results": []} # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 27
+- **KEY 1:** Catch it at the source. The subagent sees the timeout first.
 
-| Test it After the run, check the output for this: The run finishes, and the report names visual arts as a coverage gap. |
+- **KEY 2:** Say what failed. Failure type and the exact query tried.
+
+- **KEY 3:** Keep partial results. Work done before the timeout still counts.
+
+- **KEY 4:** Never fake success. An empty ok hides the gap from the coordinator.
+
+| Test it After the run, check the output for this: The visual-arts search times out twice; the subagent hands up failure_type timeout, the attempted query and the partial 37% poll, and the coordinator finishes the report with visual arts named as a coverage gap. |
 |---|
 
 **Check your answer.** A. Structured error context gives the coordinator the information it needs to make intelligent recovery decisions, whether to retry with a modified query, try an alternative approach, or proceed with partial results. Option B's generic status hides valuable context from the coordinator, preventing informed decisions. Option C suppresses the error by marking failure as success, which prevents any recovery and risks incomplete research outputs. Option D terminates the entire workflow unnecessarily when recovery strategies could succeed.
@@ -2883,7 +3344,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 5.4 Delegate the noise, keep the signal
 
-Exam task statement: Manage context effectively in large codebase exploration. When answers drift to "typical patterns", your context has already degraded. Slides 168–170.
+Exam task statement: Manage context effectively in large codebase exploration. When answers drift to "typical patterns", your context has already degraded. Slides 195–198.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image87.jpg)
 
@@ -2911,11 +3372,11 @@ When answers drift towards "typical patterns" and away from the classes you foun
 
 #### Lab 28: Delegate the noisy search, keep a scratchpad
 
-**Goal.** Task statement 5.4. Answer one exam-style question, then watch the right answer work once, live, on Simulator 4: Developer Productivity with Claude. Slides 169 and 170.
+**Goal.** Task statement 5.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 4: Developer Productivity with Claude, and read the code that runs it. Slides 196 to 198.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image149.png)
 
-Lab 28 on the Simulator 4 page: the question, your answer buttons and the Simulate it live button.
+Lab 28 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** You need every caller of a function, but a wide search would flood your main session. How do you find them and keep your session usable?
 
@@ -2929,32 +3390,50 @@ Lab 28 on the Simulator 4 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=28, or choose Topic 5, Task 5.4, Lab 28 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 4. Developer Productivity with Claude.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 28 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: In docs/sims/shared/t5-legacy-repo.js add a fourth caller (for example src/jobs/nightly.py calling invoice.calculate_total) and rerun: only the explore subagent's context grows, and NOTES.md picks up the new file.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim4?lab=28, or double-click run-lab in the lab's folder.
+
+**The code.** Search in a subagent, keep findings in a file
 
 ```
-cd simulators/simulator-4-developer-productivity
-uv run explorer.py --case UC-D3
+explore = AgentDefinition(                      # KEY 1
+    description="Wide read-only codebase search",
+    prompt="Grep, Glob, Read. Return a summary "
+           "of path:line findings, never raw output.",
+    tools=["Grep", "Glob", "Read"])
+options = ClaudeAgentOptions(
+    agents={"explore": explore},
+    allowed_tools=["Agent", "Write"])           # KEY 2
+prompt = ("Find every caller of calculate_total "
+          "with the explore subagent, then write "
+          "the findings to NOTES.md.")          # KEY 3
+# later: a fresh session reads NOTES.md         # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 28
+- **KEY 1:** Own context window. The noisy reads never reach the main session.
 
-| Test it After the run, check the output for this: An explore subagent runs, and NOTES.md names calculate_total and report.py. |
+- **KEY 2:** Main thread delegates. It keeps Agent and Write, not raw search.
+
+- **KEY 3:** A scratchpad file. NOTES.md holds path:line findings.
+
+- **KEY 4:** Survives compaction. A new session starts from the notes.
+
+| Test it After the run, check the output for this: The explore subagent's Grep and Read rows run in their own context, the main session stays a fraction of the size of the read-everything session, NOTES.md names calculate_total and src/legacy/report.py, and a fresh session answers from NOTES.md alone. |
 |---|
 
 **Check your answer.** A. A subagent's own context absorbs the noisy reads and returns only a summary, and the scratchpad keeps the findings safe from later context degradation.
@@ -2967,7 +3446,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 5.5 97% overall can hide the one field that fails
 
-Exam task statement: Design human review workflows and confidence calibration. Slice accuracy by document type and field before you remove a single reviewer. Slides 171–173.
+Exam task statement: Design human review workflows and confidence calibration. Slice accuracy by document type and field before you remove a single reviewer. Slides 199–202.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image91.jpg)
 
@@ -2993,11 +3472,11 @@ Exam task statement: Design human review workflows and confidence calibration. S
 
 #### Lab 29: The aggregate masks a segment: break it and watch
 
-**Goal.** Task statement 5.5. Answer one exam-style question, then watch the right answer work once, live, on Simulator 6: Structured Data Extraction. Slides 172 and 173.
+**Goal.** Task statement 5.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 200 to 202.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image150.png)
 
-Lab 29 on the Simulator 6 page: the question, your answer buttons and the Simulate it live button.
+Lab 29 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** Overall accuracy looks excellent, and someone proposes cutting human review. What do you check first?
 
@@ -3011,32 +3490,50 @@ Lab 29 on the Simulator 6 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=29, or choose Topic 5, Task 5.5, Lab 29 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 6. Structured Data Extraction.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 29 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: In docs/sims/shared/t5-extract.js fade the total on one invoice (for example DOC-13's TOTAL DUE line) and rerun: only by_document_type.invoice and by_field.stated_total fall, while receipts hold.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim6?lab=29, or double-click run-lab in the lab's folder.
+
+**The code.** A 97% average can hide a failing segment
 
 ```
-cd simulators/simulator-6-structured-extraction
-uv run extract.py
+def accuracy(results, labels):                  # KEY 1
+    by_type, by_field = {}, {}
+    for doc in results:
+        t = labels[doc.id]["type"]
+        for f in FIELDS:
+            hit = doc[f] == labels[doc.id][f]
+            by_type.setdefault(t, []).append(hit)   # KEY 2
+            by_field.setdefault(f, []).append(hit)  # KEY 3
+    return {"overall": pct(all_hits),
+            "by_document_type": pct_each(by_type),
+            "by_field": pct_each(by_field)}
+sample = stratified(docs, by="type", rate=0.1)  # KEY 4
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 29
+- **KEY 1:** Score against labels. Human-verified values, field by field.
 
-| Test it After the run, check the output for this: Accuracy prints three ways: overall, by_field and by_document_type (100 everywhere on the shipped documents). Break one invoice total (see Try this) and only by_document_type.invoice falls, while receipt and credit_note hold. |
+- **KEY 2:** Break down by type. A weak document type cannot hide.
+
+- **KEY 3:** Break down by field. Shows which field is failing.
+
+- **KEY 4:** Keep sampling. Stratified checks on every type catch drift.
+
+| Test it After the run, check the output for this: Overall accuracy prints near 97%, yet by_document_type.credit_note sits far lower and by_field.stated_total is the weak field; deciding from the breakdown keeps credit notes under review while sampling the other types. |
 |---|
 
 **Check your answer.** B. An aggregate can hide a weak segment; per-type and per-field accuracy shows where automation is safe, and stratified sampling keeps catching drift.
@@ -3049,7 +3546,7 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 ### 5.6 The source travels with the claim, all the way to the report
 
-Exam task statement: Preserve information provenance and handle uncertainty in multi-source synthesis. Summaries drop attribution first. Structured claim records can't lose it. Slides 174–177.
+Exam task statement: Preserve information provenance and handle uncertainty in multi-source synthesis. Summaries drop attribution first. Structured claim records can't lose it. Slides 203–207.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image94.jpg)
 
@@ -3075,11 +3572,11 @@ Summaries drop attribution first, so make the source travel with the claim. Have
 
 #### Lab 30: A vendor benchmark isn't a peer-reviewed study
 
-**Goal.** Task statement 5.6. Answer one exam-style question, then watch the right answer work once, live, on Simulator 3: Multi-Agent Research System. Slides 176 and 177.
+**Goal.** Task statement 5.6. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 205 to 207.
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image151.png)
 
-Lab 30 on the Simulator 3 page: the question, your answer buttons and the Simulate it live button.
+Lab 30 on the simulator site: the task statement, the question, Simulate it live and the agentic loop.
 
 **The question.** During evaluation, the final report cites sources but sometimes treats a peer-reviewed study, a vendor benchmark, and an internal survey as equivalent evidence for the same claim. The search and document-analysis subagents currently return concise finding summaries plus a general list of sources consulted. What change best supports accurate downstream synthesis?
 
@@ -3093,32 +3590,48 @@ Lab 30 on the Simulator 3 page: the question, your answer buttons and the Simula
 
 Pick your answer before you run anything. The answer is at the end of this lab.
 
-**Run it.** Step by step on the simulator website (keep the start-labs window open):
+**Run it.** Step by step in the browser simulator (nothing to install):
 
-**Step 1.** Look at the left sidebar. It should say Anthropic API key saved. If it says No API key yet: paste it here, paste your key into the Anthropic API key box and press Save key.
+**Step 1.** Open https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=30, or choose Topic 5, Task 5.6, Lab 30 in the simulator site's sidebar.
 
-**Step 2.** In the left menu, click 3. Multi-Agent Research System.
+**Step 2.** If the sidebar's Anthropic API key line says not set, paste your key into the box, press Save, then Test. You do this once per browser; the key stays in that browser.
 
-**Step 3.** Click Lab 30 in the row of lab buttons. You can also pick it from Jump to any lab.
+**Step 3.** Read the task statement and the question, and click the answer you would choose. The page tells you at once whether it is right, and why the other answers fall short.
 
-**Step 4.** Read the question and click the answer you chose. The page tells you at once whether it is right, and why. Open Why the other answers fall short to see each distractor's flaw.
+**Step 4.** Press Simulate it live. Watch the agentic loop diagram and the highlighted loop code on the left, the live output on the right, and the API request panel showing each call as it is sent (model claude-haiku-5-5, your key masked).
 
-**Step 5.** Under Watch the right answer work, open See the code this lab runs if you want to read the script first.
+**Step 5.** Read Claude's final output, then The observation explained: each turn's stop_reason and what the loop did next.
 
-**Step 6.** Press ▶ Simulate it live. The output box fills line by line while Claude Haiku 5.5 works. The run takes from a few seconds to about a minute.
+**Step 6.** Read the checks on what Claude actually did, Why it happens and the Exam tip. Open Every Claude call as curl to copy a call into a terminal if you want to send it yourself.
 
-**Step 7.** When it finishes, read Read your result: what this run showed, What to look for, Why it happens and the Exam tip.
+**Step 7.** Try this: In docs/sims/shared/t5-research.js change the vendor benchmark's published date to 2023-01-10 and rerun: the claim record carries the new date, so the report can flag the vendor figure as stale as well as vendor-sourced.
 
-Or run it from a terminal in the labs folder:
+Prefer your laptop? The Python simulators run the same lab locally: start them with labs/start-labs.command (Mac) or labs\start-labs.cmd (Windows) and open http://localhost:8765/sim3?lab=30, or double-click run-lab in the lab's folder.
+
+**The code.** Provenance is an interface contract
 
 ```
-cd simulators/simulator-3-multi-agent-research
-uv run research_system.py --case UC-24
+RECORD = {                                    # KEY 1
+  "claim": str, "value": str,
+  "excerpt": str,                    # verbatim  # KEY 2
+  "document": str, "page": int,
+  "published": "YYYY-MM-DD",
+  "evidence_type": "peer_reviewed|vendor_benchmark"
+                   "|internal_survey|other",
+  "methodology_note": str,                      # KEY 3
+  "conflict_with": [str]}                       # KEY 4
+handoff = {"findings": [RECORD, ...]}  # not prose
 ```
 
-Or let the course tool ask the question, run it and explain it: uv run run_lab.py 30
+- **KEY 1:** One record per claim. Each number travels with its own source.
 
-| Test it After the run, check the output for this: Each finding carries document, page, date and method note. 41% and 55% stay side by side. |
+- **KEY 2:** Location and excerpt. Document, page and the exact words quoted.
+
+- **KEY 3:** Date and method. Peer review, vendor poll or survey: say which.
+
+- **KEY 4:** Keep conflicts visible. 41%, 55% and 78% stay side by side.
+
+| Test it After the run, check the output for this: Document-analysis returns one claim record per statistic with document, page, date, excerpt and method, and the report keeps 41% (peer-reviewed), 55% (internal survey) and 78% (vendor benchmark) side by side with their sources. |
 |---|
 
 **Check your answer.** C. Provenance is an interface contract. Downstream agents can rely only on what is explicitly returned in the handoff. Non-fork subagents start with a fresh context and don't share the parent's history. Structured claim records (claim, evidence excerpt, URL or document location, publication or collection date, methodology notes) stop the synthesiser from treating incomparable evidence as interchangeable. This is not just a citation-formatting preference, and it follows the guidance to return high-signal fields.
@@ -3129,9 +3642,9 @@ Or let the course tool ask the question, run it and explain it: uv run run_lab.p
 
 - **Not D:** Inspecting more sources does not help when the handoff still drops the metadata.
 
-## Day 2: Run the Code
+## Day 2: Build It Yourself
 
-Day 2 opens the code behind each domain: ten labs, two per domain, in Python (the Anthropic SDK and the MCP SDK) and shell (curl and claude -p). Each lab has its own folder in the course repo with a README, a PDF and a real run in sample-output.txt; the labs site lists them all: https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/
+Day 2 is for developers: eleven hands-on builds, two or three per domain, in Python (the Anthropic SDK, the Claude Agent SDK and the MCP SDK) and shell (curl and claude -p). You build an agent loop, PreToolUse and PostToolUse hooks, a coordinator with subagents, an MCP server and its client, a skill, a CI review step and more. Each lab has its own folder in the course repo with a README, a PDF and a real run in sample-output.txt; the simulator site lists them all: https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/
 
 **Before you start.** Every lab calls claude-haiku-5-5 with your own API key, and a whole lab usually costs under one US cent. Set the key once from the labs folder:
 
@@ -3143,11 +3656,11 @@ Use Git Bash on Windows for the .sh scripts; PowerShell is fine for the Python o
 
 ### Lab 31: From one API call to a working agent loop
 
-Topic 1: Agentic Architecture & Orchestration · task statement 1.1 · slides 180–183 · folder labs/lab-31-first-api-call-to-agent-loop/
+Topic 1: Agentic Architecture & Orchestration · task statement 1.1 · slides 210–213 · folder labs/lab-31-first-api-call-to-agent-loop/
+
+**Goal.** Call Claude Haiku 5.5 three ways (curl, Python, TypeScript), read stop_reason, then write the agentic loop by hand: tool_use means run the tool and go round again, end_turn means stop.
 
 **Why it matters.** Ten lines of loop are the whole agent. Write them yourself and watch stop_reason drive every turn.
-
-**What you'll do.** Call Claude Haiku 5.5 three ways (curl, Python, TypeScript), read stop_reason, then write the agentic loop by hand: tool_use means run the tool and go round again, end_turn means stop.
 
 - **call_claude.sh** curl: the raw HTTP request
 
@@ -3229,20 +3742,79 @@ With max_tokens 20: stop_reason max_tokens and content blocks ['thinking']: no t
 
 **On the exam.** Task 1.1: continue on tool_use, stop on end_turn, append every result. Parsing Claude's text for 'done' or capping iterations as the main stop rule are the tempting wrong answers.
 
-### Lab 32: Be the coordinator: brief your subagents or they work blind
+### Lab 32: Build the hooks that the prompt can't be trusted with
 
-Topic 1: Agentic Architecture & Orchestration · task statements 1.2, 1.3 · slides 184–186 · folder labs/lab-32-coordinator-and-subagents/
+Topic 1: Agentic Architecture & Orchestration · task statement 1.5 · slides 214–216 · folder labs/lab-32-build-agent-hooks/
+
+**Goal.** Build an agent with the Claude Agent SDK (Python), give it three tools through an in-process MCP server, and register two hooks: PreToolUse denies refunds above $500 so Claude escalates, and PostToolUse normalises raw backend data (Unix timestamps, status codes) before Claude sees it.
+
+**Why it matters.** A PreToolUse hook blocks a $780 refund before it runs; a PostToolUse hook cleans the data before Claude reads it.
+
+- **hooks_agent.py** the agent, its three tools and the two hooks
+
+**Steps.** Run each step from the lab's folder.
+
+```
+cd labs/lab-32-build-agent-hooks
+```
+
+**Step 1.** Run a $120 refund. The PreToolUse hook allows it; the PostToolUse hook rewrites the order's date and status first.
+
+```
+uv run hooks_agent.py
+```
+
+**Step 2.** Run a $780 refund. The PreToolUse hook denies process_refund, and Claude escalates to a human instead.
+
+```
+uv run hooks_agent.py ORD-5502
+```
+
+**Step 3.** Read the Hook log at the end of each run: every decision the hooks made, in order.
+
+**The key lines.** In hooks_agent.py, look for the KEY comments:
+
+- **KEY 1.** PreToolUse runs before the tool. Returning permissionDecision deny blocks the call and tells Claude why.
+
+- **KEY 2.** The $500 rule lives in code, so it holds even when the prompt forgets it.
+
+- **KEY 3.** PostToolUse runs after the tool and can replace the result Claude reads (updatedToolOutput).
+
+- **KEY 4.** Normalise once, in one place: every order reaches Claude in the same date and status format.
+
+- **KEY 5.** Register both hooks on ClaudeAgentOptions, matched to this server's tools.
+
+**What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
+
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image153.png)
+
+Lab 32: the start of our live run (sample-output.txt in the lab folder).
+
+```
+PostToolUse normalise lookup_order: placed_at 1790812800 -> '2026-10-01T00:00:00Z', status 3 -> 'delivered'
+PreToolUse  DENY  process_refund({'order_id': 'ORD-5502', 'amount': 780})  -> Refunds above $500 need human approval.
+Claude then calls escalate_to_human with the reason and the $780 amount.
+```
+
+| Test it Change one thing and run it again: Lower LIMIT to 100 and run ORD-5501 again. The hook now blocks the $120 refund too, without any change to the prompt. |
+|---|
+
+**On the exam.** Task 1.5: hooks enforce rules deterministically (PreToolUse to block or redirect, PostToolUse to normalise or audit). A firmer prompt is the tempting wrong answer when compliance must be guaranteed.
+
+### Lab 33: Be the coordinator: brief your subagents or they work blind
+
+Topic 1: Agentic Architecture & Orchestration · task statements 1.2, 1.3 · slides 217–219 · folder labs/lab-33-coordinator-and-subagents/
+
+**Goal.** Build a coordinator that launches subagents as tool calls, runs them in parallel, and combines their findings. Then starve the subagents of context and watch what they lose.
 
 **Why it matters.** A subagent starts with an empty head. Whatever the coordinator leaves out of the brief, the subagent never knows.
-
-**What you'll do.** Build a coordinator that launches subagents as tool calls, runs them in parallel, and combines their findings. Then starve the subagents of context and watch what they lose.
 
 - **coordinator.py** coordinator + run_subagent tool; each subagent is a fresh messages.create call
 
 **Steps.** Run each step from the lab's folder.
 
 ```
-cd labs/lab-32-coordinator-and-subagents
+cd labs/lab-33-coordinator-and-subagents
 ```
 
 **Step 1.** Run the coordinator. Note how many subagents it launches in ONE response and what context each one gets.
@@ -3271,9 +3843,9 @@ uv run coordinator.py --thin
 
 **What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
 
-![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image153.png)
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image154.png)
 
-Lab 32: the start of our live run (sample-output.txt in the lab folder).
+Lab 33: the start of our live run (sample-output.txt in the lab folder).
 
 ```
 Coordinator turn 1: stop_reason=tool_use, subagents launched: 3
@@ -3286,13 +3858,13 @@ context passed: 'costs: Staffing quote: evening chat shift costs SGD 14,500/mont
 
 **On the exam.** Tasks 1.2-1.3: the coordinator routes everything; subagents do not inherit its context, so the brief must carry the facts. A thin report means fix the coordinator's decomposition and briefs, not the workers.
 
-### Lab 33: Write the tool description Claude actually reads
+### Lab 34: Write the tool description Claude actually reads
 
-Topic 2: Tool Design & MCP Integration · task statements 2.1, 2.3 · slides 187–190 · folder labs/lab-33-tool-design-and-tool-choice/
+Topic 2: Tool Design & MCP Integration · task statements 2.1, 2.3 · slides 220–223 · folder labs/lab-34-tool-design-and-tool-choice/
+
+**Goal.** Measure how tool descriptions change which tool Claude picks, then use tool_choice to decide who decides: Claude (auto), any tool (any) or one named tool (tool).
 
 **Why it matters.** Same tools, same questions: vague descriptions got 2 of 4 wrong, clear ones got 0. Then take control with tool_choice.
-
-**What you'll do.** Measure how tool descriptions change which tool Claude picks, then use tool_choice to decide who decides: Claude (auto), any tool (any) or one named tool (tool).
 
 - **tool_design.py** two tools, vague vs clear descriptions, four questions
 
@@ -3301,7 +3873,7 @@ Topic 2: Tool Design & MCP Integration · task statements 2.1, 2.3 · slides 187
 **Steps.** Run each step from the lab's folder.
 
 ```
-cd labs/lab-33-tool-design-and-tool-choice
+cd labs/lab-34-tool-design-and-tool-choice
 ```
 
 **Step 1.** Run the description test and count the WRONG lines in each block.
@@ -3332,9 +3904,9 @@ uv run tool_choice.py
 
 **What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
 
-![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image154.png)
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image155.png)
 
-Lab 33: the start of our live run (sample-output.txt in the lab folder).
+Lab 34: the start of our live run (sample-output.txt in the lab folder).
 
 ```
 VAGUE descriptions ... wrong picks: 2 of 4
@@ -3347,13 +3919,13 @@ tool_choice=tool  stop_reason=tool_use  tool calls: [extract_complaint(...)]
 
 **On the exam.** Task 2.1: fix a misrouted tool by rewriting its description first. Task 2.3: fewer, focused tools per agent; forced tool_choice when you need a guaranteed call. Note (13 Nov 2026): Haiku 5.5 answered tool_choice 'none' with an empty turn; for a text-only reply, send the request without tools.
 
-### Lab 34: Build an MCP server once, plug it into any agent
+### Lab 35: Build an MCP server once, plug it into any agent
 
-Topic 2: Tool Design & MCP Integration · task statement 2.4 · slides 191–194 · folder labs/lab-34-build-an-mcp-server/
+Topic 2: Tool Design & MCP Integration · task statement 2.4 · slides 224–227 · folder labs/lab-35-build-an-mcp-server/
+
+**Goal.** Build a stdio MCP server with two tools, one resource and structured errors; connect to it from a Python MCP client that drives Claude; then register it in .mcp.json for Claude Code.
 
 **Why it matters.** Write the order system's tools as an MCP server, then use it from your own Python agent AND from Claude Code without changing a line.
-
-**What you'll do.** Build a stdio MCP server with two tools, one resource and structured errors; connect to it from a Python MCP client that drives Claude; then register it in .mcp.json for Claude Code.
 
 - **order_server.py** the MCP server: lookup_order, process_refund, policy://refunds
 
@@ -3366,7 +3938,7 @@ Topic 2: Tool Design & MCP Integration · task statement 2.4 · slides 191–194
 **Steps.** Run each step from the lab's folder.
 
 ```
-cd labs/lab-34-build-an-mcp-server
+cd labs/lab-35-build-an-mcp-server
 ```
 
 **Step 1.** Read order_server.py: two tools, one resource, and the fail() helper that returns structured errors.
@@ -3413,9 +3985,9 @@ uv run mcp_agent.py "Please refund my wool rug, order ORD-5508, 480 dollars."
 
 **What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
 
-![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image155.png)
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image156.png)
 
-Lab 34: the start of our live run (sample-output.txt in the lab folder).
+Lab 35: the start of our live run (sample-output.txt in the lab folder).
 
 ```
 MCP tools: ['lookup_order', 'process_refund']
@@ -3428,13 +4000,13 @@ process_refund(...) -> ERROR {"errorCategory": "transient", "isRetryable": true,
 
 **On the exam.** Task 2.4: shared servers go in the project's .mcp.json with ${ENV_VAR} for secrets; personal ones in ~/.claude.json. Task 2.2's structured errors travel through MCP as isError plus a readable payload.
 
-### Lab 35: Teach Claude Code your repo: a /review skill and a rule that loads only for tests
+### Lab 36: Teach Claude Code your repo: a /review skill and a rule that loads only for tests
 
-Topic 3: Claude Code Configuration & Workflows · task statements 3.2, 3.3 · slides 195–197 · folder labs/lab-35-skills-and-path-rules/
+Topic 3: Claude Code Configuration & Workflows · task statements 3.2, 3.3 · slides 228–230 · folder labs/lab-36-skills-and-path-rules/
+
+**Goal.** Run a project skill (/review) in Claude Code, then prove that a rule in .claude/rules/ with a paths: glob loads only when a matching file is in play.
 
 **Why it matters.** Commit a skill and a path-scoped rule, and every teammate who clones the repo gets the same reviewer.
-
-**What you'll do.** Run a project skill (/review) in Claude Code, then prove that a rule in .claude/rules/ with a paths: glob loads only when a matching file is in play.
 
 - **project/CLAUDE.md** always-on project memory
 
@@ -3447,7 +4019,7 @@ Topic 3: Claude Code Configuration & Workflows · task statements 3.2, 3.3 · sl
 **Steps.** Run each step from the lab's folder.
 
 ```
-cd labs/lab-35-skills-and-path-rules
+cd labs/lab-36-skills-and-path-rules
 ```
 
 **Step 1.** Open the three config files above and read them first.
@@ -3474,9 +4046,9 @@ cd labs/lab-35-skills-and-path-rules
 
 **What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
 
-![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image156.png)
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image157.png)
 
-Lab 35: the start of our live run (sample-output.txt in the lab folder).
+Lab 36: the start of our live run (sample-output.txt in the lab folder).
 
 ```
 VERDICT: FAIL with a high finding: applyDiscount takes cents but returns dollars.
@@ -3488,13 +4060,13 @@ After reading src/cart.test.js the list includes .claude/rules/testing.md; after
 
 **On the exam.** Task 3.2: team skills live in .claude/skills/ in the repo; personal ones in ~/.claude/skills/. Task 3.3: path-scoped rules beat directory CLAUDE.md files when the files are spread across the codebase.
 
-### Lab 36: Put Claude Code in the pipeline and let the exit code decide
+### Lab 37: Put Claude Code in the pipeline and let the exit code decide
 
-Topic 3: Claude Code Configuration & Workflows · task statement 3.6 · slides 198–200 · folder labs/lab-36-claude-code-in-ci/
+Topic 3: Claude Code Configuration & Workflows · task statement 3.6 · slides 231–233 · folder labs/lab-37-claude-code-in-ci/
+
+**Goal.** Run Claude Code non-interactively, get schema-checked findings as JSON, and turn them into a pass/fail exit code your CI acts on.
 
 **Why it matters.** No keyboard in CI: claude -p, a JSON schema, a turn cap, and a gate that fails the build on a high finding.
-
-**What you'll do.** Run Claude Code non-interactively, get schema-checked findings as JSON, and turn them into a pass/fail exit code your CI acts on.
 
 - **ci_review.sh** the CI step
 
@@ -3507,7 +4079,7 @@ Topic 3: Claude Code Configuration & Workflows · task statement 3.6 · slides 1
 **Steps.** Run each step from the lab's folder.
 
 ```
-cd labs/lab-36-claude-code-in-ci
+cd labs/lab-37-claude-code-in-ci
 ```
 
 **Step 1.** Run the CI step. Claude reviews repo/src/payments.js; gate.py prints the findings.
@@ -3530,9 +4102,9 @@ cd labs/lab-36-claude-code-in-ci
 
 **What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
 
-![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image157.png)
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image158.png)
 
-Lab 36: the start of our live run (sample-output.txt in the lab folder).
+Lab 37: the start of our live run (sample-output.txt in the lab folder).
 
 ```
 HIGH   src/payments.js:4  refund() does not cap the refund at the amount paid...
@@ -3545,13 +4117,13 @@ exit code: 1 (any high finding fails the build)
 
 **On the exam.** Task 3.6: -p (print mode) so nothing waits for input, --output-format json with --json-schema for machine-readable findings, fixed --allowedTools and --max-turns.
 
-### Lab 37: Valid JSON is the floor: check the meaning yourself
+### Lab 38: Valid JSON is the floor: check the meaning yourself
 
-Topic 4: Prompt Engineering & Structured Output · task statement 4.3 · slides 201–203 · folder labs/lab-37-structured-output/
+Topic 4: Prompt Engineering & Structured Output · task statement 4.3 · slides 234–236 · folder labs/lab-38-structured-output/
+
+**Goal.** Extract three invoices into one Pydantic schema, first with forced strict tool use, then with messages.parse; then catch a missing field and a wrong total in your own code.
 
 **Why it matters.** The schema guarantees the shape. It cannot tell you the lines don't add up to the total.
-
-**What you'll do.** Extract three invoices into one Pydantic schema, first with forced strict tool use, then with messages.parse; then catch a missing field and a wrong total in your own code.
 
 - **invoices.py** three messy invoices
 
@@ -3560,7 +4132,7 @@ Topic 4: Prompt Engineering & Structured Output · task statement 4.3 · slides 
 **Steps.** Run each step from the lab's folder.
 
 ```
-cd labs/lab-37-structured-output
+cd labs/lab-38-structured-output
 ```
 
 **Step 1.** Extract with strict tool use.
@@ -3593,9 +4165,9 @@ uv run extract_invoices.py --parse
 
 **What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
 
-![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image158.png)
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image159.png)
 
-Lab 37: the start of our live run (sample-output.txt in the lab folder).
+Lab 38: the start of our live run (sample-output.txt in the lab folder).
 
 ```
 INV-1002  Bright Print  total 229.00  due None  ->  REVIEW: no due date in the source
@@ -3607,20 +4179,20 @@ INV-1003  Nova Cloud Services  total 390.00  ->  REVIEW: lines add to 340.00 but
 
 **On the exam.** Task 4.3: tool use or structured outputs guarantee syntax, not semantics. Nullable fields stop fabrication; business rules are checked after extraction.
 
-### Lab 38: Half price, no hurry: triage tickets with the Batches API
+### Lab 39: Half price, no hurry: triage tickets with the Batches API
 
-Topic 4: Prompt Engineering & Structured Output · task statement 4.5 · slides 204–206 · folder labs/lab-38-message-batches/
+Topic 4: Prompt Engineering & Structured Output · task statement 4.5 · slides 237–239 · folder labs/lab-39-message-batches/
+
+**Goal.** Submit a batch of classification requests, poll until it ends, and match each result to its ticket by custom_id.
 
 **Why it matters.** Five tickets, one batch, results in a couple of minutes at 50% off, keyed by custom_id because they arrive in any order.
-
-**What you'll do.** Submit a batch of classification requests, poll until it ends, and match each result to its ticket by custom_id.
 
 - **batch_triage.py** submit, poll, read results
 
 **Steps.** Run each step from the lab's folder.
 
 ```
-cd labs/lab-38-message-batches
+cd labs/lab-39-message-batches
 ```
 
 **Step 1.** Submit the batch and let it poll every 15 seconds. It usually ends within a few minutes; the API allows up to 24 hours.
@@ -3647,9 +4219,9 @@ uv run batch_triage.py --check msgbatch_...
 
 **What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
 
-![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image159.png)
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image160.png)
 
-Lab 38: the start of our live run (sample-output.txt in the lab folder).
+Lab 39: the start of our live run (sample-output.txt in the lab folder).
 
 ```
 Submitted batch msgbatch_... with 5 requests. Status: in_progress
@@ -3662,13 +4234,13 @@ T-103: billing   high   Customer was charged twice... (T-103 came back first)
 
 **On the exam.** Task 4.5: batches suit overnight and bulk jobs, never a customer waiting on the reply; no multi-turn tool loop inside a batch; prove the prompt on a small sample first.
 
-### Lab 39: Keep the facts, cache the handbook
+### Lab 40: Keep the facts, cache the handbook
 
-Topic 5: Context Management & Reliability · task statement 5.1 · slides 207–209 · folder labs/lab-39-context-and-prompt-caching/
+Topic 5: Context Management & Reliability · task statement 5.1 · slides 240–242 · folder labs/lab-40-context-and-prompt-caching/
+
+**Goal.** Run a three-turn support chat that caches a long policy handbook, restates a case-facts block every turn, and trims a 40-field tool record to the 5 fields that matter.
 
 **Why it matters.** A 1,402-token policy is cached once and read back at a tenth of the price, while the case facts ride along every turn.
-
-**What you'll do.** Run a three-turn support chat that caches a long policy handbook, restates a case-facts block every turn, and trims a 40-field tool record to the 5 fields that matter.
 
 - **policy.md** the support handbook (cached)
 
@@ -3677,7 +4249,7 @@ Topic 5: Context Management & Reliability · task statement 5.1 · slides 207–
 **Steps.** Run each step from the lab's folder.
 
 ```
-cd labs/lab-39-context-and-prompt-caching
+cd labs/lab-40-context-and-prompt-caching
 ```
 
 **Step 1.** Run the chat. Read the cache numbers on each turn.
@@ -3700,9 +4272,9 @@ uv run cached_support.py
 
 **What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
 
-![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image160.png)
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image161.png)
 
-Lab 39: the start of our live run (sample-output.txt in the lab folder).
+Lab 40: the start of our live run (sample-output.txt in the lab folder).
 
 ```
 Order record: 40 fields from the system, 5 kept
@@ -3716,20 +4288,20 @@ Turn 3: cache write 0, cache read 1402
 
 **On the exam.** Task 5.1: keep transactional facts in a persistent case-facts block, trim verbose tool output, and put key material where it won't be lost in a long context.
 
-### Lab 40: When a subagent fails, tell the coordinator everything
+### Lab 41: When a subagent fails, tell the coordinator everything
 
-Topic 5: Context Management & Reliability · task statement 5.3 · slides 210–212 · folder labs/lab-40-error-propagation/
+Topic 5: Context Management & Reliability · task statement 5.3 · slides 243–245 · folder labs/lab-41-error-propagation/
+
+**Goal.** Make one of three search subagents time out, and compare a structured error (what failed, what was tried, partial results, retryable) with a generic one.
 
 **Why it matters.** 'search failed' got a blind retry and lost a source. A structured error got no wasted retry and an honest gap.
-
-**What you'll do.** Make one of three search subagents time out, and compare a structured error (what failed, what was tried, partial results, retryable) with a generic one.
 
 - **research_errors.py** coordinator with three search sources, one of which times out
 
 **Steps.** Run each step from the lab's folder.
 
 ```
-cd labs/lab-40-error-propagation
+cd labs/lab-41-error-propagation
 ```
 
 **Step 1.** Run with the structured error. Note that the coordinator does not retry and uses the partial result.
@@ -3756,9 +4328,9 @@ uv run research_errors.py --generic
 
 **What you should see.** From a live run on Claude Haiku 5.5. Your wording will differ; the behaviour should not.
 
-![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image161.png)
+![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image162.png)
 
-Lab 40: the start of our live run (sample-output.txt in the lab folder).
+Lab 41: the start of our live run (sample-output.txt in the lab folder).
 
 ```
 Structured: one news search, brief says 'News coverage is incomplete... only one article was retrieved'
@@ -3774,7 +4346,7 @@ Generic: search_source(news) -> ERROR "search failed" twice, and the partial new
 
 ### How to think on exam day
 
-When two options both work, pick the one that fixes the stated root cause with the least new machinery (slide 218):
+When two options both work, pick the one that fixes the stated root cause with the least new machinery (slide 251):
 
 - Sharper tool descriptions, before a new routing layer.
 
@@ -3794,11 +4366,11 @@ The 40 questions in SkillCertPro's practice exam, Part 1 (an unofficial third-pa
 
 ![](LG-Claude-Certified-Architect-Foundation-v2.7-images/image121.jpg)
 
-Trainer deck v3.0, slide 217
+Trainer deck v3.0, slide 250
 
 ### A five-week study plan
 
-Biggest domain first, one official exercise a week, practice questions last (slide 214).
+Biggest domain first, one official exercise a week, practice questions last (slide 247).
 
 | Week | Focus | Hands-on |
 |---|---|---|
@@ -3814,8 +4386,9 @@ Your score report shows percent-correct by domain. If you need a retake, that ro
 
 | Command | What it does |
 |---|---|
-| uv run set_api_key.py | From labs, once: save your Anthropic API key to labs/.env (git-ignored) |
-| start-labs.cmd / start-labs.command | Double-click (Windows / Mac): install, ask for the key the first time, start the six simulators |
+| https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/ | Day 1: the simulator in your browser. Paste your API key in the sidebar (Save, Test); every lab runs from there |
+| uv run set_api_key.py | Day 2, from labs, once: save your Anthropic API key to labs/.env (git-ignored) |
+| start-labs.cmd / start-labs.command | Optional: run the Day 1 simulators locally in Python (asks for the key the first time) |
 | uv sync | From labs, first time only: install Python, the Claude Agent SDK and the Anthropic SDK |
 | uv run serve.py | From labs: start the six simulators in your browser |
 | /lab 4 | In Claude Code, from labs: run Lab 4 with you |
@@ -3825,7 +4398,8 @@ Your score report shows percent-correct by domain. If you need a retake, that ro
 | uv run run_lab.py 4 | Pick an answer in the terminal, run it, read the reasoning |
 | uv run verify.py | From a simulator's folder: check its saved evidence |
 | uv run call_claude.py | From labs/lab-31-first-api-call-to-agent-loop: one Haiku 5.5 call that proves your key works |
-| claude -p "..." --output-format json --json-schema ... | What a real CI job runs (Lab 36). Every lab uses claude-haiku-5-5 |
+| uv run hooks_agent.py ORD-5502 | From labs/lab-32-build-agent-hooks: watch the PreToolUse hook block a $780 refund |
+| claude -p "..." --output-format json --json-schema ... | What a real CI job runs (Lab 37). Every lab uses claude-haiku-5-5 |
 
 ## Glossary
 
