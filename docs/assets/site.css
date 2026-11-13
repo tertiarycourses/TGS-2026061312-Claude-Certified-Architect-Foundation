@@ -53,3 +53,11 @@ pre.code.wrap{white-space:pre-wrap;word-break:break-word}
 .keybox .row button{padding:6px 4px}
 .keymsg{margin-top:6px;font-size:.88em;min-height:1.2em}.keymsg.ok{color:var(--teal);font-weight:600}.keymsg.no{color:var(--red);font-weight:600}
 .apibox{border-left:6px solid var(--orange)}
+.box.diagram{padding-bottom:6px}
+.loopsvg{width:100%;max-width:760px;height:auto;display:block;margin:4px auto}
+.loopsvg .n rect,.loopsvg .n polygon{fill:#fff;stroke:#5F5C56;stroke-width:1.5;transition:fill .2s}
+.loopsvg text{font:600 15px -apple-system,"Segoe UI",Calibri,Arial,sans-serif;text-anchor:middle;fill:#21201C}
+.loopsvg text.s{font-weight:400;font-size:12.5px;fill:#5F5C56}.loopsvg text.lbl{font:700 13px Consolas,Menlo,monospace;fill:#2F6F6D}
+.loopsvg path{fill:none;stroke:#5F5C56;stroke-width:1.6}
+.loopsvg .n.hot rect,.loopsvg .n.hot polygon{fill:#C9603A;stroke:#C9603A}.loopsvg .n.hot text{fill:#fff}
+.loopsvg .n.done rect{fill:#2F6F6D;stroke:#2F6F6D}.loopsvg .n.done text{fill:#fff}

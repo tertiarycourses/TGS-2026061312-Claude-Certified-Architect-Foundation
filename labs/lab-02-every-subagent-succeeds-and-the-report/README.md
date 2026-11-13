@@ -4,6 +4,13 @@
 ## Goal
 Task statement 1.2: **Orchestrate multi-agent systems with coordinator-subagent patterns.** You answer one exam-style question, then run the Multi-Agent Research System simulator once and watch the right answer work with a real Claude call.
 
+## Open this lab
+
+- **Run it live in your browser (nothing to install):** open [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=2](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=2), paste your Anthropic API key into the sidebar once, then press **Simulate it live**. Every call uses `claude-haiku-5-5`.
+- **Or on the local Python simulator:** start it (double-click `labs/start-labs.command` on Mac or `labs\start-labs.cmd` on Windows), then open [http://localhost:8765/sim3?lab=2](http://localhost:8765/sim3?lab=2).
+- **In a terminal, one click:** double-click `run-lab.command` (Mac) or `run-lab.cmd` (Windows) in this folder. It runs `uv run research_system.py` from `simulators/simulator-3-multi-agent-research`.
+- **The code it runs:** [simulators/simulator-3-multi-agent-research/research_system.py](https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/blob/master/labs/simulators/simulator-3-multi-agent-research/research_system.py). The lab folder holds the instructions; the simulator folder holds the code, so all its labs share one working system.
+
 ## The scenario
 You are building a multi-agent research system using the Claude Agent SDK. A coordinator agent delegates to specialized subagents: one searches the web, one analyzes documents, one synthesizes findings, and one generates reports. The system researches topics and produces comprehensive, cited reports.
 

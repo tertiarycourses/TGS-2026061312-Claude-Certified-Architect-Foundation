@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 33: Be the coordinator: brief your subagents or they work blind</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-33-coordinator-and-subagents">Open the folder on GitHub</a><a class="btn alt" href="lab-33-coordinator-and-subagents.pdf">Download the PDF</a></p><h1>Lab 33: Be the coordinator: brief your subagents or they work blind</h1>
+<blockquote>
+<p>Day 2 · Topic 1: Agentic Architecture &amp; Orchestration · Task statements 1.2, 1.3 · Code lab · Claude Haiku 5.5</p>
+</blockquote>
+<p><strong>A subagent starts with an empty head. Whatever the coordinator leaves out of the brief, the subagent never knows.</strong></p>
+<h2>What you'll do</h2>
+<p>Build a coordinator that launches subagents as tool calls, runs them in parallel, and combines their findings. Then starve the subagents of context and watch what they lose.</p>
+<h2>What's in this folder</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>coordinator.py</code></td>
+<td>coordinator + run_subagent tool; each subagent is a fresh messages.create call</td>
+</tr>
+</tbody>
+</table>
+<h2>Before you start</h2>
+<ul>
+<li>Open a terminal in the labs folder. Windows: use Git Bash for the .sh scripts (it comes with Git); PowerShell is fine for the Python ones.</li>
+<li>Set your Anthropic API key once, if you haven't already. It is saved to labs/.env on your laptop and never uploaded. Run <code>uv run set_api_key.py</code>.</li>
+<li>Go into this lab's folder. Run <code>cd lab-33-coordinator-and-subagents</code>.</li>
+</ul>
+<p>You need uv (https://docs.astral.sh/uv/) for the Python scripts. Every call uses Claude Haiku 5.5 and costs a fraction of a US cent.</p>
+<h2>Steps</h2>
+<p><strong>Step 1.</strong> Run the coordinator. Note how many subagents it launches in ONE response and what context each one gets.</p>
+<pre><code>uv run coordinator.py
+</code></pre>
+<p><strong>Step 2.</strong> Run it again, but tell the coordinator to pass only the task name.</p>
+<pre><code>uv run coordinator.py --thin
+</code></pre>
+<p><strong>Step 3.</strong> Compare the 'context passed' lines and the final recommendation of the two runs.</p>
+<h2>What you should see</h2>
+<p>From a live run on Claude Haiku 5.5 (your wording will differ; the behaviour should not):</p>
+<ul>
+<li><code>Coordinator turn 1: stop_reason=tool_use, subagents launched: 3</code></li>
+<li>context passed: 'costs: Staffing quote: evening chat shift costs SGD 14,500/month; an AI chat agent pilot costs SGD 3,200/month.'</li>
+<li>--thin: context passed: 'Should we add evening chat support?' and the coordinator notes the subagents 'received only the task name, not the source figures'.</li>
+</ul>
+<p>The full output of our run is in <code>sample-output.txt</code>.</p>
+<h2>The key lines, explained</h2>
+<p>In <code>coordinator.py</code>, look for the <code>KEY</code> comments:</p>
+<ul>
+<li><strong>KEY 1.</strong> A subagent is a brand-new conversation: its own system prompt plus the brief. No shared memory, no access to the coordinator's sources.</li>
+<li><strong>KEY 2.</strong> Print what each subagent was handed. This is the line to debug when a report comes back thin.</li>
+<li><strong>KEY 3.</strong> Parallel tool calls run at the same time, so three subagents take about as long as one.</li>
+<li><strong>KEY 4.</strong> All tool_result blocks return in one user message, so the coordinator sees every finding together.</li>
+</ul>
+<h2>The code: <code>coordinator.py</code></h2>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.10&quot;
+# dependencies = [&quot;anthropic&gt;=2.0&quot;, &quot;python-dotenv&gt;=1.0&quot;]
+# ///
+&quot;&quot;&quot;Lab 33: a coordinator that delegates to subagents, all on the Claude API.
+Each subagent is a FRESH messages.create call: it sees only the brief the coordinator writes.
+Run:  uv run coordinator.py
+      uv run coordinator.py --thin     (the coordinator is told to pass task names only: watch quality drop)&quot;&quot;&quot;
+import json
+import sys
+from concurrent.futures import ThreadPoolExecutor
+import anthropic
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv(usecwd=True))
+client = anthropic.Anthropic()
+MODEL = &quot;claude-haiku-5-5&quot;
+THIN = &quot;--thin&quot; in sys.argv
+
+SOURCES = {  # what the coordinator knows; subagents know nothing unless it is passed on
+    &quot;survey&quot;: &quot;Q3 survey, 1,240 customers: 61% want chat support after 6pm; 22% would pay for priority support.&quot;,
+    &quot;tickets&quot;: &quot;Ticket log Jul-Sep: 38% of tickets arrive 6pm-11pm; median first response after 6pm is 9h 40m.&quot;,
+    &quot;costs&quot;: &quot;Staffing quote: evening chat shift costs SGD 14,500/month; an AI chat agent pilot costs SGD 3,200/month.&quot;,
+}
+
+DELEGATE = {
+    &quot;name&quot;: &quot;run_subagent&quot;,
+    &quot;description&quot;: (&quot;Start a specialist subagent. It starts with an EMPTY context: it cannot see this conversation, &quot;
+                    &quot;the sources or other subagents. Put every fact it needs into `context`.&quot;),
+    &quot;input_schema&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;properties&quot;: {
+        &quot;role&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;e.g. 'demand analyst', 'cost analyst'&quot;},
+        &quot;task&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;One concrete question to answer&quot;},
+        &quot;context&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;All source text and figures the subagent needs, quoted in full&quot;}},
+        &quot;required&quot;: [&quot;role&quot;, &quot;task&quot;, &quot;context&quot;]},
+}
+
+COORDINATOR_SYSTEM = (
+    &quot;You coordinate an analysis team. Split the question into independent parts and call run_subagent for each part, &quot;
+    &quot;all in ONE response so they run in parallel. Then combine their findings into a recommendation that cites figures.\n&quot;
+    + (&quot;Pass only the task name in `context`, nothing else.&quot; if THIN else &quot;Quote the relevant source text in `context`.&quot;)
+</code></pre>
+<pre><code class="language-python">    + &quot;\n\nSources:\n&quot; + &quot;\n&quot;.join(f&quot;- {k}: {v}&quot; for k, v in SOURCES.items()))
+
+
+def subagent(role, task, context):
+    &quot;&quot;&quot;KEY 1: a brand-new conversation. Its whole world is this system prompt plus the brief.&quot;&quot;&quot;
+    r = client.messages.create(model=MODEL, max_tokens=4096,
+                               system=f&quot;You are a {role}. Use only the context given. If a figure is missing, say so.&quot;,
+                               messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Task: {task}\n\nContext:\n{context}&quot;}])
+    text = &quot;&quot;.join(b.text for b in r.content if b.type == &quot;text&quot;)
+    return text or f&quot;(subagent stopped with {r.stop_reason} and wrote no answer)&quot;
+
+
+messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Should we add evening chat support? Recommend a human shift or an AI pilot.&quot;}]
+for turn in range(1, 6):
+    response = client.messages.create(model=MODEL, max_tokens=4096, system=COORDINATOR_SYSTEM,
+                                      tools=[DELEGATE], messages=messages)
+    messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+    calls = [b for b in response.content if b.type == &quot;tool_use&quot;]
+    print(f&quot;Coordinator turn {turn}: stop_reason={response.stop_reason}, subagents launched: {len(calls)}&quot;)
+    if response.stop_reason != &quot;tool_use&quot;:
+        print(&quot;\n=== Recommendation\n&quot; + &quot;&quot;.join(b.text for b in response.content if b.type == &quot;text&quot;))
+        break
+    for c in calls:  # KEY 2: show exactly what each subagent was given
+        print(f&quot;   -&gt; {c.input['role']}: {c.input['task']}\n      context passed: {c.input['context'][:140]!r}&quot;)
+    with ThreadPoolExecutor() as pool:  # KEY 3: the parallel calls run at the same time
+        outputs = list(pool.map(lambda c: subagent(**c.input), calls))
+    messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [  # KEY 4: all results in one user message
+        {&quot;type&quot;: &quot;tool_result&quot;, &quot;tool_use_id&quot;: c.id, &quot;content&quot;: out} for c, out in zip(calls, outputs)]})
+</code></pre>
+<h2>Try this</h2>
+<p>Give each subagent a different system prompt role (sceptic, optimist) and see whether the coordinator's recommendation changes.</p>
+<h2>How this shows up in the exam</h2>
+<p>Tasks 1.2-1.3: the coordinator routes everything; subagents do not inherit its context, so the brief must carry the facts. A thin report means fix the coordinator's decomposition and briefs, not the workers.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

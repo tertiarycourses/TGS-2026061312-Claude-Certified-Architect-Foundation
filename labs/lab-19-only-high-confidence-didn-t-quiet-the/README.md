@@ -4,6 +4,13 @@
 ## Goal
 Task statement 4.1: **Design prompts with explicit criteria to improve precision and reduce false positives.** You answer one exam-style question, then run the Claude Code for Continuous Integration simulator once and watch the right answer work with a real Claude call.
 
+## Open this lab
+
+- **Run it live in your browser (nothing to install):** open [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=19](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=19), paste your Anthropic API key into the sidebar once, then press **Simulate it live**. Every call uses `claude-haiku-5-5`.
+- **Or on the local Python simulator:** start it (double-click `labs/start-labs.command` on Mac or `labs\start-labs.cmd` on Windows), then open [http://localhost:8765/sim5?lab=19](http://localhost:8765/sim5?lab=19).
+- **In a terminal, one click:** double-click `run-lab.command` (Mac) or `run-lab.cmd` (Windows) in this folder. It runs `uv run casekit.py --case UC-39` from `simulators/simulator-5-ci-cd`.
+- **The code it runs:** [simulators/simulator-5-ci-cd/casekit.py](https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/blob/master/labs/simulators/simulator-5-ci-cd/casekit.py), with the case file [simulators/simulator-5-ci-cd/cases/UC-39.json](https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/blob/master/labs/simulators/simulator-5-ci-cd/cases/UC-39.json). The lab folder holds the instructions; the simulator folder holds the code, so all its labs share one working system.
+
 ## The scenario
 You are integrating Claude Code into your Continuous Integration/Continuous Deployment (CI/CD) pipeline. The system runs automated code reviews, generates test cases, and provides feedback on pull requests. You need to design prompts that provide actionable feedback and minimize false positives.
 

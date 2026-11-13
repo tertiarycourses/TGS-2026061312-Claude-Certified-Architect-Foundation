@@ -127,7 +127,10 @@ export async function runAgent(s, o) {
 export function repo(files) {
   const fs = { ...files };
   const glob = (pat) => {
-    const re = new RegExp("^" + pat.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*\*\//g, "(?:.*/)?").replace(/\*\*/g, ".*").replace(/\*/g, "[^/]*").replace(/\?/g, ".") + "$");
+    const re = new RegExp("^" + pat.replace(/[.+^${}()|[\]\\]/g, "\\$&")
+      .replace(/\*\*\//g, "\u0001").replace(/\*\*/g, "\u0002")             // protect ** before single * is replaced
+      .replace(/\*/g, "[^/]*").replace(/\?/g, "[^/]")
+      .replace(/\u0001/g, "(?:.*/)?").replace(/\u0002/g, ".*") + "$");
     return Object.keys(fs).filter((f) => re.test(f)).sort();
   };
   return {

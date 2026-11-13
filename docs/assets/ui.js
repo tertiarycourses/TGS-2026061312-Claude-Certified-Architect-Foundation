@@ -25,6 +25,24 @@ const LOOP = [
 ]
 const LOOP_HTML = LOOP.map(([id, t]) => `<span data-step="${id}">${esc(t)}</span>`).join("\n");
 
+// The agentic loop as a diagram. Node ids match the engine's step ids, so the running step lights up.
+const LOOP_SVG = `
+<svg class="loopsvg" viewBox="0 0 760 250" role="img" aria-label="The agentic loop: user message, Claude, check stop_reason, run tools, append results, back to Claude; end_turn gives the final answer">
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5F5C56"/></marker></defs>
+  <g class="n" data-step="start"><rect x="10" y="95" width="120" height="58" rx="8"/><text x="70" y="120">User</text><text x="70" y="138" class="s">message</text></g>
+  <g class="n" data-step="call"><rect x="175" y="95" width="150" height="58" rx="8"/><text x="250" y="118">Claude</text><text x="250" y="137" class="s">claude-haiku-5-5</text></g>
+  <g class="n" data-step="check"><polygon points="440,82 520,124 440,166 360,124"/><text x="440" y="120">stop_</text><text x="440" y="136">reason?</text></g>
+  <g class="n" data-step="tool"><rect x="560" y="10" width="170" height="58" rx="8"/><text x="645" y="34">Run the tool</text><text x="645" y="53" class="s">hooks may block it</text></g>
+  <g class="n" data-step="append"><rect x="175" y="10" width="150" height="58" rx="8"/><text x="250" y="34">Append</text><text x="250" y="53" class="s">every tool_result</text></g>
+  <g class="n" data-step="stop"><rect x="560" y="180" width="170" height="58" rx="8"/><text x="645" y="204">Final answer</text><text x="645" y="223" class="s">loop stops</text></g>
+  <path d="M130,124 L172,124" marker-end="url(#ar)"/>
+  <path d="M325,124 L357,124" marker-end="url(#ar)"/>
+  <path d="M440,82 L440,39 L557,39" marker-end="url(#ar)"/><text x="480" y="32" class="lbl">tool_use</text>
+  <path d="M440,166 L440,209 L557,209" marker-end="url(#ar)"/><text x="482" y="226" class="lbl">end_turn</text>
+  <path d="M645,10 L645,2 L250,2 L250,7" marker-end="url(#ar)"/>
+  <path d="M250,68 L250,92" marker-end="url(#ar)"/>
+</svg>`;
+
 async function data() {
   const [labs, sims, day2] = await Promise.all(["data/labs.json", "data/sims.json", "data/day2.json"].map((f) => fetch(f).then((r) => r.json())));
   return { labs, sims, day2 };
@@ -123,6 +141,7 @@ export async function lab() {
     <p><b>What to look for:</b> ${md(spec.see || l.see)}</p>
     <button class="primary" id="run">▶ Simulate it live</button>
     <div class="caption" id="runnote" style="margin:6px 0">Runs on claude-haiku-5-5 with your API key. A run usually costs well under one US cent.</div>
+    <div class="box diagram"><h4>The agentic loop: watch it go round</h4>${LOOP_SVG}<div class="caption">Every Claude call goes left to right. <b>tool_use</b> sends it up and round again; <b>end_turn</b> sends it down to the final answer. The box that is running now lights up.</div></div>
     <div class="live">
       <div><div class="caption"><b>The code running</b>: the agentic loop, with the line executing now highlighted</div><pre class="code loop" id="loop">${LOOP_HTML}</pre></div>
       <div><div class="caption"><b>Live output</b> from Claude Haiku 5.5</div><pre class="console" id="out">Press Simulate it live. The output appears here line by line.</pre></div>
@@ -160,6 +179,7 @@ content-type: application/json
     if (!key) { $("#out").textContent = "No API key yet. Paste it into the Anthropic API key box on the left and press Save key."; return; }
     if (session) { session.stopped = true; return; }
     const out = $("#out"); out.innerHTML = ""; $("#result").innerHTML = "";
+    document.querySelectorAll(".loopsvg .n").forEach((x) => x.classList.remove("hot", "done"));
     const log = (t, kind = "") => { const sp = document.createElement("span"); sp.className = (/^\s{4}/.test(t) || /subagent/.test(t) ? "sub " : "") + kind; sp.textContent = t + "\n"; out.appendChild(sp); out.scrollTop = out.scrollHeight; };
     session = E.makeSession(key, log);
     session.onRequest = (b) => {
@@ -176,13 +196,18 @@ content-type: application/json
   "messages": [ ${b.messages.length} message${b.messages.length > 1 ? "s" : ""}: the whole conversation so far, ending with ${lastDesc} ]
 }`;
     };
-    session.step = (id) => { document.querySelectorAll("#loop span").forEach((x) => x.classList.toggle("hot", x.dataset.step === id)); };
+    session.step = (id) => {
+      document.querySelectorAll("#loop span").forEach((x) => x.classList.toggle("hot", x.dataset.step === id));
+      document.querySelectorAll(".loopsvg .n").forEach((x) => x.classList.toggle("hot", x.dataset.step === id));
+    };
+    document.querySelector('.loopsvg .n[data-step="start"]').classList.add("hot");
     $("#run").textContent = "■ Stop"; $("#run").classList.add("stop");
     let res = null;
     try { res = await spec.run(session, E); } catch (e) { log(`!! ${e.message}`, "error"); }
     log(`\n${session.usage.calls} Claude call${session.usage.calls === 1 ? "" : "s"} on claude-haiku-5-5 · about US$${session.cost().toFixed(4)} on your API key`, "note");
     $("#run").textContent = "▶ Simulate it again"; $("#run").classList.remove("stop");
-    document.querySelectorAll("#loop span").forEach((x) => x.classList.remove("hot"));
+    document.querySelectorAll("#loop span, .loopsvg .n").forEach((x) => x.classList.remove("hot"));
+    if (session.trace.filter((t) => !t.label).at(-1)?.stop_reason === "end_turn") document.querySelector('.loopsvg .n[data-step="stop"]').classList.add("done");
     const trace = session.trace, reqs = session.requests; session = null;
     if (!res) return;
     const main = trace.filter((t) => !t.label);

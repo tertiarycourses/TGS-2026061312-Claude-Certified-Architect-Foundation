@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 40: Keep the facts, cache the handbook</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-40-context-and-prompt-caching">Open the folder on GitHub</a><a class="btn alt" href="lab-40-context-and-prompt-caching.pdf">Download the PDF</a></p><h1>Lab 40: Keep the facts, cache the handbook</h1>
+<blockquote>
+<p>Day 2 · Topic 5: Context Management &amp; Reliability · Task statement 5.1 · Code lab · Claude Haiku 5.5</p>
+</blockquote>
+<p><strong>A 1,402-token policy is cached once and read back at a tenth of the price, while the case facts ride along every turn.</strong></p>
+<h2>What you'll do</h2>
+<p>Run a three-turn support chat that caches a long policy handbook, restates a case-facts block every turn, and trims a 40-field tool record to the 5 fields that matter.</p>
+<h2>What's in this folder</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy.md</code></td>
+<td>the support handbook (cached)</td>
+</tr>
+<tr>
+<td><code>cached_support.py</code></td>
+<td>the three-turn chat</td>
+</tr>
+</tbody>
+</table>
+<h2>Before you start</h2>
+<ul>
+<li>Open a terminal in the labs folder. Windows: use Git Bash for the .sh scripts (it comes with Git); PowerShell is fine for the Python ones.</li>
+<li>Set your Anthropic API key once, if you haven't already. It is saved to labs/.env on your laptop and never uploaded. Run <code>uv run set_api_key.py</code>.</li>
+<li>Go into this lab's folder. Run <code>cd lab-40-context-and-prompt-caching</code>.</li>
+</ul>
+<p>You need uv (https://docs.astral.sh/uv/) for the Python scripts. Every call uses Claude Haiku 5.5 and costs a fraction of a US cent.</p>
+<h2>Steps</h2>
+<p><strong>Step 1.</strong> Run the chat. Read the cache numbers on each turn.</p>
+<pre><code>uv run cached_support.py
+</code></pre>
+<p><strong>Step 2.</strong> Check that the refund amount (SGD 480) and the courier rule (over 20 kg) stay right in turns 2 and 3.</p>
+<h2>What you should see</h2>
+<p>From a live run on Claude Haiku 5.5 (your wording will differ; the behaviour should not):</p>
+<ul>
+<li><code>Order record: 40 fields from the system, 5 kept</code></li>
+<li><code>Turn 1: cache write 1402, cache read 0</code></li>
+<li><code>Turn 2: cache write 0, cache read 1402</code></li>
+<li><code>Turn 3: cache write 0, cache read 1402</code></li>
+</ul>
+<p>The full output of our run is in <code>sample-output.txt</code>.</p>
+<h2>The key lines, explained</h2>
+<p>In <code>cached_support.py</code>, look for the <code>KEY</code> comments:</p>
+<ul>
+<li><strong>KEY 1.</strong> Stable text first, with the cache marker on the last stable block. Anything that changes goes after it.</li>
+<li><strong>KEY 2.</strong> Trim tool output before it enters the context: 5 fields kept out of 40.</li>
+<li><strong>KEY 3.</strong> The case-facts block is restated every turn, so key numbers never depend on an old message.</li>
+<li><strong>KEY 4.</strong> usage proves it: cache write on turn 1, cache read on every turn after.</li>
+</ul>
+<h2>The code: <code>cached_support.py</code></h2>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.10&quot;
+# dependencies = [&quot;anthropic&gt;=2.0&quot;, &quot;python-dotenv&gt;=1.0&quot;]
+# ///
+&quot;&quot;&quot;Lab 40: keep the facts that matter, pay less for the context that repeats.
+  - prompt caching: the long policy handbook is cached once, then read at a tenth of the price
+  - a case-facts block: the numbers that must survive a long chat are restated every turn, not left in old messages
+  - trimmed tool output: keep the 5 fields you need, not the 40 the system returns
+Run:  uv run cached_support.py&quot;&quot;&quot;
+import json
+from pathlib import Path
+import anthropic
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv(usecwd=True))
+client = anthropic.Anthropic()
+MODEL = &quot;claude-haiku-5-5&quot;
+
+SYSTEM = [  # KEY 1: stable text first, cache marker on the last stable block
+    {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;You are a Lumen Home Goods support agent. Follow the handbook exactly.&quot;},
+    {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: Path(&quot;policy.md&quot;).read_text(), &quot;cache_control&quot;: {&quot;type&quot;: &quot;ephemeral&quot;}},
+]
+
+RAW_ORDER = {&quot;order_id&quot;: &quot;ORD-5508&quot;, &quot;customer&quot;: &quot;CUS-0042&quot;, &quot;item&quot;: &quot;Wool rug 2x3m&quot;, &quot;amount_sgd&quot;: 480.0,
+             &quot;delivered&quot;: &quot;2026-11-02&quot;, &quot;weight_kg&quot;: 24, **{f&quot;warehouse_field_{i}&quot;: &quot;…&quot; for i in range(34)}}
+KEEP = (&quot;order_id&quot;, &quot;item&quot;, &quot;amount_sgd&quot;, &quot;delivered&quot;, &quot;weight_kg&quot;)
+order = {k: RAW_ORDER[k] for k in KEEP}                         # KEY 2: trim before it enters the context
+print(f&quot;Order record: {len(RAW_ORDER)} fields from the system, {len(order)} kept&quot;)
+
+case_facts = {&quot;customer&quot;: &quot;Mei Ling (CUS-0042)&quot;, &quot;order&quot;: order, &quot;promised_so_far&quot;: &quot;nothing&quot;}
+turns = [&quot;Hi, I'm Mei Ling. My rug from ORD-5508 is the wrong colour. Can I swap it?&quot;,
+         &quot;Actually, just refund me instead. How much do I get back?&quot;,
+         &quot;And who collects it? It's really heavy.&quot;]
+
+history = []
+for n, question in enumerate(turns, 1):
+    facts = f&quot;&lt;case_facts&gt;\n{json.dumps(case_facts, indent=1)}\n&lt;/case_facts&gt;\n\n&quot;   # KEY 3: restated every turn
+    history.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: facts + question})
+    r = client.messages.create(model=MODEL, max_tokens=2048, system=SYSTEM, messages=history)
+    reply = &quot;&quot;.join(b.text for b in r.content if b.type == &quot;text&quot;)
+</code></pre>
+<pre><code class="language-python">    history.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: r.content})
+    u = r.usage
+    print(f&quot;\nTurn {n}: cache write {u.cache_creation_input_tokens}, cache read {u.cache_read_input_tokens}, &quot;
+          f&quot;uncached {u.input_tokens}&quot;)                           # KEY 4: proof the cache is working
+    print(&quot;  Customer:&quot;, question)
+    print(&quot;  Agent   :&quot;, &quot; &quot;.join(reply.split())[:300])
+</code></pre>
+<h2>Try this</h2>
+<p>Put today's date at the start of the first system block and run twice. The cache never hits: one changing byte early in the prefix breaks it.</p>
+<h2>How this shows up in the exam</h2>
+<p>Task 5.1: keep transactional facts in a persistent case-facts block, trim verbose tool output, and put key material where it won't be lost in a long context.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

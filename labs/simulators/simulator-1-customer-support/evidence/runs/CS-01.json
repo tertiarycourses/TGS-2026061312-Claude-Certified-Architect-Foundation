@@ -51,7 +51,7 @@
         "shipping_refund": 0,
         "merchandise_credit": 0,
         "refund_total": 120,
-        "rationale": "Ceramic table lamp arrived cracked; damage photo on file (damage_photo: true). Order amount $120 is within the $500 auto-approval limit. Single charge, no duplicate."
+        "rationale": "Ceramic table lamp arrived cracked; customer provided damage photo (damage_photo=true on order record). Full order amount $120.00 is within the $500 auto-approval limit."
       },
       "result": "{\"validated\": true, \"order_id\": \"ORD-5501\", \"cash_refund\": 120.0, \"merchandise_credit\": 0.0, \"message\": \"Recommendation validated. You may call process_refund for the cash amount.\"}",
       "is_error": false
@@ -61,9 +61,9 @@
       "input": {
         "order_id": "ORD-5501",
         "amount": 120,
-        "reason": "Ceramic table lamp arrived cracked; damage photo on file."
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; full order refund."
       },
-      "result": "{\"refund_id\": \"RF-86043\", \"order_id\": \"ORD-5501\", \"amount\": 120.0, \"reason\": \"Ceramic table lamp arrived cracked; damage photo on file.\", \"status\": \"issued\"}",
+      "result": "{\"refund_id\": \"RF-91856\", \"order_id\": \"ORD-5501\", \"amount\": 120.0, \"reason\": \"Ceramic table lamp arrived cracked; damage photo on file; full order refund.\", \"status\": \"issued\"}",
       "is_error": false
     }
   ],
@@ -150,7 +150,7 @@
         "shipping_refund": 0,
         "merchandise_credit": 0,
         "refund_total": 120,
-        "rationale": "Ceramic table lamp arrived cracked; damage photo on file (damage_photo: true). Order amount $120 is within the $500 auto-approval limit. Single charge, no duplicate."
+        "rationale": "Ceramic table lamp arrived cracked; customer provided damage photo (damage_photo=true on order record). Full order amount $120.00 is within the $500 auto-approval limit."
       },
       "decision": "allow",
       "reason": null
@@ -179,7 +179,7 @@
       "args": {
         "order_id": "ORD-5501",
         "amount": 120,
-        "reason": "Ceramic table lamp arrived cracked; damage photo on file."
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; full order refund."
       },
       "decision": "allow",
       "reason": null
@@ -188,23 +188,23 @@
       "event": "PostToolUse",
       "tool": "process_refund",
       "raw": {
-        "refund_id": "RF-86043",
+        "refund_id": "RF-91856",
         "order_id": "ORD-5501",
         "amount": 120.0,
-        "reason": "Ceramic table lamp arrived cracked; damage photo on file.",
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; full order refund.",
         "status": "issued"
       },
       "normalised": {
-        "refund_id": "RF-86043",
+        "refund_id": "RF-91856",
         "order_id": "ORD-5501",
         "amount": 120.0,
-        "reason": "Ceramic table lamp arrived cracked; damage photo on file.",
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; full order refund.",
         "status": "issued"
       }
     }
   ],
   "assistant_text": [
-    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan, meilin@example.com)\n- Order: ORD-5501, ceramic table lamp, $120.00\n- Status: delivered (placed 2026-10-01, ETA 2026-10-06)\n- Damage photo: on file; single charge\n- Refund: RF-86043, $120.00, status issued (cash to original payment method)\n\nHi Mei Lin, I'm sorry your ceramic table lamp arrived cracked. Your photo confirms the damage, so I've issued a full refund of $120.00 (refund ID RF-86043) to your original payment method. Please allow your bank a few business days to post it. No return of the lamp was requested, so there's no further action needed from you."
+    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan, meilin@example.com)\n- Order: ORD-5501, ceramic table lamp, $120.00\n- Status: delivered (placed 2026-10-01, ETA 2026-10-06)\n- Damage photo: on file; charges: 1\n- Refund: RF-91856, $120.00 cash, status issued\n\nHi Mei Lin,\n\nI'm sorry your ceramic table lamp arrived cracked. Your photo confirms the damage, so I've issued a full refund of $120.00 (refund RF-91856) to your original payment method. Please allow a few business days for it to appear.\n\nYou don't need to return the broken lamp for this refund. If you'd like, you can let us know if you want help with anything else on this order or a replacement."
   ],
   "settings": {
     "model": "claude-haiku-5-5",
@@ -212,25 +212,25 @@
     "limit_hook": true
   },
   "turn_replies": [
-    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan, meilin@example.com)\n- Order: ORD-5501, ceramic table lamp, $120.00\n- Status: delivered (placed 2026-10-01, ETA 2026-10-06)\n- Damage photo: on file; single charge\n- Refund: RF-86043, $120.00, status issued (cash to original payment method)\n\nHi Mei Lin, I'm sorry your ceramic table lamp arrived cracked. Your photo confirms the damage, so I've issued a full refund of $120.00 (refund ID RF-86043) to your original payment method. Please allow your bank a few business days to post it. No return of the lamp was requested, so there's no further action needed from you."
+    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan, meilin@example.com)\n- Order: ORD-5501, ceramic table lamp, $120.00\n- Status: delivered (placed 2026-10-01, ETA 2026-10-06)\n- Damage photo: on file; charges: 1\n- Refund: RF-91856, $120.00 cash, status issued\n\nHi Mei Lin,\n\nI'm sorry your ceramic table lamp arrived cracked. Your photo confirms the damage, so I've issued a full refund of $120.00 (refund RF-91856) to your original payment method. Please allow a few business days for it to appear.\n\nYou don't need to return the broken lamp for this refund. If you'd like, you can let us know if you want help with anything else on this order or a replacement."
   ],
   "result": {
     "subtype": "success",
     "stop_reason": "end_turn",
     "num_turns": 5,
-    "total_cost_usd": 0.0014097450000000002,
-    "session_id": "113e1e64-f3fb-43fd-83e8-f4453dc3447a",
+    "total_cost_usd": 0.0014010000000000001,
+    "session_id": "1ebcd080-3135-4a70-ae1b-e65abf911f67",
     "is_error": false,
     "terminal_reason": "completed"
   },
-  "reply": "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan, meilin@example.com)\n- Order: ORD-5501, ceramic table lamp, $120.00\n- Status: delivered (placed 2026-10-01, ETA 2026-10-06)\n- Damage photo: on file; single charge\n- Refund: RF-86043, $120.00, status issued (cash to original payment method)\n\nHi Mei Lin, I'm sorry your ceramic table lamp arrived cracked. Your photo confirms the damage, so I've issued a full refund of $120.00 (refund ID RF-86043) to your original payment method. Please allow your bank a few business days to post it. No return of the lamp was requested, so there's no further action needed from you.",
+  "reply": "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan, meilin@example.com)\n- Order: ORD-5501, ceramic table lamp, $120.00\n- Status: delivered (placed 2026-10-01, ETA 2026-10-06)\n- Damage photo: on file; charges: 1\n- Refund: RF-91856, $120.00 cash, status issued\n\nHi Mei Lin,\n\nI'm sorry your ceramic table lamp arrived cracked. Your photo confirms the damage, so I've issued a full refund of $120.00 (refund RF-91856) to your original payment method. Please allow a few business days for it to appear.\n\nYou don't need to return the broken lamp for this refund. If you'd like, you can let us know if you want help with anything else on this order or a replacement.",
   "backend_state": {
     "refunds": [
       {
-        "refund_id": "RF-86043",
+        "refund_id": "RF-91856",
         "order_id": "ORD-5501",
         "amount": 120.0,
-        "reason": "Ceramic table lamp arrived cracked; damage photo on file.",
+        "reason": "Ceramic table lamp arrived cracked; damage photo on file; full order refund.",
         "status": "issued"
       }
     ],
@@ -254,7 +254,7 @@
           "shipping_refund": 0,
           "merchandise_credit": 0,
           "refund_total": 120,
-          "rationale": "Ceramic table lamp arrived cracked; damage photo on file (damage_photo: true). Order amount $120 is within the $500 auto-approval limit. Single charge, no duplicate."
+          "rationale": "Ceramic table lamp arrived cracked; customer provided damage photo (damage_photo=true on order record). Full order amount $120.00 is within the $500 auto-approval limit."
         },
         "errors": []
       }

@@ -4,6 +4,13 @@
 ## Goal
 Task statement 5.5: **Design human review workflows and confidence calibration.** You answer one exam-style question, then run the Structured Data Extraction simulator once and watch the right answer work with a real Claude call.
 
+## Open this lab
+
+- **Run it live in your browser (nothing to install):** open [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=29](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=29), paste your Anthropic API key into the sidebar once, then press **Simulate it live**. Every call uses `claude-haiku-5-5`.
+- **Or on the local Python simulator:** start it (double-click `labs/start-labs.command` on Mac or `labs\start-labs.cmd` on Windows), then open [http://localhost:8765/sim6?lab=29](http://localhost:8765/sim6?lab=29).
+- **In a terminal, one click:** double-click `run-lab.command` (Mac) or `run-lab.cmd` (Windows) in this folder. It runs `uv run extract.py` from `simulators/simulator-6-structured-extraction`.
+- **The code it runs:** [simulators/simulator-6-structured-extraction/extract.py](https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/blob/master/labs/simulators/simulator-6-structured-extraction/extract.py). The lab folder holds the instructions; the simulator folder holds the code, so all its labs share one working system.
+
 ## The scenario
 You are building a structured data extraction system using Claude. The system extracts information from unstructured documents, validates the output using JavaScript Object Notation (JSON) schemas, and maintains high accuracy. It must handle edge cases gracefully and integrate with downstream systems.
 

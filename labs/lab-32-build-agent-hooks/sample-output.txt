@@ -1,0 +1,33 @@
+$ uv run -q hooks_agent.py
+Claude -> lookup_order({'order_id': 'ORD-5501'})
+Claude: The order is delivered and has a damage photo on file, so I'll refund the full amount of $120.00.
+Claude -> process_refund({'order_id': 'ORD-5501', 'amount': 120})
+Claude: I refunded order ORD-5501 in full: $120.00 for the ceramic table lamp. The refund ID is RF-20481 and its status is "issued." It goes back to the original payment method.
+
+3 turns, cost $0.0004, stop: success
+
+== Hook log
+PreToolUse  allow lookup_order({'order_id': 'ORD-5501'})
+PostToolUse normalise lookup_order: placed_at 1790812800 -> '2026-10-01T00:00:00Z', status 3 -> 'delivered'
+PreToolUse  allow process_refund({'order_id': 'ORD-5501', 'amount': 120})
+
+$ uv run -q hooks_agent.py ORD-5502
+Claude -> lookup_order({'order_id': 'ORD-5502'})
+Claude -> process_refund({'order_id': 'ORD-5502', 'amount': 780})
+Claude: The refund hook requires human approval for amounts over $500, so I'm escalating this $780 refund instead of processing it.
+Claude -> escalate_to_human({'reason': 'Customer reports ORD-5502 (standing desk, delivered 2026-10-20, status delivered) arrived damaged, and the order has a damage photo attached. Under the damaged-item policy this qualifies for a full refund, but the refund process hook blocked the $780.00 refund because it exceeds the $500 limit that requires human approval. Please review the damage photo and approve a full refund of $780.00 to the original payment method.', 'amount': 780})
+Claude: I haven't issued the refund for ORD-5502. The $780.00 refund is above the $500 limit that needs human approval, so I've escalated it.
+
+- **Order:** ORD-5502, standing desk, delivered, placed 2026-10-20
+- **Damage:** the order has a damage photo, which meets the policy for a full refund.
+- **Escalation:** ticket HS-0007 is queued for a human reviewer, who will need to check the photo and approve the $780.00 refund to the original payment method.
+
+No money has moved yet. The customer will get the refund once the reviewer approves it.
+
+4 turns, cost $0.0007, stop: success
+
+== Hook log
+PreToolUse  allow lookup_order({'order_id': 'ORD-5502'})
+PostToolUse normalise lookup_order: placed_at '2026-10-20T10:00:00Z' -> '2026-10-20T10:00:00Z', status 'delivered' -> 'delivered'
+PreToolUse  DENY  process_refund({'order_id': 'ORD-5502', 'amount': 780})  -> Refunds above $500 need human approval. Call escalate_to_human instead.
+PreToolUse  allow escalate_to_human({'reason': 'Customer reports ORD-5502 (standing desk, delivered 2026-10-20, status delivered) arrived damaged, and the order has a damage photo attached. Under the damaged-item policy this qualifies for a full refund, but the refund process hook blocked the $780.00 refund because it exceeds the $500 limit that requires human approval. Please review the damage photo and approve a full refund of $780.00 to the original payment method.', 'amount': 780})
