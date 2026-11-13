@@ -9,14 +9,22 @@ const PRICE = { in: 0.10 / 1e6, out: 0.50 / 1e6 };       // Haiku 5.5, US$ per t
 export function makeSession(apiKey, log) {
   const s = { apiKey, log: log || ((l) => console.log(l)), usage: { input: 0, output: 0, calls: 0 }, stopped: false,
               trace: [],               // one entry per Claude turn: { label, turn, stop_reason, tools, text }
+              requests: [],            // every request body sent, so the page can show each call as curl
               step: () => {} };        // the page highlights the loop line that is running: "call" | "check" | "tool" | "append" | "stop"
   s.cost = () => s.usage.input * PRICE.in + s.usage.output * PRICE.out;
   return s;
 }
 
+// The same call as a terminal command: what fetch() sends is exactly this HTTPS POST.
+export function asCurl(body) {
+  const json = JSON.stringify(body, null, 1).replace(/'/g, "'\\''");
+  return `curl https://api.anthropic.com/v1/messages \\\n  -H "x-api-key: $ANTHROPIC_API_KEY" \\\n  -H "anthropic-version: 2023-06-01" \\\n  -H "content-type: application/json" \\\n  -d '${json}'`;
+}
+
 // One Messages API call. Throws an Error with a readable message on any API error.
 export async function callClaude(s, body) {
   if (s.stopped) throw new Error("Stopped.");
+  s.requests.push({ model: MODEL, max_tokens: 4096, ...body });
   const res = await fetch(API, {
     method: "POST",
     headers: {

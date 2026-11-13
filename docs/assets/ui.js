@@ -149,7 +149,7 @@ export async function lab() {
     log(`\n${session.usage.calls} Claude call${session.usage.calls === 1 ? "" : "s"} on claude-haiku-5-5 · about US$${session.cost().toFixed(4)} on your API key`, "note");
     $("#run").textContent = "▶ Simulate it again"; $("#run").classList.remove("stop");
     document.querySelectorAll("#loop span").forEach((x) => x.classList.remove("hot"));
-    const trace = session.trace; session = null;
+    const trace = session.trace, reqs = session.requests; session = null;
     if (!res) return;
     const main = trace.filter((t) => !t.label);
     const finalText = res.final || [...main].reverse().find((t) => t.text)?.text || "";
@@ -170,6 +170,10 @@ export async function lab() {
         <div class="caption">${main.length} turn${main.length === 1 ? "" : "s"} of the main loop${trace.length > main.length ? `, plus ${trace.length - main.length} subagent turns` : ""}. The loop never reads Claude's wording to decide what to do next: <code>stop_reason</code> is the signal.</div></div>
       <div class="box"><h4>Checks on what Claude actually did</h4><div class="checks">${(res.checks || []).map((c) => `<div class="${c.pass ? "pass" : "fail"}">${c.pass ? "✔ PASS" : "✘ FAIL"} · ${esc(c.label)}</div>`).join("")}</div>
         ${(res.checks || []).some((c) => !c.pass) ? `<div class="caption">Claude writes each run fresh, so a check can occasionally miss. Read the output, then run it again.</div>` : ""}</div>
+      <details><summary>Every Claude call as curl (${reqs.length} call${reqs.length === 1 ? "" : "s"}): copy one into a terminal to send the same request yourself</summary>
+        <div class="caption">This page sends each call with JavaScript fetch(). The curl command is the identical HTTPS POST. Set ANTHROPIC_API_KEY in your terminal first.</div>
+        ${reqs.map((b, i) => `<details><summary>Call ${i + 1}: ${b.messages.length} message${b.messages.length === 1 ? "" : "s"} in the conversation${b.tools ? `, ${b.tools.length} tools` : ""}</summary><pre class="code">${esc(E.asCurl(b))}</pre></details>`).join("")}
+      </details>
       ${(spec.explain || l.explain) ? `<div class="box"><h4>Why it happens</h4>${md(spec.explain || l.explain)}</div>` : ""}
       ${l.exam_tip ? `<div class="box"><h4>Exam tip</h4>${md(l.exam_tip)}</div>` : ""}
       ${spec.try ? `<div class="box"><h4>Try this next</h4>${md(spec.try)}</div>` : ""}`;
