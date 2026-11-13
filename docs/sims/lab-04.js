@@ -81,7 +81,7 @@ def post_tool_use(name, result):
     keys: [["1", "Runs before every call", "The hook sees each tool call before it executes."],
            ["2", "Checks state, not wording", "No verified id on the call: the order call is blocked."],
            ["3", "Denial tells Claude why", "Claude reads the reason, verifies, then retries."],
-           ["4", "Only a real result unlocks", "The id comes from get_customer, not the message."]],
+           ["4", "Only a real result opens it", "The id comes from get_customer, not the message."]],
   },
   async run(s, E) {
     s.log("Case CS-03 · meilin@example.com: \"Check my order ORD-5504, where is it? This is Mei Lin.\"", "note");
