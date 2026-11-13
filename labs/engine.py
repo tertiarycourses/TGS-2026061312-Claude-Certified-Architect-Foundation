@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parent
 SIMS_DIR = HERE / "simulators"
 LABS = {l["id"]: l for l in json.loads((HERE / "labs.json").read_text(encoding="utf-8"))}
 SIMS = {s["n"]: s for s in json.loads((HERE / "sims.json").read_text(encoding="utf-8"))}
-MODELS = ["claude-sonnet-5-5", "claude-haiku-5-5", "claude-opus-5-5"]
+MODELS = ["claude-haiku-5-5"]  # one model for the whole course
 TEXT = {".json", ".md", ".txt", ".py", ".sh", ".jsonl", ".yml", ".yaml", ".toml", ".ts", ".tsx", ".js", ".html", ".css", ".log"}
 SKIP = {"__pycache__", "node_modules", ".git", ".pristine-evidence", "work"}
 JOBS, ACTIVE, LOCK = {}, {}, threading.Lock()
@@ -33,14 +33,10 @@ def claude_cli():
         return None
 
 def login():
-    """Is this laptop signed in to Claude? Asks the same CLI the SDK drives."""
-    try:
-        exe = claude_cli()
-        if not exe: return False, ""
-        d = json.loads(subprocess.run([exe, "auth", "status"], capture_output=True, text=True, timeout=20, env=dict(os.environ, **UTF8)).stdout)
-        return bool(d.get("loggedIn")), d.get("authMethod", "")
-    except Exception:
-        return False, ""
+    """Is an Anthropic API key available? (ANTHROPIC_API_KEY in labs/.env, the course folder's .env, or the environment.)"""
+    key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    if not key or "sk-ant-..." in key: return False, ""
+    return True, f"sk-ant-…{key[-4:]}"
 
 class Job:
     def __init__(self, sim, title):
@@ -132,8 +128,7 @@ def run_steps(n, title, steps, model=None, evidence=(), live=True):
     job = Job(n, title); job.evidence = list(evidence)
     if not _claim(job): return None
     env = dict(os.environ, PYTHONUNBUFFERED="1", **UTF8)
-    for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "CLAUDECODE"): env.pop(k, None)
-    if model: env["LAB_MODEL"] = model
+    for k in ("ANTHROPIC_AUTH_TOKEN", "CLAUDECODE"): env.pop(k, None)  # keep ANTHROPIC_API_KEY: the labs run on it
     ledger = env[costnote.ENV] = costnote.new_ledger()  # every Claude run in these steps logs its estimated API cost here
     def beat():  # silence reads as broken, so say we're alive
         while not job.done:

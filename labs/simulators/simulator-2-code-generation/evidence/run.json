@@ -1,9 +1,9 @@
 {
-  "model": "claude-opus-5-5",
+  "model": "claude-haiku-5-5",
   "steps": {
     "1": {
       "claude_md_quote": "Every bug fix ships with a regression test that fails before the fix.",
-      "quote_session": "f1f43187-fe6b-4abc-9658-dc737a733c77",
+      "quote_session": "543d2a12-7c6f-4085-897d-26b03a2fbe91",
       "imports_resolved": [
         "docs/standards/testing.md",
         "docs/standards/review-criteria.md"
@@ -12,8 +12,8 @@
         "src/components/Button.test.tsx": {
           "label": "test file",
           "answer": "tests.md, react-components.md",
-          "session_id": "d35b52e2-9558-4736-868c-c59787f107b8",
-          "cost_usd": 0.3518971000000001,
+          "session_id": "672b9ce4-f1ef-437b-96c1-5e6aaf18299c",
+          "cost_usd": 0.0019795000000000004,
           "loaded": [
             "react-components.md",
             "tests.md"
@@ -22,8 +22,8 @@
         "src/api/orders.js": {
           "label": "api handler",
           "answer": "api-handlers.md",
-          "session_id": "17213c22-acf9-40b4-96e4-2f7cb7059854",
-          "cost_usd": 0.3501346,
+          "session_id": "aaa9ec4c-e788-4db9-8bf6-a3126b8b2967",
+          "cost_usd": 0.002165935,
           "loaded": [
             "api-handlers.md"
           ]
@@ -32,17 +32,17 @@
     },
     "2": {
       "review": {
-        "session_id": "f1112de4-ee8c-40ba-bfe8-1fb16e1cc381",
+        "session_id": "8eaeaba3-80c2-46f0-8859-5fdf7cf734b6",
         "verdict": "request-changes",
         "diff_under_review": "src/api/orders.js: authorize() check removed from getOrder",
-        "output": "# Review of the diff against `main`\n\nThe change removes the authorization check from `getOrder`, so I'm requesting changes. It's one uncommitted deletion in the working tree, with no commits ahead of `main`.\n\n## 1. Changed files\n- `src/api/orders.js`: removes the `orders:read` check from the `getOrder` handler.\n\n## 2. Findings\n\n### Security: `getOrder` no longer checks authorization\n**Location:** `src/api/orders.js:8-9`\n\n**Evidence:**\n- **Removed line:** `if (!authorize(req.user, \"orders:read\")) return res.status(403).end();`\n- **Broken contract:** `README.md:8` says \"`getOrder` now requires `orders:read`\".\n- **Inconsistent handlers:** `listOrders` still has the same check at `src/api/orders.js:15`, and it's now the only use of the `authorize` import.\n- **No other guard found:** `authorize` is only called from this file, and the repo has no router or middleware chain that could apply it. A guard outside this repo is still possible.\n\n**Impact:** a request with no `req.user`, or with a role not allowed `orders:read`, used to get a 403. It now reaches `repo.findById` with any ID from the URL, so once the repository has a real database (see the first item under \"Existing issues\"), order data is returned to anyone. There is no bug-fix reason for this in the diff, and it looks like an accidental or debugging change.\n\n**Suggested fix:** restore the line as the first statement in `getOrder`:\n```js\nexport async function getOrder(req, res) {\n  if (!authorize(req.user, \"orders:read\")) return res.status(403).end();\n  const order = await repo.findById(req.params.id);\n```\nIf removing the check is intentional, it's a public-interface change. It would need to be explained in the PR body, `README.md:8` updated, and a replacement guard shown.\n\n## 3. Test check\n- **Bug-fix tests:** the diff contains no bug fix and no test changes, so no regression test is required.\n- **Coverage gap:** no test imports `src/api/orders.js`; the only test file is `tests/quantity.test.js`. Nothing would catch this removal, and `getOrder` lacks the expected, edge-case and failure-path tests that `docs/standards/testing.md` requires.\n- **Recommended test:** add one asserting a 403 when `req.user` is missing and when the role isn't allowed.\n- **Tests not run:** `npm test -- --changed` was denied by this session's permission mode, so I reviewed by reading the code only. The suite doesn't cover this file, so a pass wouldn't have shown the handler is safe.\n\n## Existing issues outside the diff\nThese don't affect the verdict, but they are worth tracking:\n- **Repository has no database:** `src/api/orders.js:6` calls `new OrderRepository()` without a `db`, so `findById` always returns `null`. As checked in, `getOrder` returns 404 for every request, so the leak needs a real database to be reachable.\n- **Crash on unshipped orders:** `src/api/orders.js:11` passes `shippedAt` to `formatDate`, which throws on `null` (bug report T1, and `README.md:5` documents the throw). Fixture `ORD-1002` has `shippedAt: null`, and with no `try/catch` the handler's promise rejects.\n- **No ownership check:** the `customer` role has `orders:read` (`src/middleware/authorize.js:3`), and neither handler limits results to the customer's own orders. Restoring the check still lets any customer read any order by ID, and `listOrders` returns everyone's recent orders. The fixtures have no owner field, so confirm how ownership is modelled.\n\nVERDICT: request-changes",
-        "cost_usd": 0.5139488
+        "output": "**Changed files**\n- `src/api/orders.js`: removes the `orders:read` authorization check from `getOrder`. This is the only changed file.\n\n**Findings**\n\n1. **Broken access control (security, correctness). Severity: high.**\n   - File: `src/api/orders.js`, line 8\u20139.\n   - Evidence: the diff deletes `if (!authorize(req.user, \"orders:read\")) return res.status(403).end();`. `getOrder` now calls `repo.findById(req.params.id)` and returns the full order to any caller. `authorize()` returns `false` when `req.user` is missing (`src/middleware/authorize.js:9`), so unauthenticated requests would previously get a 403 and now get the order. `listOrders` (line 15) still has the check, so the two handlers are now inconsistent.\n   - Contract breach: `README.md:8` documents \"1.3 -> 1.4: `getOrder` now requires `orders:read`.\" The diff reverts that requirement.\n   - Suggested fix: restore the line before the lookup, so unauthorized callers get no existence signal:\n     ```js\n     export async function getOrder(req, res) {\n       if (!authorize(req.user, \"orders:read\")) return res.status(403).end();\n       const order = await repo.findById(req.params.id);\n       ...\n     ```\n\n2. **Pre-existing gap, not introduced by this diff (security, informational).** `authorize` checks only the role, not ownership. Because `customer` is in the `orders:read` role list, any customer can read any other customer's order by ID, both before and after this change. This is worth a follow-up ticket, but it does not block this diff.\n\n**Test coverage (`docs/standards/testing.md`)**\n- This change is not a bug fix, so the regression-test rule does not apply.\n- The standard requires one failure path per public function. `getOrder` has no tests at all (the only test files are `tests/quantity.test.js` and `src/components/Button.test.tsx`). Restoring the check should come with a test that an request without a user gets 403 and never reaches `findById`.\n- I did not run `npm test -- --changed`. The review was static only.\n\n**Notes on the attempt**\n- The `review` skill was denied by the permission mode, so I ran the review manually from `git diff main`. The results above are from that manual pass.\n\nVERDICT: request-changes",
+        "cost_usd": 0.003921565
       },
       "codebase_map": {
-        "session_id": "81621233-9466-44d6-8b90-b71de6fec4fd",
-        "output": "**`src/api` map** (one file: `src/api/orders.js`)\n\n**Entry points**\n- `getOrder(req, res)` returns one order by `req.params.id`, or 403/404.\n- `listOrders(req, res)` returns orders from the last 30 days, or 403.\n- No router or server file exists in the workspace, so nothing mounts these handlers and the routes are undefined here.\n\n**Data flow**\n1. `authorize(req.user, \"orders:read\")` in `src/middleware/authorize.js` checks a hard-coded role list. It allows admin, support and customer.\n2. A module-level `new OrderRepository()` in `src/db/orderRepository.js` handles the read, through `findById(id)` or `findSince(date)`.\n3. `getOrder` adds `shippedAt` via `formatDate` (`src/utils/formatDate.js`) and `age` via `moment().fromNow()`. `listOrders` returns rows unchanged.\n\n**External calls**\n- The only third-party library is `moment`, used in `orders.js` and `orderRepository.js`.\n- The database is an injected `db` with `get` and `all`, but no driver or client is in the repo. There are no HTTP or MCP calls.\n\n**Tests**\n- Nothing covers `src/api`, `authorize`, `OrderRepository` or `formatDate`. The only test in `tests/` is `quantity.test.js`, which covers `validateQuantity`. `tests/fixtures/orders.json` is present, but that test doesn't use it.\n- `npm test` runs `node --test tests/`, so it won't pick up `src/components/Button.test.tsx`.\n\n**Worth knowing before a change** (from reading the code; nothing was run)\n- **No database wired in:** `new OrderRepository()` gets no `db`, so `findById` always returns null (404) and `findSince` always returns `[]`.\n- **Open bug T1:** `formatDate` throws on a null `shippedAt`, so `getOrder` would crash on an unshipped order once a database is connected. The bug note is in `formatDate.js`.\n- **No ownership check:** any customer passes `orders:read` for any order ID, so `getOrder` can expose other customers' orders.\n- **Convention gaps against `.claude/rules/api-handlers.md`:** handlers have no `try/catch` or `ApiError`, and `src/api/schemas/` doesn't exist.\n\nNo files were edited.",
+        "session_id": "077cbfbd-03d3-4b53-ab59-2ba15f46eb96",
+        "output": "**Map: `src/api`** (one file, `src/api/orders.js`)\n\n- **Entry points:** `getOrder(req, res)` handles a single order by `req.params.id`. `listOrders(req, res)` returns orders from the last 30 days.\n- **Data flow:** each handler checks `authorize(req.user, \"orders:read\")` from `src/middleware/authorize.js` and returns 403 on failure. It then calls `OrderRepository` (`src/db/orderRepository.js`) once at module load, via `findById` or `findSince`. The response is JSON. `getOrder` adds `shippedAt` via `formatDate` (`src/utils/formatDate.js`) and an `age` field via moment's `fromNow()`.\n- **External calls:** `moment`, plus the three local modules above. No HTTP or network calls.\n- **Tests:** none. The only test file under `src/` is `src/components/Button.test.tsx`, and no spec matches orders.\n- **Gaps against `.claude/rules/api-handlers.md`:**\n  - Neither handler has a `try/catch`, so a repository error becomes an unhandled rejection.\n  - `ApiError` and a stable `code` field do not exist anywhere in the repo (grep found no definition).\n  - `src/api/schemas/` does not exist, so there is no zod validation. `getOrder` uses `req.params.id` unchecked.\n- **Other notes:** `getOrder` returns 404 with no body, and the 403 and 404 responses carry no error code. `listOrders` has the 30-day window hardcoded.\n\nI did not edit anything. Fixing the gaps above would be a change for the main session.",
         "mentions_orders_handler": true,
-        "cost_usd": 0.7438062000000001
+        "cost_usd": 0.006667300000000001
       }
     },
     "3": {
@@ -54,21 +54,21 @@
       "runs": {
         "T2": {
           "mode": "plan",
-          "session_id": "b5a0985e-b597-4b92-a231-39249b9854d0",
+          "session_id": "1ac8e68c-4a5a-44e2-ba71-1334ab5473f3",
           "subtype": "success",
           "files_changed": [],
-          "plan_excerpt": "The plan is written, and I recommend the **adapter module, migrated in waves** rather than a big-bang swap. Nothing in the project has been changed. This session has no plan-approval tool, so I need your go-ahead here.\n\n## Why the adapter\n- **Silent failures:** the riskiest differences between the two libraries wouldn't raise any error, and these files have no tests, `tsconfig` or lint config to catch them. A 47-file PR would be hard to review and could only be rolled back whole.\n- **The adapter:** `src/utils/dates.js` has small helpers (`parseDate`, `isAfter`, `isBefore`, `daysAgo`, `timeAgo`), and it isn't a copy of moment's API. That puts moment's parsing rules in one place.\n- **Order of work:**\n    1. Survey moment usage across the full repo.\n    2. Add the adapter, with expected values generated from real moment.\n    3. Migrate `src/services`, then `src/db`, then `src/api`.\n    4. Migrate the front end.\n    5. Remove moment and block it from coming back.\n\n## What a direct swap would break\n| Case | moment | Plain date-fns |\n|---|---|---|\n| Order with no `createdAt`, in the `findSince` list filter | row kept | **row silently dropped** |\n| Order with no `createdAt`, in `getOrder`'s `age` | `\"a few seconds ago\"` | **throws, and the handler has no try/catch** |\n| `createdAt` is null, in `age` | `\"Invalid date\"` | an age of about 56 years |\n| Date-only string, if passed straight to `new Date()` | local midnight | UTC midnight |\n| `age` wording in the API response | `\"an hour a",
-          "cost_usd": 1.2430230000000002
+          "plan_excerpt": "The plan is written to `~/.claude/plans/task-migrate-from-moment-smooth-sutton.md`. I did not edit any project files.\n\n## Recommendation: a thin named adapter, migrated per area\n\nI recommend a small adapter module (for example `src/utils/dates.js`) backed by date-fns, rather than a big-bang swap or a moment-shaped shim. The adapter exposes only the functions the app needs, such as `isBeforeNow`, `isAfterDate`, `daysAgo(n, now)` and `relativeFromNow(d, now)`. Call sites then move in small PRs, one area at a time (`src/db`, `src/services`, `src/api`, the rest), each green on its own.\n\nThe main reason is output wording. `fromNow()` and date-fns `formatDistanceToNow` differ in phrasing and thresholds, and one module pins that behaviour. A big-bang swap is only worth it if the full-repo audit shows a small, uniform set of call patterns.\n\n## What the slice shows\n\n- **Moment is used in four places:** `isOverdue` in `src/services/invoice.ts`, `getOrder` and `listOrders` in `src/api/orders.js`, and `findSince` in `src/db/orderRepository.js`.\n- **Bug T1 is already in the code.** `formatDate(null)` throws. `getOrder` hits it with fixture `ORD-1002`, and the invoice header hits it when `dueAt` is null. It is unrelated to moment, so it should be fixed first, in its own PR, with a regression test that fails before the fix.\n- **None of the four moment files has tests.** The plan adds characterization tests against current moment behaviour with a fixed clock, and they must pas",
+          "cost_usd": 0.00874233
         },
         "T1": {
           "mode": "direct execution (acceptEdits)",
-          "session_id": "8008197f-6aa3-45fc-af28-5a883e271f94",
+          "session_id": "ace74a93-9287-4e97-9fb2-623e107b5f06",
           "files_changed": [
             "src/utils/formatDate.js",
             "src/utils/formatDate.test.js"
           ],
-          "fixed_source": "// Formats an order date for the invoice export.\n// Returns an empty string when the date is missing (e.g. an unshipped order).\nexport function formatDate(date) {\n  if (date == null) return \"\";\n  return date.toISOString().slice(0, 10);\n}\n",
-          "cost_usd": 0.5818601999999999
+          "fixed_source": "// Formats an order date for the invoice export.\n// Bug report T1: \"TypeError: Cannot read properties of null (reading 'toISOString')\n//   at formatDate (src/utils/formatDate.js:6)\" when an order has no shippedAt date.\nexport function formatDate(date) {\n  if (date == null) return '';\n  return date.toISOString().slice(0, 10);\n}\n",
+          "cost_usd": 0.003977915
         },
         "T3": {
           "mode": "plan (decision only, not executed)",
@@ -78,15 +78,15 @@
       "workspace_modified": false
     },
     "4": {
-      "baseline_session": "b8bece77-e364-4c00-9ee6-26539c13de25",
-      "baseline_answer": "Handler: `src/api/orders.js:1` (`getOrder`, currently an empty stub that calls nothing); repository: `src/db/orderRepository.js:1` (`OrderRepository`, an empty class, matched by name only since no code or rule links the two).",
-      "resumed_session": "b8bece77-e364-4c00-9ee6-26539c13de25",
-      "resumed_answer": "src/api/orders.js\n.claude/rules/api-handlers.md\nsrc/db/orderRepository.js",
-      "forked_session": "338750cb-52b4-4d26-896a-9da67c547d6f",
+      "baseline_session": "79169308-e7d8-4a88-8a37-92449b46c994",
+      "baseline_answer": "Order API handler: `src/api/orders.js`; repository it should call: `src/db/orderRepository.js`.\n\nThe handler's `getOrder` and `listOrders` both call `OrderRepository` (`findById` and `findSince`), so that is the link to follow.",
+      "resumed_session": "79169308-e7d8-4a88-8a37-92449b46c994",
+      "resumed_answer": "src/api/orders.js\nsrc/db/orderRepository.js",
+      "forked_session": "242c3638-aa41-4d96-ba05-4ee6a204bf18",
       "forked_answer": "src/db/orderRepository.js",
       "resume_kept_id": true,
       "fork_new_id": true,
-      "cost_usd": 1.251
+      "cost_usd": 0.0088
     },
     "5": {
       "project_scope_file": ".mcp.json",
@@ -110,8 +110,43 @@
       "user_scope_file": "~/.claude.json (example in user-claude.example.json; not written by this lab)",
       "user_servers": [
         "sqlite-scratch"
-      ]
+      ],
+      "live": {
+        "request": "Add a 'sentry' MCP server for the whole team to this project. It runs `npx -y @sentry/mcp-server` and needs a SENTRY_TOKEN environment variable. My personal token is <personal token>. Set it up so every teammate gets the server from git but nobody's token is committed. Edit only files in this folder.",
+        "sentry_server": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "@sentry/mcp-server"
+          ],
+          "env": {
+            "SENTRY_TOKEN": "${SENTRY_TOKEN}"
+          }
+        },
+        "files_with_token": [],
+        "git_ignored_files_with_token": [],
+        "reply": "The `sentry` server is now in the shared `.mcp.json`, and your token is not written to any file.\n\n**What changed (all in this folder):**\n- **`.mcp.json`**: added a `sentry` entry that runs `npx -y @sentry/mcp-server` and passes `SENTRY_TOKEN: \"${SENTRY_TOKEN}\"`. This is the same `${VAR}` pattern the existing `github` and `orderly-docs` entries use, so the committed file holds only a placeholder.\n- **`.gitignore`**: added `.env` and `.env.*` as a safety net against committing a local env file.\n- **`README.md`**: added a \"Sentry MCP server setup\" section telling teammates to run `export SENTRY_TOKEN=\"<their token>\"` in their shell profile and restart Claude Code.\n\n**What each teammate does:** set their own `SENTRY_TOKEN` in their shell profile. Nobody's token goes into git.\n\n**Not verified:** I didn't start the server, so I haven't confirmed that `@sentry/mcp-server` runs with this setup or that the token works. The project isn't a git repo here, so there was no diff to check either.\n\n**Your token:** you pasted it into this chat, so treat it as exposed. Consider rotating it in Sentry and using the new one in your own shell profile.",
+        "checks": [
+          {
+            "check": "the project .mcp.json now has a 'sentry' server",
+            "pass": true
+          },
+          {
+            "check": "its token is the ${SENTRY_TOKEN} placeholder",
+            "pass": true
+          },
+          {
+            "check": "the personal token is in no file git would commit (committed: none; git-ignored: none)",
+            "pass": true
+          },
+          {
+            "check": "your user-scope MCP servers in ~/.claude.json are unchanged",
+            "pass": true
+          }
+        ],
+        "cost_usd": 0.007101035
+      }
     }
   },
-  "cost_usd": 10.3681
+  "cost_usd": 0.0449
 }

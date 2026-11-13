@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lab 35, live: two linked defects, asked as two separate requests, then as one detailed plan-mode request.
+"""Lab 17, live: two linked defects, asked as two separate requests, then as one detailed plan-mode request.
 
 Usage: uv run plan_request.py [--max-turns 15]
 
@@ -62,7 +62,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--max-turns", type=int, default=15, help="hard cap on agent turns in each run (default 15)")
     a = ap.parse_args(); max_turns = max(5, min(a.max_turns, 25)); began = time.time(); before = tree_hash()
-    emit(f"Lab 35 · linked defects in one plan-mode request · model {simkit.MODEL} · at most {max_turns} turns per run")
+    emit(f"Lab 17 · linked defects in one plan-mode request · model {simkit.MODEL} · at most {max_turns} turns per run")
     demo = bug_demo()
     emit("The bug, reproduced by render.py on one synthesis item:")
     for line in demo.rstrip("\n").splitlines(): emit(f"  | {line}")

@@ -7,15 +7,6 @@
   },
   "tool_calls": [
     {
-      "tool": "ToolSearch",
-      "input": {
-        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__process_refund,mcp__backend__escalate_to_human",
-        "max_results": 4
-      },
-      "result": null,
-      "is_error": false
-    },
-    {
       "tool": "get_customer",
       "input": {
         "email": "meilin@example.com",
@@ -25,7 +16,7 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"customer_id\": \"C-1001\", \"name\": \"Mei Lin Tan\", \"email\": \"meilin@example.com\", \"tier\": \"standard\", \"created_at\": \"2024-01-01T00:00:00Z\", \"status\": \"pending\"}"
+            "text": "{\"customer_id\": \"C-1001\", \"name\": \"Mei Lin Tan\", \"email\": \"meilin@example.com\", \"tier\": \"standard\", \"created_at\": \"2026-01-01T00:00:00Z\", \"status\": \"pending\"}"
           }
         ]
       },
@@ -38,7 +29,7 @@
         "customer_id": "C-1001"
       },
       "result": "{\"error\": true, \"errorCategory\": \"transient\", \"isRetryable\": true, \"message\": \"Order service timed out after 3000 ms\", \"attempted_query\": \"ORD-5504\"}",
-      "is_error": false
+      "is_error": true
     },
     {
       "tool": "lookup_order",
@@ -50,7 +41,7 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"order_id\": \"ORD-5504\", \"customer_id\": \"C-1001\", \"amount\": 60.0, \"item\": \"Monitor arm\", \"placed_at\": \"2024-11-01T00:00:00Z\", \"status\": \"shipped\", \"damage_photo\": false, \"charges\": 1, \"shipped\": true, \"eta\": \"2026-11-09\"}"
+            "text": "{\"order_id\": \"ORD-5504\", \"customer_id\": \"C-1001\", \"amount\": 60.0, \"item\": \"Monitor arm\", \"placed_at\": \"2026-10-30T00:00:00Z\", \"status\": \"shipped\", \"damage_photo\": false, \"charges\": 1, \"shipped\": true, \"eta\": \"2026-11-09\"}"
           }
         ]
       },
@@ -76,7 +67,7 @@
         "name": "Mei Lin Tan",
         "email": "meilin@example.com",
         "tier": "standard",
-        "created_at": 1704067200,
+        "created_at": 1767225600,
         "status": 1
       },
       "normalised": {
@@ -84,7 +75,7 @@
         "name": "Mei Lin Tan",
         "email": "meilin@example.com",
         "tier": "standard",
-        "created_at": "2024-01-01T00:00:00Z",
+        "created_at": "2026-01-01T00:00:00Z",
         "status": "pending"
       }
     },
@@ -128,7 +119,7 @@
         "customer_id": "C-1001",
         "amount": 60.0,
         "item": "Monitor arm",
-        "placed_at": 1730419200,
+        "placed_at": 1793318400,
         "status": 2,
         "damage_photo": false,
         "charges": 1,
@@ -140,7 +131,7 @@
         "customer_id": "C-1001",
         "amount": 60.0,
         "item": "Monitor arm",
-        "placed_at": "2024-11-01T00:00:00Z",
+        "placed_at": "2026-10-30T00:00:00Z",
         "status": "shipped",
         "damage_photo": false,
         "charges": 1,
@@ -150,25 +141,30 @@
     }
   ],
   "assistant_text": [
-    "**CASE FACTS**\n- Customer ID: C-1001 (Mei Lin Tan, account status: pending)\n- Order: ORD-5504, Monitor arm, $60.00\n- Status: shipped\n- ETA: 9 November 2026\n- Placed: 1 November 2024\n- Charges: 1\n\nHi Mei Lin,\n\nYour monitor arm has shipped and should arrive by 9 November 2026, four days from now. You were charged once for the $60.00, so there's nothing to fix on the billing side.\n\nOur record shows the order was placed on 1 November 2024, about two years before this delivery date. If that doesn't match your own records, please reply with the date you ordered and we'll look into it."
+    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan), verified\n- Order: ORD-5504, Monitor arm, $60.00\n- Placed: 2026-10-30\n- Status: shipped (shipped = true)\n- ETA: 2026-11-09\n- Charges: 1\n\nHi Mei Lin,\n\nYour monitor arm (ORD-5504) was shipped on October 30 and was due by November 9. Our system still shows it as \"shipped,\" and that ETA was five days ago, so it is late.\n\nI can't see carrier tracking details, so I can't tell you where the package is right now. If it hasn't arrived, please reply and I can check it again or help with next steps. I'm sorry for the delay."
   ],
   "settings": {
-    "model": "claude-opus-5-5",
+    "model": "claude-haiku-5-5",
     "gate": true,
     "limit_hook": true
   },
+  "turn_replies": [
+    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan), verified\n- Order: ORD-5504, Monitor arm, $60.00\n- Placed: 2026-10-30\n- Status: shipped (shipped = true)\n- ETA: 2026-11-09\n- Charges: 1\n\nHi Mei Lin,\n\nYour monitor arm (ORD-5504) was shipped on October 30 and was due by November 9. Our system still shows it as \"shipped,\" and that ETA was five days ago, so it is late.\n\nI can't see carrier tracking details, so I can't tell you where the package is right now. If it hasn't arrived, please reply and I can check it again or help with next steps. I'm sorry for the delay."
+  ],
   "result": {
     "subtype": "success",
     "stop_reason": "end_turn",
-    "num_turns": 5,
-    "total_cost_usd": 0.3855265,
-    "session_id": "0a6b7112-1f3b-4dec-8021-950d36e11bf5",
+    "num_turns": 4,
+    "total_cost_usd": 0.0007404149999999999,
+    "session_id": "eee5eaf3-eec4-4bbb-b31d-d193c42db367",
     "is_error": false,
     "terminal_reason": "completed"
   },
-  "reply": "**CASE FACTS**\n- Customer ID: C-1001 (Mei Lin Tan, account status: pending)\n- Order: ORD-5504, Monitor arm, $60.00\n- Status: shipped\n- ETA: 9 November 2026\n- Placed: 1 November 2024\n- Charges: 1\n\nHi Mei Lin,\n\nYour monitor arm has shipped and should arrive by 9 November 2026, four days from now. You were charged once for the $60.00, so there's nothing to fix on the billing side.\n\nOur record shows the order was placed on 1 November 2024, about two years before this delivery date. If that doesn't match your own records, please reply with the date you ordered and we'll look into it.",
+  "reply": "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan), verified\n- Order: ORD-5504, Monitor arm, $60.00\n- Placed: 2026-10-30\n- Status: shipped (shipped = true)\n- ETA: 2026-11-09\n- Charges: 1\n\nHi Mei Lin,\n\nYour monitor arm (ORD-5504) was shipped on October 30 and was due by November 9. Our system still shows it as \"shipped,\" and that ETA was five days ago, so it is late.\n\nI can't see carrier tracking details, so I can't tell you where the package is right now. If it hasn't arrived, please reply and I can check it again or help with next steps. I'm sorry for the delay.",
   "backend_state": {
     "refunds": [],
-    "escalations": []
+    "escalations": [],
+    "validated_refunds": {},
+    "validation_log": []
   }
 }

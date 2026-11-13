@@ -12,6 +12,7 @@ if ! command -v uv >/dev/null; then
 fi
 echo "Installing the simulators (first time takes about a minute)..."
 uv sync || { echo "Install failed. Show this window to your trainer."; read -r; exit 1; }
-uv run login.py || uv run login.py --login
+# The labs run on your Anthropic API key. When labs/.env has no key, login.py asks for it once (as set_api_key.py does), saves it and tests it.
+uv run login.py || { echo "The API key check failed. Fix it with: uv run login.py --set   (then double-click this file again)"; read -r; exit 1; }
 echo "Starting. Your browser opens in a few seconds. Keep this window open; close it to stop."
 uv run serve.py

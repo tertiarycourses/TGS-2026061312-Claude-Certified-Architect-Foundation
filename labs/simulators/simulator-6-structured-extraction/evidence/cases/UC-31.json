@@ -29,7 +29,7 @@
       {
         "source": "whole packet",
         "invoice_id": "INV-2041",
-        "stated_total": 160,
+        "stated_total": 160.0,
         "record": {
           "invoice_id": "INV-2041",
           "vendor": "Harbour Office Supplies Pte Ltd",
@@ -40,25 +40,25 @@
           "document_type": "invoice",
           "category": "office_supplies",
           "category_detail": null,
-          "stated_total": 160,
-          "calculated_total": 160,
+          "stated_total": 160.0,
+          "calculated_total": 160.0,
           "conflict_detected": false,
           "line_items": [
             {
               "description": "1 x A4 paper (10 reams)",
-              "amount": 48
+              "amount": 48.0
             },
             {
               "description": "1 x Toner cartridge",
-              "amount": 112
+              "amount": 112.0
             }
           ],
           "missing_information": null,
           "confidence": {
-            "vendor": 1,
-            "stated_total": 1,
+            "vendor": 0.95,
+            "stated_total": 0.98,
             "due_date": 0.95,
-            "line_items": 1
+            "line_items": 0.97
           }
         }
       }
@@ -78,7 +78,7 @@
       {
         "source": "Invoices",
         "invoice_id": "INV-2041",
-        "stated_total": 160,
+        "stated_total": 160.0,
         "record": {
           "invoice_id": "INV-2041",
           "vendor": "Harbour Office Supplies Pte Ltd",
@@ -89,32 +89,32 @@
           "document_type": "invoice",
           "category": "office_supplies",
           "category_detail": null,
-          "stated_total": 160,
-          "calculated_total": 160,
+          "stated_total": 160.0,
+          "calculated_total": 160.0,
           "conflict_detected": false,
           "line_items": [
             {
-              "description": "A4 paper (10 reams)",
-              "amount": 48
+              "description": "1 x A4 paper (10 reams)",
+              "amount": 48.0
             },
             {
-              "description": "Toner cartridge",
-              "amount": 112
+              "description": "1 x Toner cartridge",
+              "amount": 112.0
             }
           ],
           "missing_information": null,
           "confidence": {
-            "vendor": 1,
-            "stated_total": 1,
-            "due_date": 0.9,
-            "line_items": 1
+            "vendor": 0.98,
+            "stated_total": 0.98,
+            "due_date": 0.85,
+            "line_items": 0.95
           }
         }
       },
       {
         "source": "Invoices",
         "invoice_id": "INV-2043",
-        "stated_total": 456,
+        "stated_total": 456.0,
         "record": {
           "invoice_id": "INV-2043",
           "vendor": "Northgate Logistics",
@@ -125,32 +125,32 @@
           "document_type": "invoice",
           "category": "logistics",
           "category_detail": null,
-          "stated_total": 456,
-          "calculated_total": 456,
+          "stated_total": 456.0,
+          "calculated_total": 456.0,
           "conflict_detected": false,
           "line_items": [
             {
               "description": "Freight Singapore->Johor",
-              "amount": 420
+              "amount": 420.0
             },
             {
               "description": "Fuel surcharge",
-              "amount": 36
+              "amount": 36.0
             }
           ],
           "missing_information": null,
           "confidence": {
-            "vendor": 1,
-            "stated_total": 1,
-            "due_date": 1,
-            "line_items": 1
+            "vendor": 0.95,
+            "stated_total": 0.95,
+            "due_date": 0.95,
+            "line_items": 0.95
           }
         }
       },
       {
         "source": "Credits",
         "invoice_id": "CN-118",
-        "stated_total": -78,
+        "stated_total": -78.0,
         "record": {
           "invoice_id": "CN-118",
           "vendor": "Harbour Office Supplies",
@@ -161,28 +161,28 @@
           "document_type": "credit_note",
           "category": "office_supplies",
           "category_detail": null,
-          "stated_total": -78,
-          "calculated_total": -78,
+          "stated_total": -78.0,
+          "calculated_total": -78.0,
           "conflict_detected": false,
           "line_items": [
             {
-              "description": "Returned: 2 x Desk lamp",
-              "amount": -78
+              "description": "Returned: 2 x Desk lamp (credit against INV-1990)",
+              "amount": -78.0
             }
           ],
-          "missing_information": null,
+          "missing_information": "Currency not shown; unit price per desk lamp not stated",
           "confidence": {
-            "vendor": 1,
-            "stated_total": 1,
-            "due_date": 1,
-            "line_items": 1
+            "vendor": 0.95,
+            "stated_total": 0.95,
+            "due_date": 1.0,
+            "line_items": 0.9
           }
         }
       },
       {
         "source": "Attachments",
         "invoice_id": "INV-2041",
-        "stated_total": 160,
+        "stated_total": 160.0,
         "record": {
           "invoice_id": "INV-2041",
           "vendor": "Harbour Office Supplies Pte Ltd",
@@ -193,25 +193,25 @@
           "document_type": "invoice",
           "category": "office_supplies",
           "category_detail": null,
-          "stated_total": 160,
-          "calculated_total": 160,
+          "stated_total": 160.0,
+          "calculated_total": 160.0,
           "conflict_detected": false,
           "line_items": [
             {
-              "description": "A4 paper (10 reams)",
-              "amount": 48
+              "description": "1 x A4 paper (10 reams)",
+              "amount": 48.0
             },
             {
-              "description": "Toner cartridge",
-              "amount": 112
+              "description": "1 x Toner cartridge",
+              "amount": 112.0
             }
           ],
           "missing_information": null,
           "confidence": {
-            "vendor": 1,
-            "stated_total": 1,
-            "due_date": 0.85,
-            "line_items": 1
+            "vendor": 0.95,
+            "stated_total": 0.95,
+            "due_date": 0.9,
+            "line_items": 0.95
           }
         }
       }

@@ -1,5 +1,5 @@
 """Invoice totals for the legacy billing module."""
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 TAX_RATE = Decimal("0.09")
 
@@ -13,4 +13,4 @@ def calculate_total(lines, discount=Decimal("0")):
     total = sum(line_total(q, p) for q, p in lines)
     total = total - discount
     total = total + total * TAX_RATE
-    return total.quantize(Decimal("0.01"), rounding="ROUND_HALF_UP")
+    return total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)

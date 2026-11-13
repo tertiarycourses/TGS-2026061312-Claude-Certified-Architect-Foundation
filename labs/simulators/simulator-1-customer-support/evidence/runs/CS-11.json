@@ -7,19 +7,10 @@
   },
   "tool_calls": [
     {
-      "tool": "ToolSearch",
-      "input": {
-        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__process_refund,mcp__backend__escalate_to_human",
-        "max_results": 4
-      },
-      "result": null,
-      "is_error": false
-    },
-    {
       "tool": "get_customer",
       "input": {
         "email": "sofia@example.com",
-        "name": ""
+        "name": "Sofia"
       },
       "result": {
         "content": [
@@ -54,7 +45,7 @@
       "tool": "get_customer",
       "args": {
         "email": "sofia@example.com",
-        "name": ""
+        "name": "Sofia"
       },
       "decision": "allow",
       "reason": null
@@ -121,28 +112,30 @@
     }
   ],
   "assistant_text": [
-    "**CASE FACTS**\n- Customer: C-1003 (Sofia Alvarez)\n- Order: ORD-5508, Bookshelf, $140.00, charged once\n- Placed: 2026-08-05\n- Delivery ETA: 2026-08-10\n- Status: delivered\n- Return window: closed\n- Damage photo: none\n\nHi Sofia,\n\nI'm sorry the bookshelf doesn't suit your room, but I can't approve this return or refund the $140. Returns must be made within 30 days, and the return window for this order has closed. Your order was due to arrive on August 10, nearly three months ago.\n\nWe can refund outside that window for a damaged item with photo evidence or a duplicate charge, but neither appears on this order.\n\nIf the bookshelf arrived damaged, reply with a photo and I'll take another look. You can also reply to ask for a human agent to review this."
+    "CASE FACTS\n- Customer: C-1003 (Sofia Alvarez, sofia@example.com)\n- Order: ORD-5508, Bookshelf, $140.00\n- Placed: 2026-08-05; delivered (ETA 2026-08-10)\n- Damage photo: none; charges: 1\n- Return window: closed\n\nHi Sofia, thank you for contacting us. I verified your account and looked up ORD-5508.\n\nUnfortunately I can't approve a refund for this bookshelf. Our returns are accepted within 30 days of purchase, and this order was placed on August 5, 2026, so the window closed in early September. Refunds for damaged items also require a damage photo, and none is on file for this order. Changing your mind about how the piece looks doesn't qualify under our policy.\n\nIf the bookshelf arrives damaged or doesn't match its listing, please send a photo and the order number, and we'll review it right away."
   ],
   "settings": {
-    "model": "claude-opus-5-5",
+    "model": "claude-haiku-5-5",
     "gate": true,
     "limit_hook": true
   },
   "turn_replies": [
-    "**CASE FACTS**\n- Customer: C-1003 (Sofia Alvarez)\n- Order: ORD-5508, Bookshelf, $140.00, charged once\n- Placed: 2026-08-05\n- Delivery ETA: 2026-08-10\n- Status: delivered\n- Return window: closed\n- Damage photo: none\n\nHi Sofia,\n\nI'm sorry the bookshelf doesn't suit your room, but I can't approve this return or refund the $140. Returns must be made within 30 days, and the return window for this order has closed. Your order was due to arrive on August 10, nearly three months ago.\n\nWe can refund outside that window for a damaged item with photo evidence or a duplicate charge, but neither appears on this order.\n\nIf the bookshelf arrived damaged, reply with a photo and I'll take another look. You can also reply to ask for a human agent to review this."
+    "CASE FACTS\n- Customer: C-1003 (Sofia Alvarez, sofia@example.com)\n- Order: ORD-5508, Bookshelf, $140.00\n- Placed: 2026-08-05; delivered (ETA 2026-08-10)\n- Damage photo: none; charges: 1\n- Return window: closed\n\nHi Sofia, thank you for contacting us. I verified your account and looked up ORD-5508.\n\nUnfortunately I can't approve a refund for this bookshelf. Our returns are accepted within 30 days of purchase, and this order was placed on August 5, 2026, so the window closed in early September. Refunds for damaged items also require a damage photo, and none is on file for this order. Changing your mind about how the piece looks doesn't qualify under our policy.\n\nIf the bookshelf arrives damaged or doesn't match its listing, please send a photo and the order number, and we'll review it right away."
   ],
   "result": {
     "subtype": "success",
     "stop_reason": "end_turn",
-    "num_turns": 4,
-    "total_cost_usd": 0.3768521,
-    "session_id": "4643a7d6-df4e-4a1a-bd7c-2b79c2fd9cb6",
+    "num_turns": 3,
+    "total_cost_usd": 0.00083141,
+    "session_id": "3fd6829a-8b62-44bc-90ad-5bc6a72420dd",
     "is_error": false,
     "terminal_reason": "completed"
   },
-  "reply": "**CASE FACTS**\n- Customer: C-1003 (Sofia Alvarez)\n- Order: ORD-5508, Bookshelf, $140.00, charged once\n- Placed: 2026-08-05\n- Delivery ETA: 2026-08-10\n- Status: delivered\n- Return window: closed\n- Damage photo: none\n\nHi Sofia,\n\nI'm sorry the bookshelf doesn't suit your room, but I can't approve this return or refund the $140. Returns must be made within 30 days, and the return window for this order has closed. Your order was due to arrive on August 10, nearly three months ago.\n\nWe can refund outside that window for a damaged item with photo evidence or a duplicate charge, but neither appears on this order.\n\nIf the bookshelf arrived damaged, reply with a photo and I'll take another look. You can also reply to ask for a human agent to review this.",
+  "reply": "CASE FACTS\n- Customer: C-1003 (Sofia Alvarez, sofia@example.com)\n- Order: ORD-5508, Bookshelf, $140.00\n- Placed: 2026-08-05; delivered (ETA 2026-08-10)\n- Damage photo: none; charges: 1\n- Return window: closed\n\nHi Sofia, thank you for contacting us. I verified your account and looked up ORD-5508.\n\nUnfortunately I can't approve a refund for this bookshelf. Our returns are accepted within 30 days of purchase, and this order was placed on August 5, 2026, so the window closed in early September. Refunds for damaged items also require a damage photo, and none is on file for this order. Changing your mind about how the piece looks doesn't qualify under our policy.\n\nIf the bookshelf arrives damaged or doesn't match its listing, please send a photo and the order number, and we'll review it right away.",
   "backend_state": {
     "refunds": [],
-    "escalations": []
+    "escalations": [],
+    "validated_refunds": {},
+    "validation_log": []
   }
 }

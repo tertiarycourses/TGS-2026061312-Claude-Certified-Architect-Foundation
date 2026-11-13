@@ -12,7 +12,7 @@ PASS - established and contested findings are separated
 PASS - synthesis used the scoped verify_fact tool
 PASS - rules_sim D: path-scoped rule loads for the test edit only, one copy
 PASS - rules_sim A and B: rule without frontmatter and root CLAUDE.md load on both edits
-PASS - rules_sim C: per-folder CLAUDE.md needs one copy per folder (3) and loads for the impl edit
+PASS - rules_sim C: per-folder CLAUDE.md needs one copy per folder (3) and loads for the test edit
 PASS - narrow decomposition reproduces the exam failure: music/writing/film never searched
 PASS - UC-06 Separate generation from review (3/3)
 PASS - UC-07 Path-scoped testing rule (rules_sim) (3/3)

@@ -5,73 +5,33 @@
   "customer": {
     "name": "Sofia Alvarez"
   },
-  "tool_calls": [
-    {
-      "tool": "ToolSearch",
-      "input": {
-        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__process_refund,mcp__backend__escalate_to_human",
-        "max_results": 4
-      },
-      "result": null,
-      "is_error": false
-    },
-    {
-      "tool": "get_customer",
-      "input": {
-        "name": "Sofia Alvarez",
-        "email": ""
-      },
-      "result": "{\"error\": true, \"errorCategory\": \"ambiguous\", \"isRetryable\": false, \"message\": \"2 customers named 'Sofia Alvarez'. Ask for the email or order number.\", \"candidates\": [\"C-1003\", \"C-1004\"]}",
-      "is_error": false
-    }
-  ],
-  "hooks": [
-    {
-      "event": "PreToolUse",
-      "tool": "get_customer",
-      "args": {
-        "name": "Sofia Alvarez",
-        "email": ""
-      },
-      "decision": "allow",
-      "reason": null
-    },
-    {
-      "event": "PostToolUse",
-      "tool": "get_customer",
-      "raw": {
-        "error": true,
-        "errorCategory": "ambiguous",
-        "isRetryable": false,
-        "message": "2 customers named 'Sofia Alvarez'. Ask for the email or order number.",
-        "candidates": [
-          "C-1003",
-          "C-1004"
-        ]
-      },
-      "error": true
-    }
-  ],
+  "tool_calls": [],
+  "hooks": [],
   "assistant_text": [
-    "**CASE FACTS**\n- customer_id: not yet verified (two accounts match the name Sofia Alvarez)\n- Order ids, amounts, statuses, dates: none confirmed\n\nHi Sofia, I can check on your order, but two accounts share your name and I need to be sure I open the right one.\n\nCould you send me one of these?\n- The email address on your Orderly account\n- The order number (format ORD-####), which also tells me exactly which order to check\n\nI can only look up an order by its number, so please include it if you have it. Your order confirmation email should show it. If you can't find either, let me know and I'll pass this to a colleague who can help."
+    "CASE FACTS\n- Customer ID: not yet verified\n- Order IDs: none confirmed\n- Amounts, statuses, dates: none confirmed\n\nHi Sofia, I can check your latest order, but first I need to verify your identity. Please reply with the email address you used to place your Orderly account. Once I've confirmed it, I'll look up your order status and delivery details."
   ],
   "settings": {
-    "model": "claude-opus-5-5",
+    "model": "claude-haiku-5-5",
     "gate": true,
     "limit_hook": true
   },
+  "turn_replies": [
+    "CASE FACTS\n- Customer ID: not yet verified\n- Order IDs: none confirmed\n- Amounts, statuses, dates: none confirmed\n\nHi Sofia, I can check your latest order, but first I need to verify your identity. Please reply with the email address you used to place your Orderly account. Once I've confirmed it, I'll look up your order status and delivery details."
+  ],
   "result": {
     "subtype": "success",
     "stop_reason": "end_turn",
-    "num_turns": 3,
-    "total_cost_usd": 0.3528278,
-    "session_id": "e9798a89-d366-4f9f-964e-ab22b2b72a3d",
+    "num_turns": 1,
+    "total_cost_usd": 0.00036640500000000004,
+    "session_id": "27f43f8c-d446-42f9-b5b5-175dbb13aae4",
     "is_error": false,
     "terminal_reason": "completed"
   },
-  "reply": "**CASE FACTS**\n- customer_id: not yet verified (two accounts match the name Sofia Alvarez)\n- Order ids, amounts, statuses, dates: none confirmed\n\nHi Sofia, I can check on your order, but two accounts share your name and I need to be sure I open the right one.\n\nCould you send me one of these?\n- The email address on your Orderly account\n- The order number (format ORD-####), which also tells me exactly which order to check\n\nI can only look up an order by its number, so please include it if you have it. Your order confirmation email should show it. If you can't find either, let me know and I'll pass this to a colleague who can help.",
+  "reply": "CASE FACTS\n- Customer ID: not yet verified\n- Order IDs: none confirmed\n- Amounts, statuses, dates: none confirmed\n\nHi Sofia, I can check your latest order, but first I need to verify your identity. Please reply with the email address you used to place your Orderly account. Once I've confirmed it, I'll look up your order status and delivery details.",
   "backend_state": {
     "refunds": [],
-    "escalations": []
+    "escalations": [],
+    "validated_refunds": {},
+    "validation_log": []
   }
 }

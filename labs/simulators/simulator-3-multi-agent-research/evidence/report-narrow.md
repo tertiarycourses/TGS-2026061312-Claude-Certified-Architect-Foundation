@@ -1,96 +1,55 @@
-# Two sector-wide AI adoption figures conflict, and no evidence covers digital art, graphic design or photography
+# Impact of AI on Creative Industries
 
-## Summary
+*Status as of 2026-11-14. Evidence base: two documents (WIPO and UNESCO excerpts). Live web search was unavailable because of repeated timeouts.*
 
-This evidence base is thin. It cannot say what AI has done to digital art, graphic design or photography. All three sub-task searches returned nothing usable. Two queries came back empty and the rest timed out.
+## Executive summary
 
-Two documents gave one excerpt each on creative SMEs as a whole. They disagree. WIPO reports 41% generative AI adoption in 2025. UNESCO estimates 55% adoption for the same year. This report picks no winner and does not average them. The WIPO figure was confirmed against the fact bank. The UNESCO figure is unverified, and the check returned the WIPO record instead.
-
-Empty results and timeouts do not show that no sources exist.
-
-## AI in digital art creation
-
-No evidence was retrieved. Two queries returned valid empty results, meaning no sector matched. Two others timed out, one after 1 attempt and one after 5.
-
-These questions stay unanswered:
-- which tools artists use
-- adoption and market figures
-- artists' income and commissions
-- copyright disputes
-- AI art at auction or in galleries
-
-Nobody searched auctions and galleries separately. The empty results and timeouts leave open whether sources exist. The coordinator needs to run a new search.
-
-## AI in graphic design
-
-All four queries timed out, and all are retryable. Nothing was retrieved, so this section has no findings.
-
-These questions stay unanswered:
-- AI features in design tools
-- adoption among designers and marketers
-- employment
-- freelance demand and rates
-- client or brand controversies
-
-Productivity evidence was not searched separately. A retry or a new search could change this picture.
-
-## AI in photography
-
-All four queries timed out, and all are retryable. Timeouts say nothing about what exists, so no finding follows.
-
-These questions stay unanswered:
-- editing and capture tools
-- stock photography
-- commercial photographers' work and income
-- contests and authenticity disputes
-- provenance standards
-
-## Sector-wide adoption: 41% and 55% for the same year
-
-Both figures describe creative SMEs across the whole sector. Neither states a geography. Neither speaks to digital art, graphic design or photography, so do not apply either to a sub-sector.
+Live web search timed out repeatedly during this run, so the evidence base is limited to two internal reports. No sub-topic produced sourced findings. The one quantitative point of comparison, generative AI adoption among creative SMEs in 2025, is contested: WIPO reports 41% and UNESCO reports 55%. Only the WIPO figure was verified. The gap may be methodological, and this report does not choose between the two values.
 
 ## Established findings
 
-- WIPO reports generative AI adoption among creative SMEs at 41% in 2025 (WIPO-Creative-Economy-2025.pdf, p. 14, published 2025-11-30). The fact check confirmed that the fact bank records 41% for this claim.
-- No other claim in this evidence base is established.
+None. No claim in this run reached established status. Both SME adoption claims are contested.
 
 ## Contested findings
 
-| Source | Date | Value | Status |
+**Generative AI adoption among creative SMEs, 2025**
+
+| Source | Value | Published | Status |
 |---|---|---|---|
-| WIPO-Creative-Economy-2025.pdf, p. 14 | 2025-11-30 | 41% generative AI adoption in 2025, up from 23% in 2023 | Confirmed against the fact bank |
-| UNESCO-Culture-Report-2026.pdf, p. 88 | 2026-04-01 | 55% adoption in 2025, an estimate weighted by firm size | Unverified |
+| WIPO 2025, p.14 | 41% in 2025, up from 23% in 2023 [WIPO 2025, p.14] | 2025-11-30 | Verified (lookup confirmed 41%) |
+| UNESCO 2026, p.88 | 55% in 2025, estimated; method weights by firm size [UNESCO 2026, p.88] | 2026-04-01 | Estimate, not verified (lookup returned the WIPO 41% instead) |
 
-The two figures may not measure the same thing. WIPO says generative AI. UNESCO says only "adoption" and does not define it. UNESCO also weights by firm size. Possible causes are the definition and that weighting, but the excerpts confirm neither.
+The two figures differ by 14 percentage points. The WIPO excerpt states no measurement method and gives no sub-sector breakdown. The UNESCO excerpt gives no sub-sector breakdown and no 2023 comparison. UNESCO weights by firm size, while WIPO states no method. This difference may account for the gap, but the evidence does not establish it, so neither value is preferred here.
 
-The UNESCO check returned the WIPO record (41%) instead. That means the check did not confirm 55%. It does not mean 55% is false.
+## Sub-topics
 
-The WIPO rise from 23% in 2023 to 41% in 2025 is the only trend figure in the evidence. It comes from one source, and the excerpt gives no methodology, sample or weighting.
+**AI in digital art creation.** No sourced findings were obtained. Web search timed out repeatedly. This is an open gap.
+
+**AI in graphic design.** No sourced findings were obtained. Web search timed out repeatedly. This is an open gap.
+
+**AI in photography.** No sourced findings were obtained. Web search timed out repeatedly. This is an open gap. One search hit was rejected as off-topic (see the aside below).
+
+## Cross-sector aside (not evidence for photography)
+
+An Authors Guild survey dated 2026-01-14 reported that median income for freelance writers fell 11% year over year [Authors Guild, 2026-01-14]. This concerns writers, not photographers, and it does not bear on the photography sub-topic. The figure is unverified, and its source is https://example.org/authors-guild-ai-2026.
 
 ## Statistics
 
 | Claim | Value | Source | Published |
 |---|---|---|---|
-| Generative AI adoption among creative SMEs, 2025 | 41% (confirmed against fact bank) | WIPO-Creative-Economy-2025.pdf, p. 14 | 2025-11-30 |
-| Generative AI adoption among creative SMEs, 2023 | 23% | WIPO-Creative-Economy-2025.pdf, p. 14 | 2025-11-30 |
-| Adoption among creative SMEs, 2025 (firm-size-weighted estimate) | 55% (unverified) | UNESCO-Culture-Report-2026.pdf, p. 88 | 2026-04-01 |
+| Generative AI adoption among creative SMEs (WIPO view) | 41% in 2025 (verified); 23% in 2023 | WIPO 2025, p.14 | 2025-11-30 |
+| Generative AI adoption among creative SMEs (UNESCO view) | 55% in 2025 (estimate; unverified) | UNESCO 2026, p.88 | 2026-04-01 |
+| Median income change, freelance writers (cross-sector, not photographers) | Down 11% year over year (unverified) | Authors Guild, https://example.org/authors-guild-ai-2026 | 2026-01-14 |
 
-## Coverage gaps
+## Gaps and next steps
 
-- **Digital art:** coverage none. Two queries were empty and two timed out. A new search is needed.
-- **Graphic design:** coverage none. All four queries timed out. A retry or new search is needed.
-- **Photography:** coverage none. All four queries timed out. A retry or new search is needed.
-- **Document depth:** each document gave one excerpt only. Neither gives a geography or sample size. WIPO gives no methodology. UNESCO does not define "adoption".
-- **UNESCO 55%:** unverified. It needs a re-check or a direct look at the source page.
+1. **Unfilled sub-topics.** Digital art creation, graphic design, and photography have no sourced findings.
+2. **Visual-arts gap in the documents.** Neither document's loaded excerpt contains visual-arts passages. Each document was loaded as a single page, so this may be a retrieval-scope issue rather than an absence of content. Reloading the full documents is the first step.
+3. **Re-run web search.** The live search service was unavailable and timed out repeatedly. A re-run is needed to cover the three sub-topics.
+4. **SME adoption conflict.** Resolve the 41% vs. 55% gap. This needs the methodology behind each figure, a sub-sector breakdown, and verification of the UNESCO value.
 
 ## Sources
 
-1. WIPO-Creative-Economy-2025.pdf, p. 14. Published 2025-11-30.
-2. UNESCO-Culture-Report-2026.pdf, p. 88. Published 2026-04-01.
-
----
-
-**Coordinator notes (not part of the report):**
-- **Added step:** I ran the document-analysis agent between search and synthesis, which your sequence didn't include. All three searches had come back empty, and the search tool suggested that fallback.
-- **Wording to read carefully:** the report lists WIPO's 41% as "established" and also as contested. Only the fact that WIPO reports 41% is established; the true adoption rate is still contested.
-- **Next step:** Firecrawl and Tavily are connected in this session, but I didn't use them because the search work belonged to the web-search agents. They could be a way to fill the three empty sections if you want another pass.
+- WIPO, *Creative Economy 2025* (WIPO-Creative-Economy-2025.pdf), p.14, published 2025-11-30. Document-analysis excerpt.
+- UNESCO, *Culture Report 2026* (UNESCO-Culture-Report-2026.pdf), p.88, published 2026-04-01. Document-analysis excerpt.
+- Authors Guild, AI survey, published 2026-01-14. https://example.org/authors-guild-ai-2026 (not verified).

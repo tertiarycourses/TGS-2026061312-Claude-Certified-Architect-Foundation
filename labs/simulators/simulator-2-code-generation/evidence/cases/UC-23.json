@@ -6,29 +6,29 @@
   "type": "run",
   "correct": "A",
   "expected_outcome": "With three <example> blocks in .claude/commands/task.md, the three ambiguous requests classify as investigate / plan / modify.",
-  "model": "claude-opus-5-5",
+  "model": "claude-haiku-5-5",
   "tasks": {
     "t1": {
       "kind": "claude",
-      "elapsed_s": 44.3,
+      "elapsed_s": 20.7,
       "exit_code": 0,
-      "command": "claude -p /task look into this error: TypeError in formatDate --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pat\u2026",
+      "command": "claude -p /task look into this error: TypeError in formatDate --model claude-haiku-5-5 --output-format json --max-turns 6 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pat\u2026",
       "subtype": "success",
-      "result": "{\"path\":\"investigate\",\"reasoning\":\"The request asks for a diagnosis of an error, not a change, so I traced the cause by reading the code and made no edits. The likely cause is callers passing null to formatDate, which is documented to throw; the runtime reproduction was blocked because Bash was denied.\"}",
-      "session_id": "8054dedf-3a9a-45ba-b9a9-1988b638a85f",
-      "total_cost_usd": 0.48061620000000005,
-      "num_turns": 12,
+      "result": "{\"path\":\"investigate\",\"reasoning\":\"The request was a diagnosis (\\\"look into this error: TypeError in formatDate\\\"), so I investigated and made no edits. Cause, from reading the code: src/utils/formatDate.js:5 calls date.toISOString() with no null guard, and src/api/orders.js:12 passes order.shippedAt, which is null for unshipped orders (tests/fixtures/orders.json ORD-1002). Result: TypeError \\\"Cannot read properties of null (reading 'toISOString')\\\", unhandled in the handler. Same exposure in src/services/invoice.ts:7, where dueAt is Date | null. The bug report's line 6 is stale; the current call is on line 5. README says formatDate throws on null, so the fix is either caller-side null handling or changing formatDate's contract. Gaps: no formatDate test exists (tests/ has only quantity.test.js), and I could not run the reproduction or npm test because Bash was denied in don't-ask mode. Reproduction is static only.\"}",
+      "session_id": "0c8ed1e6-8fa2-49be-8f4f-4ddfda4f4ec0",
+      "total_cost_usd": 0.006350214999999999,
+      "num_turns": 13,
       "structured_output": {
         "path": "investigate",
-        "reasoning": "The request asks for a diagnosis of an error, not a change, so I traced the cause by reading the code and made no edits. The likely cause is callers passing null to formatDate, which is documented to throw; the runtime reproduction was blocked because Bash was denied."
+        "reasoning": "The request was a diagnosis (\"look into this error: TypeError in formatDate\"), so I investigated and made no edits. Cause, from reading the code: src/utils/formatDate.js:5 calls date.toISOString() with no null guard, and src/api/orders.js:12 passes order.shippedAt, which is null for unshipped orders (tests/fixtures/orders.json ORD-1002). Result: TypeError \"Cannot read properties of null (reading 'toISOString')\", unhandled in the handler. Same exposure in src/services/invoice.ts:7, where dueAt is Date | null. The bug report's line 6 is stale; the current call is on line 5. README says formatDate throws on null, so the fix is either caller-side null handling or changing formatDate's contract. Gaps: no formatDate test exists (tests/ has only quantity.test.js), and I could not run the reproduction or npm test because Bash was denied in don't-ask mode. Reproduction is static only."
       },
       "permission_denials": [
         {
           "tool_name": "Bash",
-          "tool_use_id": "toolu_01VdLSEiHbyVp8yVnasGTymk",
+          "tool_use_id": "toolu_01BKaR99NjQDU7dU9hU6K8AW",
           "tool_input": {
-            "command": "cat > \"<course>/UC-23-jn3uos1o-workspace/8054dedf-3a9a-45ba-b9a9-1988b638a85f/scratchpad/repro.mjs\" <<'EOF'\nimport { formatDate } from \"<course>/UC-23-jn3uos1o/workspace/src/utils/formatDate.js\";\nfor (const [n, v] of [[\"Date\", new Date(\"2026-01-02T00:00:00Z\")], [\"null\", null], [\"undefined\", undefined], [\"ISO string\", \"2026-01-02T00:00:00Z\"], [\"Invalid Date\", new Date(\"x\")]]) {\n  try { console.log(n, \"=>\", formatDate(v)); } catch (e) { console.log(n, \"=>\", e.name + \":\", e.message); }\n}\nEOF\nnode \"<course>/UC-23-jn3uos1o-workspace/8054dedf-3a9a-45ba-b9a9-1988b638a85f/scratchpad/repro.mjs\"",
-            "description": "Run formatDate against sample inputs to reproduce the error"
+            "command": "node --input-type=module -e 'import { formatDate } from \"./src/utils/formatDate.js\"; const o = (await import(\"./tests/fixtures/orders.json\", { with: { type: \"json\" } })).default; for (const x of o) { try { console.log(x.id, formatDate(x.shippedAt)); } catch (e) { console.log(x.id, \"->\", e.constructor.name + \":\", e.message); } }' ; npm test 2>&1 | tail -5",
+            "description": "Reproduce formatDate failure on fixture data and run tests"
           }
         }
       ],
@@ -36,41 +36,41 @@
     },
     "t2": {
       "kind": "claude",
-      "elapsed_s": 63.7,
+      "elapsed_s": 13.9,
       "exit_code": 0,
-      "command": "claude -p /task can you improve this module src/api/orders.js --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pat\u2026",
+      "command": "claude -p /task can you improve this module src/api/orders.js --model claude-haiku-5-5 --output-format json --max-turns 6 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pat\u2026",
       "subtype": "success",
-      "result": "{\"path\":\"plan\",\"reasoning\":\"\\\"Improve\\\" has no acceptance criterion, and the module has decisions that need the user's input: owner scoping, repository injection and response contract changes. I proposed options and made no file changes.\"}",
-      "session_id": "85610c7f-db66-4283-8258-714893d3cc27",
-      "total_cost_usd": 0.5292024,
-      "num_turns": 18,
+      "result": "{\"path\":\"plan\",\"reasoning\":\"\\\"Improve\\\" has no acceptance criterion, and src/api/orders.js exports two handlers (getOrder, listOrders) that have to keep their contract. Proposing options before editing.\"}",
+      "session_id": "af5edf93-2f1c-4ee3-9b32-ef632ff8287a",
+      "total_cost_usd": 0.002560485,
+      "num_turns": 7,
       "structured_output": {
         "path": "plan",
-        "reasoning": "\"Improve\" has no acceptance criterion, and the module has decisions that need the user's input: owner scoping, repository injection and response contract changes. I proposed options and made no file changes."
+        "reasoning": "\"Improve\" has no acceptance criterion, and src/api/orders.js exports two handlers (getOrder, listOrders) that have to keep their contract. Proposing options before editing."
       },
       "permission_denials": [],
       "is_error": false
     },
     "t3": {
       "kind": "claude",
-      "elapsed_s": 16.4,
+      "elapsed_s": 6.7,
       "exit_code": 0,
-      "command": "claude -p /task clean this up: remove the unused imports in src/db/orderRepos\u2026 --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pat\u2026",
+      "command": "claude -p /task clean this up: remove the unused imports in src/db/orderRepos\u2026 --model claude-haiku-5-5 --output-format json --max-turns 6 --permission-mode dontAsk --allowedTools Read Grep Glob --json-schema {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"pat\u2026",
       "subtype": "success",
-      "result": "{\"path\":\"modify\",\"reasoning\":\"One file and one named change, with nothing to decide, so no plan or investigation was needed. On reading the file, its only import (moment) is used by findSince on line 8, so there was nothing to remove and no edit was made.\"}",
-      "session_id": "48b9f767-cb00-4b70-ba59-9b381140dcbf",
-      "total_cost_usd": 0.35524580000000006,
+      "result": "{\"path\":\"modify\",\"reasoning\":\"Request was to remove unused imports from src/db/orderRepository.js. I read the file: its only import, moment (line 1), is used in findSince (line 8). No unused imports exist, so no edit was made and no tests were run. Path chosen was modify, since the request named one file and one change; the outcome was a no-op because nothing needed removing.\"}",
+      "session_id": "c804731e-6013-453e-8b5e-0d3e263c0ae5",
+      "total_cost_usd": 0.00171222,
       "num_turns": 4,
       "structured_output": {
         "path": "modify",
-        "reasoning": "One file and one named change, with nothing to decide, so no plan or investigation was needed. On reading the file, its only import (moment) is used by findSince on line 8, so there was nothing to remove and no edit was made."
+        "reasoning": "Request was to remove unused imports from src/db/orderRepository.js. I read the file: its only import, moment (line 1), is used in findSince (line 8). No unused imports exist, so no edit was made and no tests were run. Path chosen was modify, since the request named one file and one change; the outcome was a no-op because nothing needed removing."
       },
       "permission_denials": [],
       "is_error": false
     }
   },
   "restores": [],
-  "cost_usd": 1.3651,
+  "cost_usd": 0.0106,
   "evaluation": [
     {
       "criterion": "'look into this error' -> investigate",

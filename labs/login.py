@@ -1,18 +1,27 @@
 #!/usr/bin/env python3
-"""Check this laptop is signed in to Claude for the live labs, and start the sign-in if not.
-Usage: uv run login.py          (prints the sign-in state)
-       uv run login.py --login  (opens the browser sign-in when needed)"""
-import json, subprocess, sys
-import engine
+"""Check that the live labs can reach Claude with your Anthropic API key, and save the key if it is missing.
+Usage: uv run login.py           (checks the key with one tiny Claude Haiku 5.5 call)
+       uv run login.py --set     (asks for the key and writes it to labs/.env)"""
+import getpass, os, sys
+import simkit  # loads ANTHROPIC_API_KEY from labs/.env or the course folder's .env
 
-exe = engine.claude_cli()
-if not exe: sys.exit("No claude program found. Run: uv sync   (it installs the Agent SDK, which brings its own copy)")
-ok, how = engine.login()
-if ok:
-    print(f"Signed in to Claude ({how}). The live labs are ready."); sys.exit(0)
-if "--login" not in sys.argv:
-    print("Not signed in yet. Run: uv run login.py --login"); sys.exit(1)
-print("Opening the Claude sign-in in your browser. Approve it there, then come back.")
-subprocess.call([exe, "auth", "login"])
-ok, how = engine.login()
-print(f"Signed in to Claude ({how})." if ok else "Still not signed in. Run: uv run login.py --login"); sys.exit(0 if ok else 1)
+from set_api_key import mask, save_key
+
+if "--set" in sys.argv or not os.environ.get("ANTHROPIC_API_KEY", "").strip() or "sk-ant-..." in os.environ.get("ANTHROPIC_API_KEY", ""):
+    if "--set" not in sys.argv:
+        print("No ANTHROPIC_API_KEY yet in labs/.env.")
+    try:
+        print(f"Key saved ({save_key(getpass.getpass('Paste your Anthropic API key (starts sk-ant-; nothing shows while you paste): '))}) to labs/.env.")
+    except ValueError as e:
+        sys.exit(str(e))
+
+import anthropic
+try:
+    r = anthropic.Anthropic().messages.create(model=simkit.HAIKU, max_tokens=16, messages=[{"role": "user", "content": "Reply with: ready"}])
+except anthropic.AuthenticationError:
+    sys.exit("The API key was refused (401). Check it, then run: uv run login.py --set")
+except anthropic.APIStatusError as e:
+    sys.exit(f"The API answered {e.status_code}: {e.message}")
+except anthropic.APIConnectionError as e:
+    sys.exit(f"Could not reach api.anthropic.com: {e}")
+print(f"API key works. {r.model} answered (stop_reason {r.stop_reason}). The live labs are ready.")

@@ -15,7 +15,7 @@ writes evidence/evaluation.json.
   uv run evaluate.py --judge    # add the independent reviewer
   uv run evaluate.py --tag nogate   # score the --tag nogate runs instead
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import argparse
 import asyncio
 import json
@@ -24,7 +24,7 @@ import re
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 
 
 def index_of(calls, name, ok_only=False):

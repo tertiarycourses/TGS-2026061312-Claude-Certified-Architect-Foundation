@@ -24,7 +24,13 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-uv run login.py || uv run login.py --login
+rem The labs run on your Anthropic API key. login.py asks for it once, saves it to labs\.env and tests it.
+uv run login.py
+if errorlevel 1 (
+  echo The API key check failed. Fix it with: uv run login.py --set   then double-click this file again.
+  pause
+  exit /b 1
+)
 echo Starting. Your browser opens in a few seconds. Keep this window open; close it to stop.
 uv run serve.py
 pause

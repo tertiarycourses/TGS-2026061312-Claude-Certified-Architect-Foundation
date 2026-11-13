@@ -76,7 +76,7 @@ for name, p in phases.items():
 cases_dir = EV / "cases"
 if cases_dir.exists():
     print("\nuse cases:")
-    for cp in sorted(cases_dir.glob("UC-*.json")):
+    for cp in sorted(x for x in cases_dir.glob("UC-*.json") if not x.name.endswith(".run.json")):  # .run.json = raw transcript
         c = json.loads(cp.read_text())
         res = c["rubric"]
         n_pass = sum(1 for r in res if r["passed"]); n_disc = sum(1 for r in res if r["passed"] is None)

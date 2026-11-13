@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Start the six simulators in your browser: uv run serve.py
 
-Python, the Claude Agent SDK and your Claude login. Everything runs on this laptop."""
+Python, the Claude Agent SDK and the Claude API on your ANTHROPIC_API_KEY (labs/.env). Every Claude call uses Claude Haiku 5.5."""
 import argparse, os, socket, subprocess, sys, threading
 from pathlib import Path
-for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "CLAUDECODE"): os.environ.pop(k, None)
+for k in ("ANTHROPIC_AUTH_TOKEN", "CLAUDECODE"): os.environ.pop(k, None)  # the API key stays: the labs run on it
 ap = argparse.ArgumentParser(description=__doc__); ap.add_argument("--port", type=int, default=8765); ap.add_argument("--no-open", action="store_true"); a = ap.parse_args()
 def free(p):
     with socket.socket() as s:

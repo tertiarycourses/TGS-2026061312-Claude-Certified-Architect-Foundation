@@ -1,0 +1,16 @@
+{
+  "name": "ccar-f-topic1-haiku-call",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx haiku_call.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}

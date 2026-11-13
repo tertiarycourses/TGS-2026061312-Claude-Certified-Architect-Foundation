@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lab 57, live: the same discovery job, done in the main thread, then delegated to an explorer subagent.
+"""Extra practice (not a numbered lab), live: the same discovery job, done in the main thread, then delegated to an explorer subagent.
 
 Usage: uv run discovery_delegate.py [--max-turns 20]
 
@@ -47,7 +47,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--max-turns", type=int, default=20, help="hard cap on agent turns in each run (default 20)")
     a = ap.parse_args(); max_turns = max(5, min(a.max_turns, 30)); began = time.time(); before = tree_hash()
-    emit(f"Lab 57 · keep discovery out of the main thread · model {simkit.MODEL} · at most {max_turns} turns per run")
+    emit(f"Extra practice · keep discovery out of the main thread · model {simkit.MODEL} · at most {max_turns} turns per run")
     inline = run("Run 1 · the main thread does the discovery itself", JOB, max_turns, delegate=False)
     deleg = run("Run 2 · discovery delegated to the explorer subagent",
                 "Delegate all of the discovery below to the explorer subagent, then write the plan from its summary.\n\n" + JOB, max_turns, delegate=True)

@@ -15,10 +15,10 @@ files in repo/, then hands the review-synthesis subagent its prompt.
 The terminal shows a live timeline (time, agent, tool, findings count) and
 the number of Agent calls per assistant message proves parallel spawning.
 Evidence: evidence/subagents-<mode>.json and evidence/pr-comment-<mode>.md.
-Model: $LAB_MODEL for the coordinator (default claude-opus-5-5), sonnet for
-the subagents, spend capped by --budget (default US$4 per run).
+Model: claude-haiku-5-5 for the coordinator; the subagents inherit it.
+Spend is capped by --budget (default US$4 per run, far above what Haiku 5.5 spends).
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import argparse
 import asyncio
 import json
@@ -35,7 +35,7 @@ from claude_agent_sdk import (AgentDefinition, AssistantMessage, HookMatcher,
 HERE = Path(__file__).resolve().parent
 REPO = HERE / "repo"
 EV = HERE / "evidence"
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 CHANGES = json.loads((HERE / "fixtures" / "changes.json").read_text())
 FILES = [f["path"] for f in CHANGES["files"]]
 FIELDS = "file, line, severity (critical|high|medium|low), category, detected_pattern, issue, suggested_fix, confidence (0-1)"
@@ -46,26 +46,26 @@ REVIEWERS = {
         prompt=f"Read each file you are given. Report security flaws only: untrusted input reaching SQL, shell, "
                f"paths or HTML; authorisation gaps. Return ONLY a JSON array of findings with fields {FIELDS}. "
                f"Quote the offending line as evidence inside issue.",
-        tools=["Read", "Grep"], model="sonnet"),
+        tools=["Read", "Grep"], model="inherit"),
     "test-coverage-reviewer": AgentDefinition(
         description="Test coverage review: which changed functions the existing tests cover and which test would fail or is missing.",
         prompt=f"Read tests/ and each changed file you are given. For every changed public function return a finding "
                f"(category 'test-coverage' is allowed here) that names the existing test id that covers it, or the "
                f"failing/missing test name such as tests/test_totals.py::test_total_counts_all_items. "
                f"Return ONLY a JSON array of findings with fields {FIELDS}.",
-        tools=["Read", "Grep", "Glob"], model="sonnet"),
+        tools=["Read", "Grep", "Glob"], model="inherit"),
     "maintainability-reviewer": AgentDefinition(
         description="Maintainability review: contracts between modules, dead code, misleading names, logging.",
         prompt=f"Read each file you are given plus its callers. Report contract breaks (a changed signature whose caller "
                f"was not updated), duplicated logic and misleading names. Return ONLY a JSON array of findings with "
                f"fields {FIELDS}.",
-        tools=["Read", "Grep", "Glob"], model="sonnet"),
+        tools=["Read", "Grep", "Glob"], model="inherit"),
     "review-synthesis": AgentDefinition(
         description="Writes the final pull-request review comment from the material supplied in its prompt.",
         prompt="You write the final PR review comment in markdown. You have NO access to the repository and NO memory "
                "of earlier agents: use only what your prompt contains. Keep every file path, line number, test name "
                "and evidence snippet you are given. If you were given none, say so in one line and write a generic summary.",
-        tools=[], model="sonnet"),
+        tools=[], model="inherit"),
 }
 
 
@@ -147,7 +147,7 @@ async def run(mode, budget):
     findings_json = extract_findings(final)
     comment = final.split("## Synthesis comment", 1)[1].strip() if "## Synthesis comment" in final else final
     (EV / f"pr-comment-{mode}.md").write_text(comment + "\n")
-    out = {"mode": mode, "model": MODEL, "subagent_model": "sonnet", "session_id": result.session_id if result else None,
+    out = {"mode": mode, "model": MODEL, "subagent_model": "claude-haiku-5-5 (inherited)", "session_id": result.session_id if result else None,
            "cost_usd": result.total_cost_usd if result else None, "num_turns": result.num_turns if result else None,
            "agent_calls_per_assistant_message": spawns_per_message, "max_parallel_spawn": max(spawns_per_message or [0]),
            "max_concurrent_reviewers": max_overlap(timeline),

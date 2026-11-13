@@ -18,7 +18,7 @@ Four runs against a copy of sample_repo/ (the pristine fixture is never touched)
     uv run explorer.py explore      # one phase (later phases need the
                                         # session id from evidence/sessions.json)
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import asyncio
 import json
 import os
@@ -47,7 +47,7 @@ from claude_agent_sdk import (
 HERE = Path(__file__).resolve().parent
 EVIDENCE = HERE / "evidence"
 WORK = HERE / "work"                      # disposable copy of sample_repo
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 BUDGET = float(os.environ.get("LAB_BUDGET_USD", "3.0"))
 TOOL_LOG = EVIDENCE / "tool_log.jsonl"
 SESSIONS = EVIDENCE / "sessions.json"
@@ -154,7 +154,7 @@ AGENTS = {
                 "or entry point, follow imports with Read, and never read every file up front. Return at most "
                 "15 lines: definition site (file:line), every caller (file:line), and one sentence on the data flow."),
         tools=["Read", "Grep", "Glob"],
-        model="sonnet",
+        model="inherit",
     )
 }
 
@@ -304,10 +304,12 @@ PHASES = {"explore": explore, "edit": edit, "fork": fork, "recover": recover}
 CASES = HERE / "cases"
 
 
-def rows(phase):
+def rows(phase, since=0.0):
+    """Tool-log rows for one phase. since= keeps only this run's rows: the log accumulates across runs."""
     if not TOOL_LOG.exists():
         return []
-    return [json.loads(l) for l in TOOL_LOG.read_text().splitlines() if l.strip() and json.loads(l).get("phase") == phase]
+    out = [json.loads(l) for l in TOOL_LOG.read_text().splitlines() if l.strip()]
+    return [r for r in out if r.get("phase") == phase and float(r.get("t") or 0) >= since]
 
 
 def evaluate_case(uc: str, log: list, out: dict) -> list:
@@ -320,10 +322,11 @@ def evaluate_case(uc: str, log: list, out: dict) -> list:
     R = []
     if uc == "UC-37":
         g = greps[0]["input"] if greps else {}
-        bash_grep = any(r.get("tool") == "Bash" and "grep" in json.dumps(r.get("input")) for r in log)
+        # A search run through Bash (grep, rg, find as the command), not a Bash call that writes the NOTES.md scratchpad.
+        bash_grep = any(r.get("tool") == "Bash" and re.search(r"(^|[;&|(]\s*)(grep|egrep|rg|find)\s", str((r.get("input") or {}).get("command", ""))) for r in log)
         R = [("Grep used with pattern == helper name", any("calculate_total" in str(r["input"].get("pattern", "")) for r in greps)),
-             ("Grep scoped with a *.py glob and output_mode content",
-              any(str(r["input"].get("glob", "")).endswith(".py") and r["input"].get("output_mode") == "content" for r in greps)),
+             ("Grep scoped to Python files (a *.py glob or type py) with output_mode content",
+              any((str(r["input"].get("glob", "")).endswith(".py") or r["input"].get("type") == "py") and r["input"].get("output_mode") == "content" for r in greps)),
              ("no Bash grep and fewer than 3 Read calls", not bash_grep and len(reads) < 3)]
     elif uc == "UC-D1":
         edits = [r for r in log if r.get("tool") == "Edit"]
@@ -385,8 +388,9 @@ async def run_case(uc: str):
         # Show the hook as the deterministic layer: remove the prompt-only rule it backs up.
         extra["system_prompt"] = SYSTEM.replace("- Never delete directories.", "")
     phase = f"case-{uc}"
+    began = time.time()
     out = await run(phase, prompt, **extra)
-    rubric = evaluate_case(uc, rows(phase), out)
+    rubric = evaluate_case(uc, rows(phase, since=began), out)
     record = {"id": uc, "title": case["title"], "source": case["source"], "prompt": prompt,
               "session_id": out.get("session_id"), "cost_usd": out.get("total_cost_usd"),
               "expected_outcome": case["expected_outcome"], "rubric": rubric, "result": (out.get("result") or "")[:1500]}

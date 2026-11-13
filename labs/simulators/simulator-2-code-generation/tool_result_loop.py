@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lab 2, live: what Claude does when your script never sends the tool_result back, and when it does.
+"""Extra practice (not a numbered lab), live: what Claude does when your script never sends the tool_result back, and when it does.
 
 Usage: uv run tool_result_loop.py [--max-turns 3]
 
@@ -69,7 +69,7 @@ def main():
     ap.add_argument("--max-turns", type=int, default=3, help="hard cap on loop turns in each scenario (default 3)")
     a = ap.parse_args(); max_turns = max(2, min(a.max_turns, 6))
     model = simkit.MODEL; client = simkit.Anthropic(); began = time.time()
-    emit(f"Lab 2 · tool_result loop · model {model} · at most {max_turns} turns per scenario")
+    emit(f"Extra practice · tool_result loop · model {model} · at most {max_turns} turns per scenario")
     broken = scenario(client, model, max_turns, fixed=False)
     fixed = scenario(client, model, max_turns, fixed=True)
     asks = len(broken["tool_calls"])

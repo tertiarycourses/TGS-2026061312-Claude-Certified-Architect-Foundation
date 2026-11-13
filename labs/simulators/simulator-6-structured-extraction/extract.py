@@ -15,9 +15,9 @@ Every document is extracted through a tool_use call against the
   6. optionally submits the whole set through the Message Batches API
      (--batch) with a custom_id per document and resubmits only the failures.
 
-Runs through the Claude Agent SDK on your Claude login: uv run extract.py
+Calls the real Claude API (Messages and Message Batches) with your API key on Claude Haiku 5.5: uv run extract.py
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # the Claude API on your ANTHROPIC_API_KEY, pinned to Claude Haiku 5.5
 import argparse
 import json
 import random
@@ -103,9 +103,9 @@ def request_params(model, doc_text, tool_choice, failed=None, errors=None):
 def create_message(client, params, use_fallbacks=True):
     """One raw Messages request (beta endpoint with server-side refusal fallbacks by default)."""
     kwargs = dict(params)
-    if use_fallbacks:
-        # Safety classifiers can decline a request on Claude Opus 5.5; the server-side
-        # fallback reroutes it instead of returning stop_reason "refusal".
+    if use_fallbacks and not str(params.get("model", "")).startswith("claude-haiku"):
+        # Server-side refusal fallbacks exist for Opus/Sonnet/Fable models. Haiku 5.5 has none,
+        # so on this course's model the plain endpoint is used and a refusal is handled below.
         kwargs["betas"] = ["server-side-fallback-2026-07-01"]
         kwargs["fallbacks"] = "default"
         response = client.beta.messages.create(**kwargs)
@@ -345,7 +345,7 @@ def main():
     ap.add_argument("--model", default=DEFAULT_MODEL)
     ap.add_argument("--tool-choice", default="auto", choices=["auto", "any", "forced"],
                     help="auto, or ask for any tool or the named tool. See the lesson in evidence/extraction.json")
-    ap.add_argument("--batch", action="store_true", help="the Message Batches workflow, simulated locally through the Agent SDK")
+    ap.add_argument("--batch", action="store_true", help="the real Message Batches API (50% price, results within 24 hours, usually minutes)")
     ap.add_argument("--sync", action="store_true", help="(default) blocking Messages API path with validation retries")
     ap.add_argument("--max-retries", type=int, default=2)
     ap.add_argument("--max-docs", type=int, default=0, help="limit documents while experimenting")
@@ -365,13 +365,10 @@ def main():
     tool_choice = tool_choice_param(a.tool_choice)
     observation = {"requested": a.tool_choice, "sent": tool_choice, "outcome": "accepted"}
 
-    # Teaching point: tool_choice is a Messages API parameter. The Agent SDK has no such setting, so this
-    # simulator asks for the same behaviour in the system prompt and records what Claude actually did.
+    # Teaching point: tool_choice is a Messages API parameter, and this simulator sends it to the real API.
     if a.tool_choice in ("any", "forced"):
-        observation["outcome"] = "requested through the system prompt"
-        observation["lesson"] = ("On the Messages API, any means Claude must call a tool and forced names the tool. "
-                                 "The Agent SDK has no tool_choice setting, so here the instruction carries it. "
-                                 "Validate that a tool_use block came back, because an instruction is not a guarantee.")
+        observation["lesson"] = ("any means Claude must call some tool; forced (type tool) names the tool. "
+                                 "auto lets Claude answer in prose, so check that a tool_use block came back.")
     print("tool_choice in use:", tool_choice)
 
     results, batch_log = [], None
@@ -403,7 +400,7 @@ def main():
             print(f"{r['custom_id']} {r['document_type']:11s} attempts={len(r['attempts'])} errors={len(r['final_errors'])} "
                   f"conflict={r['extraction'].get('conflict_detected')} -> {r['routing']}")
 
-    report = {"model": a.model, "mode": "batch" if a.batch else "sync", "engine": "Claude Agent SDK, one model turn per call", "tool_choice": observation,
+    report = {"model": a.model, "mode": "batch" if a.batch else "sync", "engine": "Claude API (Messages), Claude Haiku 5.5", "tool_choice": observation,
               "tool": {"name": TOOL["name"], "strict": TOOL.get("strict", False)},
               "routing_summary": {k: [r["custom_id"] for r in results if r["routing"] == k] for k in ("auto_accept", "human_review")},
               "results": results}
@@ -421,4 +418,4 @@ if __name__ == "__main__":
     try:
         main()
     except anthropic.AuthenticationError:
-        sys.exit("Not signed in. Run: claude auth login")
+        sys.exit("The Claude API refused the key. Set ANTHROPIC_API_KEY in labs/.env (or run: uv run login.py --set)")

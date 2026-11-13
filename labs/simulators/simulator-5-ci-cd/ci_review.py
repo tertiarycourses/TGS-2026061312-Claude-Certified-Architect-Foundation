@@ -14,10 +14,10 @@ Code CLI in non-interactive mode:
   severity gate      exit 1 while any critical or high finding remains
 
 Usage:  uv run ci_review.py [--skip-tests] [--gate-only]
-Requires: Claude Code installed and logged in. Model from $LAB_MODEL
-(default claude-opus-5-5). A full run makes 7 calls, roughly US$3.
+Requires: ANTHROPIC_API_KEY in labs/.env. Model: claude-haiku-5-5
+(claude-haiku-5-5). A full run makes 7 calls, about 3 US cents on Haiku 5.5.
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import argparse
 import json
 import os
@@ -31,7 +31,7 @@ import jsonschema
 HERE = Path(__file__).resolve().parent
 REPO = HERE / "repo"
 EV = HERE / "evidence"
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 SCHEMA = json.loads((HERE / "finding.schema.json").read_text())
 CRITERIA = (HERE / "prompts" / "review-criteria.txt").read_text()
 CHANGES = json.loads((HERE / "fixtures" / "changes.json").read_text())

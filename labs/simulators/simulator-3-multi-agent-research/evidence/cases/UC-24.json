@@ -10,7 +10,7 @@
   "mode": "broad",
   "prompt": "Research this topic and deliver a cited report: Impact of AI on creative industries.",
   "config_change": "None. Evaluate the document-analysis subagent's returned JSON: every finding must carry document, page, published and methodology_note.",
-  "cost_usd": 1.099836,
+  "cost_usd": 0.016505060000000002,
   "rubric": [
     {
       "check": "document-analysis result parses as JSON with a findings list",

@@ -1,6 +1,6 @@
 # Set up and start the course simulators (instructions for Claude)
 
-A learner asked you to set up or start the Claude Certified Architect Foundation simulators. Most learners are on **Windows** and have never used a terminal. Do every step yourself. The learner should only approve your commands and, once, the Claude sign-in in the browser. Report each step in one short line.
+A learner asked you to set up or start the Claude Certified Architect Foundation simulators. Most learners are on **Windows** and have never used a terminal. Do every step yourself. The learner should only approve your commands and, once, paste their Anthropic API key. Report each step in one short line.
 
 Find the operating system first. On Windows you may be in PowerShell, not Bash: use PowerShell syntax there.
 
@@ -30,7 +30,7 @@ No Git? Download https://github.com/tertiarycourses/TGS-2026061312-Claude-Certif
 
 ## 3. Start the simulators: run the start script in its own window
 
-The start script does the rest. It installs uv if it's missing, installs the simulators (`uv sync`, about a minute the first time), checks the Claude sign-in and opens the website. Launch it in a **separate window**, so it keeps running after this chat ends:
+The start script does the rest. It installs uv if it's missing, installs the simulators (`uv sync`, about a minute the first time), asks once for the Anthropic API key and saves it to `labs/.env` (git-ignored), tests it with one tiny Claude Haiku 5.5 call, and opens the website. Launch it in a **separate window**, so it keeps running after this chat ends:
 
 - **Windows (PowerShell):** `Start-Process -FilePath "labs\start-labs.cmd" -WorkingDirectory "labs"`
 - **Mac:** `open -a Terminal labs/start-labs.command`
@@ -38,14 +38,15 @@ The start script does the rest. It installs uv if it's missing, installs the sim
 Then tell the learner:
 
 1. A window titled *Claude Certified Architect simulators* opened. **Keep it open during class.** Closing it stops the simulators.
-2. The first time only, a browser page may ask them to approve the Claude sign-in. Use the same account as the desktop app.
+2. The first time only, the window asks for their Anthropic API key (it starts `sk-ant-`; nothing shows while they paste). They can also paste it later into the **Anthropic API key** box in the website's sidebar, or double-click `set-api-key.cmd` (Windows) / `set-api-key.command` (Mac). Every lab runs on Claude Haiku 5.5 and costs a fraction of a US cent.
 3. The simulators open at http://localhost:8765 (or 8766, 8767 and so on if that port is busy). If the page is blank, wait 20 seconds and refresh.
 4. **Next time:** double-click `labs\start-labs.cmd` (Windows) or `labs/start-labs.command` (Mac). No Claude needed.
 
 ## If something goes wrong
 
 - **The window says "Install failed":** read the error in it. Usually the network blocked the download. Retry step 3.
-- **"Not signed in" in the simulators' sidebar:** in the `labs` folder, run `uv run login.py --login` and have the learner approve the browser page, then refresh.
+- **"No API key yet" in the simulators' sidebar:** paste the key into the sidebar's **Anthropic API key** box and press **Save key**, or run `uv run login.py --set` in the `labs` folder. `uv run login.py` tests the saved key.
+- **The API refuses the key (401):** the key is wrong or revoked. Create a new one at https://platform.claude.com/settings/keys and save it again.
 - **"No claude program found"** (Windows on ARM laptops, such as Snapdragon): install Claude Code with `irm https://claude.ai/install.ps1 | iex`, then run step 3 again.
 - **Nothing opens in the browser:** look at the window for the line `Six simulators at http://localhost:PORT`, and open that address.
 - **The course is in OneDrive or Dropbox:** the script handles it already, by keeping the Python environment in `%LOCALAPPDATA%\ccar-f-labs-venv`.

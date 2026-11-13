@@ -6,67 +6,34 @@
   "type": "run",
   "correct": "B",
   "expected_outcome": "Three session ids: the baseline and two forks that differ from it and from each other. Attempt B starts from restored files, so attempt A's edits never leak into it.",
-  "model": "claude-opus-5-5",
+  "model": "claude-haiku-5-5",
   "tasks": {
     "t0": {
       "kind": "claude",
-      "elapsed_s": 43.1,
-      "exit_code": 1,
-      "command": "claude -p Plan mode investigation only: formatDate in src/utils/formatDate.js\u2026 --model claude-opus-5-5 --output-format json --max-turns 4 --permission-mode plan --allowedTools Read Grep Glob --name uc5-baseline",
-      "subtype": "error_max_turns",
-      "result": null,
-      "session_id": "9386c0ba-0773-4bd1-8f0a-40a694f2785e",
-      "total_cost_usd": 0.4848488,
-      "num_turns": 5,
+      "elapsed_s": 13.4,
+      "exit_code": 0,
+      "command": "claude -p Plan mode investigation only: formatDate in src/utils/formatDate.js\u2026 --model claude-haiku-5-5 --output-format json --max-turns 4 --permission-mode plan --allowedTools Read Grep Glob --name uc5-baseline",
+      "subtype": "success",
+      "result": "Read-only investigation; nothing edited. Five lines:\n\n1. **Crash path confirmed:** `src/api/orders.js:12` calls `formatDate(order.shippedAt)` on every `getOrder`, and `tests/fixtures/orders.json:3` (ORD-1002) has `shippedAt: null`, so that fixture reproduces the bug.\n2. **Same crash class elsewhere:** `src/services/invoice.ts:7` passes `inv.dueAt` to `formatDate`, but the `Invoice` type declares `dueAt: Date | null` (`invoice.ts:4`), so a null due date throws there too. `src/services/report.ts:4` is typed `Date` and is safe only if callers never pass null.\n3. **Minimal patch:** in `src/utils/formatDate.js`, add `if (date == null) return null;` before the `toISOString` line, then add a regression test using the ORD-1002 fixture that fails before the change. This is a contract change: callers now get `null` back, and `invoice.ts` would print `due null`, so it should render a placeholder such as `\"\u2014\"` in the template.\n4. **Larger refactor:** convert `formatDate` to TypeScript with overloads: `formatDate(d: Date): string` and `formatDate(d: Date | null | undefined): string | null`, so the compiler flags null-unsafe callers. Split the null-safe path into a named helper such as `formatDateOrDash` and move the nullable decision into the call sites that know the field is optional.\n5. **Caveats:** `orders.js` is plain JS, so the type checker won't cover it without JSDoc or migrating it, and `.claude/rules/api-handlers.md` requires `ApiError` with a stable `code` and `zod` validation for handlers, which `getOrder` does not follow yet. I did not write the plan file, since you asked for a report and not a plan.",
+      "session_id": "7f5354a6-79ae-4511-a95d-14458de5e925",
+      "total_cost_usd": 0.00336219,
+      "num_turns": 8,
       "structured_output": null,
       "permission_denials": [],
-      "is_error": true
+      "is_error": false
     },
     "t1": {
       "kind": "claude",
-      "elapsed_s": 38.1,
+      "elapsed_s": 7.8,
       "exit_code": 0,
-      "command": "claude -p Attempt A from this analysis: implement ONLY the minimal patch to s\u2026 --model claude-opus-5-5 --output-format json --max-turns 6 --permission-mode acceptEdits --allowedTools Read Edit Write Grep Glob --resume 9386c0ba-0773-4bd1-8f0a-40a694f2785e --fork-session",
+      "command": "claude -p Attempt A from this analysis: implement ONLY the minimal patch to s\u2026 --model claude-haiku-5-5 --output-format json --max-turns 6 --permission-mode acceptEdits --allowedTools Read Edit Write Grep Glob --resume 7f5354a6-79ae-4511-a95d-14458de5e925 --fork-session",
       "subtype": "success",
-      "result": "The patch is in, but it's **untested**: `npm test -- --changed` and my quick script both need approval, which I can't get in this session. CLAUDE.md requires that test run before a change counts as done, so please run it or approve it.\n\n```diff\n export function formatDate(date) {\n+  if (date == null) return null;\n   return date.toISOString().slice(0, 10);\n```\n\n`git status` shows `src/utils/formatDate.js` as the only modified file in the repo, and nothing is committed. From reading the code, null or undefined now returns `null` instead of throwing, and valid dates format as before.\n\n**Problems this leaves, because the fix is only in this file:**\n1. **Wrong invoice text:** `renderInvoiceHeader` (`src/services/invoice.ts:7`) will now print `due null` when `dueAt` is null. A visible crash becomes bad output on an invoice, which is why I recommended guarding the callers instead.\n2. **Outdated README:** `README.md:5` still says `formatDate` \"Throws on `null`\", so this is a public contract change. It needs a README update and an explanation in the PR body.\n3. **Inaccurate types:** `formatDate` can now return `null`, but `reportLine` and `renderInvoiceHeader` still declare `string` and could embed it in their text.\n4. **No regression test:** `docs/standards/testing.md` requires one for every bug fix, so this can't merge as it stands. A test using `ORD-1002` from `tests/fixtures/orders.json` would cover it.\n5. **Other crashes remain:** ISO strings still throw `TypeError` and invalid Dates still throw `RangeError`. The fixtures store `shippedAt` as a string, so if the database returns strings too, `getOrder` will still crash for shipped orders.\n\n**Decision for you:** before merging, should `invoice.ts:7` get its own guard? I recommend yes, along with the README update and the test. A one-line fallback there removes `due null`, but all three touch files you ruled out for this attempt, so I left them alone.\n\nMy script is at `<course>/UC-5-kenhoc4m-workspace/e66f01ee-c6c2-402b-a9ae-5ed1cc830891/scratchpad/check-formatDate.mjs`, outside the repo. Run it with `node` to check null, undefined, string and invalid Date inputs, plus the `due null` output.",
-      "session_id": "e66f01ee-c6c2-402b-a9ae-5ed1cc830891",
-      "total_cost_usd": 0.7005260000000001,
-      "num_turns": 8,
+      "result": "I changed `src/utils/formatDate.js` only. It now returns `null` for a null or undefined date:\n\n```js\nexport function formatDate(date) {\n  if (date == null) return null;\n  return date.toISOString().slice(0, 10);\n}\n```\n\nThree things are still open:\n- **No regression test.** `CLAUDE.md` requires one for every bug fix, and it should use the ORD-1002 fixture. You limited me to one file, so I didn't add it.\n- **Tests not run.** I didn't run `npm test -- --changed`, so this change is unverified beyond reading the code.\n- **`invoice.ts` output changes.** A null `dueAt` now renders as `due null` in `renderInvoiceHeader`. It no longer throws, but a placeholder such as `\"\u2014\"` would read better; that needs a change in `invoice.ts`.",
+      "session_id": "b644fbac-dec4-4ab5-98a4-de8fa2ae5d0c",
+      "total_cost_usd": 0.004626265,
+      "num_turns": 2,
       "structured_output": null,
-      "permission_denials": [
-        {
-          "tool_name": "Bash",
-          "tool_use_id": "toolu_01AvbDJb6v3QZrxi94doUqZf",
-          "tool_input": {
-            "command": "npm test -- --changed 2>&1 | tail -40; echo \"exit: ${PIPESTATUS[0]}\"; echo '--- behaviour'; node --input-type=module -e '\nimport { formatDate } from \"./src/utils/formatDate.js\";\nconsole.log(\"null ->\", formatDate(null));\nconsole.log(\"undefined ->\", formatDate(undefined));\nconsole.log(\"date ->\", formatDate(new Date(\"2026-03-04T09:12:00Z\")));\nconsole.log(\"invoice header ->\", `INV-1 issued ${formatDate(new Date(\"2026-03-04T09:12:00Z\"))} due ${formatDate(null)}`);\ntry { formatDate(\"2026-03-04T09:12:00Z\"); } catch (e) { console.log(\"string ->\", e.constructor.name, e.message); }\ntry { formatDate(new Date(\"nope\")); } catch (e) { console.log(\"invalid Date ->\", e.constructor.name, e.message); }\n' 2>&1; echo '--- git'; git status --short; git diff",
-            "description": "Run changed tests, exercise formatDate, show the diff"
-          }
-        },
-        {
-          "tool_name": "Bash",
-          "tool_use_id": "toolu_011Qf8FSiG41eE8B5TNwkhF7",
-          "tool_input": {
-            "command": "npm test -- --changed 2>&1; echo \"exit: $?\"",
-            "description": "Run tests for changed files"
-          }
-        },
-        {
-          "tool_name": "Bash",
-          "tool_use_id": "toolu_01Rbr5LyveyzWj9SEL4mZPKE",
-          "tool_input": {
-            "command": "npm test -- --changed",
-            "description": "Run tests for changed files"
-          }
-        },
-        {
-          "tool_name": "Bash",
-          "tool_use_id": "toolu_01TgWUsQn1nY1WHtWM6h6aKi",
-          "tool_input": {
-            "command": "node <course>/UC-5-kenhoc4m-workspace/e66f01ee-c6c2-402b-a9ae-5ed1cc830891/scratchpad/check-formatDate.mjs",
-            "description": "Exercise formatDate with null and bad inputs"
-          }
-        }
-      ],
+      "permission_denials": [],
       "is_error": false,
       "files_changed": [
         "src/utils/formatDate.js"
@@ -74,72 +41,49 @@
     },
     "t2": {
       "kind": "claude",
-      "elapsed_s": 179.0,
+      "elapsed_s": 43.4,
       "exit_code": 0,
-      "command": "claude -p Attempt B from this analysis: implement the larger refactor you des\u2026 --model claude-opus-5-5 --output-format json --max-turns 8 --permission-mode acceptEdits --allowedTools Read Edit Write Grep Glob --resume 9386c0ba-0773-4bd1-8f0a-40a694f2785e --fork-session",
+      "command": "claude -p Attempt B from this analysis: implement the larger refactor you des\u2026 --model claude-haiku-5-5 --output-format json --max-turns 8 --permission-mode acceptEdits --allowedTools Read Edit Write Grep Glob --resume 7f5354a6-79ae-4511-a95d-14458de5e925 --fork-session",
       "subtype": "success",
-      "result": "The refactor is written but **not verified, so it isn't done yet by the `CLAUDE.md` standard**. This session blocked both `npm test -- --changed` and `node --test tests/`, and dependencies aren't installed, so neither the code nor the tests have been run. Nothing is committed.\n\n## What changed\n- **New module:** `src/utils/dates.js` has three functions, and `src/utils/formatDate.js` is deleted:\n  - `formatDate` is strict and still throws on `null`, as the README documents.\n  - `formatOptionalDate` returns a fallback when there is no date.\n  - `toDateOrNull` converts stored values to a `Date` or `null`.\n- **Callers:**\n  - `getOrder` now returns `shippedAt: null` for an unshipped order.\n  - `renderInvoiceHeader` prints `due n/a` when `dueAt` is null.\n  - `reportLine` only changes its import.\n  - A search finds no remaining imports of the old file.\n- **Repository:** `OrderRepository.findById` now converts `shippedAt` to `Date | null`.\n- **Type checking:** I added a strict `tsconfig.json`, an `npm run typecheck` script and a `typescript` dev dependency. Passing `inv.dueAt` to `formatDate` should now be a compile error.\n- **Docs and tests:** the README API section and migration notes are updated, and there are five new test files using the existing fixtures.\n\n## Differences from my plan\n- **JSDoc instead of TypeScript:** you asked for `dates.js`, so its types are JSDoc that `tsc` checks.\n- **`findSince` isn't normalized:** doing so could change date strings in the `listOrders` response (`\u2026:00Z` to `\u2026:00.000Z`). As a result, `findById` and `findSince` now return `shippedAt` differently.\n\n## Remaining gaps\n- **Corrupt dates still crash `getOrder`:** an unparseable `shippedAt` rejects on purpose, so bad data doesn't look like \"not shipped\". The rejection goes unhandled because `getOrder` has no `try/catch`.\n- **API handler rule not met:** the rule requires `try/catch` and `ApiError`, but `ApiError` doesn't exist in this repo and I didn't want to invent its shape.\n- **Typecheck coverage is partial:** it covers only `dates.js` and `src/services/*.ts`, not `src/api/orders.js`. The repo has no CI config, so nothing runs it automatically yet.\n- **Existing bug, not touched:** `src/api/orders.js:6` creates `new OrderRepository()` with no database, so `getOrder` as written always returns 404. The handler tests stub `findById` to get past this, so check how the database gets wired in production.\n\n## To verify\n```sh\nnpm install && npm test -- --changed && npm run typecheck\n```\nTo confirm the regression tests fail before the fix, temporarily restore the old code and run them; the null-date cases should fail:\n```sh\ngit stash push -- src/api src/services src/db src/utils/formatDate.js\nnode --test tests/invoice.test.js tests/orders.test.js\ngit stash pop\n```\n\n## Questions for you\n- Is `due n/a` the right invoice wording? I picked it as a placeholder because this text may reach customers. To change it, edit the fallback in `src/services/invoice.ts:7`, plus the README note and the test that expect it.",
-      "session_id": "c7609130-f32a-4b19-82cb-406072bbe97b",
-      "total_cost_usd": 1.2155034,
-      "num_turns": 30,
+      "result": "The refactor is in place, but I could not run the tests. Node execution needs approval in this session, and I was blocked twice, so nothing has been executed or verified by running.\n\n**What changed**\n- **New `src/utils/dates.js`**: `formatDate(date)` takes a required `Date` and throws a `TypeError` for anything else. `formatDateOrNull(date)` returns `null` for `null` or `undefined`.\n- **Callers**:\n  - `src/api/orders.js` uses `formatDateOrNull` for `shippedAt`, so unshipped orders return `null` instead of crashing.\n  - `src/services/invoice.ts` uses `formatDate` for `issuedAt` and `formatDateOrNull` for `dueAt`. A missing due date now renders as `due none`, which is a visible output change.\n  - `src/services/report.ts` uses `formatDate`.\n- **Removed**: `src/utils/formatDate.js`. Grep shows no remaining references to it.\n- **README**: the API reference now describes both functions.\n- **New `tests/dates.test.js`**: covers expected output, a day-boundary edge case, and the null failure path for `formatDate`. It also covers the ORD-1002 fixture (`shippedAt: null`) and `undefined` for `formatDateOrNull`. I used `node:test` `describe`/`it` to follow the project's naming rule.\n\n**Not done or not verified**\n- **Tests have not been run.** I did not run `npm test` or `npm test -- --changed`, so I have not confirmed that the regression test fails before the fix or passes after it.\n- **The `.claude/rules/api-handlers.md` conventions are not applied to `getOrder`.** It has no `try/catch`, no `ApiError` with a `code`, and no `zod` validation. I left those alone because they are outside the refactor. I did not check whether `ApiError` exists in the repo.\n- **Commit and PR were not made**, and the repo already had uncommitted state from earlier steps. Tell me if you want a commit.\n\nTo finish verification, approve `npm test` (or `node --test tests/`) and I'll run it.",
+      "session_id": "dd9258a6-094d-4e04-988f-b46c856f5726",
+      "total_cost_usd": 0.011138300000000002,
+      "num_turns": 15,
       "structured_output": null,
       "permission_denials": [
         {
           "tool_name": "Bash",
-          "tool_use_id": "toolu_0145tsGyAtwjiWS7PBhPuLSt",
+          "tool_use_id": "toolu_01TdBrND3qhmBtM8KEB22Dhj",
           "tool_input": {
-            "command": "node --version; npm --version; echo '--- gitignore'; cat .gitignore; echo '--- authorize'; cat src/middleware/authorize.js; echo '--- noisy'; cat scripts/noisy-test.js; echo '--- baseline: npm test -- --changed'; npm test -- --changed 2>&1 | tail -25; echo '--- baseline: npm test'; npm test 2>&1 | tail -15",
-            "description": "Check Node version, ignore rules and baseline test run"
+            "command": "node --test tests/dates.test.js 2>&1 | tail -15",
+            "description": "Run new regression test before the fix"
           }
         },
         {
           "tool_name": "Bash",
-          "tool_use_id": "toolu_01GB7SpJwvVs2JYREFvred6o",
+          "tool_use_id": "toolu_01AeKSG4ZPiD44kdJvNgCpT6",
           "tool_input": {
-            "command": "npm test -- --changed",
-            "description": "Run baseline changed-tests command"
-          }
-        },
-        {
-          "tool_name": "Bash",
-          "tool_use_id": "toolu_01KaP16YEtSwXNFbi6F6Tuwy",
-          "tool_input": {
-            "command": "node --test tests/",
-            "description": "Run the test suite with Node's runner"
-          }
-        },
-        {
-          "tool_name": "Bash",
-          "tool_use_id": "toolu_01GDZFWb98zCxPKWc8wD3tmy",
-          "tool_input": {
-            "command": "git -C <course>/UC-5-kenhoc4m/workspace status --short",
-            "description": "Show working tree status"
+            "command": "node --test tests/dates.test.js",
+            "description": "Run new date tests before the fix"
           }
         }
       ],
       "is_error": false,
       "files_changed": [
         "README.md",
-        "package.json",
         "src/api/orders.js",
-        "src/db/orderRepository.js",
         "src/services/invoice.ts",
         "src/services/report.ts",
         "src/utils/dates.js",
         "src/utils/formatDate.js",
-        "tests/dates.test.js",
-        "tests/invoice.test.js",
-        "tests/orderRepository.test.js",
-        "tests/orders.test.js",
-        "tests/report.test.js",
-        "tsconfig.json"
+        "tests/dates.test.js"
       ]
     }
   },
   "restores": [
     "t2"
   ],
-  "cost_usd": 2.4009,
+  "cost_usd": 0.0191,
   "evaluation": [
     {
       "criterion": "both attempts resume the baseline with --fork-session and get new session ids",

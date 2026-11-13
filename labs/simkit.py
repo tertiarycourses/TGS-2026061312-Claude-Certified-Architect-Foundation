@@ -1,20 +1,53 @@
-"""The engine behind all six simulators: Python on the Claude Agent SDK.
+"""The engine behind all six simulators: Python on the Claude Agent SDK and the Claude API.
 
-Everything runs locally on your Claude login (`claude auth login`). No API key is used:
-importing this module removes any key from the environment so the SDK falls back to OAuth.
+Every run uses your Anthropic API key (ANTHROPIC_API_KEY in labs/.env, or the course folder's .env)
+and one model only: Claude Haiku 5.5 (claude-haiku-5-5).
 """
 import asyncio, json, os, shlex, sys
 from pathlib import Path
 from types import SimpleNamespace
 
-for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "CLAUDECODE"):
+HAIKU = "claude-haiku-5-5"
+
+
+def load_key():
+    """Find ANTHROPIC_API_KEY: the environment first, then the nearest .env walking up from labs/."""
+    if os.environ.get("ANTHROPIC_API_KEY", "").strip():
+        return True
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        load_dotenv = None
+    here = Path(__file__).resolve().parent
+    for d in [here, *here.parents]:
+        f = d / ".env"
+        if f.is_file():
+            if load_dotenv:
+                load_dotenv(f, override=False)
+            else:  # tiny fallback parser
+                for line in f.read_text(encoding="utf-8").splitlines():
+                    k, sep, v = line.partition("=")
+                    if sep and k.strip() and not k.strip().startswith("#"):
+                        os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+            if os.environ.get("ANTHROPIC_API_KEY", "").strip():
+                return True
+    return False
+
+
+HAS_KEY = load_key()
+# An OAuth token or a nested Claude Code session must not override the key.
+for _k in ("ANTHROPIC_AUTH_TOKEN", "CLAUDECODE"):
     os.environ.pop(_k, None)
+# Every model alias Claude Code might reach for (subagents, background calls) resolves to Haiku 5.5.
+HAIKU_ENV = {"ANTHROPIC_MODEL": HAIKU, "ANTHROPIC_DEFAULT_HAIKU_MODEL": HAIKU, "ANTHROPIC_DEFAULT_SONNET_MODEL": HAIKU,
+             "ANTHROPIC_DEFAULT_OPUS_MODEL": HAIKU, "ANTHROPIC_SMALL_FAST_MODEL": HAIKU, "CLAUDE_CODE_SUBAGENT_MODEL": HAIKU}
+os.environ.update(HAIKU_ENV)
 
 from claude_agent_sdk import (AgentDefinition, AssistantMessage, ClaudeAgentOptions, ResultMessage, SystemMessage, TextBlock, ThinkingBlock,
                               ToolResultBlock, ToolUseBlock, UserMessage, create_sdk_mcp_server, query, tool)
 from claude_agent_sdk.types import StreamEvent
 
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = HAIKU  # the course runs every Claude call on Haiku 5.5
 ON_EVENT = None  # the website sets this to stream lines into its console
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -58,9 +91,10 @@ def options(**kw):
     global _MAX_TURNS
     _MAX_TURNS = kw.get("max_turns")
     kw.setdefault("setting_sources", [])
+    kw["model"] = MODEL  # Haiku 5.5, whatever the caller asked for
     kw["include_partial_messages"] = True
     project_mcp = "project" in kw["setting_sources"] and kw.get("cwd") and (Path(kw["cwd"]) / ".mcp.json").exists()
-    env = {"ENABLE_CLAUDEAI_MCP_SERVERS": "false"}
+    env = {"ENABLE_CLAUDEAI_MCP_SERVERS": "false", **HAIKU_ENV}
     if not project_mcp:  # this lab's own tools are all there is, so nothing needs searching for
         env["ENABLE_TOOL_SEARCH"] = "false"
         kw["extra_args"] = {"strict-mcp-config": None, **(kw.get("extra_args") or {})}
@@ -172,7 +206,7 @@ def _agents(text):
     if not text:
         return None
     raw = json.loads(text) if isinstance(text, str) else text
-    return {k: AgentDefinition(description=v.get("description", k), prompt=v.get("prompt", ""), tools=v.get("tools"), model=v.get("model")) for k, v in raw.items()}
+    return {k: AgentDefinition(description=v.get("description", k), prompt=v.get("prompt", ""), tools=v.get("tools"), model="inherit") for k, v in raw.items()}
 
 
 async def _run(prompt, opts):
@@ -203,7 +237,7 @@ async def _run(prompt, opts):
 def run_agent(prompt, *, cwd=None, model=None, mode=None, max_turns=None, tools=None, disallowed=None, schema=None, settings=None, agents=None,
               resume=None, fork=False, name=None, effort=None, system=PRESET, sources=("project", "local")):
     """One Claude Code run through the Agent SDK. Returns the same fields as a `claude -p --output-format json` envelope."""
-    kw = dict(model=model or MODEL, cwd=str(cwd) if cwd else None, system_prompt=system, setting_sources=list(sources) if sources else None)
+    kw = dict(model=MODEL, cwd=str(cwd) if cwd else None, system_prompt=system, setting_sources=list(sources) if sources else None)
     if mode: kw["permission_mode"] = mode
     if max_turns: kw["max_turns"] = int(max_turns)
     if tools: kw["allowed_tools"] = list(tools)
@@ -246,110 +280,87 @@ def run_cli(cmd, cwd=None, **_):
     return SimpleNamespace(returncode=1 if env["is_error"] else 0, stdout=json.dumps(env, default=str), stderr="" if not env["is_error"] else str(env["result"]))
 
 
-# ------------------------------------------------------------------- Messages-style calls, answered by the Agent SDK
-class BadRequestError(Exception):
-    message = ""
-class AuthenticationError(Exception):
-    pass
+# ------------------------------------------------------------------- Claude API (Messages) calls
+import anthropic as _anthropic
+from anthropic import AuthenticationError, BadRequestError  # noqa: F401  (re-exported for the simulators)
+from anthropic.types.message_create_params import MessageCreateParamsNonStreaming  # noqa: F401
+from anthropic.types.messages.batch_create_params import Request  # noqa: F401
 
-def Request(custom_id, params): return {"custom_id": custom_id, "params": params}
-def MessageCreateParamsNonStreaming(**k): return k
-
-class Block(SimpleNamespace):
-    def model_dump(self): return dict(vars(self))
-
-def _flatten(messages):
-    parts = []
-    for m in messages:
-        c = m["content"]
-        if isinstance(c, str):
-            parts.append((m["role"], c)); continue
-        bits = []
-        for b in c:
-            t = b.get("type") if isinstance(b, dict) else b.type
-            g = (lambda k, d=None: b.get(k, d)) if isinstance(b, dict) else (lambda k, d=None: getattr(b, k, d))
-            if t == "text": bits.append(g("text"))
-            elif t == "tool_use": bits.append(f"[you called tool {g('name')} with {json.dumps(g('input'))}]")
-            elif t == "tool_result": bits.append(f"[tool result: {json.dumps(g('content'), default=str)}]")
-        parts.append((m["role"], "\n".join(bits)))
-    if len(parts) == 1: return parts[0][1]
-    return "\n\n".join(f"{r.upper()}:\n{t}" for r, t in parts) + "\n\nContinue from here."
+PRICE_IN, PRICE_OUT = 0.10, 0.50  # US$ per million tokens, Claude Haiku 5.5 (prompts up to 100K tokens)
 
 
-async def _one(params):
-    """One model turn: Claude may answer or call a tool, and control comes straight back, as on the Messages API."""
-    specs = params.get("tools") or []
-    captured = []
-    def handler_for(name):
-        async def h(args):
-            captured.append(name); return {"content": [{"type": "text", "text": "recorded"}]}
-        return h
-    sdk_tools = [tool(t["name"], t.get("description", ""), t["input_schema"])(handler_for(t["name"])) for t in specs]
-    system = params.get("system") or ""
-    tc = (params.get("tool_choice") or {}).get("type", "auto")
-    if tc == "any": system += "\n\nYou must respond by calling one of the provided tools."
-    if tc == "tool": system += f"\n\nYou must respond by calling the {params['tool_choice']['name']} tool."
-    kw = dict(model=params.get("model") or MODEL, system_prompt=system or None, tools=[], max_turns=1, permission_mode="bypassPermissions", env={"ENABLE_TOOL_SEARCH": "false"}, cwd=str(Path(__file__).parent))
-    if sdk_tools:
-        kw["mcp_servers"] = {"local": create_sdk_mcp_server("local", tools=sdk_tools)}
-        kw["allowed_tools"] = [f"mcp__local__{t['name']}" for t in specs]
-    content, model, usage, cost = [], kw["model"], {}, 0
-    try:
-        async for m in query(prompt=_flatten(params["messages"]), options=options(**kw)):
-            if isinstance(m, StreamEvent) and m.event.get("type") == "message_delta" and m.event.get("delta", {}).get("stop_reason"):
-                emit(f"  stop_reason: {m.event['delta']['stop_reason']}")
-            elif isinstance(m, AssistantMessage):
-                model = m.model or model
-                for b in m.content:
-                    if isinstance(b, ToolUseBlock):
-                        content.append(Block(type="tool_use", id=b.id, name=b.name.split("__")[-1], input=b.input))
-                        emit(f"  -> {b.name.split('__')[-1]}({short(b.input)})")
-                    elif isinstance(b, TextBlock) and b.text.strip():
-                        content.append(Block(type="text", text=b.text))
-            elif isinstance(m, ResultMessage):
-                usage = m.usage or {}; cost = m.total_cost_usd or 0
-                record_cost(cost)
-    except Exception as e:
-        if not content: raise RuntimeError(f"Agent SDK call failed: {e}")
-    stop = "tool_use" if any(b.type == "tool_use" for b in content) else "end_turn"
-    return SimpleNamespace(content=content, stop_reason=stop, model=model, cost_usd=cost,
-                           usage=SimpleNamespace(input_tokens=usage.get("input_tokens", 0), output_tokens=usage.get("output_tokens", 0),
-                                                 # everything Claude read this turn, cached or not (Claude Code caches the prompt)
-                                                 total_input_tokens=sum(usage.get(k, 0) or 0 for k in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"))))
+def usage_cost(u):
+    if not u:
+        return 0.0
+    cache_w = getattr(u, "cache_creation_input_tokens", 0) or 0
+    cache_r = getattr(u, "cache_read_input_tokens", 0) or 0
+    return ((u.input_tokens or 0) * PRICE_IN + cache_w * PRICE_IN * 1.25 + cache_r * PRICE_IN * 0.1 + (u.output_tokens or 0) * PRICE_OUT) / 1e6
 
 
-class _Counts(SimpleNamespace):
-    def model_dump(self): return dict(vars(self))
+class _Resp:
+    """The real Messages API response, plus cost_usd and usage.total_input_tokens for the lab printouts."""
+    def __init__(self, r):
+        self._r = r
+        self.cost_usd = usage_cost(r.usage)
+        u = r.usage
+        self.usage = SimpleNamespace(input_tokens=u.input_tokens, output_tokens=u.output_tokens,
+                                     cache_creation_input_tokens=getattr(u, "cache_creation_input_tokens", 0) or 0,
+                                     cache_read_input_tokens=getattr(u, "cache_read_input_tokens", 0) or 0,
+                                     total_input_tokens=(u.input_tokens or 0) + (getattr(u, "cache_creation_input_tokens", 0) or 0) + (getattr(u, "cache_read_input_tokens", 0) or 0))
+    def __getattr__(self, k): return getattr(self._r, k)
+    def model_dump(self, *a, **k): return self._r.model_dump(*a, **k)
 
 
-class _Batches:
-    """A local stand-in for the Message Batches API: same custom_id workflow, one Agent SDK call per row, no tool loop.
-    The real API's 50% discount and 24-hour window do not apply here."""
-    store = {}
-    def create(self, requests):
-        async def go():
-            sem = asyncio.Semaphore(4)
-            async def row(r):
-                async with sem:
-                    try:
-                        return SimpleNamespace(custom_id=r["custom_id"], result=SimpleNamespace(type="succeeded", message=await _one(r["params"])))
-                    except Exception as e:
-                        return SimpleNamespace(custom_id=r["custom_id"], result=SimpleNamespace(type="errored", error=str(e)))
-            return await asyncio.gather(*(row(r) for r in requests))
-        out = asyncio.run(go()); bid = f"local_batch_{len(self.store) + 1}"; self.store[bid] = out
-        ok = sum(r.result.type == "succeeded" for r in out)
-        return self.retrieve(bid) if ok >= 0 else None
-    def retrieve(self, bid):
-        out = self.store[bid]; ok = sum(r.result.type == "succeeded" for r in out)
-        return SimpleNamespace(id=bid, processing_status="ended", request_counts=_Counts(processing=0, succeeded=ok, errored=len(out) - ok, canceled=0, expired=0))
-    def results(self, bid): return self.store[bid]
+STRICT_UNSUPPORTED = {"minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf", "minLength", "maxLength", "pattern"}
+
+
+def api_schema(node):
+    """A copy of a JSON schema without the keywords strict tool use rejects (numeric and length bounds).
+    The simulators still validate the full schema locally, so the bounds are enforced after the call."""
+    if isinstance(node, dict):
+        return {k: api_schema(v) for k, v in node.items() if k not in STRICT_UNSUPPORTED}
+    if isinstance(node, list):
+        return [api_schema(v) for v in node]
+    return node
+
+
+def _api_tools(tools):
+    return [dict(t, input_schema=api_schema(t["input_schema"])) if t.get("strict") and "input_schema" in t else t for t in tools]
 
 
 class _Messages:
-    batches = _Batches()
-    def create(self, **params): return asyncio.run(_one(params))
+    def __init__(self, inner, batches=None):
+        self._m = inner
+        self.batches = batches
+    def create(self, **params):
+        params["model"] = MODEL
+        if params.get("tools"):
+            params["tools"] = _api_tools(params["tools"])
+        r = _Resp(self._m.create(**params))
+        for b in r.content:
+            if b.type == "tool_use":
+                emit(f"  -> {b.name}({short(b.input)})")
+        emit(f"  stop_reason: {r.stop_reason}")
+        record_cost(r.cost_usd)
+        return r
+
+
+class _Batches:
+    """The real Message Batches API, with each request pinned to Haiku 5.5 and strict schemas made API-safe."""
+    def __init__(self, inner): self._b = inner
+    def create(self, requests, **kw):
+        fixed = []
+        for r in requests:
+            prm = dict(r["params"], model=MODEL)
+            if prm.get("tools"): prm["tools"] = _api_tools(prm["tools"])
+            fixed.append({"custom_id": r["custom_id"], "params": prm})
+        return self._b.create(requests=fixed, **kw)
+    def __getattr__(self, k): return getattr(self._b, k)
 
 
 class Anthropic:
-    """Answers the shape extract.py and triage.py expect, through the Agent SDK and your Claude login."""
-    def __init__(self): self.messages = _Messages(); self.beta = SimpleNamespace(messages=self.messages)
+    """The real Claude API client (anthropic SDK), with every request pinned to Claude Haiku 5.5."""
+    def __init__(self, **kw):
+        self._c = _anthropic.Anthropic(**kw)
+        self.messages = _Messages(self._c.messages, _Batches(self._c.messages.batches))
+        self.beta = SimpleNamespace(messages=_Messages(self._c.beta.messages, _Batches(self._c.beta.messages.batches)))

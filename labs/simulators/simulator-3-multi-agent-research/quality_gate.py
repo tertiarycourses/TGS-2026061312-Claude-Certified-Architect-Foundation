@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lab 39, live: a prompt-based quality gate with one noisy category, switched off, then rebuilt and measured.
+"""Extra practice (not a numbered lab), live: a prompt-based quality gate with one noisy category, switched off, then rebuilt and measured.
 
 Usage: uv run quality_gate.py
 
@@ -70,7 +70,7 @@ def gate(client, model, cats, label):
 
 def main():
     model = simkit.MODEL; client = simkit.Anthropic(); began = time.time()
-    emit(f"Lab 39 · quality gate with a noisy category · 8 labelled findings · model {model}")
+    emit(f"Extra practice · quality gate with a noisy category · 8 labelled findings · model {model}")
     noisy = gate(client, model, CATS, "Run 1 · all three categories (the team's broad definition)")
     off = gate(client, model, {k: v for k, v in CATS.items() if k != "unsupported market claim"}, "Run 2 · noisy category left out; accurate ones stay on")
     rebuilt = gate(client, model, dict(CATS, **{"unsupported market claim": REBUILT}), "Run 3 · category rebuilt with a tight definition and examples")

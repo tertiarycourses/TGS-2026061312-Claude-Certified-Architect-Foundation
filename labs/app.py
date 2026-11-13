@@ -1,7 +1,7 @@
 """The six simulators, in Python. Each page drives real Claude Agent SDK runs on this laptop."""
 import json, re, time
 import streamlit as st
-import simkit, engine, live
+import simkit, engine, live, set_api_key
 from guides import GUIDES, PLAIN
 
 st.set_page_config(page_title="Claude Certified Architect simulators", page_icon="logo.png", layout="wide")
@@ -22,11 +22,20 @@ if not getattr(st, "_dollars_safe", False):  # this script reruns, the st module
 def model_picker():
     st.sidebar.image("logo.png", width=56)
     ok, how = engine.login()
-    if ok: st.sidebar.success(f"Signed in to Claude ({how})")
-    else: st.sidebar.error("Not signed in. Ask Claude Code: *Sign me in for the course simulators* (it runs `uv run login.py --login`), then refresh.")
-    SS.setdefault("model", engine.MODELS[0])
-    st.sidebar.selectbox("Model for live runs", engine.MODELS, key="model", help="Sonnet is a sensible default. Haiku spends least. Opus matches the course's saved evidence.")
-    st.sidebar.caption("Live runs use your Claude allowance.")
+    if ok: st.sidebar.success(f"Anthropic API key saved ({how})")
+    else: st.sidebar.error("**No API key yet: paste it here.** Every lab calls Claude Haiku 5.5 with your Anthropic API key.")
+    with st.sidebar.form("api_key_form", clear_on_submit=True, border=True):
+        k = st.text_input("Anthropic API key", type="password", placeholder="sk-ant-...", help="Saved to labs/.env on this laptop (git-ignored). Get one at platform.claude.com/settings/keys.")
+        if st.form_submit_button("Save key", use_container_width=True) and k:
+            try:
+                st.session_state["key_msg"] = f"Key saved ({set_api_key.save_key(k)})"
+                st.rerun()
+            except ValueError as e:
+                st.error(str(e))
+    if SS.get("key_msg"): st.sidebar.caption(SS.pop("key_msg"))
+    SS["model"] = engine.MODELS[0]
+    st.sidebar.markdown("**Model:** Claude Haiku 5.5 (`claude-haiku-5-5`)")
+    st.sidebar.caption("Every live run calls the Claude API on your key.")
     return ok
 
 # ------------------------------------------------------------------ evidence
@@ -88,7 +97,7 @@ def console(n):
         shown = j.lines[-250:] if j.done else (["..."] + j.lines[-15:] if len(j.lines) > 15 else j.lines)
         log = "\n".join(shown) or "Starting..."
         st.code(log, language=None, height=420, wrap_lines=True)
-        if re.search(r"not logged in|please run /login|invalid api key", log, re.I): st.error("Claude isn't signed in. Ask Claude Code: *Sign me in for the course simulators* (it runs `uv run login.py --login`), then run the lab again.")
+        if re.search(r"not logged in|please run /login|invalid api key", log, re.I): st.error("The Claude API refused the key. Paste a valid key into the **Anthropic API key** box in the sidebar, press **Save key**, then run the lab again.")
         if j.done and SS.get(f"rendered_{n}") != j.id:
             SS[f"rendered_{n}"] = j.id; st.rerun()
     st.subheader("Live output")
@@ -199,8 +208,7 @@ def chat_panel(n):
         if j is None: st.warning("Another run is using this simulator. Wait for it, or stop it.")
         else: s["turns"].append(dict(user=q, job=j)); st.rerun()
     if s["turns"]:
-        st.caption(f"Estimated API cost of this conversation: US${s['cost']:.4f}, priced at Claude API rates. "
-                   "A simulation: your Claude subscription isn't charged this amount; it counts toward your plan's usage limits.")
+        st.caption(f"Estimated API cost of this conversation: US${s['cost']:.4f} on Claude Haiku 5.5, billed to your API key.")
         if st.button("Start a new conversation", key=f"new_{key}"): del SS[key]; st.rerun()
 
 def play(n):
@@ -375,7 +383,7 @@ def lab_bar(n=None):
     label = lambda k: f"Lab {k} · Simulator {engine.LABS[k]['sim']} · Topic {engine.LABS[k]['topic']} · {engine.LABS[k]['title']}"
     c1, c2, c3 = st.columns([1.2, 5, 1.2], vertical_alignment="bottom")
     c1.button(f"◀ Lab {prev_lab}" if prev_lab else "◀ Previous", disabled=prev_lab is None, on_click=_go, args=(prev_lab or ORDER[0],), use_container_width=True, key="lab_prev")
-    c2.selectbox("Jump to any lab, in course order", ORDER, index=None, key="lab_jump", format_func=label, placeholder="Jump to any lab (1 to 61), in course order…", on_change=_jump)
+    c2.selectbox("Jump to any lab, in course order", ORDER, index=None, key="lab_jump", format_func=label, placeholder="Jump to any lab (1 to 30), in course order…", on_change=_jump)
     c3.button(f"Lab {next_lab} ▶" if next_lab else "Next ▶", disabled=next_lab is None, on_click=_go, args=(next_lab or ORDER[-1],), use_container_width=True, type="primary", key="lab_next")
 
 # ------------------------------------------------------------------ pages
@@ -404,9 +412,9 @@ def home():
     ok = model_picker()
     lab_bar()
     st.caption("TGS-2026061312 · CLAUDE CERTIFIED ARCHITECT FOUNDATION")
-    st.title("Six real systems. 61 labs. Break them on purpose.")
-    st.markdown("Each simulator is one official exam scenario, running on this laptop. The customers and data are fake. **Claude is real**, driven by the Claude Agent SDK through your own login.")
-    if not ok: st.error("You're not signed in yet. Ask Claude Code: *Sign me in for the course simulators* (it runs `uv run login.py --login` in the labs folder), then reload this page.")
+    st.title("Six real systems. 30 labs, one per exam task statement.")
+    st.markdown("Each simulator is one official exam scenario, running on this laptop. The customers and data are fake. **Claude is real**: Claude Haiku 5.5, driven by the Claude Agent SDK and the Claude API on your own API key.")
+    if not ok: st.error("No Anthropic API key yet: paste it into the **Anthropic API key** box in the sidebar and press **Save key**.")
     st.markdown("**New here?** Open Simulator 1. It starts on Lab 1.\n\nEach simulator holds a set of labs. In a lab, you pick an answer, see at once why it's right or wrong, then watch the right answer work. Everything happens on this page.")
     cols = st.columns(3)
     for i, (n, s) in enumerate(engine.SIMS.items()):
@@ -415,7 +423,7 @@ def home():
             st.markdown(f"**{s['name']}**\n\n{s['tagline']}")
             st.page_link(PAGES[n], label=f"Open Simulator {n}", icon="▶️")
     st.divider()
-    st.markdown("**Prefer Claude Code?** Open it in the `labs` folder and type `/lab 9`.  \nEvery lab also has a built-in terminal, so you never need to open one yourself.")
+    st.markdown("**Prefer Claude Code?** Open it in the `labs` folder and type `/lab 1`.  \nEvery lab also has a built-in terminal, so you never need to open one yourself.")
     st.caption("© Tertiary Infotech Academy Pte Ltd · UEN 201200696W. Practice-exam questions are third-party and unofficial.")
 
 PAGES = {n: st.Page(sim_page(n), title=f"{n}. {s['name']}", url_path=f"sim{n}") for n, s in engine.SIMS.items()}

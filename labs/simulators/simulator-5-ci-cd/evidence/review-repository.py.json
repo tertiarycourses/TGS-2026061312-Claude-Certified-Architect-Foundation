@@ -7,9 +7,9 @@
       "severity": "critical",
       "category": "security",
       "detected_pattern": "f-string SQL",
-      "issue": "sku and warehouse are interpolated directly into the SQL string with no validation or parameterisation, so a value such as ' OR '1'='1 rewrites the query and allows SQL injection through either argument of fetch() (and through fetch_many(), which forwards to it).",
-      "suggested_fix": "cursor.execute('SELECT qty FROM stock WHERE sku = %s AND warehouse = %s', (sku, warehouse))",
-      "confidence": 0.97
+      "issue": "The sku and warehouse arguments of fetch() are interpolated directly into the SQL string with an f-string, so a value containing a quote can change the query. fetch_many() passes its skus straight through to this path. Callers are outside this file, so reachability from request input is for the integration pass to confirm.",
+      "suggested_fix": "cursor.execute(\"SELECT qty FROM stock WHERE sku = %s AND warehouse = %s\", (sku, warehouse))  # use the placeholder style of the DB driver (%s for psycopg, ? for sqlite3)",
+      "confidence": 0.9
     }
   ]
 }

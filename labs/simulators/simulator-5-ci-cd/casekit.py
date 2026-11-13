@@ -15,7 +15,7 @@ Task kinds: "claude" (prompt, mode, tools, schema, settings, agents, resume,
 fork, max_turns, snapshot, restore_before), "shell" (cmd), "note".
 Placeholders in prompts and commands: {{lab}}, {{work}}, {{model}}.
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import argparse
 import hashlib
 import json
@@ -31,7 +31,7 @@ from pathlib import Path
 LAB = Path(__file__).resolve().parent
 CASES = LAB / "cases"
 EVID = LAB / "evidence" / "cases"
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 SOURCE_DIRS = {"workspace": LAB / "workspace", "repo": LAB / "repo"}
 
 

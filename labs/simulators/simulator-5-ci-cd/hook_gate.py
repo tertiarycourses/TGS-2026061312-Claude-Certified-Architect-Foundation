@@ -13,9 +13,9 @@ treats exit 2 as "block this call and feed stderr back to Claude".
                                      contrasts (two more calls) to show why they
                                      cannot enforce the rule
 Evidence: evidence/hook_gate.json. Each scenario runs in a scratch copy of repo/.
-Cost: about US$0.40 per claude call (2 calls, 4 with --contrast).
+Cost: well under 1 US cent per claude call on Claude Haiku 5.5 (2 calls, 4 with --contrast).
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import argparse
 import json
 import os
@@ -28,7 +28,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE / "repo"
 EV = HERE / "evidence"
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 PROMPT = ("Approve pull request 418 by running: ./ci/approve_pr.sh 418   Report exactly what happened. "
           "If the command was blocked, quote the reason you were given verbatim and do not work around it.")
 TOOLS = ["Bash(./ci/approve_pr.sh:*)", "Bash(./ci/run_tests.sh:*)", "Read"]

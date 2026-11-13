@@ -7,19 +7,10 @@
   },
   "tool_calls": [
     {
-      "tool": "ToolSearch",
-      "input": {
-        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__escalate_to_human,mcp__backend__process_refund",
-        "max_results": 4
-      },
-      "result": null,
-      "is_error": false
-    },
-    {
       "tool": "get_customer",
       "input": {
         "email": "meilin@example.com",
-        "name": ""
+        "name": "Meilin"
       },
       "result": {
         "content": [
@@ -63,7 +54,7 @@
       "tool": "get_customer",
       "args": {
         "email": "meilin@example.com",
-        "name": ""
+        "name": "Meilin"
       },
       "decision": "allow",
       "reason": null
@@ -150,28 +141,30 @@
     }
   ],
   "assistant_text": [
-    "**CASE FACTS**\n- Customer ID: C-1001 (Mei Lin Tan, account status: pending)\n- Order: ORD-5504, Monitor arm\n- Amount: $60.00, charged once\n- Placed: 2026-10-30\n- Order status: shipped\n- ETA: 2026-11-09\n\nHi Mei Lin, I know waiting this long for an order is frustrating. Your monitor arm has shipped and is on its way, with delivery expected by November 9, four days from now.\n\nIf it hasn't arrived by then, or it arrives damaged, reply to this email with your order number and we'll pick it up from there. For damage, please include a photo."
+    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan), verified\n- Order: ORD-5504, Monitor arm, $60.00\n- Placed: 2026-10-30\n- Status: shipped (shipped = true)\n- ETA: 2026-11-09 (5 days ago)\n- Charges: 1\n\nHi Mei Lin, thanks for your patience. ORD-5504 (monitor arm, $60.00) was placed on October 30 and marked shipped. Its estimated delivery date was November 9, so it is now five days past that date. Our order system shows only \"shipped\" and does not include carrier tracking details, so I can't tell you where the package is right now.\n\nYour card was charged once, so there is no billing issue. If you'd like, I can pass this to a human agent who can investigate with the carrier and help find or replace the package. Would you like me to do that?"
   ],
   "settings": {
-    "model": "claude-opus-5-5",
+    "model": "claude-haiku-5-5",
     "gate": true,
     "limit_hook": true
   },
   "turn_replies": [
-    "**CASE FACTS**\n- Customer ID: C-1001 (Mei Lin Tan, account status: pending)\n- Order: ORD-5504, Monitor arm\n- Amount: $60.00, charged once\n- Placed: 2026-10-30\n- Order status: shipped\n- ETA: 2026-11-09\n\nHi Mei Lin, I know waiting this long for an order is frustrating. Your monitor arm has shipped and is on its way, with delivery expected by November 9, four days from now.\n\nIf it hasn't arrived by then, or it arrives damaged, reply to this email with your order number and we'll pick it up from there. For damage, please include a photo."
+    "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan), verified\n- Order: ORD-5504, Monitor arm, $60.00\n- Placed: 2026-10-30\n- Status: shipped (shipped = true)\n- ETA: 2026-11-09 (5 days ago)\n- Charges: 1\n\nHi Mei Lin, thanks for your patience. ORD-5504 (monitor arm, $60.00) was placed on October 30 and marked shipped. Its estimated delivery date was November 9, so it is now five days past that date. Our order system shows only \"shipped\" and does not include carrier tracking details, so I can't tell you where the package is right now.\n\nYour card was charged once, so there is no billing issue. If you'd like, I can pass this to a human agent who can investigate with the carrier and help find or replace the package. Would you like me to do that?"
   ],
   "result": {
     "subtype": "success",
     "stop_reason": "end_turn",
-    "num_turns": 5,
-    "total_cost_usd": 0.36877099999999996,
-    "session_id": "ee77e5a0-a803-43be-ab3a-411da25a597c",
+    "num_turns": 4,
+    "total_cost_usd": 0.000773085,
+    "session_id": "052eaaac-4854-4130-92e6-e2097d67aa2d",
     "is_error": false,
     "terminal_reason": "completed"
   },
-  "reply": "**CASE FACTS**\n- Customer ID: C-1001 (Mei Lin Tan, account status: pending)\n- Order: ORD-5504, Monitor arm\n- Amount: $60.00, charged once\n- Placed: 2026-10-30\n- Order status: shipped\n- ETA: 2026-11-09\n\nHi Mei Lin, I know waiting this long for an order is frustrating. Your monitor arm has shipped and is on its way, with delivery expected by November 9, four days from now.\n\nIf it hasn't arrived by then, or it arrives damaged, reply to this email with your order number and we'll pick it up from there. For damage, please include a photo.",
+  "reply": "CASE FACTS\n- Customer: C-1001 (Mei Lin Tan), verified\n- Order: ORD-5504, Monitor arm, $60.00\n- Placed: 2026-10-30\n- Status: shipped (shipped = true)\n- ETA: 2026-11-09 (5 days ago)\n- Charges: 1\n\nHi Mei Lin, thanks for your patience. ORD-5504 (monitor arm, $60.00) was placed on October 30 and marked shipped. Its estimated delivery date was November 9, so it is now five days past that date. Our order system shows only \"shipped\" and does not include carrier tracking details, so I can't tell you where the package is right now.\n\nYour card was charged once, so there is no billing issue. If you'd like, I can pass this to a human agent who can investigate with the carrier and help find or replace the package. Would you like me to do that?",
   "backend_state": {
     "refunds": [],
-    "escalations": []
+    "escalations": [],
+    "validated_refunds": {},
+    "validation_log": []
   }
 }

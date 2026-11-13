@@ -44,7 +44,7 @@
       ],
       "schema": "test-proposals.schema.json",
       "max_turns": 4,
-      "prompt": "TEST GENERATION STEP ONLY. Read tests/ and stock/totals.py. Propose at most two new pytest cases for total_qty; a scenario already covered goes in skipped_as_duplicate."
+      "prompt": "TEST GENERATION STEP ONLY. Read tests/ and stock/totals.py. Consider these candidate scenarios for total_qty: (1) several items are all counted, (2) a single item returns its qty, (3) an empty list returns 0. For each candidate, check whether an existing test in tests/ already covers it: put covered ones in skipped_as_duplicate with the existing test's name, and propose at most two new pytest cases for the rest."
     }
   ],
   "expected_outcome": "The review step gets read-only tools and the finding schema; the test step gets its own schema. Each returns structured output, never prose. In the Messages API the same guarantee is tool_choice {type: tool, name: report_findings}.",

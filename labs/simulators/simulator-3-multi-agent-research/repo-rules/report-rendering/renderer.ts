@@ -1,4 +1,4 @@
 export function renderTable(rows: string[][]): string {
-  const header = '| Claim | Value | Source | Published |';
+  const header = '| Claim | Value | Source | Date |';
   return [header, ...rows.map(r => '| ' + r.join(' | ') + ' |')].join('\n');
 }

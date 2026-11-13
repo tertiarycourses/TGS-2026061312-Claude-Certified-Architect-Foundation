@@ -7,19 +7,10 @@
   },
   "tool_calls": [
     {
-      "tool": "ToolSearch",
-      "input": {
-        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__recommend_refund,mcp__backend__process_refund,mcp__backend__escalate_to_human",
-        "max_results": 5
-      },
-      "result": null,
-      "is_error": false
-    },
-    {
       "tool": "get_customer",
       "input": {
         "email": "arjun@example.com",
-        "name": ""
+        "name": "Arjun"
       },
       "result": "{\"customer_id\": \"C-1002\", \"name\": \"Arjun Rao\", \"email\": \"arjun@example.com\", \"tier\": \"plus\", \"created_at\": \"2023-11-02T08:15:00Z\", \"status\": \"active\"}",
       "is_error": false
@@ -46,7 +37,7 @@
         "shipping_refund": 0,
         "merchandise_credit": 0,
         "refund_total": 780,
-        "rationale": "Standing desk arrived with a bent frame; lookup_order confirms damage_photo true and order delivered. Damage policy: refund the order amount of $780."
+        "rationale": "Standing desk delivered with bent frame; damage photo on file per lookup_order. Policy: damaged item with photo evidence gets full order amount refunded. Single charge, so no duplicate."
       },
       "result": "{\"validated\": true, \"order_id\": \"ORD-5502\", \"cash_refund\": 780.0, \"merchandise_credit\": 0.0, \"message\": \"Recommendation validated. You may call process_refund for the cash amount.\"}",
       "is_error": false
@@ -56,7 +47,7 @@
       "input": {
         "order_id": "ORD-5502",
         "amount": 780,
-        "reason": "Standing desk arrived with bent frame; damage photo on file, validated refund of order amount."
+        "reason": "Standing desk arrived with bent frame; damage photo on file. Full order refund."
       },
       "result": "PreToolUse:mcp__backend__process_refund hook error: Policy: refunds above $500 need human approval. Call escalate_to_human with refund_amount=780 instead.",
       "is_error": true
@@ -65,12 +56,12 @@
       "tool": "escalate_to_human",
       "input": {
         "customer_id": "C-1002",
-        "root_cause": "Standing desk in ORD-5502 arrived with a bent frame (damage photo on file), and the $780 full refund exceeds the $500 auto-approval limit.",
-        "recommended_action": "Approve and issue the $780 cash refund to the original payment method. recommend_refund already validated it (WHOLE $780, shipping 0, credit 0); process_refund was blocked by the $500 policy limit and no refund has been issued.",
+        "root_cause": "Standing desk on ORD-5502 arrived with a bent frame; damage photo is on file (damage_photo=true). Customer requests a full refund. The $780.00 refund exceeds the $500 auto-approval limit, so process_refund was blocked by policy hook.",
+        "recommended_action": "Review the damage photo and approve a full cash refund of $780.00 to the original payment method for ORD-5502 (single charge, no duplicate). recommend_refund validated the $780.00 cash refund with no merchandise credit.",
         "refund_amount": 780,
         "order_ids": "ORD-5502"
       },
-      "result": "{\"ticket_id\": \"HS-0001\", \"handoff\": {\"customer_id\": \"C-1002\", \"root_cause\": \"Standing desk in ORD-5502 arrived with a bent frame (damage photo on file), and the $780 full refund exceeds the $500 auto-approval limit.\", \"recommended_action\": \"Approve and issue the $780 cash refund to the original payment method. recommend_refund already validated it (WHOLE $780, shipping 0, credit 0); process_refund was blocked by the $500 policy limit and no refund has been issued.\", \"refund_amount\": 780, \"order_ids\": \"ORD-5502\"}, \"status\": \"queued\"}",
+      "result": "{\"ticket_id\": \"HS-0001\", \"handoff\": {\"customer_id\": \"C-1002\", \"root_cause\": \"Standing desk on ORD-5502 arrived with a bent frame; damage photo is on file (damage_photo=true). Customer requests a full refund. The $780.00 refund exceeds the $500 auto-approval limit, so process_refund was blocked by policy hook.\", \"recommended_action\": \"Review the damage photo and approve a full cash refund of $780.00 to the original payment method for ORD-5502 (single charge, no duplicate). recommend_refund validated the $780.00 cash refund with no merchandise credit.\", \"refund_amount\": 780, \"order_ids\": \"ORD-5502\"}, \"status\": \"queued\"}",
       "is_error": false
     }
   ],
@@ -80,7 +71,7 @@
       "tool": "get_customer",
       "args": {
         "email": "arjun@example.com",
-        "name": ""
+        "name": "Arjun"
       },
       "decision": "allow",
       "reason": null
@@ -157,7 +148,7 @@
         "shipping_refund": 0,
         "merchandise_credit": 0,
         "refund_total": 780,
-        "rationale": "Standing desk arrived with a bent frame; lookup_order confirms damage_photo true and order delivered. Damage policy: refund the order amount of $780."
+        "rationale": "Standing desk delivered with bent frame; damage photo on file per lookup_order. Policy: damaged item with photo evidence gets full order amount refunded. Single charge, so no duplicate."
       },
       "decision": "allow",
       "reason": null
@@ -186,7 +177,7 @@
       "args": {
         "order_id": "ORD-5502",
         "amount": 780,
-        "reason": "Standing desk arrived with bent frame; damage photo on file, validated refund of order amount."
+        "reason": "Standing desk arrived with bent frame; damage photo on file. Full order refund."
       },
       "decision": "deny",
       "reason": "Policy: refunds above $500 need human approval. Call escalate_to_human with refund_amount=780 instead."
@@ -196,8 +187,8 @@
       "tool": "escalate_to_human",
       "args": {
         "customer_id": "C-1002",
-        "root_cause": "Standing desk in ORD-5502 arrived with a bent frame (damage photo on file), and the $780 full refund exceeds the $500 auto-approval limit.",
-        "recommended_action": "Approve and issue the $780 cash refund to the original payment method. recommend_refund already validated it (WHOLE $780, shipping 0, credit 0); process_refund was blocked by the $500 policy limit and no refund has been issued.",
+        "root_cause": "Standing desk on ORD-5502 arrived with a bent frame; damage photo is on file (damage_photo=true). Customer requests a full refund. The $780.00 refund exceeds the $500 auto-approval limit, so process_refund was blocked by policy hook.",
+        "recommended_action": "Review the damage photo and approve a full cash refund of $780.00 to the original payment method for ORD-5502 (single charge, no duplicate). recommend_refund validated the $780.00 cash refund with no merchandise credit.",
         "refund_amount": 780,
         "order_ids": "ORD-5502"
       },
@@ -211,8 +202,8 @@
         "ticket_id": "HS-0001",
         "handoff": {
           "customer_id": "C-1002",
-          "root_cause": "Standing desk in ORD-5502 arrived with a bent frame (damage photo on file), and the $780 full refund exceeds the $500 auto-approval limit.",
-          "recommended_action": "Approve and issue the $780 cash refund to the original payment method. recommend_refund already validated it (WHOLE $780, shipping 0, credit 0); process_refund was blocked by the $500 policy limit and no refund has been issued.",
+          "root_cause": "Standing desk on ORD-5502 arrived with a bent frame; damage photo is on file (damage_photo=true). Customer requests a full refund. The $780.00 refund exceeds the $500 auto-approval limit, so process_refund was blocked by policy hook.",
+          "recommended_action": "Review the damage photo and approve a full cash refund of $780.00 to the original payment method for ORD-5502 (single charge, no duplicate). recommend_refund validated the $780.00 cash refund with no merchandise credit.",
           "refund_amount": 780,
           "order_ids": "ORD-5502"
         },
@@ -222,8 +213,8 @@
         "ticket_id": "HS-0001",
         "handoff": {
           "customer_id": "C-1002",
-          "root_cause": "Standing desk in ORD-5502 arrived with a bent frame (damage photo on file), and the $780 full refund exceeds the $500 auto-approval limit.",
-          "recommended_action": "Approve and issue the $780 cash refund to the original payment method. recommend_refund already validated it (WHOLE $780, shipping 0, credit 0); process_refund was blocked by the $500 policy limit and no refund has been issued.",
+          "root_cause": "Standing desk on ORD-5502 arrived with a bent frame; damage photo is on file (damage_photo=true). Customer requests a full refund. The $780.00 refund exceeds the $500 auto-approval limit, so process_refund was blocked by policy hook.",
+          "recommended_action": "Review the damage photo and approve a full cash refund of $780.00 to the original payment method for ORD-5502 (single charge, no duplicate). recommend_refund validated the $780.00 cash refund with no merchandise credit.",
           "refund_amount": 780,
           "order_ids": "ORD-5502"
         },
@@ -232,27 +223,28 @@
     }
   ],
   "assistant_text": [
-    "The $780 refund was blocked because anything over $500 needs human approval, so I'm escalating it now with the full case details.",
-    "**CASE FACTS**\n- Customer: C-1002 (Arjun Rao), active\n- Order: ORD-5502, Standing desk, $780.00\n- Status: delivered, placed 2026-10-20, ETA 2026-10-25\n- Charges: 1\n- Damage photo: on file\n- Escalation ticket: HS-0001, queued\n\nHi Arjun, I'm sorry your desk arrived with a bent frame. Your photos are on file and your $780 refund request passed our validation checks, but **the refund hasn't been issued yet**. Refunds over $500 need approval from a member of our team, so I've sent them your case under ticket HS-0001, with my recommendation to refund the full $780 to your original payment method.\n\nYou don't need to send anything else. Please quote HS-0001 if you contact us about this."
+    "Verified customer C-1002. ORD-5502 shows a damage photo on file, one charge, and a $780.00 amount. Next I'll validate the full refund.",
+    "The refund was blocked because it exceeds the $500 auto-approval limit. I'm escalating to a human with the full details.",
+    "CASE FACTS\n- Customer: C-1002 (Arjun Rao, Plus, active)\n- Order: ORD-5502, standing desk, $780.00, delivered, ETA 2026-10-25\n- Damage photo on file: yes\n- Charges: 1 (no duplicate)\n- Escalation ticket: HS-0001 (queued)\n\nHi Arjun,\n\nYour standing desk on ORD-5502 qualifies for a full refund because the damage photo is on file. The refund is $780.00, but it is above the $500 limit I can approve myself, so I couldn't issue it directly. I've passed your case to a human agent (ticket HS-0001) with the photo evidence and the validated refund amount. They will review it and process the refund to your original payment method. I'm sorry about the bent frame."
   ],
   "settings": {
-    "model": "claude-opus-5-5",
+    "model": "claude-haiku-5-5",
     "gate": true,
     "limit_hook": true
   },
   "turn_replies": [
-    "**CASE FACTS**\n- Customer: C-1002 (Arjun Rao), active\n- Order: ORD-5502, Standing desk, $780.00\n- Status: delivered, placed 2026-10-20, ETA 2026-10-25\n- Charges: 1\n- Damage photo: on file\n- Escalation ticket: HS-0001, queued\n\nHi Arjun, I'm sorry your desk arrived with a bent frame. Your photos are on file and your $780 refund request passed our validation checks, but **the refund hasn't been issued yet**. Refunds over $500 need approval from a member of our team, so I've sent them your case under ticket HS-0001, with my recommendation to refund the full $780 to your original payment method.\n\nYou don't need to send anything else. Please quote HS-0001 if you contact us about this."
+    "CASE FACTS\n- Customer: C-1002 (Arjun Rao, Plus, active)\n- Order: ORD-5502, standing desk, $780.00, delivered, ETA 2026-10-25\n- Damage photo on file: yes\n- Charges: 1 (no duplicate)\n- Escalation ticket: HS-0001 (queued)\n\nHi Arjun,\n\nYour standing desk on ORD-5502 qualifies for a full refund because the damage photo is on file. The refund is $780.00, but it is above the $500 limit I can approve myself, so I couldn't issue it directly. I've passed your case to a human agent (ticket HS-0001) with the photo evidence and the validated refund amount. They will review it and process the refund to your original payment method. I'm sorry about the bent frame."
   ],
   "result": {
     "subtype": "success",
     "stop_reason": "end_turn",
-    "num_turns": 7,
-    "total_cost_usd": 0.44025039999999993,
-    "session_id": "eed53b22-e290-41f1-a561-c509c83b5b42",
+    "num_turns": 6,
+    "total_cost_usd": 0.001568095,
+    "session_id": "91b0d1da-5377-4910-ab86-9b9ada9f0eb4",
     "is_error": false,
     "terminal_reason": "completed"
   },
-  "reply": "**CASE FACTS**\n- Customer: C-1002 (Arjun Rao), active\n- Order: ORD-5502, Standing desk, $780.00\n- Status: delivered, placed 2026-10-20, ETA 2026-10-25\n- Charges: 1\n- Damage photo: on file\n- Escalation ticket: HS-0001, queued\n\nHi Arjun, I'm sorry your desk arrived with a bent frame. Your photos are on file and your $780 refund request passed our validation checks, but **the refund hasn't been issued yet**. Refunds over $500 need approval from a member of our team, so I've sent them your case under ticket HS-0001, with my recommendation to refund the full $780 to your original payment method.\n\nYou don't need to send anything else. Please quote HS-0001 if you contact us about this.",
+  "reply": "CASE FACTS\n- Customer: C-1002 (Arjun Rao, Plus, active)\n- Order: ORD-5502, standing desk, $780.00, delivered, ETA 2026-10-25\n- Damage photo on file: yes\n- Charges: 1 (no duplicate)\n- Escalation ticket: HS-0001 (queued)\n\nHi Arjun,\n\nYour standing desk on ORD-5502 qualifies for a full refund because the damage photo is on file. The refund is $780.00, but it is above the $500 limit I can approve myself, so I couldn't issue it directly. I've passed your case to a human agent (ticket HS-0001) with the photo evidence and the validated refund amount. They will review it and process the refund to your original payment method. I'm sorry about the bent frame.",
   "backend_state": {
     "refunds": [],
     "escalations": [
@@ -260,8 +252,8 @@
         "ticket_id": "HS-0001",
         "handoff": {
           "customer_id": "C-1002",
-          "root_cause": "Standing desk in ORD-5502 arrived with a bent frame (damage photo on file), and the $780 full refund exceeds the $500 auto-approval limit.",
-          "recommended_action": "Approve and issue the $780 cash refund to the original payment method. recommend_refund already validated it (WHOLE $780, shipping 0, credit 0); process_refund was blocked by the $500 policy limit and no refund has been issued.",
+          "root_cause": "Standing desk on ORD-5502 arrived with a bent frame; damage photo is on file (damage_photo=true). Customer requests a full refund. The $780.00 refund exceeds the $500 auto-approval limit, so process_refund was blocked by policy hook.",
+          "recommended_action": "Review the damage photo and approve a full cash refund of $780.00 to the original payment method for ORD-5502 (single charge, no duplicate). recommend_refund validated the $780.00 cash refund with no merchandise credit.",
           "refund_amount": 780,
           "order_ids": "ORD-5502"
         },
@@ -287,7 +279,7 @@
           "shipping_refund": 0,
           "merchandise_credit": 0,
           "refund_total": 780,
-          "rationale": "Standing desk arrived with a bent frame; lookup_order confirms damage_photo true and order delivered. Damage policy: refund the order amount of $780."
+          "rationale": "Standing desk delivered with bent frame; damage photo on file per lookup_order. Policy: damaged item with photo evidence gets full order amount refunded. Single charge, so no duplicate."
         },
         "errors": []
       }

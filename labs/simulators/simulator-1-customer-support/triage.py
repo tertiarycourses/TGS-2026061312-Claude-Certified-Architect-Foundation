@@ -7,9 +7,9 @@ set first, refine the templated prompt against clear criteria, and only then
 submit the batch. Q4 adds: schema-valid output can still be wrong in meaning,
 so validate business rules and feed specific failures back.
 
-  uv run triage.py --pilot                        # 10 transcripts, v1 template, local Claude Code login
+  uv run triage.py --pilot                        # 10 transcripts, v1 template, your API key, Claude Haiku 5.5
   uv run triage.py --pilot --template prompts/triage_template_v0.md   # the weak template, for comparison
-  uv run triage.py --batch                        # same 10 through the batch workflow, simulated locally
+  uv run triage.py --batch                        # same 10 through the real Message Batches API
 
 Pilot mode runs through the Claude Agent SDK with output_format = the JSON
 schema, so the SHAPE is guaranteed. Then business rules run on each result
@@ -18,7 +18,7 @@ shipping_refund; order ids must appear in the transcript). A failing record
 is re-sent once with the specific errors appended. Results, first-pass
 success and the retry log land in evidence/triage.json.
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import argparse
 import asyncio
 import json
@@ -30,7 +30,7 @@ from pathlib import Path
 import jsonschema
 
 HERE = Path(__file__).resolve().parent
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 SCHEMA = json.loads((HERE / "triage.schema.json").read_text())
 POLICY = json.loads((HERE / "fixtures" / "backend.json").read_text())["policy"]
 POLICY_EXCERPT = (f"Refunds up to ${POLICY['refund_auto_limit']} may be issued by the agent; above that a human approves. "

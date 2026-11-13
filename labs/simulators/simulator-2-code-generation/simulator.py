@@ -14,10 +14,10 @@ evidence you can read back, how a team workspace behaves:
 
 Usage:  uv run simulator.py            # every step
         uv run simulator.py 3          # one step
-Requires: Claude Code installed and logged in. Model from $LAB_MODEL
-(default claude-opus-5-5). A full run costs roughly US$3.
+Requires: ANTHROPIC_API_KEY in labs/.env. Model: claude-haiku-5-5
+(claude-haiku-5-5). A full run costs a few US cents on Haiku 5.5.
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import hashlib
 import json
 import os
@@ -32,7 +32,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 WS = HERE / "workspace"
 EV = HERE / "evidence"
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 EV.mkdir(exist_ok=True)
 RUN = EV / "run.json"
 state = json.loads(RUN.read_text()) if RUN.exists() else {"model": MODEL, "steps": {}, "cost_usd": 0.0}

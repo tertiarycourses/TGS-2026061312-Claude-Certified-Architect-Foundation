@@ -15,7 +15,7 @@ token, so the final reply shows whether the guidance was loaded.
     uv run rules_sim.py            # eight Claude calls through the Agent SDK, evidence/rules_sim.json
     uv run rules_sim.py D          # one variant
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import json
 import os
 import shutil
@@ -26,7 +26,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE / "repo-rules"
 EVIDENCE = HERE / "evidence"
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 TOKEN = "TESTING-GUIDANCE-LOADED"
 FOLDERS = ["citation-verification", "report-rendering", "orchestration"]
 
@@ -35,8 +35,8 @@ GUIDANCE = f"""# Testing guidance
 - Tests sit beside the implementation they cover (`foo.ts` next to `foo.test.ts`).
 - Every new assertion needs a one-line comment naming the behaviour it protects.
 - Never weaken an existing assertion to make a test pass.
-- When this testing guidance is loaded, begin your reply with the token {TOKEN} and
-  name the file this guidance came from.
+- Loading marker (applies to EVERY reply, whatever file you edit, test or not): if you can
+  read this text, begin your reply with the token {TOKEN} and name the file it came from.
 """
 
 FILES = {
@@ -102,6 +102,10 @@ def main():
     EVIDENCE.mkdir(exist_ok=True)
     variants = [v for v in sys.argv[1:] if v in "ABCD"] or list("ABCD")
     out = {"model": MODEL, "token": TOKEN, "variants": {}}
+    prev = EVIDENCE / "rules_sim.json"
+    if prev.exists() and len(variants) < 4:  # one variant (Lab 15 runs D): keep the other variants' evidence
+        try: out["variants"] = json.loads(prev.read_text()).get("variants", {})
+        except ValueError: pass
     for v in variants:
         copies = materialise(v)
         rec = {"guidance_copies": copies, "runs": {}}

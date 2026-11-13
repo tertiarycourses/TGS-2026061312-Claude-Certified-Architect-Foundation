@@ -21,4 +21,4 @@ PASS - UC-37 rubric passes
 PASS - UC-5 rubric passes
 PASS - UC-8 rubric passes
 PASS - UC-9 rubric passes
-model: claude-opus-5-5  cost_usd: 10.3681
+model: claude-haiku-5-5  cost_usd: 0.0449

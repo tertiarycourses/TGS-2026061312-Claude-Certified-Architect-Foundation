@@ -6,10 +6,20 @@
       "line": 12,
       "severity": "high",
       "category": "contract",
-      "detected_pattern": "api.get_stock(sku) called with one argument after PR 418 added a required warehouse parameter at stock/api.py:5",
-      "issue": "PR 418 added a required warehouse parameter with no default to api.get_stock, but jobs.sync still calls api.get_stock(sku). Every call raises TypeError: get_stock() missing 1 required positional argument: 'warehouse'. Any non-empty skus list therefore crashes the nightly sync on its first SKU, and it returns nothing.",
-      "suggested_fix": "Pass the warehouse through from the job: def sync(skus: list[str], warehouse: str) -> list[dict], then stock = api.get_stock(sku, warehouse). No caller of sync exists in this repo, but update the scheduler entry point outside it. If the job must cover every warehouse, loop over the warehouse list here instead.",
-      "confidence": 0.99
+      "detected_pattern": "api.get_stock(sku) called with one argument after signature change to get_stock(sku, warehouse)",
+      "issue": "PR 418 added a required warehouse parameter to api.get_stock (stock/api.py:5), but the only caller, sync() in stock/jobs.py:12, still passes only sku. Every call raises TypeError, so the nightly sync fails on its first SKU and produces no output.",
+      "suggested_fix": "Thread a warehouse argument through sync(), e.g. def sync(skus: list[str], warehouse: str) -> list[dict] and call api.get_stock(sku, warehouse). Update the sync() callers to pass the warehouse as well.",
+      "confidence": 0.95
+    },
+    {
+      "file": "stock/api.py",
+      "line": 7,
+      "severity": "critical",
+      "category": "security",
+      "detected_pattern": "sku and warehouse passed unvalidated from HTTP-facing get_stock into repository.fetch f-string SQL",
+      "issue": "api.py is documented as HTTP-facing, and get_stock forwards sku and warehouse unchanged to repository.fetch, where repository.py:11 interpolates both into an f-string SQL query. Request-supplied values can therefore inject SQL. The f-string itself is covered by the single-file pass; this finding is the cross-module data flow that makes it reachable. The HTTP route that calls get_stock is not in the PR's changed files, so reachability depends on that route passing request input through.",
+      "suggested_fix": "Parameterise the query in stock/repository.py:11 (cursor.execute('SELECT qty FROM stock WHERE sku = %s AND warehouse = %s', (sku, warehouse))) and validate sku and warehouse at the API boundary in get_stock before calling the repository.",
+      "confidence": 0.8
     }
   ]
 }

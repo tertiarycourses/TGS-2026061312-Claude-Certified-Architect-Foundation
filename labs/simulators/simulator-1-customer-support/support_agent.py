@@ -23,7 +23,7 @@ Each run writes evidence/runs/<case_id>.json: the customer message, every
 tool call with its raw and normalised result, hook decisions, the agent's
 reply, stop reason, turns and cost. Run evaluate.py afterwards.
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import argparse
 import asyncio
 import datetime as dt
@@ -40,7 +40,7 @@ from claude_agent_sdk import (
 import backend_tools as backend
 
 HERE = Path(__file__).resolve().parent
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 MAX_BUDGET_USD = float(os.environ.get("LAB_MAX_BUDGET_USD", "1.50"))
 REFUND_LIMIT = backend.BACKEND["policy"]["refund_auto_limit"]
 STATUS_WORDS = backend.BACKEND["status_codes"]

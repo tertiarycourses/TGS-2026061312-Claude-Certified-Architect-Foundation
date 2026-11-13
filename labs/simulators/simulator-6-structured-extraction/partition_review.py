@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lab 4, live: three subagents investigate extraction failures, first with the same brief, then partitioned.
+"""Extra practice (not a numbered lab), live: three subagents investigate extraction failures, first with the same brief, then partitioned.
 
 Usage: uv run partition_review.py [--max-turns 5]
 
@@ -92,7 +92,7 @@ def main():
     ap.add_argument("--max-turns", type=int, default=5, help="hard cap on turns for each subagent (default 5)")
     a = ap.parse_args(); max_turns = max(2, min(a.max_turns, 8))
     model = simkit.MODEL; client = simkit.Anthropic(); began = time.time()
-    emit(f"Lab 4 · partitioning subagent work · {len(DOCS)} documents · 3 subagents · model {model} · at most {max_turns} turns each")
+    emit(f"Extra practice · partitioning subagent work · {len(DOCS)} documents · 3 subagents · model {model} · at most {max_turns} turns each")
     same = run(client, model, False, max_turns)
     part = run(client, model, True, max_turns)
     overlap = sum(1 for w in same["readers"].values() if len(set(w)) > 1)

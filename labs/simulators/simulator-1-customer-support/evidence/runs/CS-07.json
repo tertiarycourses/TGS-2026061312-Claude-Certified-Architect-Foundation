@@ -7,25 +7,16 @@
   },
   "tool_calls": [
     {
-      "tool": "ToolSearch",
-      "input": {
-        "query": "select:mcp__backend__get_customer,mcp__backend__lookup_order,mcp__backend__process_refund,mcp__backend__escalate_to_human",
-        "max_results": 4
-      },
-      "result": null,
-      "is_error": false
-    },
-    {
       "tool": "get_customer",
       "input": {
         "email": "sofia@example.com",
-        "name": ""
+        "name": "Sofia"
       },
       "result": {
         "content": [
           {
             "type": "text",
-            "text": "{\"customer_id\": \"C-1003\", \"name\": \"Sofia Alvarez\", \"email\": \"sofia@example.com\", \"tier\": \"standard\", \"created_at\": \"2024-07-01T00:00:00Z\", \"status\": \"shipped\"}"
+            "text": "{\"customer_id\": \"C-1003\", \"name\": \"Sofia Alvarez\", \"email\": \"sofia@example.com\", \"tier\": \"standard\", \"created_at\": \"2026-07-01T00:00:00Z\", \"status\": \"shipped\"}"
           }
         ]
       },
@@ -41,7 +32,23 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"order_id\": \"ORD-5505\", \"customer_id\": \"C-1003\", \"amount\": 95.0, \"item\": \"Office chair mat\", \"placed_at\": \"2024-10-31T00:00:00Z\", \"status\": \"delivered\", \"damage_photo\": false, \"charges\": 1, \"shipped\": true, \"eta\": \"2026-11-03\", \"return_window_open\": true}"
+            "text": "{\"order_id\": \"ORD-5505\", \"customer_id\": \"C-1003\", \"amount\": 95.0, \"item\": \"Office chair mat\", \"placed_at\": \"2026-10-24T00:00:00Z\", \"status\": \"delivered\", \"damage_photo\": false, \"charges\": 1, \"shipped\": true, \"eta\": \"2026-10-29\", \"return_window_open\": true}"
+          }
+        ]
+      },
+      "is_error": false
+    },
+    {
+      "tool": "get_customer",
+      "input": {
+        "email": "sofia@example.com",
+        "name": "Sofia Alvarez"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"customer_id\": \"C-1003\", \"name\": \"Sofia Alvarez\", \"email\": \"sofia@example.com\", \"tier\": \"standard\", \"created_at\": \"2026-07-01T00:00:00Z\", \"status\": \"shipped\"}"
           }
         ]
       },
@@ -54,7 +61,7 @@
       "tool": "get_customer",
       "args": {
         "email": "sofia@example.com",
-        "name": ""
+        "name": "Sofia"
       },
       "decision": "allow",
       "reason": null
@@ -67,7 +74,7 @@
         "name": "Sofia Alvarez",
         "email": "sofia@example.com",
         "tier": "standard",
-        "created_at": 1719792000,
+        "created_at": 1782864000,
         "status": 2
       },
       "normalised": {
@@ -75,7 +82,7 @@
         "name": "Sofia Alvarez",
         "email": "sofia@example.com",
         "tier": "standard",
-        "created_at": "2024-07-01T00:00:00Z",
+        "created_at": "2026-07-01T00:00:00Z",
         "status": "shipped"
       }
     },
@@ -97,12 +104,12 @@
         "customer_id": "C-1003",
         "amount": 95.0,
         "item": "Office chair mat",
-        "placed_at": 1730332800,
+        "placed_at": 1792800000,
         "status": "delivered",
         "damage_photo": false,
         "charges": 1,
         "shipped": true,
-        "eta": "2026-11-03",
+        "eta": "2026-10-29",
         "return_window_open": true
       },
       "normalised": {
@@ -110,36 +117,71 @@
         "customer_id": "C-1003",
         "amount": 95.0,
         "item": "Office chair mat",
-        "placed_at": "2024-10-31T00:00:00Z",
+        "placed_at": "2026-10-24T00:00:00Z",
         "status": "delivered",
         "damage_photo": false,
         "charges": 1,
         "shipped": true,
-        "eta": "2026-11-03",
+        "eta": "2026-10-29",
         "return_window_open": true
+      }
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "get_customer",
+      "args": {
+        "email": "sofia@example.com",
+        "name": "Sofia Alvarez"
+      },
+      "decision": "allow",
+      "reason": null
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "get_customer",
+      "raw": {
+        "customer_id": "C-1003",
+        "name": "Sofia Alvarez",
+        "email": "sofia@example.com",
+        "tier": "standard",
+        "created_at": 1782864000,
+        "status": 2
+      },
+      "normalised": {
+        "customer_id": "C-1003",
+        "name": "Sofia Alvarez",
+        "email": "sofia@example.com",
+        "tier": "standard",
+        "created_at": "2026-07-01T00:00:00Z",
+        "status": "shipped"
       }
     }
   ],
   "assistant_text": [
-    "**CASE FACTS**\n- Customer: C-1003 (Sofia Alvarez)\n- Order: ORD-5505, Office chair mat\n- Amount: $95.00, charged once\n- Status: delivered (ETA on record 2026-11-03)\n- Placed: 2024-10-31 on the record, which looks inconsistent with the 2026 ETA\n- Return window: open\n- Damage photo: none\n\nHi Sofia, your return for the chair mat is approved, since the order record shows your return window is still open.\n\n**Next step:** pack the mat and send it back, quoting ORD-5505 on the parcel. I don't have a return address or prepaid label available here, so please reply to this email if you need either before you ship it.\n\nI haven't issued a refund at this stage, so the $95.00 is still on your original payment method."
+    "CASE FACTS\n- Customer: C-1003 (Sofia Alvarez), verified\n- Order: ORD-5505, Office chair mat, $95.00\n- Placed: 2026-10-24; delivered (ETA 2026-10-29)\n- Charges: 1 (no duplicate)\n- Return window: open (about 16 days since delivery, within 30 days)\n\nHi Sofia,\n\nYour return for the office chair mat on ORD-5505 is approved. It was delivered within the 30-day return window, and the reason (it doesn't fit your floor) qualifies.\n\nNext steps:\n1. Keep the mat in its original condition and packaging.\n2. Reply to this email to request the return shipping details, and our team will send you the instructions for sending it back.\n3. Once the mat is received and checked, the $95.00 refund goes to your original payment method.\n\nI haven't issued the refund yet, since it should be processed after the mat comes back. Let me know if you have any questions."
   ],
   "settings": {
-    "model": "claude-opus-5-5",
+    "model": "claude-haiku-5-5",
     "gate": true,
     "limit_hook": true
   },
+  "turn_replies": [
+    "CASE FACTS\n- Customer: C-1003 (Sofia Alvarez), verified\n- Order: ORD-5505, Office chair mat, $95.00\n- Placed: 2026-10-24; delivered (ETA 2026-10-29)\n- Charges: 1 (no duplicate)\n- Return window: open (about 16 days since delivery, within 30 days)\n\nHi Sofia,\n\nYour return for the office chair mat on ORD-5505 is approved. It was delivered within the 30-day return window, and the reason (it doesn't fit your floor) qualifies.\n\nNext steps:\n1. Keep the mat in its original condition and packaging.\n2. Reply to this email to request the return shipping details, and our team will send you the instructions for sending it back.\n3. Once the mat is received and checked, the $95.00 refund goes to your original payment method.\n\nI haven't issued the refund yet, since it should be processed after the mat comes back. Let me know if you have any questions."
+  ],
   "result": {
     "subtype": "success",
     "stop_reason": "end_turn",
     "num_turns": 4,
-    "total_cost_usd": 0.37990930000000006,
-    "session_id": "6dd1d476-8d92-4b6e-8066-066b05503ee1",
+    "total_cost_usd": 0.0010240800000000001,
+    "session_id": "e7f852cd-d98b-4afe-b8f7-6752b76715ec",
     "is_error": false,
     "terminal_reason": "completed"
   },
-  "reply": "**CASE FACTS**\n- Customer: C-1003 (Sofia Alvarez)\n- Order: ORD-5505, Office chair mat\n- Amount: $95.00, charged once\n- Status: delivered (ETA on record 2026-11-03)\n- Placed: 2024-10-31 on the record, which looks inconsistent with the 2026 ETA\n- Return window: open\n- Damage photo: none\n\nHi Sofia, your return for the chair mat is approved, since the order record shows your return window is still open.\n\n**Next step:** pack the mat and send it back, quoting ORD-5505 on the parcel. I don't have a return address or prepaid label available here, so please reply to this email if you need either before you ship it.\n\nI haven't issued a refund at this stage, so the $95.00 is still on your original payment method.",
+  "reply": "CASE FACTS\n- Customer: C-1003 (Sofia Alvarez), verified\n- Order: ORD-5505, Office chair mat, $95.00\n- Placed: 2026-10-24; delivered (ETA 2026-10-29)\n- Charges: 1 (no duplicate)\n- Return window: open (about 16 days since delivery, within 30 days)\n\nHi Sofia,\n\nYour return for the office chair mat on ORD-5505 is approved. It was delivered within the 30-day return window, and the reason (it doesn't fit your floor) qualifies.\n\nNext steps:\n1. Keep the mat in its original condition and packaging.\n2. Reply to this email to request the return shipping details, and our team will send you the instructions for sending it back.\n3. Once the mat is received and checked, the $95.00 refund goes to your original payment method.\n\nI haven't issued the refund yet, since it should be processed after the mat comes back. Let me know if you have any questions.",
   "backend_state": {
     "refunds": [],
-    "escalations": []
+    "escalations": [],
+    "validated_refunds": {},
+    "validation_log": []
   }
 }

@@ -56,8 +56,8 @@ if rs_path.exists():
          tok("D", "test") and not tok("D", "impl") and rs["D"]["guidance_copies"] == 1),
         ("rules_sim A and B: rule without frontmatter and root CLAUDE.md load on both edits",
          all(tok(v, k) for v in "AB" for k in ("test", "impl"))),
-        ("rules_sim C: per-folder CLAUDE.md needs one copy per folder (3) and loads for the impl edit",
-         rs["C"]["guidance_copies"] == 3 and tok("C", "impl")),
+        ("rules_sim C: per-folder CLAUDE.md needs one copy per folder (3) and loads for the test edit",
+         rs["C"]["guidance_copies"] == 3 and tok("C", "test")),
     ]
 if narrow:
     nq = " ".join(c.get("query", "") for c in narrow["tool_calls"] if c["tool"] == "search_web").lower()

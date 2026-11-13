@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lab 52, live: the same review twice, once with a 40-field tool result and once with a compact one.
+"""Extra practice (not a numbered lab), live: the same review twice, once with a 40-field tool result and once with a compact one.
 
 Usage: uv run payload_review.py [--max-turns 3]
 
@@ -59,7 +59,7 @@ def main():
     ap.add_argument("--max-turns", type=int, default=3, help="hard cap on loop turns in each run (default 3)")
     a = ap.parse_args(); max_turns = max(2, min(a.max_turns, 6))
     model = simkit.MODEL; client = simkit.Anthropic(); began = time.time()
-    emit(f"Lab 52 · tool-result payload size · model {model} · at most {max_turns} turns per run")
+    emit(f"Extra practice · tool-result payload size · model {model} · at most {max_turns} turns per run")
     v = review(client, model, "verbose", max_turns)
     c = review(client, model, "compact", max_turns)
     tv, tc = v["input_tokens_after_tool"] or 0, c["input_tokens_after_tool"] or 0

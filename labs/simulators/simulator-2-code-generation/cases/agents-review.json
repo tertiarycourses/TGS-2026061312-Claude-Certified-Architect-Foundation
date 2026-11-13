@@ -5,6 +5,6 @@
     "tools": [
       "Read"
     ],
-    "model": "sonnet"
+    "model": "inherit"
   }
 }

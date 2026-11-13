@@ -14,7 +14,7 @@ logged in on this machine.
 Evidence lands in evidence/run-<mode>.json, evidence/report-<mode>.md and,
 for use cases, evidence/cases/UC-<id>.json.
 """
-import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine, OAuth login
+import sys as _s, pathlib as _p; _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2])); import simkit  # Claude Agent SDK engine on your ANTHROPIC_API_KEY, Claude Haiku 5.5
 import asyncio
 import json
 import os
@@ -42,7 +42,7 @@ HERE = Path(__file__).resolve().parent
 EVIDENCE = HERE / "evidence"
 CASES = HERE / "cases"
 SOURCES = json.loads((HERE / "fixtures" / "sources.json").read_text())
-MODEL = os.environ.get("LAB_MODEL", "claude-opus-5-5")
+MODEL = "claude-haiku-5-5"  # every Claude call in this course runs on Haiku 5.5
 BUDGET = float(os.environ.get("LAB_BUDGET_USD", "4.0"))
 TOPIC = SOURCES["topic"]
 
@@ -205,12 +205,12 @@ def agents(mode: str) -> dict:
                 "again, copy the error object into \"errors\" and set coverage to \"none\". Never invent a "
                 "number that is not in a search result."
             ),
-            tools=[SEARCH], model="sonnet",
+            tools=[SEARCH], model="inherit",
         ),
         "document-analysis": AgentDefinition(
             description="Reads internal PDFs with load_document and extracts every statistic with page and date.",
             prompt=DOC_PROMPT.replace("{EXTRA}", ENUM_EXTRA if mode == "enum" else ""),
-            tools=[LOAD], model="sonnet",
+            tools=[LOAD], model="inherit",
         ),
         "synthesis": AgentDefinition(
             description="Merges findings from the other agents into a claim-source table, preserving conflicts and gaps.",
@@ -223,7 +223,7 @@ def agents(mode: str) -> dict:
                 "simple checks (a date, a sample size). Do not search; if something needs a new search, "
                 "put it in coverage_gaps."
             ),
-            tools=[VERIFY], model="sonnet",
+            tools=[VERIFY], model="inherit",
         ),
         "report": AgentDefinition(
             description="Turns a synthesis JSON into the final cited markdown report.",
@@ -234,7 +234,7 @@ def agents(mode: str) -> dict:
                 "Claim | Value | Source | Published. Financial or survey numbers go in the table, narrative "
                 "context in prose. Do not add facts that are not in the synthesis."
             ),
-            tools=[], model="sonnet",
+            tools=[], model="inherit",
         ),
     }
     if mode == "review":
@@ -246,7 +246,7 @@ def agents(mode: str) -> dict:
                 "\"conflicts\": [str], \"gaps\": [str]}. Flag a claim as unsupported when the quoted excerpt "
                 "does not state the value. Do not rewrite the claims."
             ),
-            tools=[], model="sonnet",
+            tools=[], model="inherit",
         )
     return a
 
