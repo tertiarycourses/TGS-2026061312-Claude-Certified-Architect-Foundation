@@ -95,7 +95,7 @@ How to read the output:
 ## Check your answer
 **The answer is A.** Define testable report-and-skip rules that focus comments on production bugs, security flaws, broken edge cases, and subtle regressions.
 
-The failure is not missing confidence metadata. The prompt draws no clear line between actionable correctness findings and preference comments. “High confidence” is subjective: a model can be very confident that a variable name breaks local style. Claude Code Code Review is calibrated by default for correctness (bugs that would break production), not formatting or missing tests. Make the boundary concrete: report production breakage, security risk, mishandled edge cases and regressions, and skip style, naming and preference unless the team has made them review objectives.
+The failure is not missing confidence metadata. The prompt draws no clear line between actionable correctness findings and preference comments. “High confidence” is subjective: a model can be very confident that a variable name breaks local style. Claude Code's Code Review is calibrated by default for correctness (bugs that would break production), not formatting or missing tests. Make the boundary concrete: report production breakage, security risk, mishandled edge cases and regressions, and skip style, naming and preference unless the team has made them review objectives.
 
 - **B** falls short: Adds more of the noise developers are complaining about.
 - **C** falls short: Repackages the noise without reducing it, and buries the real bugs.
