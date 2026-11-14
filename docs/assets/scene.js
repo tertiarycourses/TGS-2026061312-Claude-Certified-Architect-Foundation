@@ -8,6 +8,12 @@
 //   one of those tools runs. `out` marks the outcome stage; `diff` marks the stage that differs between methods.
 // - The lab sets any stage's text and state itself with s.show(id, text, state): "hot" | "done" | "good" | "bad".
 
+// The board names which method is the trap and which is the fix, so it would give the question's answer away.
+// It stays veiled (blurred) until the learner picks an answer, presses Simulate, or chooses to show it.
+if (typeof document !== "undefined") document.addEventListener("click", (e) => {
+  if (e.target.closest?.(".opts label, #run, .scene .unveil")) document.querySelectorAll(".scene.veiled").forEach((s) => s.classList.remove("veiled"));
+});
+
 const esc = (t) => String(t ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const CHIP = { trap: "✘ the trap", fix: "✔ the fix", "": "" };
 
@@ -18,8 +24,8 @@ export function sceneBox(sc) {
       <div class="sts">${ln.stages.map((st, i) => `${i ? '<i class="arw" aria-hidden="true">➜</i>' : ""}<div class="st${st.out ? " out" : ""}${st.diff ? " diff" : ""}" data-id="${esc(st.id)}">
         ${st.diff ? '<span class="dtag">the change</span>' : ""}<div class="sh">${st.icon ? `<span class="ic">${st.icon}</span>` : ""}<b>${esc(st.t)}</b></div>${st.s ? `<small>${esc(st.s)}</small>` : ""}<em class="v"></em></div>`).join("")}</div>
     </div>`).join("");
-  return `<div class="box scene" id="scene"><h4>${esc(sc.title)}</h4>${lanes}
-    <div class="caption">${sc.caption ? sc.caption + " " : ""}<span class="rmkey"><i class="k hot"></i> running now <i class="k done"></i> done <i class="k good"></i> the outcome you want <i class="k bad"></i> the outcome that goes wrong</span></div></div>`;
+  return `<div class="box scene veiled" id="scene"><h4>${esc(sc.title)}</h4><div class="veil"><div>The scenario board shows which method is the trap and which is the fix.<br><b>Pick your answer to the question first.</b></div><button type="button" class="unveil">Show the board anyway</button></div><div class="lanes">${lanes}
+    <div class="caption">${sc.caption ? sc.caption + " " : ""}<span class="rmkey"><i class="k hot"></i> running now <i class="k done"></i> done <i class="k good"></i> the outcome you want <i class="k bad"></i> the outcome that goes wrong</span></div></div></div>`;
 }
 
 export function sceneLive(el, sc) {

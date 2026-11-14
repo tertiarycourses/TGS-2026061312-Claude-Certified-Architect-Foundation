@@ -71,8 +71,9 @@ function sidebar(D, here) {
     </div>
     <nav><h4>Start</h4><a href="index.html" class="${here === 0 ? "on" : ""}">All topics and simulators</a>
     <h4>Day 1 · one lab per task statement</h4>${nav}
-    <h4>Day 2 · build it yourself</h4>${D.day2.map((l) => `<a class="task" href="guides/${l.slug}.html"><b>Lab ${l.id}</b> · ${esc(l.short)}</a>`).join("")}
-    <h4>After class</h4><a href="${EXAM}">Practice exam</a><a href="${REPO}">GitHub repository</a></nav>`;
+    <h4>Day 2 · vibe-code one agent</h4>${D.day2.filter((l) => l.core).map((l) => `<a class="task" href="${l.prompts}"><b>Lab ${l.id}</b> · ${esc(l.short)}</a>`).join("")}
+    <h4>Bonus</h4><a href="${EXAM}">Practice exam</a>${D.day2.filter((l) => !l.core).map((l) => `<a class="task" href="guides/${l.slug}.html"><b>Lab ${l.id}</b> · ${esc(l.short)}</a>`).join("")}
+    <h4>More</h4><a href="${REPO}">GitHub repository</a></nav>`;
   const msg = (text, ok) => { const m = $("#keymsg"); m.textContent = text; m.className = "keymsg " + (ok === undefined ? "" : ok ? "ok" : "no"); };
   const show = () => { const k = getKey(); const st = $(".keystate"); st.textContent = k ? "saved" : "not set"; st.className = "keystate " + (k ? "ok" : "no"); $("#key").value = k; };
   show();
@@ -104,9 +105,12 @@ export async function home() {
       <table><tr><th>Lab</th><th>Task statement</th><th>Simulator</th></tr>${ls.map((l) => `<tr><td class="n">${l.id}</td><td><a href="lab.html?n=${l.id}"><b>${l.task}</b> ${esc(l.task_title)}</a><br><span class="caption">${esc(l.title)}</span></td><td>${l.sim}. ${esc(l.sim_name)}</td></tr>`).join("")}</table>`).join("")}
     <h2>The six simulators (the exam's six scenarios)</h2>
     <div class="grid">${D.sims.map((s) => `<div class="simcard" style="--c:${SIMCOL[s.n]}"><div class="n">SIMULATOR ${s.n}</div><b>${esc(s.name)}</b><div class="caption">${esc(s.tagline)}</div><div class="caption">Labs ${D.labs.filter((l) => l.sim === s.n).map((l) => `<a href="lab.html?n=${l.id}">${l.id}</a>`).join(", ")}</div></div>`).join("")}</div>
-    <h2>Day 2 · build it yourself, as a developer</h2>
-    <p>Ten hands-on builds, two per domain, in curl, the Python SDK and Claude Code. Each one has its code, a step-by-step guide and a real run to compare with.</p>
-    <table><tr><th>Lab</th><th>What you build</th></tr>${D.day2.map((l) => `<tr><td class="n">${l.id}</td><td><a href="guides/${l.slug}.html">${esc(l.title)}</a> <span class="caption">Task ${l.tasks.join(", ")}</span></td></tr>`).join("")}</table>
+    <h2>Day 2 · vibe-code one agent, in four labs</h2>
+    <p>You don't type the code: you paste prompts into your AI coding tool (Claude Code, Codex, Antigravity, Cursor …), read what it writes and run it. Four labs build one customer resolution agent for Scenario 1: the loop, an MCP server for its tools, a PreToolUse hook and a PostToolUse hook. Every prompt has a Copy button.</p>
+    <table><tr><th>Lab</th><th>What you build</th></tr>${D.day2.filter((l) => l.core).map((l) => `<tr><td class="n">${l.id}</td><td><a href="${l.prompts}">${esc(l.title)}</a> <span class="caption">Task ${l.tasks.join(", ")} · <a href="guides/${l.slug}.html">guide</a></span></td></tr>`).join("")}</table>
+    <h2>Bonus</h2>
+    <p>The <a href="${EXAM}">practice exam</a>, and eleven hand-written code builds in curl, the Python SDK and Claude Code, each with its code, a guide and a real run to compare with.</p>
+    <table><tr><th>Lab</th><th>What you build</th></tr>${D.day2.filter((l) => !l.core).map((l) => `<tr><td class="n">${l.id}</td><td><a href="guides/${l.slug}.html">${esc(l.title)}</a> <span class="caption">Task ${l.tasks.join(", ")}</span></td></tr>`).join("")}</table>
     <footer>© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Practice questions include SkillCertPro's Part 1 practice exam (third-party, unofficial) and the exam guide's samples.</footer>`;
 }
 

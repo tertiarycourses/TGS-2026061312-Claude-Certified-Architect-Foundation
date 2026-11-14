@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 32 prompts · Claude Certified Architect Foundation</title>
+<style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD;--mint:#E3F1F0;--side:#F2EFE7}
+*{box-sizing:border-box} body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+nav{position:sticky;top:0;z-index:5;background:var(--side);border-bottom:1px solid var(--line);padding:8px 16px;display:flex;gap:6px;flex-wrap:wrap;font-size:13.5px}
+nav span{color:var(--line);padding:3px 2px} nav a[aria-current]{background:var(--mint);font-weight:700}
+nav a{color:var(--teal);text-decoration:none;padding:3px 8px;border-radius:6px} nav a:hover,nav a:focus{background:var(--mint);outline:none}
+nav .home{font-weight:700;color:var(--orange)}
+main{max-width:920px;margin:0 auto;padding:24px 20px 80px}
+h1{font-size:30px;line-height:1.2;margin:10px 0 6px} h2{color:var(--orange);margin:38px 0 8px;font-size:22px;scroll-margin-top:56px} h3{margin:22px 0 6px;font-size:17px}
+a{color:var(--teal)} code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--sand);padding:1px 5px;border-radius:4px}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0} .links a{border:1px solid var(--teal);border-radius:8px;padding:6px 12px;text-decoration:none;font-size:14px}
+.note{color:var(--grey);border-left:3px solid var(--line);padding-left:12px} .check{background:var(--mint);border-radius:8px;padding:10px 14px}
+.tw{overflow-x:auto} table{border-collapse:collapse;width:100%;font-size:14.5px} th{text-align:left;border-bottom:2px solid var(--orange)} th,td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;font:13.5px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:14px}
+pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-space:pre;overflow-x:auto}
+.prompt{border:1px solid var(--teal);border-radius:10px;background:#fff;margin:10px 0 14px;overflow:hidden}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--mint);padding:6px 10px;font-size:13px;color:var(--grey)}
+.copy{font:600 13.5px system-ui,sans-serif;background:var(--teal);color:#fff;border:0;border-radius:7px;padding:7px 14px;cursor:pointer}
+.copy:hover{background:#24585a} .copy:focus-visible{outline:3px solid var(--orange);outline-offset:2px} .copy.done{background:var(--orange)}
+</style></head><body>
+<nav aria-label="Lab sections"><a class="home" href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/">All labs</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html">Lab 31</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-32.html" aria-current=page>Lab 32</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-33.html">Lab 33</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-34.html">Lab 34</a><span>|</span><a href="#before-you-start">Before you start</a><a href="#step-1-wrap-the-tools-in-an-mcp-server-15-minutes">Step 1</a><a href="#step-2-make-the-agent-an-mcp-client-15-minutes">Step 2</a><a href="#stretch-plug-the-same-server-into-your-coding-tool-day-1-lab-11">Stretch</a><a href="#troubleshooting">Troubleshooting</a></nav>
+<main>
+<div class="links"><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-32-move-the-tools-to-an-mcp-server/README.pdf">Lab PDF</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-32-move-the-tools-to-an-mcp-server">Lab folder on GitHub</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-32-move-the-tools-to-an-mcp-server/solution">Reference solution</a></div>
+<h1>Lab 32: Vibe-code an MCP server for the agent's tools</h1>
+<p class="note">Day 2 · Lab 32 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statements 2.4, 2.2 · Vibe-coding lab · Claude Haiku 5.5 · 30 minutes</p>
+<p><strong>Your four tools are stuck inside one Python program. Put them behind an MCP server and any agent can use them: your own, Claude Code, Codex or Antigravity. The agent's behaviour stays exactly the same: only where the tools live changes.</strong></p>
+<h2 id="day-2-one-agent-four-labs">Day 2: one agent, four labs</h2>
+<div class="tw"><table><tr><th>Lab</th><th>You add</th><th>Exam tasks</th></tr><tr><td>31</td><td>the agentic loop and four tools, with the Anthropic Python SDK</td><td>1.1, 2.1</td></tr><tr><td><strong>32 (this lab)</strong></td><td>an MCP server for the tools; the agent becomes an MCP client</td><td>2.4, 2.2</td></tr><tr><td>33</td><td>a PreToolUse hook that blocks refunds above $500</td><td>1.5, 1.4</td></tr><tr><td>34</td><td>a PostToolUse hook that cleans raw data, and live tests</td><td>1.5</td></tr></table></div>
+<h2 id="what-you-ll-build">What you'll build</h2>
+<pre class="plain">  agent.py -- the agentic loop (unchanged), now an MCP client
+        |
+        +-- MCP client == stdio ==&gt; support_server.py (MCP server &quot;orderly-support&quot;)
+                                      4 tools: get_customer, lookup_order,
+                                      process_refund, escalate_to_human
+                                      (each wraps the same function in tools.py)</pre>
+<p>The agent no longer imports the tools. It starts the server, asks it which tools exist (<code>list_tools</code>) and hands that list to Claude. A new tool on the server shows up in the agent with no change to <code>agent.py</code>.</p>
+<h2 id="what-s-in-this-folder">What's in this folder</h2>
+<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our build at the end of this lab. Copy it in if you didn't finish Lab 31.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of <code>check_server.py</code> and <code>agent.py</code> from <code>solution/</code></td></tr></table></div>
+<h2 id="before-you-start">Before you start</h2>
+<p>Keep working in your project folder from Lab 31. You need <code>tools.py</code> and <code>agent.py</code> working, and Mei Lin's $120 lamp refund passing. Didn't finish? Copy everything from Lab 31's <code>solution/</code> folder into an empty folder, add your <code>.env</code>, and start here.</p>
+<h2 id="step-1-wrap-the-tools-in-an-mcp-server-15-minutes">Step 1 · Wrap the tools in an MCP server (15 minutes)</h2>
+<h3>Prompt 1</h3>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Add an MCP server for the four tools in tools.py. Follow AGENTS.md.
+
+1. Run `uv add &quot;mcp&gt;=2.3,&lt;3&quot;`.
+2. Add these rules to AGENTS.md:
+   - MCP: the official MCP Python SDK v2 (mcp&gt;=2.3,&lt;3). The server class is MCPServer from mcp.server.mcpserver
+     (FastMCP was renamed in v2: never import mcp.server.fastmcp). ToolError is in mcp.server.mcpserver.exceptions.
+     The client uses ClientSession and StdioServerParameters from mcp, and stdio_client from mcp.client.stdio;
+     in v2, session.list_tools() takes no arguments.
+   - The MCP server talks JSON-RPC over stdout, so it must never print().
+3. Create support_server.py: an MCP server named &quot;orderly-support&quot; using the stdio transport. Expose the four tools
+   with the same names, typed parameters and docstrings. Each one calls the matching function in tools.py:
+   keep the logic in tools.py, don&#x27;t copy it. When tools.py raises ToolFailure, raise ToolError with the error
+   fields as a JSON string.
+4. Create check_server.py: an MCP client that starts support_server.py over stdio (command = sys.executable),
+   lists the tools, then calls get_customer with meilin@example.com, lookup_order with ORD-5501 and C-1001,
+   and lookup_order with ORD-5502 and C-1001. Print each result on one line.
+
+Run `uv run check_server.py` and show me the output.</pre></div>
+<p class="check"><strong>Checkpoint.</strong></p>
+<ul><li><code>MCP tools: get_customer, lookup_order, process_refund, escalate_to_human</code>.</li><li><code>get_customer</code> returns <code>C-1001</code>. <code>lookup_order ORD-5501</code> returns the raw order (<code>&quot;status&quot;: 3</code>).</li><li><code>ORD-5502</code> with <code>C-1001</code> comes back as an error carrying <code>&quot;errorCategory&quot;: &quot;permission&quot;</code>, not a crash (Day 1, Lab 9).</li></ul>
+<p class="note">If you see <code>No module named &#x27;mcp.server.fastmcp&#x27;</code>, your AI wrote MCP v1 code. Reply: "Use MCPServer from mcp.server.mcpserver (MCP SDK v2). Check AGENTS.md."</p>
+<h2 id="step-2-make-the-agent-an-mcp-client-15-minutes">Step 2 · Make the agent an MCP client (15 minutes)</h2>
+<h3>Prompt 2</h3>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p2">Copy prompt</button></div><pre id="p2">Change agent.py so it gets its tools from the MCP server instead of importing tools.py. Follow AGENTS.md.
+
+- Make run_agent(message) async. It starts support_server.py over stdio (StdioServerParameters, command = sys.executable),
+  initialises a ClientSession, calls list_tools, and turns each tool into an Anthropic tool definition
+  {name, description, input_schema}. Print &quot;MCP tools:&quot; and their names.
+- In the loop, run every tool_use block with session.call_tool. Join the text content of the result; pass the
+  result&#x27;s is_error flag through to the tool_result. Parse successful results from JSON for the calls list.
+- agent.py must not import tools.py any more. Keep the system prompt, the 10-turn cap, the printing and the return
+  value {&quot;text&quot;, &quot;calls&quot;} exactly as they are. Run it with asyncio.run when started from the command line.
+
+Run: uv run agent.py &quot;Hi, I&#x27;m meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;</pre></div>
+<p class="check"><strong>Checkpoint.</strong> The first line is <code>MCP tools: get_customer, lookup_order, process_refund, escalate_to_human</code>. The rest matches Lab 31: <code>get_customer</code> → <code>lookup_order</code> → <code>process_refund</code> <strong>$120</strong> → <code>end_turn</code>. Same behaviour, new plumbing.</p>
+<h2 id="run-it">Run it</h2>
+<p>From your project folder:</p>
+<div class="tw"><table><tr><th>What</th><th>Command</th></tr><tr><td>Check the server on its own</td><td><code>uv run check_server.py</code></td></tr><tr><td>Run the agent (it starts the server for you)</td><td><code>uv run agent.py &quot;your customer message&quot;</code></td></tr><tr><td>Mei Lin's $120 lamp</td><td><code>uv run agent.py &quot;Hi, I&#x27;m meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;</code></td></tr></table></div>
+<p>You never start <code>support_server.py</code> by hand: the client starts it and talks to it over stdin and stdout. Run on its own, it just sits waiting for JSON-RPC (press Ctrl+C).</p>
+<p>To run our reference build, go into <code>solution/</code>, copy <code>.env.example</code> to <code>.env</code>, add your key, then run the same commands.</p>
+<h2 id="stretch-plug-the-same-server-into-your-coding-tool-day-1-lab-11">Stretch · Plug the same server into your coding tool (Day 1, Lab 11)</h2>
+<p>Same server, no code change. In your project folder, run the command for your tool:</p>
+<ul><li>Claude Code: <code>claude mcp add orderly -- uv run --directory &quot;$PWD&quot; support_server.py</code></li><li>Codex: <code>codex mcp add orderly -- uv run --directory &quot;$PWD&quot; support_server.py</code></li><li>Antigravity, Cursor and other IDEs: open the tool's MCP settings and add the server to its <code>mcpServers</code> JSON: <code>&quot;orderly&quot;: {&quot;command&quot;: &quot;uv&quot;, &quot;args&quot;: [&quot;run&quot;, &quot;--directory&quot;, &quot;/full/path/to/orderly-agent&quot;, &quot;support_server.py&quot;]}</code></li></ul>
+<p>Then ask your coding tool:</p>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p3">Copy prompt</button></div><pre id="p3">Use the orderly MCP tools to verify meilin@example.com and tell me the status of order ORD-5504.</pre></div>
+<p>Your coding tool now calls the same four tools your agent uses. It reads the raw <code>&quot;status&quot;: 2</code>: cleaning that up is Lab 34's job, and it will live in your agent, not in the server.</p>
+<h2 id="explain-it-back-with-your-trainer">Explain it back (with your trainer)</h2>
+<ul><li><strong>1.</strong> What did <code>agent.py</code> lose, and what did it gain? Why is that worth it when a second team builds a second agent?</li><li><strong>2.</strong> Why must an MCP stdio server never <code>print()</code>?</li><li><strong>3.</strong> A tool fails. What does Claude receive, and how does <code>errorCategory</code> help it decide what to do next?</li></ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<div class="tw"><table><tr><th>You see</th><th>Fix prompt</th></tr><tr><td><code>No module named &#x27;mcp.server.fastmcp&#x27;</code></td><td>"Use MCPServer from mcp.server.mcpserver: this is MCP SDK v2. Check AGENTS.md."</td></tr><tr><td><code>list_tools() got an unexpected keyword argument &#x27;cursor&#x27;</code></td><td>"This is MCP SDK v2: call session.list_tools() with no arguments."</td></tr><tr><td>The agent hangs on start-up or the JSON is garbled</td><td>"support_server.py must never print to stdout. Remove the print calls."</td></tr><tr><td><code>ModuleNotFoundError: No module named &#x27;mcp&#x27;</code></td><td>"Run uv add "mcp&gt;=2.3,&lt;3" and start everything with uv run."</td></tr><tr><td>Tool errors arrive as a crash, not a tool_result</td><td>"Catch ToolFailure in support_server.py and raise ToolError with the JSON fields."</td></tr></table></div>
+<p class="note">3 prompts on this page. Built from the lab's README.md.</p>
+</main>
+<script>
+function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(t);return ok}
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{
+  const text=document.getElementById(b.dataset.for).innerText; let ok=false;
+  try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch(e){}
+  if(!ok) ok=fallbackCopy(text);
+  b.textContent=ok?'Copied ✓':'Press Ctrl+C'; b.classList.add('done');
+  if(!ok){const r=document.createRange();r.selectNodeContents(document.getElementById(b.dataset.for));const s=getSelection();s.removeAllRanges();s.addRange(r)}
+  setTimeout(()=>{b.textContent='Copy prompt';b.classList.remove('done')},1800);
+}));
+</script></body></html>

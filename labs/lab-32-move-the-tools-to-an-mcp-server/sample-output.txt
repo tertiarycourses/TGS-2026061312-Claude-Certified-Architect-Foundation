@@ -1,0 +1,22 @@
+$ uv run check_server.py
+MCP tools: get_customer, lookup_order, process_refund, escalate_to_human
+get_customer({'email': 'meilin@example.com'}) -> { "customer_id": "C-1001", "name": "Mei Lin Tan", "email": "meilin@example.com", "tier": "standard" }
+lookup_order({'order_id': 'ORD-5501', 'customer_id': 'C-1001'}) -> { "order_id": "ORD-5501", "customer_id": "C-1001", "item": "Ceramic table lamp", "amount": 120.0, "placed_at": 1790812800, "status": 3, "damage_photo": true, "eta": "2026-10-06" }
+lookup_order({'order_id': 'ORD-5502', 'customer_id': 'C-1001'}) -> ERROR Error executing tool lookup_order: {"errorCategory": "permission", "isRetryable": false, "message": "Order ORD-5502 does not belong to customer C-1001."}
+
+$ uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."
+MCP tools: get_customer, lookup_order, process_refund, escalate_to_human
+
+Turn 1: stop_reason=tool_use
+  get_customer({'email': 'meilin@example.com'}) -> {"customer_id": "C-1001", "name": "Mei Lin Tan", "email": "meilin@example.com", "tier": "standard"}
+
+Turn 2: stop_reason=tool_use
+  lookup_order({'order_id': 'ORD-5501', 'customer_id': 'C-1001'}) -> {"order_id": "ORD-5501", "customer_id": "C-1001", "item": "Ceramic table lamp", "amount": 120.0, "placed_at": 1790812800, "status": 3, "damage_photo":
+
+Turn 3: stop_reason=tool_use
+  process_refund({'order_id': 'ORD-5501', 'amount': 120.0, 'reason': 'Damaged on arrival: ceramic table lamp arrived cracked, damage photo provided.'}) -> {"refund_id": "RF-B2645A", "order_id": "ORD-5501", "amount": 120.0, "status": "issued"}
+
+Turn 4: stop_reason=end_turn
+
+=== Reply to the customer ===
+I'm sorry your ceramic table lamp arrived cracked, Mei Lin. I've issued a refund of $120.00 for order ORD-5501 to your original payment method (refund ID RF-B2645A). Depending on your bank, it may take a few business days to appear. Thanks for sending the photo, and I hope the replacement experience is better next time.

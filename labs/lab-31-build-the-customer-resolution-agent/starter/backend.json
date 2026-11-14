@@ -1,0 +1,15 @@
+{
+  "_note": "Orderly's simulated backend for Scenario 1 (Customer Support Resolution Agent). Raw data on purpose: some dates are Unix timestamps and some statuses are codes. The PostToolUse hook cleans them before Claude reads them.",
+  "customers": {
+    "C-1001": {"customer_id": "C-1001", "name": "Mei Lin Tan", "email": "meilin@example.com", "tier": "standard"},
+    "C-1002": {"customer_id": "C-1002", "name": "Arjun Rao", "email": "arjun@example.com", "tier": "plus"},
+    "C-1003": {"customer_id": "C-1003", "name": "Sofia Alvarez", "email": "sofia@example.com", "tier": "standard"}
+  },
+  "orders": {
+    "ORD-5501": {"order_id": "ORD-5501", "customer_id": "C-1001", "item": "Ceramic table lamp", "amount": 120.0, "placed_at": 1790812800, "status": 3, "damage_photo": true, "eta": "2026-10-06"},
+    "ORD-5502": {"order_id": "ORD-5502", "customer_id": "C-1002", "item": "Standing desk", "amount": 780.0, "placed_at": "2026-10-20T10:00:00Z", "status": "delivered", "damage_photo": true, "eta": "2026-10-25"},
+    "ORD-5504": {"order_id": "ORD-5504", "customer_id": "C-1001", "item": "Monitor arm", "amount": 60.0, "placed_at": 1793318400, "status": 2, "damage_photo": false, "eta": "2026-11-18"},
+    "ORD-5505": {"order_id": "ORD-5505", "customer_id": "C-1003", "item": "Office chair mat", "amount": 95.0, "placed_at": 1792800000, "status": 3, "damage_photo": false, "eta": "2026-10-29"}
+  },
+  "status_codes": {"1": "pending", "2": "shipped", "3": "delivered"}
+}

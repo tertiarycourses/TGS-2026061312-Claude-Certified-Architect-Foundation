@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 31 prompts · Claude Certified Architect Foundation</title>
+<style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD;--mint:#E3F1F0;--side:#F2EFE7}
+*{box-sizing:border-box} body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+nav{position:sticky;top:0;z-index:5;background:var(--side);border-bottom:1px solid var(--line);padding:8px 16px;display:flex;gap:6px;flex-wrap:wrap;font-size:13.5px}
+nav span{color:var(--line);padding:3px 2px} nav a[aria-current]{background:var(--mint);font-weight:700}
+nav a{color:var(--teal);text-decoration:none;padding:3px 8px;border-radius:6px} nav a:hover,nav a:focus{background:var(--mint);outline:none}
+nav .home{font-weight:700;color:var(--orange)}
+main{max-width:920px;margin:0 auto;padding:24px 20px 80px}
+h1{font-size:30px;line-height:1.2;margin:10px 0 6px} h2{color:var(--orange);margin:38px 0 8px;font-size:22px;scroll-margin-top:56px} h3{margin:22px 0 6px;font-size:17px}
+a{color:var(--teal)} code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--sand);padding:1px 5px;border-radius:4px}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0} .links a{border:1px solid var(--teal);border-radius:8px;padding:6px 12px;text-decoration:none;font-size:14px}
+.note{color:var(--grey);border-left:3px solid var(--line);padding-left:12px} .check{background:var(--mint);border-radius:8px;padding:10px 14px}
+.tw{overflow-x:auto} table{border-collapse:collapse;width:100%;font-size:14.5px} th{text-align:left;border-bottom:2px solid var(--orange)} th,td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;font:13.5px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:14px}
+pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-space:pre;overflow-x:auto}
+.prompt{border:1px solid var(--teal);border-radius:10px;background:#fff;margin:10px 0 14px;overflow:hidden}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--mint);padding:6px 10px;font-size:13px;color:var(--grey)}
+.copy{font:600 13.5px system-ui,sans-serif;background:var(--teal);color:#fff;border:0;border-radius:7px;padding:7px 14px;cursor:pointer}
+.copy:hover{background:#24585a} .copy:focus-visible{outline:3px solid var(--orange);outline-offset:2px} .copy.done{background:var(--orange)}
+</style></head><body>
+<nav aria-label="Lab sections"><a class="home" href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/">All labs</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html" aria-current=page>Lab 31</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-32.html">Lab 32</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-33.html">Lab 33</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-34.html">Lab 34</a><span>|</span><a href="#before-you-start-10-minutes">Before you start</a><a href="#step-1-set-up-the-project-5-minutes">Step 1</a><a href="#step-2-write-the-four-tools-15-minutes">Step 2</a><a href="#step-3-write-the-agentic-loop-15-minutes">Step 3</a><a href="#step-4-two-more-customers-10-minutes-no-code-change">Step 4</a><a href="#troubleshooting">Troubleshooting</a></nav>
+<main>
+<div class="links"><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-31-build-the-customer-resolution-agent/README.pdf">Lab PDF</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-31-build-the-customer-resolution-agent">Lab folder on GitHub</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-31-build-the-customer-resolution-agent/solution">Reference solution</a></div>
+<h1>Lab 31: Vibe-code the customer resolution agent with the Python SDK</h1>
+<p class="note">Day 2 · Lab 31 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statements 1.1, 2.1 · Vibe-coding lab · Claude Haiku 5.5 · 45 minutes</p>
+<p><strong>You don't write the code. You write the prompts, read what comes back, and run it. In 45 minutes you have a working support agent that verifies Mei Lin, checks her order and refunds her cracked $120 lamp. Then you watch it make two mistakes that Labs 33 and 34 will fix.</strong></p>
+<h2 id="day-2-one-agent-four-labs">Day 2: one agent, four labs</h2>
+<div class="tw"><table><tr><th>Lab</th><th>You add</th><th>Exam tasks</th></tr><tr><td><strong>31 (this lab)</strong></td><td>the agentic loop and four tools, with the Anthropic Python SDK</td><td>1.1, 2.1</td></tr><tr><td>32</td><td>an MCP server for the tools; the agent becomes an MCP client</td><td>2.4, 2.2</td></tr><tr><td>33</td><td>a PreToolUse hook that blocks refunds above $500</td><td>1.5, 1.4</td></tr><tr><td>34</td><td>a PostToolUse hook that cleans raw data, and live tests</td><td>1.5</td></tr></table></div>
+<p>You build all four labs in <strong>one project folder</strong>. Each lab starts where the last one ended. If you fall behind, copy the previous lab's <code>solution/</code> folder and carry on.</p>
+<h2 id="what-you-ll-build">What you'll build</h2>
+<pre class="plain">  customer message
+        |
+        v
+  agent.py -- the agentic loop (claude-haiku-5-5, Anthropic Python SDK)
+        |     while stop_reason == &quot;tool_use&quot;: run the tools, send the results back
+        |
+        +-- tools.py: get_customer, lookup_order, process_refund, escalate_to_human
+                      (reads backend.json: Orderly&#x27;s customers and orders)</pre>
+<p>On Day 1 you watched this loop in Lab 1 and saw why tool descriptions matter in Lab 8. Today you build it.</p>
+<h2 id="what-s-in-this-folder">What's in this folder</h2>
+<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>starter/backend.json</code></td><td>Orderly's customers and orders (Scenario 1). Copy it into your project.</td></tr><tr><td><code>starter/.env.example</code></td><td>the one line your <code>.env</code> needs</td></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our build at the end of this lab, made from these prompts. Peek only when you're stuck.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of <code>solution/agent.py</code> on the three customers</td></tr></table></div>
+<h2 id="before-you-start-10-minutes">Before you start (10 minutes)</h2>
+<ul><li><strong>1. Pick your AI coding tool.</strong> Any agent that can create files and run terminal commands works: Claude Code, Codex, Antigravity, Cursor, Windsurf, GitHub Copilot agent mode. The prompts don't use any tool-specific feature.</li><li><strong>2. Install uv</strong> (<a href="https://docs.astral.sh/uv/">https://docs.astral.sh/uv/</a>) and check it in a terminal: <code>uv --version</code>.</li><li><strong>3. Make an empty project folder</strong> outside the course repo, for example <code>orderly-agent</code> in your home folder, and open it in your coding tool.</li><li><strong>4. Copy <code>starter/backend.json</code></strong> from this lab into that folder.</li><li><strong>5. Create <code>.env</code> yourself</strong> in that folder with one line: <code>ANTHROPIC_API_KEY=sk-ant-...</code>. Type it in your editor. Never paste your key into the AI chat: the prompts tell the AI never to read it.</li></ul>
+<p>Every Claude call your agent makes uses <code>claude-haiku-5-5</code> and your key: a run costs a fraction of a US cent. Your coding tool's own model is separate.</p>
+<h2 id="how-to-vibe-code">How to vibe-code</h2>
+<ul><li>Paste <strong>one prompt at a time</strong>, in order. Don't move on until your output matches the <strong>Checkpoint</strong>.</li><li><strong>Read the code the AI writes.</strong> At the end your trainer asks you to explain it.</li><li>When something is wrong, <strong>paste the error back</strong> and say what you expected, naming the file and the behaviour.</li><li>If your tool can't run commands, run them yourself in a terminal and paste the output back.</li></ul>
+<p><strong>Tested on 14 Nov 2026.</strong> We pasted these exact prompts, all ten across Labs 31 to 34 in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed <code>test_agent.py</code> 9/9 on a fresh re-run (7 to 9 minutes of tool time per run). Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.</p>
+<h2 id="step-1-set-up-the-project-5-minutes">Step 1 · Set up the project (5 minutes)</h2>
+<h3>Prompt 1</h3>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Set up a new Python project in this folder for a customer support agent. backend.json is already here; .env may be here too.
+
+1. Use uv: run `uv init --bare`, then `uv add anthropic python-dotenv`. (If uv is not installed, stop and tell me.)
+2. Create .gitignore with: .env, .venv/, __pycache__/, audit.log
+3. Create .env.example with one line: ANTHROPIC_API_KEY=paste-your-key-here
+   Never open, print or ask me for .env or my API key.
+4. Create AGENTS.md with these project rules for any AI coding assistant:
+   - Claude model: claude-haiku-5-5 through the official anthropic Python SDK, max_tokens 4096.
+   - All data comes from backend.json. Never invent customers or orders.
+   - Run Python with `uv run`.
+   - Never open, print or ask for .env or the API key.
+5. Create CLAUDE.md containing the single line @AGENTS.md so Claude Code reads the same rules.
+
+Then show me the file tree.</pre></div>
+<p class="check"><strong>Checkpoint.</strong> You see <code>pyproject.toml</code>, <code>uv.lock</code>, <code>.gitignore</code>, <code>.env.example</code>, <code>AGENTS.md</code>, <code>CLAUDE.md</code> and <code>backend.json</code>.</p>
+<p class="note">Why AGENTS.md? It is the shared rules file that Codex, Antigravity, Cursor and most other coding agents read. Claude Code reads CLAUDE.md, and <code>@AGENTS.md</code> imports the same rules. Write a rule once and every tool follows it (Day 1, Lab 13).</p>
+<h2 id="step-2-write-the-four-tools-15-minutes">Step 2 · Write the four tools (15 minutes)</h2>
+<h3>Prompt 2</h3>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p2">Copy prompt</button></div><pre id="p2">Read AGENTS.md and backend.json. Create tools.py with Orderly&#x27;s four support tools. Each one reads backend.json.
+
+1. get_customer(email): verify a customer by email. Return customer_id, name, email and tier.
+2. lookup_order(order_id, customer_id): return the order exactly as stored in backend.json. Do not clean or convert
+   the data. Fail if the order does not belong to that customer.
+3. process_refund(order_id, amount, reason): return refund_id, order_id, amount and status &quot;issued&quot;.
+   Fail if amount &lt;= 0 or more than the order amount. Do NOT add any refund limit.
+4. escalate_to_human(customer_id, root_cause, recommended_action, refund_amount, order_ids): return a ticket_id,
+   status &quot;queued&quot; and the handoff fields.
+
+- Give every function a clear one-line docstring that says what it does and when to use it.
+- On failure, raise a ToolFailure exception that carries errorCategory (not_found, permission or validation),
+  isRetryable (false) and message.
+- Add TOOLS: the Anthropic tool definitions for all four (name, description from the docstring, input_schema with
+  types and required fields).
+- Add run_tool(name, args) that calls the right function and returns (result, is_error). On ToolFailure it returns
+  the error fields as the result and is_error True.
+
+Then run a quick check with uv: call run_tool for get_customer with meilin@example.com, and for lookup_order with
+ORD-5502 and C-1001. Show me both results.</pre></div>
+<p class="check"><strong>Checkpoint.</strong> <code>get_customer</code> returns <code>C-1001</code> (Mei Lin Tan). The ORD-5502 lookup returns <code>is_error True</code> with <code>errorCategory: permission</code>: that order belongs to Arjun, not Mei Lin. You get a structured error, not a crash (Day 1, Lab 9).</p>
+<h2 id="step-3-write-the-agentic-loop-15-minutes">Step 3 · Write the agentic loop (15 minutes)</h2>
+<h3>Prompt 3</h3>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p3">Copy prompt</button></div><pre id="p3">Build agent.py, the customer resolution agent. Follow AGENTS.md.
+
+- Load ANTHROPIC_API_KEY from .env with python-dotenv. Use TOOLS and run_tool from tools.py.
+- Write the agentic loop yourself with client.messages.create (model claude-haiku-5-5, max_tokens 4096):
+  append the whole response.content as the assistant turn; while stop_reason is &quot;tool_use&quot;, run every tool_use block
+  with run_tool and send ALL the tool_result blocks back in ONE user message (is_error true when the tool failed).
+  Stop when stop_reason is anything else, or after 10 turns.
+- Use this system prompt exactly:
+  &quot;You are the support resolution agent for Orderly, an online furniture store.
+  1. Verify the customer with get_customer (by email) before any order tool.
+  2. Use lookup_order for anything about an order; pass the verified customer_id.
+  3. Damaged item with photo evidence (damage_photo true): refund the order amount with process_refund.
+  4. Escalate with escalate_to_human when the customer asks for a person, when policy does not cover the request,
+     or when a tool tells you to. The human cannot see this chat: give customer_id, root_cause, recommended_action,
+     refund_amount (0 if none) and order_ids.
+  5. Never say a refund happened unless process_refund returned status issued.
+  Reply to the customer in under 120 words.&quot;
+- Print each turn&#x27;s number and stop_reason, each tool call with its input and result, then the final reply.
+- Put the loop in a function run_agent(message) that returns {&quot;text&quot;: the reply, &quot;calls&quot;: a list of every tool call
+  with tool, input, result and is_error}. agent.py takes the customer message as its first argument.
+
+Run: uv run agent.py &quot;Hi, I&#x27;m meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;</pre></div>
+<p class="check"><strong>Checkpoint.</strong> About four turns: <code>get_customer</code> → <code>lookup_order</code> → <code>process_refund</code> for <strong>$120</strong> → <code>stop_reason=end_turn</code>, then a short reply with a refund ID. The loop, not you, decided each step: <code>stop_reason</code> drove it (Day 1, Lab 1).</p>
+<h2 id="step-4-two-more-customers-10-minutes-no-code-change">Step 4 · Two more customers (10 minutes, no code change)</h2>
+<h3>Prompt 4</h3>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p4">Copy prompt</button></div><pre id="p4">Do not change any code. Run these two and show me the output of each:
+uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;
+uv run agent.py &quot;meilin@example.com here. Where is my monitor arm, order ORD-5504?&quot;
+Then tell me, in two sentences, what went wrong in each run.</pre></div>
+<p class="check"><strong>Checkpoint.</strong> Two problems, both on purpose:</p>
+<ul><li><strong>Arjun gets $780 back with no human approval.</strong> Orderly's rule is that a human approves any refund above $500, but that rule is written nowhere, so nothing stops it. <strong>Lab 33</strong> puts it in a PreToolUse hook.</li><li><strong>Mei Lin gets a vague answer.</strong> <code>lookup_order</code> returned <code>&quot;status&quot;: 2</code> and <code>&quot;placed_at&quot;: 1793318400</code>, and Claude has to guess what they mean (ours said it "can't translate it into a clear shipping update"). <strong>Lab 34</strong> cleans the data in a PostToolUse hook before Claude reads it.</li></ul>
+<h2 id="run-it">Run it</h2>
+<p>From your project folder:</p>
+<div class="tw"><table><tr><th>What</th><th>Command</th></tr><tr><td>Run the agent on any message</td><td><code>uv run agent.py &quot;your customer message&quot;</code></td></tr><tr><td>Mei Lin's $120 lamp</td><td><code>uv run agent.py &quot;Hi, I&#x27;m meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;</code></td></tr><tr><td>Arjun's $780 desk</td><td><code>uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;</code></td></tr><tr><td>Mei Lin's monitor arm</td><td><code>uv run agent.py &quot;meilin@example.com here. Where is my monitor arm, order ORD-5504?&quot;</code></td></tr></table></div>
+<p>To run our reference build instead, go into this lab's <code>solution/</code> folder, copy <code>.env.example</code> to <code>.env</code>, put your key in it, then run the same commands. <code>uv run</code> installs the packages on first use.</p>
+<h2 id="explain-it-back-with-your-trainer">Explain it back (with your trainer)</h2>
+<ul><li><strong>1.</strong> Which line in <code>agent.py</code> decides whether the loop goes round again? What else stops it?</li><li><strong>2.</strong> Why does every <code>tool_result</code> go back in one user message, and why must a failed tool still send one?</li><li><strong>3.</strong> Claude called <code>get_customer</code> first. Did the system prompt make it do that, or the tool description? Delete one, run it again and see.</li></ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<div class="tw"><table><tr><th>You see</th><th>Fix prompt</th></tr><tr><td><code>authentication_error</code> / 401</td><td>Check <code>.env</code> yourself: one line, no quotes, no spaces. Don't paste the key into the chat.</td></tr><tr><td><code>stop_reason=max_tokens</code> or an empty reply</td><td>"Set max_tokens to 4096 (Haiku 5.5 thinks before it answers)."</td></tr><tr><td><code>tool_use ids were found without tool_result blocks</code></td><td>"Send every tool_result in one user message right after the assistant turn."</td></tr><tr><td>The loop never stops</td><td>"Stop when stop_reason is not tool_use, and after 10 turns at most."</td></tr><tr><td>Claude invents an order</td><td>"Tools must read backend.json only. Check AGENTS.md."</td></tr></table></div>
+<p class="note">4 prompts on this page. Built from the lab's README.md.</p>
+</main>
+<script>
+function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(t);return ok}
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{
+  const text=document.getElementById(b.dataset.for).innerText; let ok=false;
+  try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch(e){}
+  if(!ok) ok=fallbackCopy(text);
+  b.textContent=ok?'Copied ✓':'Press Ctrl+C'; b.classList.add('done');
+  if(!ok){const r=document.createRange();r.selectNodeContents(document.getElementById(b.dataset.for));const s=getSelection();s.removeAllRanges();s.addRange(r)}
+  setTimeout(()=>{b.textContent='Copy prompt';b.classList.remove('done')},1800);
+}));
+</script></body></html>

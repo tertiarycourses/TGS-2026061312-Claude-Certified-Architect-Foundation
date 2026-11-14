@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 33 prompts · Claude Certified Architect Foundation</title>
+<style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD;--mint:#E3F1F0;--side:#F2EFE7}
+*{box-sizing:border-box} body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+nav{position:sticky;top:0;z-index:5;background:var(--side);border-bottom:1px solid var(--line);padding:8px 16px;display:flex;gap:6px;flex-wrap:wrap;font-size:13.5px}
+nav span{color:var(--line);padding:3px 2px} nav a[aria-current]{background:var(--mint);font-weight:700}
+nav a{color:var(--teal);text-decoration:none;padding:3px 8px;border-radius:6px} nav a:hover,nav a:focus{background:var(--mint);outline:none}
+nav .home{font-weight:700;color:var(--orange)}
+main{max-width:920px;margin:0 auto;padding:24px 20px 80px}
+h1{font-size:30px;line-height:1.2;margin:10px 0 6px} h2{color:var(--orange);margin:38px 0 8px;font-size:22px;scroll-margin-top:56px} h3{margin:22px 0 6px;font-size:17px}
+a{color:var(--teal)} code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--sand);padding:1px 5px;border-radius:4px}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0} .links a{border:1px solid var(--teal);border-radius:8px;padding:6px 12px;text-decoration:none;font-size:14px}
+.note{color:var(--grey);border-left:3px solid var(--line);padding-left:12px} .check{background:var(--mint);border-radius:8px;padding:10px 14px}
+.tw{overflow-x:auto} table{border-collapse:collapse;width:100%;font-size:14.5px} th{text-align:left;border-bottom:2px solid var(--orange)} th,td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;font:13.5px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:14px}
+pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-space:pre;overflow-x:auto}
+.prompt{border:1px solid var(--teal);border-radius:10px;background:#fff;margin:10px 0 14px;overflow:hidden}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--mint);padding:6px 10px;font-size:13px;color:var(--grey)}
+.copy{font:600 13.5px system-ui,sans-serif;background:var(--teal);color:#fff;border:0;border-radius:7px;padding:7px 14px;cursor:pointer}
+.copy:hover{background:#24585a} .copy:focus-visible{outline:3px solid var(--orange);outline-offset:2px} .copy.done{background:var(--orange)}
+</style></head><body>
+<nav aria-label="Lab sections"><a class="home" href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/">All labs</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html">Lab 31</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-32.html">Lab 32</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-33.html" aria-current=page>Lab 33</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-34.html">Lab 34</a><span>|</span><a href="#before-you-start">Before you start</a><a href="#step-1-watch-it-go-wrong-first-5-minutes-no-code-change">Step 1</a><a href="#step-2-add-the-pretooluse-hook-25-minutes">Step 2</a><a href="#stretch-an-identity-gate-day-1-lab-4">Stretch</a><a href="#troubleshooting">Troubleshooting</a></nav>
+<main>
+<div class="links"><a href="README.pdf">Lab PDF</a><a href="solution/">Reference solution</a><a href="sample-output.txt">Sample output</a></div>
+<h1>Lab 33: Vibe-code a PreToolUse hook that blocks the $780 refund</h1>
+<p class="note">Day 2 · Lab 33 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statements 1.5, 1.4 · Vibe-coding lab · Claude Haiku 5.5 · 30 minutes</p>
+<p><strong>In Lab 31 your agent paid Arjun $780 with nobody's approval. You could add "refunds above $500 need a human" to the prompt, and one edit later it's gone (Day 1, Lab 5). Put the rule in code that runs before every tool call, and no prompt edit can remove it.</strong></p>
+<h2 id="day-2-one-agent-four-labs">Day 2: one agent, four labs</h2>
+<div class="tw"><table><tr><th>Lab</th><th>You add</th><th>Exam tasks</th></tr><tr><td>31</td><td>the agentic loop and four tools, with the Anthropic Python SDK</td><td>1.1, 2.1</td></tr><tr><td>32</td><td>an MCP server for the tools; the agent becomes an MCP client</td><td>2.4, 2.2</td></tr><tr><td><strong>33 (this lab)</strong></td><td>a PreToolUse hook that blocks refunds above $500</td><td>1.5, 1.4</td></tr><tr><td>34</td><td>a PostToolUse hook that cleans raw data, and live tests</td><td>1.5</td></tr></table></div>
+<h2 id="what-you-ll-build">What you'll build</h2>
+<pre class="plain">  agent.py -- the agentic loop, MCP client
+        |
+        +-- PreToolUse hook (hooks.py): runs BEFORE every tool call
+        |     process_refund above $500 -&gt; DENY: the tool never runs,
+        |     Claude reads the reason and calls escalate_to_human instead
+        |
+        +-- MCP client == stdio ==&gt; support_server.py (4 tools)</pre>
+<p>The $500 limit lives in <code>hooks.py</code> only: not in the system prompt, not in the tool descriptions and not in the server. The hook decides, every time, whatever the model thinks.</p>
+<h2 id="what-s-in-this-folder">What's in this folder</h2>
+<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our build at the end of this lab. Copy it in if you didn't finish Lab 32.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of the $780 case from <code>solution/</code></td></tr></table></div>
+<h2 id="before-you-start">Before you start</h2>
+<p>Keep working in your project folder from Lab 32: <code>agent.py</code> must list the MCP tools and refund Mei Lin's $120 lamp. Didn't finish? Copy everything from Lab 32's <code>solution/</code> folder into an empty folder, add your <code>.env</code>, and start here.</p>
+<h2 id="step-1-watch-it-go-wrong-first-5-minutes-no-code-change">Step 1 · Watch it go wrong first (5 minutes, no code change)</h2>
+<h3>Prompt 1</h3>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Do not change any code. Run this and show me the output:
+uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;
+Then tell me how much money left the company and who approved it.</pre></div>
+<p class="check"><strong>Checkpoint.</strong> <code>process_refund</code> runs for <strong>$780</strong>. Nobody approved it. This is Day 1 Lab 5, Phase 1, now in your own code.</p>
+<h2 id="step-2-add-the-pretooluse-hook-25-minutes">Step 2 · Add the PreToolUse hook (25 minutes)</h2>
+<h3>Prompt 2</h3>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p2">Copy prompt</button></div><pre id="p2">Create hooks.py with a PreToolUse hook and wire it into agent.py.
+
+- pre_tool_use(tool_name, tool_input) runs before EVERY tool call. It returns {&quot;decision&quot;: &quot;allow&quot;} or
+  {&quot;decision&quot;: &quot;deny&quot;, &quot;reason&quot;: &quot;...&quot;}.
+- The rule: if tool_name is process_refund and amount &gt; 500, deny with this reason:
+  &quot;Policy: refunds above $500 need human approval. Do not retry process_refund. Call escalate_to_human with refund_amount=&lt;amount&gt; instead.&quot;
+- In agent.py, call pre_tool_use before session.call_tool. On deny, do NOT call the tool: send back a tool_result with
+  is_error true and the reason as its content, add the call to the calls list with &quot;denied&quot;: True, and print
+  &quot;PreToolUse DENY &lt;tool&gt;(&lt;input&gt;): &lt;reason&gt;&quot;.
+- Keep the $500 limit in hooks.py only. Do not add it to the system prompt, the tool descriptions or the server.
+
+Run the Arjun $780 case again and show me the output.</pre></div>
+<p class="check"><strong>Checkpoint.</strong> <code>PreToolUse DENY process_refund(... 780 ...)</code>. On the next turn Claude calls <code>escalate_to_human</code> with <code>refund_amount</code> <strong>780</strong>, and the reply says a human will approve the refund. No refund is issued. If Claude escalates without trying the refund first, that's safe too: the hook simply had nothing to block. Run it again to see the deny.</p>
+<p>Now run Mei Lin's $120 lamp: it still goes through. The hook only stops what breaks the rule.</p>
+<h2 id="run-it">Run it</h2>
+<p>From your project folder:</p>
+<div class="tw"><table><tr><th>What</th><th>Command</th></tr><tr><td>Arjun's $780 desk: denied, then escalated</td><td><code>uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;</code></td></tr><tr><td>Mei Lin's $120 lamp: still allowed</td><td><code>uv run agent.py &quot;Hi, I&#x27;m meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;</code></td></tr></table></div>
+<p>To run our reference build, go into <code>solution/</code>, copy <code>.env.example</code> to <code>.env</code>, add your key, then run the same commands.</p>
+<h2 id="stretch-an-identity-gate-day-1-lab-4">Stretch · An identity gate (Day 1, Lab 4)</h2>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p3">Copy prompt</button></div><pre id="p3">Add a second rule to pre_tool_use in hooks.py: deny lookup_order, process_refund and escalate_to_human until
+get_customer has succeeded in this conversation. The deny reason should tell Claude to verify the customer by email first.
+Run: uv run agent.py &quot;Where is order ORD-5504?&quot; and show me the output.</pre></div>
+<p>Claude can't skip verification any more, however the customer words the request.</p>
+<h2 id="explain-it-back-with-your-trainer">Explain it back (with your trainer)</h2>
+<ul><li><strong>1.</strong> Why does a PreToolUse hook hold the $500 rule when a line in the prompt doesn't?</li><li><strong>2.</strong> What does Claude see when the hook denies a call, and why does the reason tell it what to do next?</li><li><strong>3.</strong> Could a PostToolUse hook do the same job? (Hint: when does it run?)</li></ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<div class="tw"><table><tr><th>You see</th><th>Fix prompt</th></tr><tr><td>The $780 refund still goes through</td><td>"pre_tool_use must run before session.call_tool, and a deny must skip the call."</td></tr><tr><td><code>tool_use ids were found without tool_result blocks</code></td><td>"A denied call still needs a tool_result, in the same user message as the others."</td></tr><tr><td>Claude retries process_refund again and again</td><td>"Send the deny reason as the tool_result content with is_error true."</td></tr><tr><td>Mei Lin's $120 refund is blocked too</td><td>"Deny only when amount &gt; 500."</td></tr></table></div>
+<p class="note">3 prompts on this page. Built from the lab's README.md.</p>
+</main>
+<script>
+function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(t);return ok}
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{
+  const text=document.getElementById(b.dataset.for).innerText; let ok=false;
+  try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch(e){}
+  if(!ok) ok=fallbackCopy(text);
+  b.textContent=ok?'Copied ✓':'Press Ctrl+C'; b.classList.add('done');
+  if(!ok){const r=document.createRange();r.selectNodeContents(document.getElementById(b.dataset.for));const s=getSelection();s.removeAllRanges();s.addRange(r)}
+  setTimeout(()=>{b.textContent='Copy prompt';b.classList.remove('done')},1800);
+}));
+</script></body></html>

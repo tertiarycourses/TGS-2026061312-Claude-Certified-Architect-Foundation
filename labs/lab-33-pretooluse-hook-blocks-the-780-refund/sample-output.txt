@@ -1,0 +1,19 @@
+$ uv run agent.py "This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount."
+MCP tools: get_customer, lookup_order, process_refund, escalate_to_human
+
+Turn 1: stop_reason=tool_use
+  get_customer({'email': 'arjun@example.com'}) -> {"customer_id": "C-1002", "name": "Arjun Rao", "email": "arjun@example.com", "tier": "plus"}
+
+Turn 2: stop_reason=tool_use
+  lookup_order({'order_id': 'ORD-5502', 'customer_id': 'C-1002'}) -> {"order_id": "ORD-5502", "customer_id": "C-1002", "item": "Standing desk", "amount": 780.0, "placed_at": "2026-10-20T10:00:00Z", "status": "delivered"
+
+Turn 3: stop_reason=tool_use
+  PreToolUse DENY process_refund({'order_id': 'ORD-5502', 'amount': 780.0, 'reason': 'Damaged on arrival: standing desk delivered with bent frame, damage photo on file.'}): Policy: refunds above $500 need human approval. Do not retry process_refund. Call escalate_to_human with refund_amount=780.0 instead.
+
+Turn 4: stop_reason=tool_use
+  escalate_to_human({'customer_id': 'C-1002', 'root_cause': 'Standing desk in ORD-5502 arrived with a bent frame. Customer provided damage photo (damage_photo true on order). Full refund of $780.00 requested. process_refund rejected the amount because refunds above $500 require human approval.', 'recommended_action': 'Review damage photo and approve a full refund of $780.00 to the original payment method for ORD-5502 (customer tier: plus).', 'refund_amount': 780.0, 'order_ids': ['ORD-5502']}) -> {"ticket_id": "HS-94AD", "status": "queued", "customer_id": "C-1002", "root_cause": "Standing desk in ORD-5502 arrived with a bent frame. Customer pro
+
+Turn 5: stop_reason=end_turn
+
+=== Reply to the customer ===
+Hi Arjun, I've verified your account and reviewed ORD-5502 (standing desk, $780.00). Your damage photo is on file. Because refunds over $500 require human approval, I couldn't issue the refund directly. I've passed the case to our team with your photo evidence and a recommendation for a full $780.00 refund (ticket HS-94AD). A human agent will review it and process the refund to your original payment method. I'm sorry about the bent frame and the inconvenience.

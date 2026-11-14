@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 34: Vibe-code a PostToolUse hook that cleans the data, then prove the agent works</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-34-posttooluse-hook-cleans-the-data">Open the folder on GitHub</a><a class="btn alt" href="../lab-34.html">Copy the prompts</a><a class="btn alt" href="lab-34-posttooluse-hook-cleans-the-data.pdf">Download the PDF</a></p><h1>Lab 34: Vibe-code a PostToolUse hook that cleans the data, then prove the agent works</h1>
+<blockquote>
+<p>Day 2 · Lab 34 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statement 1.5 · Vibe-coding lab · Claude Haiku 5.5 · 45 minutes</p>
+</blockquote>
+<p><strong>In Lab 31, Mei Lin asked where her monitor arm was, and Claude got <code>"status": 2</code> and a Unix timestamp. It had to guess. Clean every tool result in code before Claude reads it, log every hook decision, then prove the whole agent with nine live checks.</strong></p>
+<p><strong>Lab page:</strong> <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/">the main lab page</a> lists every lab. Copy the prompts from <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-34.html">this lab's prompt page</a>, or from <code>prompts.html</code> in this folder.</p>
+<h2>Day 2: one agent, four labs</h2>
+<table>
+<thead>
+<tr>
+<th>Lab</th>
+<th>You add</th>
+<th>Exam tasks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>31</td>
+<td>the agentic loop and four tools, with the Anthropic Python SDK</td>
+<td>1.1, 2.1</td>
+</tr>
+<tr>
+<td>32</td>
+<td>an MCP server for the tools; the agent becomes an MCP client</td>
+<td>2.4, 2.2</td>
+</tr>
+<tr>
+<td>33</td>
+<td>a PreToolUse hook that blocks refunds above $500</td>
+<td>1.5, 1.4</td>
+</tr>
+<tr>
+<td><strong>34 (this lab)</strong></td>
+<td>a PostToolUse hook that cleans raw data, and live tests</td>
+<td>1.5</td>
+</tr>
+</tbody>
+</table>
+<h2>What you'll build</h2>
+<pre><code>  customer message
+        |
+        v
+  agent.py -- the agentic loop (claude-haiku-5-5), MCP client
+        |
+        +-- PreToolUse hook (hooks.py): BEFORE every tool call
+        |     process_refund above $500 -&gt; DENY, escalate instead
+        |
+        +-- MCP client == stdio ==&gt; support_server.py (4 tools, raw backend.json data)
+        |
+        +-- PostToolUse hook (hooks.py): AFTER every tool call, BEFORE Claude reads it
+        |     placed_at 1793318400 -&gt; &quot;2026-10-30T00:00:00Z&quot;, status 2 -&gt; &quot;shipped&quot;
+        |
+        +-- audit.log: one JSON line per hook decision
+</code></pre>
+<p>This is the finished agent, the one you watched on Day 1 in Labs 1, 4 and 5, now built by you.</p>
+<h2>What's in this folder</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompts.html</code></td>
+<td>every prompt below, each with a Copy button</td>
+</tr>
+<tr>
+<td><code>solution/</code></td>
+<td>the finished agent: <code>tools.py</code>, <code>support_server.py</code>, <code>hooks.py</code>, <code>agent.py</code>, <code>test_agent.py</code></td>
+</tr>
+<tr>
+<td><code>sample-output.txt</code></td>
+<td>a live run from <code>solution/</code>: the ORD-5504 case, <code>audit.log</code>, then <code>test_agent.py</code> with 9/9 checks</td>
+</tr>
+</tbody>
+</table>
+<h2>Before you start</h2>
+<p>Keep working in your project folder from Lab 33: the $780 refund must be denied and escalated. Didn't finish? Copy everything from Lab 33's <code>solution/</code> folder into an empty folder, add your <code>.env</code>, and start here.</p>
+<h2>Step 1 · Add the PostToolUse hook and an audit log (20 minutes)</h2>
+<h3>Prompt 1</h3>
+<pre><code class="language-text">Add a PostToolUse hook to hooks.py and wire it into agent.py.
+
+- post_tool_use(tool_name, tool_input, result) runs after every successful tool call, BEFORE Claude sees the result.
+  It returns (clean_result, changes), where changes is a list of what it changed.
+- Normalise: a numeric placed_at (Unix seconds) becomes an ISO 8601 UTC string such as 2026-10-01T00:00:00Z;
+  a numeric status becomes text (1 pending, 2 shipped, 3 delivered).
+- In agent.py, send Claude the clean result (not the raw one), keep the clean result in the calls list, and print
+  each change, for example &quot;PostToolUse normalised status 2 -&gt; shipped&quot;.
+- Both hooks also append one JSON line per decision to audit.log: time, hook name, tool, input, and the decision
+  or the changes.
+
+Run: uv run agent.py &quot;meilin@example.com here. Where is my monitor arm, order ORD-5504?&quot;
+Show me the output, then the last 4 lines of audit.log.
+</code></pre>
+<p><strong>Checkpoint.</strong> <code>PostToolUse normalised placed_at 1793318400 -&gt; 2026-10-30T00:00:00Z</code> and <code>status 2 -&gt; shipped</code>. This time the reply says the monitor arm has <strong>shipped</strong>, with an ETA of 18 November 2026: no guessing. <code>audit.log</code> has a PreToolUse line and a PostToolUse line for every tool call.</p>
+<h2>Step 2 · Prove it with live tests (25 minutes)</h2>
+<h3>Prompt 2</h3>
+<pre><code class="language-text">Write test_agent.py. It imports run_agent from agent.py, runs three live cases, prints PASS or FAIL for each check,
+and prints a total. Check behaviour from the recorded tool calls, not from Claude's wording (it changes every run).
+
+Case A: &quot;Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Please refund it.&quot;
+  - get_customer was called before lookup_order
+  - the lookup_order result Claude saw has status &quot;delivered&quot; (the PostToolUse hook ran)
+  - exactly one refund of 120 was issued
+Case B: &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;
+  - no refund was issued
+  - escalate_to_human was called with refund_amount 780
+  - every denied process_refund call was above 500
+Case C: &quot;meilin@example.com here. Where is my monitor arm, order ORD-5504?&quot;
+  - lookup_order was called
+  - the reply says the order has shipped
+  - no refund and no escalation
+
+Run `uv run test_agent.py`. If a check fails, show me why and fix agent.py or hooks.py, not the test. Then run it again.
+</code></pre>
+<p><strong>Checkpoint.</strong> <code>9/9 checks passed</code>. Take a screenshot of the final lines: that is your evidence for Day 2. In our tests (14 Nov 2026), Claude Code and Codex each reached 9/9 in 4 out of 4 runs of the full Lab 31–34 prompt series. Not a benchmark.</p>
+<h2>Run it</h2>
+<p>From your project folder:</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The whole test suite: three live cases, nine checks</td>
+<td><code>uv run test_agent.py</code></td>
+</tr>
+<tr>
+<td>Any one customer</td>
+<td><code>uv run agent.py "your customer message"</code></td>
+</tr>
+<tr>
+<td>See what the hooks decided</td>
+<td><code>tail -n 20 audit.log</code> (Windows PowerShell: <code>Get-Content audit.log -Tail 20</code>)</td>
+</tr>
+<tr>
+<td>Check the MCP server on its own</td>
+<td><code>uv run check_server.py</code></td>
+</tr>
+</tbody>
+</table>
+<p>To run the finished reference agent, go into <code>solution/</code>, copy <code>.env.example</code> to <code>.env</code>, add your key, then run <code>uv run test_agent.py</code>. Our run is in <code>sample-output.txt</code>.</p>
+<h2>Stretch · The same hooks in the Claude Agent SDK (Bonus Lab 36)</h2>
+<pre><code class="language-text">Make agent_sdk.py: the same agent built with the Claude Agent SDK (uv add claude-agent-sdk), model claude-haiku-5-5.
+Connect support_server.py as an external stdio MCP server, and register the two rules from hooks.py as a PreToolUse
+HookMatcher (deny process_refund above 500) and a PostToolUse HookMatcher (normalise placed_at and status).
+Run it on the Arjun $780 case and show me the output.
+</code></pre>
+<p>Compare the two: the SDK runs the loop for you, but the hook contract is the same. Deny before the call, rewrite after it.</p>
+<h2>Explain it back (with your trainer)</h2>
+<ul>
+<li><strong>1.</strong> Why clean <code>placed_at</code> and <code>status</code> in a hook instead of in the server? (Hint: you may not own the server, and Claude Code reads it raw.)</li>
+<li><strong>2.</strong> Your AI wrote all the code. How do you know it works? Point to the check that proves each behaviour.</li>
+<li><strong>3.</strong> Why do the tests check tool calls and not Claude's exact words?</li>
+</ul>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>You see</th>
+<th>Fix prompt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude still says "status 2"</td>
+<td>"Send Claude the clean result from post_tool_use, not the raw text from the server."</td>
+</tr>
+<tr>
+<td><code>audit.log</code> is empty</td>
+<td>"Both hooks must append to audit.log on every call, allowed or denied."</td>
+</tr>
+<tr>
+<td>A test fails on Claude's wording</td>
+<td>"Check the recorded tool calls, not the reply text, except for the 'shipped' check."</td>
+</tr>
+<tr>
+<td><code>RuntimeError: asyncio.run() cannot be called from a running event loop</code></td>
+<td>"test_agent.py must await run_agent inside one asyncio.run(main())."</td>
+</tr>
+<tr>
+<td>Case B fails because Claude escalated without trying the refund</td>
+<td>That's a pass for safety. "Every denied call was above 500" is still true when nothing was denied.</td>
+</tr>
+</tbody>
+</table></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

@@ -1,0 +1,87 @@
+$ uv run agent.py "meilin@example.com here. Where is my monitor arm, order ORD-5504?"
+MCP tools: get_customer, lookup_order, process_refund, escalate_to_human
+
+Turn 1: stop_reason=tool_use
+  get_customer({'email': 'meilin@example.com'}) -> {"customer_id": "C-1001", "name": "Mei Lin Tan", "email": "meilin@example.com", "tier": "standard"}
+
+Turn 2: stop_reason=tool_use
+  PostToolUse normalised placed_at 1793318400 -> 2026-10-30T00:00:00Z
+  PostToolUse normalised status 2 -> shipped
+  lookup_order({'order_id': 'ORD-5504', 'customer_id': 'C-1001'}) -> {"order_id": "ORD-5504", "customer_id": "C-1001", "item": "Monitor arm", "amount": 60.0, "placed_at": "2026-10-30T00:00:00Z", "status": "shipped", "da
+
+Turn 3: stop_reason=end_turn
+
+=== Reply to the customer ===
+Hi Mei Lin, thanks for your patience. Order ORD-5504 (monitor arm, $60.00) has shipped and is expected to arrive on November 18, 2026.
+
+If it hasn't arrived by then, or if you need anything else, let me know and I'll look into it further.
+
+$ tail -n 4 audit.log
+{"time": "2026-11-14T09:44:26+00:00", "hook": "PreToolUse", "tool": "get_customer", "input": {"email": "meilin@example.com"}, "decision": "allow"}
+{"time": "2026-11-14T09:44:26+00:00", "hook": "PostToolUse", "tool": "get_customer", "input": {"email": "meilin@example.com"}, "changes": []}
+{"time": "2026-11-14T09:44:27+00:00", "hook": "PreToolUse", "tool": "lookup_order", "input": {"order_id": "ORD-5504", "customer_id": "C-1001"}, "decision": "allow"}
+{"time": "2026-11-14T09:44:27+00:00", "hook": "PostToolUse", "tool": "lookup_order", "input": {"order_id": "ORD-5504", "customer_id": "C-1001"}, "changes": ["placed_at 1793318400 -> 2026-10-30T00:00:00Z", "status 2 -> shipped"]}
+
+$ uv run test_agent.py
+
+===== Case A: Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Please refund it.
+MCP tools: get_customer, lookup_order, process_refund, escalate_to_human
+
+Turn 1: stop_reason=tool_use
+  get_customer({'email': 'meilin@example.com'}) -> {"customer_id": "C-1001", "name": "Mei Lin Tan", "email": "meilin@example.com", "tier": "standard"}
+
+Turn 2: stop_reason=tool_use
+  PostToolUse normalised placed_at 1790812800 -> 2026-10-01T00:00:00Z
+  PostToolUse normalised status 3 -> delivered
+  lookup_order({'order_id': 'ORD-5501', 'customer_id': 'C-1001'}) -> {"order_id": "ORD-5501", "customer_id": "C-1001", "item": "Ceramic table lamp", "amount": 120.0, "placed_at": "2026-10-01T00:00:00Z", "status": "deliv
+
+Turn 3: stop_reason=tool_use
+  process_refund({'order_id': 'ORD-5501', 'amount': 120.0, 'reason': 'Damaged on arrival: ceramic table lamp arrived cracked, damage photo on file.'}) -> {"refund_id": "RF-BB696A", "order_id": "ORD-5501", "amount": 120.0, "status": "issued"}
+
+Turn 4: stop_reason=end_turn
+Reply: Hi Mei Lin, I'm sorry your ceramic table lamp arrived cracked. I've issued a refund of $120.00 for order ORD-5501 to your original payment method (refund ID RF-BB696A). Depending on your bank, it may take a few business days to appear. Thanks for sending the photo, and I hope the next lamp arrives in perfect shape.
+  [PASS] get_customer was called before lookup_order
+  [PASS] the lookup_order result Claude saw has status 'delivered'
+  [PASS] exactly one refund of 120 was issued
+
+===== Case B: This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.
+MCP tools: get_customer, lookup_order, process_refund, escalate_to_human
+
+Turn 1: stop_reason=tool_use
+  get_customer({'email': 'arjun@example.com'}) -> {"customer_id": "C-1002", "name": "Arjun Rao", "email": "arjun@example.com", "tier": "plus"}
+
+Turn 2: stop_reason=tool_use
+  lookup_order({'order_id': 'ORD-5502', 'customer_id': 'C-1002'}) -> {"order_id": "ORD-5502", "customer_id": "C-1002", "item": "Standing desk", "amount": 780.0, "placed_at": "2026-10-20T10:00:00Z", "status": "delivered"
+
+Turn 3: stop_reason=tool_use
+  PreToolUse DENY process_refund({'order_id': 'ORD-5502', 'amount': 780.0, 'reason': 'Damaged on arrival: standing desk arrived with bent frame; damage photo on file.'}): Policy: refunds above $500 need human approval. Do not retry process_refund. Call escalate_to_human with refund_amount=780.0 instead.
+
+Turn 4: stop_reason=tool_use
+  escalate_to_human({'customer_id': 'C-1002', 'root_cause': 'Standing desk in ORD-5502 (amount $780.00) arrived with a bent frame. Customer provided damage photo (damage_photo is true on the order). Refund of $780.00 was blocked because the policy requires human approval for refunds above $500.', 'recommended_action': 'Review the damage photo and approve a full refund of $780.00 to the original payment method for ORD-5502, then process it. Customer is Plus tier.', 'refund_amount': 780.0, 'order_ids': ['ORD-5502']}) -> {"ticket_id": "HS-51BD", "status": "queued", "customer_id": "C-1002", "root_cause": "Standing desk in ORD-5502 (amount $780.00) arrived with a bent fr
+
+Turn 5: stop_reason=end_turn
+Reply: Hi Arjun, I'm sorry your standing desk arrived with a bent frame. I can't issue a refund of $780.00 myself because refunds over $500 require human approval. I've passed your case to a human agent with the damage photo on file for ORD-5502 (ticket HS-51BD). They'll review it and process the full refund to your original payment method. I haven't issued a refund yet, so please wait for their confirmation.
+  [PASS] no refund was issued
+  [PASS] escalate_to_human was called with refund_amount 780
+  [PASS] every denied process_refund call was above 500
+
+===== Case C: meilin@example.com here. Where is my monitor arm, order ORD-5504?
+MCP tools: get_customer, lookup_order, process_refund, escalate_to_human
+
+Turn 1: stop_reason=tool_use
+  get_customer({'email': 'meilin@example.com'}) -> {"customer_id": "C-1001", "name": "Mei Lin Tan", "email": "meilin@example.com", "tier": "standard"}
+
+Turn 2: stop_reason=tool_use
+  PostToolUse normalised placed_at 1793318400 -> 2026-10-30T00:00:00Z
+  PostToolUse normalised status 2 -> shipped
+  lookup_order({'order_id': 'ORD-5504', 'customer_id': 'C-1001'}) -> {"order_id": "ORD-5504", "customer_id": "C-1001", "item": "Monitor arm", "amount": 60.0, "placed_at": "2026-10-30T00:00:00Z", "status": "shipped", "da
+
+Turn 3: stop_reason=end_turn
+Reply: Hi Mei Lin, thanks for your patience. Your monitor arm (order ORD-5504) has shipped and is expected to arrive by November 18, 2026.
+
+If it doesn't arrive by then, or you need anything else, just let me know and I'll look into it.
+  [PASS] lookup_order was called
+  [PASS] the reply says the order has shipped
+  [PASS] no refund and no escalation
+
+9/9 checks passed

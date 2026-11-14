@@ -1,0 +1,6 @@
+[project]
+name = "orderly-agent"
+version = "0.1.0"
+description = "Orderly's customer resolution agent (TGS-2026061312 Day 2, Labs 31-34)"
+requires-python = ">=3.10"
+dependencies = ["anthropic>=2.0", "python-dotenv>=1.0"]

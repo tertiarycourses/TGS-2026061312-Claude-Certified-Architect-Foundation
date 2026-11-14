@@ -1,0 +1,51 @@
+$ uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."
+
+Turn 1: stop_reason=tool_use
+  get_customer({'email': 'meilin@example.com'}) -> {"customer_id": "C-1001", "name": "Mei Lin Tan", "email": "meilin@example.com", "tier": "standard"}
+
+Turn 2: stop_reason=tool_use
+  lookup_order({'order_id': 'ORD-5501', 'customer_id': 'C-1001'}) -> {"order_id": "ORD-5501", "customer_id": "C-1001", "item": "Ceramic table lamp", "amount": 120.0, "placed_at": 1790812800, "status": 3, "damage_photo":
+
+Turn 3: stop_reason=tool_use
+  process_refund({'order_id': 'ORD-5501', 'amount': 120.0, 'reason': 'Item arrived damaged (cracked ceramic table lamp); damage photo on file.'}) -> {"refund_id": "RF-E9ED3C", "order_id": "ORD-5501", "amount": 120.0, "status": "issued"}
+
+Turn 4: stop_reason=end_turn
+
+=== Reply to the customer ===
+Hi Mei Lin, I'm sorry your ceramic table lamp arrived cracked. I've confirmed the damage photo on order ORD-5501 and issued a refund of $120.00 to your original payment method. Refund reference: RF-E9ED3C.
+
+Is there anything else I can help you with?
+
+$ uv run agent.py "This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount."
+
+Turn 1: stop_reason=tool_use
+  get_customer({'email': 'arjun@example.com'}) -> {"customer_id": "C-1002", "name": "Arjun Rao", "email": "arjun@example.com", "tier": "plus"}
+
+Turn 2: stop_reason=tool_use
+  lookup_order({'order_id': 'ORD-5502', 'customer_id': 'C-1002'}) -> {"order_id": "ORD-5502", "customer_id": "C-1002", "item": "Standing desk", "amount": 780.0, "placed_at": "2026-10-20T10:00:00Z", "status": "delivered"
+
+Turn 3: stop_reason=tool_use
+  process_refund({'order_id': 'ORD-5502', 'amount': 780.0, 'reason': 'Damaged item on arrival: standing desk with bent frame, damage photo on file.'}) -> {"refund_id": "RF-4E01D7", "order_id": "ORD-5502", "amount": 780.0, "status": "issued"}
+
+Turn 4: stop_reason=end_turn
+
+=== Reply to the customer ===
+Hi Arjun, I'm sorry your standing desk arrived with a bent frame. I've verified your damage photos and issued a full refund of $780.00 for order ORD-5502 (refund ID RF-4E01D7) to your original payment method. Please allow your bank some time to post it. If you need anything else, just let me know.
+
+$ uv run agent.py "meilin@example.com here. Where is my monitor arm, order ORD-5504?"
+
+Turn 1: stop_reason=tool_use
+  get_customer({'email': 'meilin@example.com'}) -> {"customer_id": "C-1001", "name": "Mei Lin Tan", "email": "meilin@example.com", "tier": "standard"}
+
+Turn 2: stop_reason=tool_use
+  lookup_order({'order_id': 'ORD-5504', 'customer_id': 'C-1001'}) -> {"order_id": "ORD-5504", "customer_id": "C-1001", "item": "Monitor arm", "amount": 60.0, "placed_at": 1793318400, "status": 2, "damage_photo": false, 
+
+Turn 3: stop_reason=end_turn
+
+=== Reply to the customer ===
+Thanks, Mei Lin. I've verified your account and pulled up order ORD-5504 for a monitor arm ($60.00).
+
+The system shows an estimated delivery date of November 18, 2026. The status is shown only as a code ("2"), and I can't translate it into a clear shipping update. I don't want to guess at where the package is right now.
+
+If you'd like, I can connect you with a human agent who can check the shipping details. Is there anything else I can help with?
+

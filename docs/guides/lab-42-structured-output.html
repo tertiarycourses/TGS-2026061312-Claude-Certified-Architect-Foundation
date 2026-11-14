@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 42: Valid JSON is the floor: check the meaning yourself</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-42-structured-output">Open the folder on GitHub</a><a class="btn alt" href="lab-42-structured-output.pdf">Download the PDF</a></p><h1>Lab 42: Valid JSON is the floor: check the meaning yourself</h1>
+<blockquote>
+<p>Day 2 bonus build (optional) · Topic 4: Prompt Engineering &amp; Structured Output · Task statement 4.3 · Code lab · Claude Haiku 5.5</p>
+</blockquote>
+<p><strong>The schema guarantees the shape. It cannot tell you the lines don't add up to the total.</strong></p>
+<p><strong>Lab page:</strong> <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/">the main lab page</a> lists every lab (Day 1 runs there live in your browser). This lab's guide online: <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-42-structured-output.html">https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-42-structured-output.html</a>.</p>
+<h2>What you'll do</h2>
+<p>Extract three invoices into one Pydantic schema, first with forced strict tool use, then with messages.parse; then catch a missing field and a wrong total in your own code.</p>
+<h2>What's in this folder</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>invoices.py</code></td>
+<td>three messy invoices</td>
+</tr>
+<tr>
+<td><code>extract_invoices.py</code></td>
+<td>both extraction methods plus the semantic check</td>
+</tr>
+</tbody>
+</table>
+<h2>Before you start</h2>
+<ul>
+<li>Open a terminal in the labs folder. Windows: use Git Bash for the .sh scripts (it comes with Git); PowerShell is fine for the Python ones.</li>
+<li>Set your Anthropic API key once, if you haven't already. It is saved to labs/.env on your laptop and never uploaded. Run <code>uv run set_api_key.py</code>.</li>
+<li>Go into this lab's folder. Run <code>cd lab-42-structured-output</code>.</li>
+</ul>
+<p>You need uv (https://docs.astral.sh/uv/) for the Python scripts. Every call uses Claude Haiku 5.5 and costs a fraction of a US cent.</p>
+<h2>Steps</h2>
+<p><strong>Step 1.</strong> Extract with strict tool use.</p>
+<pre><code>uv run extract_invoices.py
+</code></pre>
+<p><strong>Step 2.</strong> Extract with messages.parse and a Pydantic model. Same results, no tool.</p>
+<pre><code>uv run extract_invoices.py --parse
+</code></pre>
+<p><strong>Step 3.</strong> Find the two REVIEW lines and explain why the schema alone didn't catch them.</p>
+<h2>What you should see</h2>
+<p>From a live run on Claude Haiku 5.5 (your wording will differ; the behaviour should not):</p>
+<ul>
+<li><code>INV-1002  Bright Print  total 229.00  due None  -&gt;  REVIEW: no due date in the source</code></li>
+<li><code>INV-1003  Nova Cloud Services  total 390.00  -&gt;  REVIEW: lines add to 340.00 but total says 390.00</code></li>
+</ul>
+<p>The full output of our run is in <code>sample-output.txt</code>.</p>
+<h2>The key lines, explained</h2>
+<p>In <code>extract_invoices.py</code>, look for the <code>KEY</code> comments:</p>
+<ul>
+<li><strong>KEY 1.</strong> One Pydantic model is the schema for both methods. extra='forbid' adds the additionalProperties: false that strict mode needs.</li>
+<li><strong>KEY 2.</strong> due_date is nullable, so a missing value has an honest answer instead of a guess.</li>
+<li><strong>KEY 3.</strong> strict: true guarantees the tool arguments match the schema exactly.</li>
+<li><strong>KEY 4.</strong> Forced tool_choice: Claude must call record_invoice.</li>
+<li><strong>KEY 5.</strong> messages.parse validates the reply straight into an Invoice object.</li>
+<li><strong>KEY 6.</strong> The semantic check: valid JSON with wrong numbers is only caught by your code.</li>
+</ul>
+<h2>The code: <code>extract_invoices.py</code></h2>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.10&quot;
+# dependencies = [&quot;anthropic&gt;=2.0&quot;, &quot;python-dotenv&gt;=1.0&quot;, &quot;pydantic&gt;=2&quot;]
+# ///
+&quot;&quot;&quot;Lab 42: structured output two ways, then the check the schema can't do for you.
+  1. strict tool use: tool_choice forces record_invoice, strict:true guarantees the arguments match the schema
+  2. messages.parse: output_config.format with a Pydantic model, validated into a Python object
+Run:  uv run extract_invoices.py           (strict tool use)
+      uv run extract_invoices.py --parse   (messages.parse + Pydantic)&quot;&quot;&quot;
+import sys
+import anthropic
+from dotenv import find_dotenv, load_dotenv
+from pydantic import BaseModel, ConfigDict
+from invoices import INVOICES
+
+load_dotenv(find_dotenv(usecwd=True))
+client = anthropic.Anthropic()
+MODEL = &quot;claude-haiku-5-5&quot;
+PROMPT = &quot;Extract this invoice. Use null for any field that is not in the text; never guess.\n\n&quot;
+
+
+class Line(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)   # emits additionalProperties: false, which strict mode requires
+    description: str
+    amount: float
+
+
+class Invoice(BaseModel):                       # KEY 1: one schema, used by both methods
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    invoice_id: str
+    supplier: str
+    issue_date: str
+    due_date: str | None                        # KEY 2: nullable, so &quot;missing&quot; has an honest answer
+    lines: list[Line]
+    total: float
+
+
+RECORD_TOOL = {&quot;name&quot;: &quot;record_invoice&quot;, &quot;description&quot;: &quot;Record one extracted invoice.&quot;,
+               &quot;strict&quot;: True,                  # KEY 3: arguments are guaranteed to match input_schema
+               &quot;input_schema&quot;: Invoice.model_json_schema()}
+</code></pre>
+<pre><code class="language-python">
+
+def extract_with_tool(text):
+    r = client.messages.create(model=MODEL, max_tokens=2048, tools=[RECORD_TOOL],
+                               tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;record_invoice&quot;},   # KEY 4: forced
+                               messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: PROMPT + text}])
+    block = next(b for b in r.content if b.type == &quot;tool_use&quot;)
+    return Invoice.model_validate(block.input)
+
+
+def extract_with_parse(text):
+    r = client.messages.parse(model=MODEL, max_tokens=2048, output_format=Invoice,       # KEY 5: no tool needed
+                              messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: PROMPT + text}])
+    return r.parsed_output
+
+
+extract = extract_with_parse if &quot;--parse&quot; in sys.argv else extract_with_tool
+print(&quot;Method:&quot;, &quot;messages.parse (output_config.format)&quot; if &quot;--parse&quot; in sys.argv else &quot;strict tool use&quot;)
+for inv_id, text in INVOICES.items():
+    inv = extract(text)
+    problems = []
+    if inv.due_date is None:
+        problems.append(&quot;no due date in the source&quot;)
+    line_sum = round(sum(line.amount for line in inv.lines), 2)
+    if abs(line_sum - inv.total) &gt; 0.01:        # KEY 6: valid JSON, wrong numbers: only YOUR code catches this
+        problems.append(f&quot;lines add to {line_sum:.2f} but total says {inv.total:.2f}&quot;)
+    status = &quot;REVIEW: &quot; + &quot;; &quot;.join(problems) if problems else &quot;OK&quot;
+    print(f&quot;\n{inv.invoice_id}  {inv.supplier}  total {inv.total:.2f}  due {inv.due_date}\n   {status}&quot;)
+</code></pre>
+<h2>Try this</h2>
+<p>Remove '| None' from due_date and run again. Watch what Claude puts in a required field the invoice doesn't have.</p>
+<h2>How this shows up in the exam</h2>
+<p>Task 4.3: tool use or structured outputs guarantee syntax, not semantics. Nullable fields stop fabrication; business rules are checked after extraction.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>
