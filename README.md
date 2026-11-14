@@ -7,7 +7,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 | Course code | `TGS-2026061312` |
 | Programme | WSQ |
 | Duration | 2 days / 16 hours |
-| Courseware release | Trainer deck v3.0, Lesson Plan v2.7, Learner Guide v2.7 |
+| Courseware release | Trainer deck v3.0, Lesson Plan v2.8, Learner Guide v2.8 |
 | Day 1 simulator | [Run all 30 labs live in your browser](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html) |
 | Funding | Up to 70% course fee funding for eligible learners and employers. Eligibility and current terms apply. |
@@ -16,7 +16,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 
 ## About the course
 
-You learn architecture judgement for agentic systems: when a prompt is enough, when a rule must live in code, and how to prove a system stays useful when tools fail, context grows and confidence runs out. Day 1 covers the six exam scenarios and the five domains on a simulator that runs in your browser: for each of the 30 task statements you answer an exam-style question, press Simulate it live, watch the code run and a live diagram of the lab's own pattern (the agentic loop, the hook gates, a coordinator spawning its subagents, or separate passes and session forks), then read Claude's final output and the observation explained. Day 2 is eleven hands-on Python builds: the API and the agent loop, PreToolUse/PostToolUse hooks, subagents, tool design, an MCP server, a skill, Claude Code in CI, structured output, batches, caching and error handling.
+You learn architecture judgement for agentic systems: when a prompt is enough, when a rule must live in code, and how to prove a system stays useful when tools fail, context grows and confidence runs out. Day 1 covers the six exam scenarios and the five domains on a simulator that runs in your browser: for each of the 30 task statements you answer an exam-style question, press Simulate it live, watch the lab's own scenario board light up as the code runs (its real case, data and outcome, one row per method), together with a live diagram of its pattern (the agentic loop, the hook gates, a coordinator spawning its subagents, or separate passes and session forks). Where a lab has a trap and a fix, the run stops after the trap and shows its outcome until you press Proceed; then you read Claude's final output and the observation explained, with the two methods side by side. Day 2 is eleven hands-on Python builds: the API and the agent loop, PreToolUse/PostToolUse hooks, subagents, tool design, an MCP server, a skill, Claude Code in CI, structured output, batches, caching and error handling.
 
 ## Learning outcomes
 
@@ -145,8 +145,8 @@ Questions come from the exam guide's task statements and official samples, and f
 ## In this repository
 
 - [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.0.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.0.pdf)
-- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v2.7.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v2.7.pdf)
-- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v2.7.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v2.7.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v2.7.md)
+- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v2.8.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v2.8.pdf)
+- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v2.8.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v2.8.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v2.8.md)
 - [The labs folder](labs/): 41 lab folders and the six Python simulators
 - [`docs/`](docs/): the [Day 1 simulator](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) (GitHub Pages)
 

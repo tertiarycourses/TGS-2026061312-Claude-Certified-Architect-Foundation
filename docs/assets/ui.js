@@ -1,6 +1,7 @@
 // Page layer for the simulator site: sidebar (API key + the five topics), the home page and each lab page.
 import * as E from "./engine.js";
 import { DIAGRAMS, HOOKS_SVG, patternBox, runMap } from "./diagrams.js";
+import { sceneBox, sceneLive } from "./scene.js";
 // Eye icons for the API key field (show / hide the key).
 const EYE = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 const EYE_OFF = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>';
@@ -109,6 +110,19 @@ export async function home() {
     <footer>© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Practice questions include SkillCertPro's Part 1 practice exam (third-party, unofficial) and the exam guide's samples.</footer>`;
 }
 
+// The methods a lab ran, side by side: res.compare = { cols: [{ title, tone, verdict, said? }], rows: [[label, ...values]], note? }
+// A value may be { v, tone: "good" | "bad" } to shade its cell.
+function compareHTML(c) {
+  if (!c || !(c.cols || []).length) return "";
+  const cell = (x) => (x && typeof x === "object" ? `<td class="${x.tone || ""}">${md(String(x.v ?? ""))}</td>` : `<td>${md(String(x ?? ""))}</td>`);
+  return `<div class="box"><h4>Side by side: ${c.cols.map((x) => esc(x.short || x.title)).join(" vs ")}</h4>
+    <div class="cmp">${c.cols.map((x) => `<div class="col ${x.tone || ""}">${x.tone ? `<div class="chip">${x.tone === "trap" ? "✘ the trap" : "✔ the fix"}</div>` : ""}<h5>${esc(x.title)}</h5>
+      <div class="verdict">${md(x.verdict || "")}</div>${x.said ? `<div class="said">${esc(String(x.said).trim().slice(0, 1200))}</div>` : ""}</div>`).join("")}</div>
+    ${(c.rows || []).length ? `<table class="cmpt"><tr><th></th>${c.cols.map((x) => `<th>${esc(x.short || x.title)}</th>`).join("")}</tr>${c.rows.map((r) => `<tr><td>${md(r[0])}</td>${r.slice(1).map(cell).join("")}</tr>`).join("")}</table>` : ""}
+    ${c.note ? `<div class="caption">${md(c.note)}</div>` : ""}</div>`;
+}
+const byPhase = (trace) => trace.reduce((acc, t) => { const ph = t.phase || ""; if (!acc.length || acc.at(-1)[0] !== ph) acc.push([ph, []]); acc.at(-1)[1].push(t); return acc; }, []);
+
 export async function lab() {
   const D = await data();
   const n = Number(new URLSearchParams(location.search).get("n") || 1);
@@ -126,6 +140,8 @@ export async function lab() {
   const callSrc = engineSrc.slice(engineSrc.indexOf("export const MODEL"), engineSrc.indexOf("export function makeSession")) + "...\n\n" +
     engineSrc.slice(engineSrc.indexOf("// One Messages API call."), engineSrc.indexOf("export const short"));
   const DG = DIAGRAMS[n];
+  const SC = spec.scene;
+  const loopOpen = !DG && (!SC || SC.loop === "open");            // the plain loop diagram is the live diagram only where nothing more specific exists
   const prev = D.labs.find((x) => x.id === n - 1), next = D.labs.find((x) => x.id === n + 1);
   document.title = `Lab ${n}: ${l.title}`;
   $("main").innerHTML = `
@@ -135,8 +151,9 @@ export async function lab() {
     <div class="task-card" style="--c:${COL[l.topic]}"><div class="lbl">Task statement ${l.task}</div><div><b>${esc(l.task_title)}</b></div></div>
     <details><summary>Lab instructions</summary><ol>
       <li>Read the question and click the answer you'd choose. The page tells you at once whether it's right, and why.</li>
-      <li>Press <b>Simulate it live</b>. Watch the code run on the left and the live output on the right: every turn, tool call and stop_reason, from Claude Haiku 5.5 on your API key.</li>
-      <li>Read <b>Claude's final output</b>, then <b>the observation explained, turn by turn</b>, and the checks on what Claude actually did.</li>
+      <li>Press <b>Simulate it live</b>. The scenario board shows the story as it runs; the code runs on the left and the live output on the right: every turn, tool call and stop_reason, from Claude Haiku 5.5 on your API key.</li>
+      <li>Where the lab has a trap and a fix, the run <b>stops after the first method</b> and shows you its outcome. Read it, then press <b>Proceed</b> to run the fix.</li>
+      <li>Read <b>Claude's final output</b>, then <b>the observation explained</b>: the two methods side by side, turn by turn, and the checks on what Claude actually did.</li>
       <li>Open <b>See the full code this lab runs</b> to read every line, then the exam tip.</li></ol>
       <div class="caption">Scenario: ${esc(D.sims.find((s) => s.n === l.sim)?.scenario || "")}</div></details>
     <h2>1 · The question</h2>
@@ -147,9 +164,11 @@ export async function lab() {
     <p><b>What to look for:</b> ${md(spec.see || l.see)}</p>
     <button class="primary" id="run">▶ Simulate it live</button>
     <div class="caption" id="runnote" style="margin:6px 0">Runs on claude-haiku-5-5 with your API key. A run usually costs well under one US cent.</div>
+    ${SC ? sceneBox(SC) : ""}<div id="pausehere"></div>
     ${DG?.kind === "hooks" ? `<div class="box diagram"><h4>${esc(DG.title)}</h4>${HOOKS_SVG}<div class="caption">${DG.caption} The box that is running now lights up; the path taken this turn stays shaded.</div></div>`
       : DG ? `${patternBox(DG)}<details class="loopdet"><summary>Inside every agent and every call: the same agentic loop</summary><div class="box diagram">${LOOP_SVG}<div class="caption">Each box above runs this loop. <b>tool_use</b> sends it up and round again; <b>end_turn</b> sends it down to the final answer.${DG.kind === "agents" ? " For the coordinator, \"Run the tool\" means starting a subagent: a whole new loop of its own." : ""}</div></div></details>`
-      : `<div class="box diagram"><h4>The agentic loop: watch it go round</h4>${LOOP_SVG}<div class="caption">Every Claude call goes left to right. <b>tool_use</b> sends it up and round again; <b>end_turn</b> sends it down to the final answer. The box that is running now lights up; the path taken this turn stays shaded.</div></div>`}
+      : loopOpen ? `<div class="box diagram"><h4>The agentic loop: watch it go round</h4>${LOOP_SVG}<div class="caption">Every Claude call goes left to right. <b>tool_use</b> sends it up and round again; <b>end_turn</b> sends it down to the final answer. The box that is running now lights up; the path taken this turn stays shaded.</div></div>`
+      : `<details class="loopdet"><summary>Under the hood: the agentic loop every Claude run goes round</summary><div class="box diagram">${LOOP_SVG}<div class="caption">Every Claude call goes left to right. <b>tool_use</b> sends it up and round again; <b>end_turn</b> sends it down to the final answer.</div></div></details>`}
     <div class="live">
       <div><div class="caption"><b>The code running</b>: the agentic loop, with the line executing now highlighted</div><pre class="code loop" id="loop">${LOOP_HTML}</pre></div>
       <div><div class="caption"><b>Live output</b> from Claude Haiku 5.5</div><pre class="console" id="out">Press Simulate it live. The output appears here line by line.</pre></div>
@@ -185,13 +204,15 @@ content-type: application/json
   $("#run").onclick = async () => {
     const key = getKey();
     if (!key) { $("#out").textContent = "No API key yet. Paste it into the Anthropic API key box on the left and press Save key."; return; }
-    if (session) { session.stopped = true; return; }
-    const out = $("#out"); out.innerHTML = ""; $("#result").innerHTML = "";
+    if (session) { session.stopped = true; session._resume?.(); return; }
+    const out = $("#out"); out.innerHTML = ""; $("#result").innerHTML = ""; $("#pausehere").innerHTML = "";
     document.querySelectorAll(".loopsvg .n, .loopsvg path").forEach((x) => x.classList.remove("hot", "done", "trail"));
     const map = DG && DG.kind !== "hooks" ? runMap($("#runmap"), DG) : null; map?.reset();
-    const log = (t, kind = "") => { if (map && kind === "note" && t.startsWith("== ")) map.phase(t.slice(3)); const sp = document.createElement("span"); sp.className = (/^\s{4}/.test(t) || /subagent/.test(t) ? "sub " : "") + kind; sp.textContent = t + "\n"; out.appendChild(sp); out.scrollTop = out.scrollHeight; };
+    const board = SC ? sceneLive($("#scene"), SC) : null; board?.reset();
+    const log = (t, kind = "") => { const h = String(t).replace(/^\n+/, ""); if (kind === "note" && h.startsWith("== ")) { map?.phase(h.slice(3)); board?.phase(h.slice(3)); } const sp = document.createElement("span"); sp.className = (/^\s{4}/.test(t) || /subagent/.test(t) ? "sub " : "") + kind; sp.textContent = t + "\n"; out.appendChild(sp); out.scrollTop = out.scrollHeight; };
     session = E.makeSession(key, log);
     session.onRequest = (b) => {
+      board?.request();
       const last = b.messages.at(-1); const lc = Array.isArray(last.content) ? last.content : [{ type: "text" }];
       const lastDesc = lc.every((c) => c.type === "tool_result") ? `${lc.length} tool_result${lc.length > 1 ? "s" : ""}` : "the user's message";
       $("#apireq").textContent = `POST https://api.anthropic.com/v1/messages     (call ${session ? session.requests.length : ""})
@@ -208,7 +229,7 @@ content-type: application/json
     // Light the box (and the arrow into it) for the step that is running. Only the Claude call takes real time;
     // check / tool / append finish in a millisecond, so on pages where the loop diagram is the live diagram each
     // of those steps holds for DWELL ms, so you can watch the loop go round.
-    const DWELL = !DG || DG.kind === "hooks" ? 750 : 0;
+    const DWELL = loopOpen || DG?.kind === "hooks" ? 750 : 0;
     let prevStep = "start";
     session.step = (id) => {
       const code = ["pre", "post", "deny"].includes(id) ? "tool" : id;      // the hook steps run inside run_tools
@@ -219,7 +240,20 @@ content-type: application/json
       document.querySelectorAll(".loopsvg path[data-e]").forEach((p) => { const on = p.dataset.e.split(" ").includes(edge); p.classList.toggle("hot", on); if (on) p.classList.add("trail"); });
       return id === "call" || !DWELL || session?.stopped ? undefined : new Promise((r) => setTimeout(r, DWELL));
     };
-    if (map) session.agent = (ev) => map.agent(ev);
+    session.onResponse = () => board?.response();
+    session.agent = (ev) => { map?.agent(ev); board?.agent(ev); };
+    if (board) session.show = (id, text, state) => board.show(id, text, state);
+    // Between two methods (the trap, then the fix) the run stops here until the learner presses Proceed.
+    session.pause = (info = {}) => new Promise((resolve) => {
+      if (session.stopped) return resolve();
+      board?.paused(true);
+      const card = document.createElement("div"); card.className = "pausecard";
+      card.innerHTML = `<div class="ph">⏸ Paused · ${esc(info.title || "the first method has finished")}</div><div class="po">${md(info.outcome || "")}</div>` +
+        `<button class="primary proceed">▶ Proceed: ${esc(info.next || "run the fix")}</button><div class="caption" style="margin-top:6px">Read the outcome above and in the live output first. Nothing more is sent to Claude until you press Proceed.</div>`;
+      $("#pausehere").replaceChildren(card); card.scrollIntoView({ block: "center", behavior: "smooth" });
+      const go = () => { session && (session._resume = null); board?.paused(false); card.remove(); resolve(); };
+      session._resume = go; card.querySelector(".proceed").onclick = go;
+    });
     document.querySelector('.loopsvg .n[data-step="start"]').classList.add("hot");
     $("#run").textContent = "■ Stop"; $("#run").classList.add("stop");
     let res = null;
@@ -227,6 +261,7 @@ content-type: application/json
     log(`\n${session.usage.calls} Claude call${session.usage.calls === 1 ? "" : "s"} on claude-haiku-5-5 · about US$${session.cost().toFixed(4)} on your API key`, "note");
     $("#run").textContent = "▶ Simulate it again"; $("#run").classList.remove("stop");
     document.querySelectorAll("#loop span, .loopsvg .n, .loopsvg path").forEach((x) => x.classList.remove("hot"));
+    board?.finish(); $("#pausehere").innerHTML = "";
     if (session.trace.filter((t) => !t.label).at(-1)?.stop_reason === "end_turn") document.querySelector('.loopsvg .n[data-step="stop"]').classList.add("done");
     const trace = session.trace, reqs = session.requests; session = null;
     if (!res) return;
@@ -246,7 +281,8 @@ content-type: application/json
     $("#result").innerHTML = `<h2>3 · Read your result</h2>
       <div class="box final"><h4>Claude's final output</h4><div>${md(finalText || "(No text reply. Read the live output above.)").replace(/\n/g, "<br>")}</div></div>
       <h2>4 · The observation explained</h2>
-      <div class="box"><h4>Turn by turn</h4><ol>${trace.map(explainTurn).join("")}</ol>
+      ${compareHTML(res.compare)}
+      <div class="box"><h4>Turn by turn</h4>${byPhase(trace).map(([ph, ts]) => `${ph ? `<div class="phaseh">${esc(ph)}</div>` : ""}<ol>${ts.map(explainTurn).join("")}</ol>`).join("")}
         <div class="caption">${main.length} turn${main.length === 1 ? "" : "s"} of the main loop${trace.length > main.length ? `, plus ${trace.length - main.length} turns in labelled steps or subagents` : ""}. The loop never reads Claude's wording to decide what to do next: <code>stop_reason</code> is the signal.</div></div>
       <div class="box"><h4>Checks on what Claude actually did</h4><div class="checks">${(res.checks || []).map((c) => `<div class="${c.pass ? "pass" : "fail"}">${c.pass ? "✔ PASS" : "✘ FAIL"} · ${esc(c.label)}</div>`).join("")}</div>
         ${(res.checks || []).some((c) => !c.pass) ? `<div class="caption">Claude writes each run fresh, so a check can occasionally miss. Read the output, then run it again.</div>` : ""}</div>

@@ -32,6 +32,32 @@ export default {
   see: "The app's CASE FACTS block keeps ORD-5501 $120, ORD-5503 $45 × 2 charges and ORD-5504 exact after the older turns are compacted, and with it the only refund is $45 on ORD-5503 (the lamp stays deferred).",
   explain: "Every re-summary is a lossy rewrite. Some runs keep each order id and amount; others drop the $45 or the fact that ORD-5503 was charged twice, and nothing tells the agent which happened. The application owns a CASE FACTS block filled from tool results (get_customer, lookup_order, process_refund) and puts it at the top of every turn, so exact values never pass through a summary. With it, turn 3 refunds $45 on ORD-5503 and leaves the $120 lamp on ORD-5501 alone, as the customer asked.",
   try: "In docs/sims/lab-25.js change the third customer turn to \"Refund the lamp now, keep the double charge for later\" and rerun: with the facts block the refund moves to $120 on ORD-5501, and only there.",
+  // The scenario board (assets/scene.js): the story of case CS-12, one lane per stage of the run.
+  scene: {
+    title: "Case CS-12: three orders, one long conversation, and a summary that forgets",
+    caption: "Both designs share turns 1-2 and the same summary. Only turn 3's context differs: the summary alone, or the summary plus the CASE FACTS block the app keeps.",
+    lanes: [
+      { key: "talk", label: "Turns 1-2", sub: "both designs", stages: [
+        { id: "cust", icon: "👤", t: "Mei Lin writes in", s: "cracked lamp, a double charge, an ETA" },
+        { id: "agent12", icon: "🤖", t: "Support agent", s: "check both orders, refund nothing yet", claude: true },
+        { id: "tools12", icon: "🗄", t: "Backend", s: "get_customer, lookup_order", tools: ["get_customer", "lookup_order", "process_refund", "escalate_to_human"] },
+        { id: "facts", icon: "🗂", t: "CASE FACTS store", s: "the app copies exact values from tool results" } ] },
+      { key: "sum", label: "Compaction", sub: "re-summarised after every turn", on: /re-summarised/, stages: [
+        { id: "sum1", icon: "📝", t: "Summary after turn 1", s: "at most 20 words", claude: true },
+        { id: "sum2", icon: "📝", t: "Summary after turn 2", s: "rewrites and replaces the first" },
+        { id: "kept", icon: "🔍", t: "Exact values kept?", s: "ORD-5501 $120 · ORD-5503 $45 × 2 · ORD-5504", out: true } ] },
+      { key: "A", label: "Design A", sub: "turn 3 from the summary alone", tone: "trap", on: /Design A/, stages: [
+        { id: "actx", icon: "📝", t: "Turn 3 context", s: "the latest 20-word summary", diff: true },
+        { id: "aagent", icon: "🤖", t: "Support agent", s: "\"refund the double charge only\"", claude: true },
+        { id: "atools", icon: "🗄", t: "Backend", s: "re-queries, then refunds", tools: ["get_customer", "lookup_order", "process_refund", "escalate_to_human"] },
+        { id: "aout", icon: "💳", t: "Refund issued", s: "want: $45 on ORD-5503 only", out: true } ] },
+      { key: "B", label: "Design B", sub: "summary + the app's CASE FACTS", tone: "fix", on: /Design B/, stages: [
+        { id: "bctx", icon: "🗂", t: "Turn 3 context", s: "CASE FACTS block + the same summary", diff: true },
+        { id: "bagent", icon: "🤖", t: "Support agent", s: "\"refund the double charge only\"", claude: true },
+        { id: "btools", icon: "🗄", t: "Backend", s: "refunds from exact values", tools: ["get_customer", "lookup_order", "process_refund", "escalate_to_human"] },
+        { id: "bout", icon: "💳", t: "Refund issued", s: "want: $45 on ORD-5503 only", out: true } ] },
+    ],
+  },
   slide: {
     title: "The app owns the case facts, not the summary",
     code: `facts = {"customer_id": None, "orders": {}}     # KEY 1
@@ -67,6 +93,8 @@ run_agent(SYSTEM, prompt, tools)                # KEY 4`,
       messages = r.messages;
     }
     const refundsEarly = shared.refunds.length;
+    s.show("cust", "2 customer turns so far", "done");
+    s.show("facts", `${Object.keys(facts.orders).join(", ") || "no orders yet"}${facts.orders["ORD-5503"] ? ` · ORD-5503 $${facts.orders["ORD-5503"].amount_per_charge} × ${facts.orders["ORD-5503"].charges}` : ""}`, "good");
 
     // Rolling compaction (MCQ option A): after each turn the history is summarised again and the new
     // summary REPLACES the previous one, so turn-1 details pass through two lossy summaries.
@@ -81,17 +109,21 @@ run_agent(SYSTEM, prompt, tools)                # KEY 4`,
     };
     const s1 = await compact("", messages.slice(0, turnStart[1]));
     s.log(`Summary after turn 1: ${s1}`, "reply");
+    s.show("sum1", E.short(s1, 90), "done"); s.show("sum2", null, "hot");
     const summary = await compact(s1, messages.slice(turnStart[1]));
     s.log(`Summary after turn 2 (replaces the first): ${summary}`, "reply");
+    s.show("sum2", E.short(summary, 90), "done");
     const exact = ["ORD-5501", "120", "ORD-5503", "45", "ORD-5504"];
     const lost = exact.filter((v) => !summary.includes(v));
     if (!/double|duplicate|twice|2 charges|charged 2/i.test(summary)) lost.push("ORD-5503 charged twice");
     s.log(`Exact values the latest summary kept: ${exact.filter((v) => !lost.includes(v)).join(", ") || "none"} · dropped: ${lost.join(", ") || "none"}`, "note");
     s.log(factsBlock(facts), "note");
+    s.show("kept", lost.length ? `dropped: ${lost.join(", ")}` : "kept every value, this time", lost.length ? "bad" : "good");
 
     // Design A: continue from the summary alone.
     s.log("== Design A (the trap): turn 3 continues from the latest summary alone", "note");
     s.log(`Customer turn 3: "${TURNS[2]}"`, "note");
+    s.show("actx", E.short(summary, 80), "done");
     const stA = newState();
     const a = await E.runAgent(s, {
       system: SYSTEM, tools: supportTools(stA), maxTurns: 8,
@@ -101,8 +133,20 @@ run_agent(SYSTEM, prompt, tools)                # KEY 4`,
       (lost.length ? `The summary had dropped ${lost.join(", ")}, so whatever design A got right came from re-querying, not from its context.`
                    : "This time the summary happened to keep every value: design A is only as safe as the next summary."), "note");
 
+    const refunds = (st) => st.refunds.map((r) => `$${r.amount} on ${r.order_id}`).join(", ") || "none";
+    const right = (st) => st.refunds.length === 1 && st.refunds[0].order_id === "ORD-5503" && Number(st.refunds[0].amount) === 45;
+    const lookA = E.called(a.calls, "lookup_order").length;
+    s.show("aout", refunds(stA), right(stA) ? "good" : "bad");
+    await s.pause({
+      title: "Design A finished: turn 3 ran from the summary alone",
+      outcome: `Refunds: **${refunds(stA)}**. To act, design A had to re-query the backend ${lookA} time${lookA === 1 ? "" : "s"}. ` +
+        (lost.length ? `The summary it read had dropped **${lost.join(", ")}**.` : "This time the summary kept every value, but nothing guarantees the next one will."),
+      next: "Design B: the same turn with the app's CASE FACTS block",
+    });
+
     // Design B: the same summary, plus the CASE FACTS block the app resends on every turn.
     s.log("== Design B (the fix): turn 3 with the same summary plus the app's CASE FACTS block", "note");
+    s.show("bctx", `CASE FACTS: ${Object.keys(facts.orders).length} orders, exact amounts`, "done");
     const stB = newState();
     const b = await E.runAgent(s, {
       system: SYSTEM, tools: supportTools(stB), postToolUse: recordFacts(facts), maxTurns: 8,
@@ -110,9 +154,28 @@ run_agent(SYSTEM, prompt, tools)                # KEY 4`,
     });
     s.log(`Design B refunds: ${stB.refunds.map((r) => `$${r.amount} on ${r.order_id}`).join(", ") || "none"} · lookup_order calls in turn 3: ${E.called(b.calls, "lookup_order").length}`, "note");
 
+    s.show("bout", refunds(stB), right(stB) && !stB.refunds.some((r) => r.order_id === "ORD-5501") ? "good" : "bad");
+    const lookB = E.called(b.calls, "lookup_order").length;
     const o = facts.orders;
+    const yes = (ok) => ({ v: ok ? "yes" : "no", tone: ok ? "good" : "bad" });
     return {
       final: b.text,
+      compare: {
+        cols: [
+          { title: "Design A: the summary alone", short: "Design A", tone: "trap", said: a.text,
+            verdict: right(stA) ? `Right this time (${refunds(stA)}), but only by re-querying ${lookA} time${lookA === 1 ? "" : "s"}: its context ${lost.length ? `had lost ${lost.join(", ")}` : "happened to keep the values"}.` : stA.refunds.length === 0 ? `No refund at all: from the summary alone it ${E.called(a.calls, "get_customer").some((c) => c.isError) ? "could not even re-identify the customer" : "did not act on the request"}.` : `Wrong refund: ${refunds(stA)}. The summary ${lost.length ? `had lost ${lost.join(", ")}` : "was all it had"}.` },
+          { title: "Design B: summary + CASE FACTS", short: "Design B", tone: "fix", said: b.text,
+            verdict: right(stB) ? "Refunded exactly $45 on ORD-5503 from values the app kept, and left the lamp alone." : `Refunds: ${refunds(stB)}. Read the live output: Claude writes each run fresh.` },
+        ],
+        rows: [
+          ["What turn 3 read", "the latest 20-word summary", "the CASE FACTS block + the same summary"],
+          ["Exact values in its context", lost.length ? { v: `lost: ${lost.join(", ")}`, tone: "bad" } : "all, by luck", { v: "all 5, from tool results", tone: "good" }],
+          ["lookup_order calls in turn 3", String(lookA), String(lookB)],
+          ["Refunds issued", { v: refunds(stA), tone: right(stA) ? "good" : "bad" }, { v: refunds(stB), tone: right(stB) ? "good" : "bad" }],
+          ["The lamp (ORD-5501) left alone", yes(!stA.refunds.some((r) => r.order_id === "ORD-5501")), yes(!stB.refunds.some((r) => r.order_id === "ORD-5501"))],
+        ],
+        note: "The only difference between the two runs is the block at the top of turn 3. A summary is rewritten every turn and can drop any value; the CASE FACTS block is filled from tool results by your code, so it cannot.",
+      },
       checks: [
         E.check("Turns 1-2 issued no refund: the customer asked to check first", refundsEarly === 0),
         E.check("The app's CASE FACTS hold exact values for ORD-5501 ($120), ORD-5503 ($45 × 2) and ORD-5504", o["ORD-5501"]?.amount_per_charge === 120 && o["ORD-5503"]?.amount_per_charge === 45 && o["ORD-5503"]?.charges === 2 && !!o["ORD-5504"]),

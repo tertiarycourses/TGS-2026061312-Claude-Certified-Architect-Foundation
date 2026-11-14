@@ -47,6 +47,31 @@ export default {
   id: 23,
   see: "Seven representative transcripts go out as live synchronous requests keyed by custom_id and are joined back by custom_id. Template v0, with no criteria, labels the delivery question and the refused late return \"unresolved\", so the gate says not ready; the refined v1 template scores 7/7, and only then is the batch built, clearly marked as not sent.",
   try: "Delete the \"clarified\" criterion line from TEMPLATE_V1 in sims/shared/t4-triage.js, rerun the pilot, and watch whether T-006 still passes the gate.",
+  // The scenario board (assets/scene.js): two pilots on the same 7 labelled transcripts, then the batch.
+  scene: {
+    title: "35,000 archived transcripts: prove the template on 7 before the overnight batch",
+    caption: "Both pilots send the same 7 transcripts as live synchronous calls with the same JSON schema and a custom_id each. Only the template differs. The batch is built, never sent, from the template that passes.",
+    lanes: [
+      { key: "eval", label: "The evaluation set", sub: "7 labelled transcripts from the archive", stages: [
+        { id: "archive", icon: "🗄", t: "35,000 transcripts", s: "waiting on the overnight Message Batches job" },
+        { id: "evalset", icon: "🧪", t: "T-001 … T-010 (7 picked)", s: "refund, human, over $500, competitor, delivery, late" },
+        { id: "gate", icon: "🚦", t: "Gate: 7/7 correct", s: "disposition · refund_total · a rationale" } ] },
+      { key: "A", label: "Pilot 1 · template v0", sub: "\"tell me the outcome and any refund\"", tone: "trap", on: /^Pilot 1/, stages: [
+        { id: "atpl", icon: "📄", t: "Template v0", s: "one line, no criteria, transcript pasted raw", diff: true },
+        { id: "areq", icon: "🤖", t: "7 requests in parallel", s: "custom_id v0-T-001 … v0-T-010", claude: true },
+        { id: "ajoin", icon: "🔗", t: "Join by custom_id", s: "results arrive in any order" },
+        { id: "ascore", icon: "🚦", t: "Pilot score", s: "want: 7/7, READY", out: true } ] },
+      { key: "B", label: "Pilot 2 · template v1", sub: "fixed instructions, explicit criteria, tagged variables", tone: "fix", on: /^Pilot 2/, stages: [
+        { id: "btpl", icon: "🏷", t: "Template v1", s: "criteria + {{policy_excerpt}} + <transcript>", diff: true },
+        { id: "breq", icon: "🤖", t: "7 requests in parallel", s: "custom_id v1-T-001 … v1-T-010", claude: true },
+        { id: "bjoin", icon: "🔗", t: "Join by custom_id", s: "results arrive in any order" },
+        { id: "bscore", icon: "🚦", t: "Pilot score", s: "want: 7/7, READY", out: true } ] },
+      { key: "batch", label: "The overnight batch", sub: "SIMULATED: built here, not sent", on: /^Batch step/, stages: [
+        { id: "pick", icon: "✅", t: "Template that passed", s: "only a template through the gate ships" },
+        { id: "build", icon: "📦", t: "Build batch rows", s: "custom_id archive-T-001 …, same params" },
+        { id: "send", icon: "✉", t: "POST /v1/messages/batches", s: "NOT called from this page", out: true } ] },
+    ],
+  },
   slide: {
     title: "Pilot the template on an eval set, then batch",
     code: `eval_set = pick_representative(archive)        # KEY 1
@@ -68,8 +93,29 @@ client.messages.batches.create(requests=batch)  # KEY 4`,
     s.log(`Archive: ${ARCHIVE_SIZE.toLocaleString("en-US")} transcripts. Evaluation set: ${Object.keys(EVAL_SET).join(", ")} (routine refund, human request, refund over the limit, competitor price match, delivery question, refused late return, multi-issue).`, "note");
     s.log("== Pilot 1 · template v0: \"tell me the outcome and any refund\"", "note");
     const p0 = await pilot(s, E, "v0", TEMPLATE_V0);
+    const why = (x) => !x.rec ? "no JSON" : [!x.dispOk && `${x.rec.disposition} (want ${x.want.disposition})`, !x.refundOk && `refund ${x.rec.refund_total} (want ${x.want.refund_total})`, !x.ratOk && "no rationale"].filter(Boolean).join(", ");
+    const fails = (p) => p.rows.filter((x) => !x.ok).map((x) => `${x.tid}: ${why(x)}`);
+    const showPilot = (k, p) => {
+      s.show(`${k}req`, `${p.rows.filter((x) => x.rec).length}/${p.rows.length} valid JSON records`, "done");
+      s.show(`${k}join`, `arrived ${p.arrived.map((a) => a.custom_id.split("-T-")[1]).join(",")} -> joined ${p.joined ? "7/7" : "incomplete"}`, p.joined ? "good" : "bad");
+      s.show(`${k}score`, `${p.pass}/${p.rows.length} · ${p.ready ? "READY" : "NOT ready"}`, p.ready ? "good" : "bad");
+    };
+    s.show("atpl", "\"tell me the outcome and any refund\"", "done");
+    showPilot("a", p0);
+    const f0 = fails(p0);
+    await s.pause({
+      title: "Pilot 1 finished: template v0",
+      outcome: `v0 scored **${p0.pass}/${p0.rows.length}**, so the gate says ${p0.ready ? "**ready**: this time the one-line template passed" : "**not ready**"}. ` +
+        (f0.length ? `Misses: ${f0.map((f) => `**${f}**`).join("; ")}. Shipped to 35,000 batch rows, the same kind of miss would repeat across the archive.` : "Nothing in v0 defines a disposition, so a bigger sample may still break it."),
+      next: "Pilot 2: template v1, with explicit criteria and the transcript in tags, on the same 7 transcripts",
+    });
     s.log("== Pilot 2 · template v1: explicit criteria, variables in tags", "note");
     const p1 = await pilot(s, E, "v1", TEMPLATE_V1);
+    s.show("btpl", "criteria, policy excerpt, <transcript> tags", "done");
+    showPilot("b", p1);
+    s.show("archive", "35,000 rows wait on the gate", "done");
+    s.show("evalset", `${p0.rows.length} transcripts, each labelled`, "done");
+    s.show("gate", `v0 ${p0.pass}/${p0.rows.length} · v1 ${p1.pass}/${p1.rows.length}`, p1.ready ? "good" : "bad");
 
     const chosen = p1.ready ? p1 : p0.ready ? p0 : null;
     let batch = null;
@@ -83,6 +129,9 @@ client.messages.batches.create(requests=batch)  # KEY 4`,
     } else {
       s.log("   No template passed the gate, so no batch is built.", "error");
     }
+    s.show("pick", chosen ? `template ${chosen.version} (${chosen.pass}/${chosen.rows.length})` : "none passed", chosen ? "done" : "bad");
+    s.show("build", batch ? `${batch.length} sample rows (35,000 in production)` : "not built", batch ? "done" : "bad");
+    s.show("send", batch ? `built from ${chosen.version}, NOT sent` : "nothing to send", batch && chosen === p1 ? "good" : "bad");
 
     const ids = batch ? batch.map((b) => b.custom_id) : [];
     const failed0 = p0.rows.filter((x) => !x.ok).map((x) => x.tid);
@@ -93,8 +142,30 @@ client.messages.batches.create(requests=batch)  # KEY 4`,
       ...p1.rows.map((x) => `  - ${x.custom_id}: ${x.rec ? `${x.rec.disposition}, refund ${x.rec.refund_total}. ${x.rec.rationale}` : "no JSON"}`),
       batch ? `Batch: ${batch.length} sample rows built with ${chosen.version}, standing in for ${ARCHIVE_SIZE.toLocaleString("en-US")}. NOT sent from this page.` : "Batch: not built.",
     ].join("\n");
+    const f1 = fails(p1);
+    const cnt = (p, key) => p.rows.filter((x) => x[key]).length;
+    const sc = (p, key) => ({ v: `${cnt(p, key)}/${p.rows.length}`, tone: cnt(p, key) === p.rows.length ? "good" : "bad" });
     return {
       final,
+      compare: {
+        cols: [
+          { title: "Pilot 1: template v0", short: "v0", tone: "trap",
+            verdict: p0.ready ? `Passed the gate this time (${p0.pass}/${p0.rows.length}), with no criteria at all. Lucky, not proven: nothing in v0 defines a disposition.`
+                              : `${p0.pass}/${p0.rows.length}: NOT ready. ${f0.join("; ")}. The pilot caught it on 7 transcripts instead of 35,000.` },
+          { title: "Pilot 2: template v1", short: "v1", tone: "fix",
+            verdict: p1.ready ? `${p1.pass}/${p1.rows.length}: READY. Every disposition and refund total matched the labels, each with a rationale, so the batch is built from v1 (and not sent from this page).`
+                              : `${p1.pass}/${p1.rows.length}: still not ready (${f1.join("; ")}). Read the live output: Claude writes each run fresh.` },
+        ],
+        rows: [
+          ["Pilot score (the gate needs 7/7)", { v: `${p0.pass}/${p0.rows.length}`, tone: p0.ready ? "good" : "bad" }, { v: `${p1.pass}/${p1.rows.length}`, tone: p1.ready ? "good" : "bad" }],
+          ["Dispositions matching the labels", sc(p0, "dispOk"), sc(p1, "dispOk")],
+          ["Refund totals matching the labels", sc(p0, "refundOk"), sc(p1, "refundOk")],
+          ["Transcripts it got wrong", { v: f0.join("; ") || "none", tone: f0.length ? "bad" : "good" }, { v: f1.join("; ") || "none", tone: f1.length ? "bad" : "good" }],
+          ["Joined back by custom_id", p0.joined ? "7/7" : "incomplete", p1.joined ? "7/7" : "incomplete"],
+          ["Batch built from it", { v: chosen === p0 ? "yes" : "no", tone: chosen === p0 ? "" : "good" }, { v: chosen === p1 ? `yes, ${batch.length} sample rows, not sent` : "no", tone: chosen === p1 ? "good" : "bad" }],
+        ],
+        note: "Same 7 transcripts, same JSON schema, same custom_id join. Only the template changed: v1 adds fixed instructions, the criteria for each disposition and the transcript in tags.",
+      },
       checks: [
         E.check(`Every pilot result was joined back to its request by custom_id (${p0.rows.length + p1.rows.length} of ${p0.rows.length + p1.rows.length}), whatever order it arrived in`, p0.joined && p1.joined),
         E.check(`The pilot caught v0's defects before the batch: ${p0.pass}/${p0.rows.length}, not ready (${failed0.join(", ") || "none failed"})`, !p0.ready),

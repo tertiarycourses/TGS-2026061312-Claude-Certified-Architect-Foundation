@@ -12,6 +12,24 @@ export default {
   id: 9,
   see: "process_refund on ORD-5508 comes back isError: true with errorCategory business and isRetryable false, so no refund is issued, Claude does not retry, and the final reply explains the closed return window instead of claiming the $140 was refunded.",
   try: "In the shared support.js, make process_refund return the same failure as a plain result (drop isError: true, keep an error field), run it again, and compare what the reply tells Sofia.",
+  // The scenario board (assets/scene.js): case CS-11, one refund failure delivered two ways.
+  scene: {
+    title: "Case CS-11: Sofia wants $140 back for a bookshelf delivered in August",
+    caption: "The refund service fails the same way both times: ORD-5508 is outside the 30-day window. What changes is how the failure travels back to the agent.",
+    lanes: [
+      { key: "A", label: "Failure sent as a success", sub: "options A/C: is_error false, the error buried in the content", tone: "trap", on: /Phase 1/, stages: [
+        { id: "aorder", icon: "🛋", t: "ORD-5508: bookshelf, $140", s: "delivered 2026-08-10, change of mind" },
+        { id: "asvc", icon: "💳", t: "Refund service says no", s: "process_refund: outside the 30-day window" },
+        { id: "aenv", icon: "📦", t: "tool_result is_error: false", s: "the failure rides inside a normal result", diff: true },
+        { id: "aseen", icon: "👀", t: "What the loop records", s: "want: a failed refund, not a completed call", out: true } ] },
+      { key: "B", label: "isError: true, structured details", sub: "option B: the MCP way, run live with Claude", tone: "fix", on: /Phase 2/, stages: [
+        { id: "bcust", icon: "👤", t: "Sofia: \"$140 back, please\"", s: "sofia@example.com · ORD-5508" },
+        { id: "bagent", icon: "🤖", t: "Support agent", s: "verify, look up, recommend, refund", claude: true },
+        { id: "bbackend", icon: "🗄", t: "Backend lookups", s: "get_customer · lookup_order · recommend_refund", tools: ["get_customer", "lookup_order", "recommend_refund", "escalate_to_human"] },
+        { id: "brefund", icon: "💳", t: "process_refund → isError", s: "errorCategory business · isRetryable false", diff: true, tools: ["process_refund"] },
+        { id: "breply", icon: "💬", t: "Reply to Sofia", s: "want: no refund claimed, the window explained", out: true } ] },
+    ],
+  },
   slide: {
     title: "A failed refund must come back as isError: true",
     code: `def process_refund(order_id, amount):
@@ -46,8 +64,22 @@ export default {
     s.log(`Right (option B): tool_result {"is_error": true, "content": ${E.short(details, 120)}}`, "result");
     s.log("  The failure is explicit, and errorCategory + isRetryable tell the agent what to do next.", "note");
     state.refunds.length = 0;   // phase 1 issued nothing; keep the live run's state clean
+    const o5508 = BACKEND.orders["ORD-5508"];
+    const wrongEnvelope = { is_error: false, content: { status: "received", order_id: "ORD-5508", ...details } };
+    const hidden = !wrongEnvelope.is_error && !!details.errorCategory;   // a failure the protocol flag reports as a success
+    s.show("aorder", `$${o5508.amount} · delivered ${o5508.eta} · window open: ${o5508.return_window_open}`, "done");
+    s.show("asvc", `${details.errorCategory} · isRetryable ${details.isRetryable}`, "done");
+    s.show("aenv", `is_error: ${wrongEnvelope.is_error} · status "received"`, "done");
+    s.show("aseen", hidden ? "a successful call: the refund looks done" : "flagged as a failure", hidden ? "bad" : "good");
+    await s.pause({
+      title: "The trap: the refund failure sent back as a normal result",
+      outcome: `process_refund refused ORD-5508 (**${details.errorCategory}**, isRetryable ${details.isRetryable}: "${details.message}"). ` +
+               `Wrapped with **is_error: ${wrongEnvelope.is_error}**, the tool_result tells Claude, hooks and audit logs that the call succeeded.`,
+      next: "Run Sofia's case live, with the failure returned as isError: true and structured details",
+    });
 
-    s.log(`\n== Phase 2, live: case CS-11 · ${customer}: "${message}"`, "note");
+    s.log(`== Phase 2, live: case CS-11 · ${customer}: "${message}"`, "note");
+    s.show("bcust", "change of mind, 2026-08-10 delivery", "done");
     const run = await E.runAgent(s, {
       system: SYSTEM + POLICY_OWNER,
       prompt: `Incoming support message (email: ${customer}):\n\n${message}`,
@@ -70,8 +102,30 @@ export default {
     else s.log(refundCalls.length ? "process_refund was called and did not return an error" : "process_refund was not called this run", "note");
     s.log(`Refunds issued: ${state.refunds.length} · reply claims a refund: ${claimed ? "YES" : "NO"} · reply explains the return window: ${explains ? "yes" : "no"}`, claimed || state.refunds.length ? "error" : "result");
 
+    const refundOk = state.refunds.length === 0 && !claimed && explains;
+    s.show("brefund", err ? `isError ${err.isError} · ${err.errorCategory} · retryable ${err.isRetryable}` : refundCalls.length ? "no error returned" : "not called this run", "done");
+    s.show("breply", `refunds ${state.refunds.length} · claims a refund: ${claimed ? "YES" : "no"} · window explained: ${explains ? "yes" : "no"}`, refundOk ? "good" : "bad");
+    const yes = (v, want = true) => ({ v: v ? "yes" : "no", tone: v === want ? "good" : "bad" });
     return {
       final: reply,
+      compare: {
+        cols: [
+          { title: "Failure sent as a normal result (A/C)", short: "is_error false", tone: "trap",
+            verdict: `Not sent to Claude: built from the same refund failure to show the envelope. With is_error **${wrongEnvelope.is_error}** the loop, hooks and audit logs record a completed call; only the wording says otherwise.` },
+          { title: "isError: true with structured details (B)", short: "isError true", tone: "fix", said: reply,
+            verdict: refundOk ? `Claude read a failed refund: ${state.refunds.length} refunds issued, ${refundCalls.length} process_refund call${refundCalls.length === 1 ? "" : "s"}, and the reply explains the closed 30-day window.`
+              : `Refunds ${state.refunds.length}, process_refund calls ${refundCalls.length}, reply ${claimed ? "**claims a refund**" : "claims no refund"}${explains ? "" : " and does not explain the window"}. Read the live output: Claude writes each run fresh.` },
+        ],
+        rows: [
+          ["tool_result is_error", { v: String(wrongEnvelope.is_error), tone: "bad" }, err ? { v: String(err.isError), tone: err.isError ? "good" : "bad" } : { v: "process_refund not called", tone: "bad" }],
+          ["errorCategory / isRetryable", "inside a \"received\" result the agent must interpret", err ? `\`${err.errorCategory}\` / \`${err.isRetryable}\`, read as a failure` : "—"],
+          ["process_refund calls", "— (not run live)", { v: String(refundCalls.length), tone: refundCalls.length <= 1 ? "good" : "bad" }],
+          ["Refunds issued", "— (not run live)", { v: String(state.refunds.length), tone: state.refunds.length ? "bad" : "good" }],
+          ["Reply claims a refund", "— (not run live)", yes(claimed, false)],
+          ["Reply explains the 30-day window", "— (not run live)", yes(explains)],
+        ],
+        note: "The refund service fails the same way in both. Only the flag on the tool_result differs: is_error false says the call worked; isError true, with errorCategory and isRetryable, tells the agent the refund failed and that a retry will not help.",
+      },
       checks: [
         E.check("process_refund on ORD-5508 returned a structured business error: isError true, errorCategory business, isRetryable false",
                 !!err && err.isError === true && err.errorCategory === "business" && err.isRetryable === false),

@@ -20,6 +20,22 @@ export default {
   id: 12,
   see: "One Grep call for calculate_total, scoped to Python files (a *.py glob or type py) with output_mode content, returns every match as file:line: text; no grep through Bash, no whole-file reads, and docs/architecture.txt stays out of the answer.",
   try: "Change the request to \"find every file named after the helper\" and run it again: Claude should switch to Glob, because that question is about file NAMES, not contents.",
+  // The scenario board (assets/scene.js): /find-callers on the payments repo, by file name, by reading everything, then with Grep.
+  scene: {
+    title: "/find-callers calculate_total: the renamed billing helper, across a payments repo",
+    caption: "The same repo and the same question each time: where is calculate_total used in Python code? What changes is the search tool: file names, whole files, or a content search scoped to *.py.",
+    lanes: [
+      { key: "A", label: "Search names, or read everything", sub: "options A and C, run without Claude", tone: "trap", on: /Phase 1/, stages: [
+        { id: "aask", icon: "🗣", t: "/find-callers calculate_total", s: "every Python reference, as file:line" },
+        { id: "aname", icon: "📛", t: "Glob **/calculate_total.py", s: "option A: matches file NAMES", out: true },
+        { id: "aread", icon: "📚", t: "Glob **/*.py, Read each", s: "option C: every file into context", diff: true, out: true } ] },
+      { key: "B", label: "Grep with a *.py glob", sub: "option B: Claude Code picks its own tool, live", tone: "fix", on: /Phase 2/, stages: [
+        { id: "bclaude", icon: "🤖", t: "Claude Code", s: "Grep · Glob · Read · Bash on offer", claude: true },
+        { id: "bgrep", icon: "🔍", t: "Grep calculate_total", s: "glob **/*.py · output_mode content · -n", diff: true, tools: ["Grep"] },
+        { id: "bdetour", icon: "🐚", t: "Bash / Read / Glob", s: "the detours: want them idle", tools: ["Bash", "Read", "Glob"] },
+        { id: "bout", icon: "📍", t: "file:line for each caller", s: "want: every Python reference, nothing from docs/", out: true } ] },
+    ],
+  },
   slide: {
     title: "Callers live inside files: search contents with Grep",
     code: `# /find-callers calculate_total
@@ -84,9 +100,19 @@ Glob("**/calculate_total.py")  # -> no files       KEY 4
     s.log(`Option A, Glob("**/${HELPER}.py") -> ${byName.length ? byName.join(", ") : "no files"}. File NAMES can't show callers.`, "error");
     const py = globList("**/*.py"); const chars = py.reduce((t, f) => t + fs[f].length, 0);
     s.log(`Option C, Glob("**/*.py") then Read each -> ${py.length} files, ${chars} characters loaded into context just to scan them (a real repo has thousands).`, "error");
+    const refs = py.reduce((t, f) => t + fs[f].split("\n").filter((ln) => ln.includes(HELPER)).length, 0);   // the Python lines that mention the helper
+    s.show("aask", `${refs} Python lines mention ${HELPER}`, "done");
+    s.show("aname", byName.length ? byName.join(", ") : `no files · 0 of ${refs} callers`, byName.length ? "good" : "bad");
+    s.show("aread", `${py.length} Read calls · ${chars} chars loaded`, py.length < 3 ? "good" : "bad");
+    await s.pause({
+      title: "The traps: search file names, or read every file",
+      outcome: `Glob("**/${HELPER}.py") returned **${byName.length ? byName.join(", ") : "no files"}**: a caller is a line inside a file, not a file name. ` +
+               `Glob("**/*.py") then Read loads **${py.length} files, ${chars} characters** into context to find ${refs} lines.`,
+      next: "Run /find-callers live: Claude Code with Grep, Glob, Read and Bash on offer",
+    });
 
     const ask = `Implement what a /find-callers command would do: locate every reference to the renamed helper \`${HELPER}\` in Python source files only, and give me file:line plus the matching line so I can jump to each. Do not read whole files.`;
-    s.log(`\n== Phase 2, live: "${ask}"`, "note");
+    s.log(`== Phase 2, live: "${ask}"`, "note");
     const run = await E.runAgent(s, {
       system: "You are Claude Code in a payments repository (Python). Use the built-in tools. Keep the final answer to the list of matches and one line of summary.",
       prompt: ask, tools, maxTurns: 4, max_tokens: 1500,
@@ -102,8 +128,37 @@ Glob("**/calculate_total.py")  # -> no files       KEY 4
     const missing = expected.filter(([f, n]) => !new RegExp(`(${esc(f)}|${esc(f.split("/").pop())}):${n}\\b`).test(reply));
     s.log(`\nExpected ${expected.length} references in Python files; the reply ${missing.length ? `misses ${missing.map(([f, n]) => `${f}:${n}`).join(", ")}` : "lists all of them"}; docs/architecture.txt in the reply: ${/architecture\.txt/.test(reply) ? "yes" : "no"}.`, missing.length ? "error" : "result");
 
+    const inDocs = /architecture\.txt/.test(reply);
+    const liveOk = greps.length >= 1 && scoped && !bashGrep && reads < 3 && missing.length === 0 && !inDocs;
+    const liveChars = run.calls.reduce((t, c) => t + (typeof c.result === "string" ? c.result : JSON.stringify(c.result ?? "")).length, 0);
+    const countOf = (n) => run.calls.filter((c) => c.name === n).length;
+    const firstGrep = greps[0]?.input || {};
+    s.show("bgrep", greps.length ? `${greps.length} call${greps.length === 1 ? "" : "s"} · ${firstGrep.glob ? `glob ${firstGrep.glob}` : firstGrep.type ? `type ${firstGrep.type}` : "unscoped"} · ${firstGrep.output_mode || "files_with_matches"}` : "Grep never called", greps.length ? "done" : "bad");
+    s.show("bdetour", `Bash ${countOf("Bash")}${bashGrep ? " (grep!)" : ""} · Read ${reads} · Glob ${countOf("Glob")}`, "done");
+    s.show("bout", `${expected.length - missing.length}/${expected.length} references${inDocs ? " · docs/ leaked in" : ""}`, liveOk ? "good" : "bad");
+    const found = (n) => ({ v: `${n}/${expected.length}`, tone: n === expected.length ? "good" : "bad" });
+    const yes = (v, want = true) => ({ v: v ? "yes" : "no", tone: v === want ? "good" : "bad" });
     return {
       final: reply,
+      compare: {
+        cols: [
+          { title: "Glob by file name (A)", short: "Glob by name", tone: "trap",
+            verdict: `Not run with Claude: \`Glob("**/${HELPER}.py")\` returns ${byName.length ? byName.join(", ") : "**no files**"}, so it finds none of the ${expected.length} references. Names are not contents.` },
+          { title: "Glob **/*.py, then Read each (C)", short: "Glob + Read", tone: "trap",
+            verdict: `Not run with Claude: it reaches every reference only by loading all ${py.length} Python files (${chars} characters) into context and scanning them by eye.` },
+          { title: "Grep, scoped to *.py, live (B)", short: "Grep", tone: "fix", said: reply,
+            verdict: liveOk ? `Claude used ${greps.length} Grep call${greps.length === 1 ? "" : "s"} scoped to Python with output_mode content, no Bash grep, ${reads} Read call${reads === 1 ? "" : "s"}, and listed all ${expected.length} references as file:line.`
+              : `Grep calls ${greps.length}, scoped ${scoped ? "yes" : "no"}, Bash grep ${bashGrep ? "yes" : "no"}, Read ${reads}, references ${expected.length - missing.length}/${expected.length}${inDocs ? ", docs/ in the answer" : ""}. Read the live output: Claude writes each run fresh.` },
+        ],
+        rows: [
+          ["Tool calls", "`Glob(\"**/" + HELPER + ".py\")`", `\`Glob("**/*.py")\` + ${py.length} × \`Read\``, run.calls.map((c) => c.name).join(", ") || "none"],
+          ["Characters loaded into context", { v: String(byName.reduce((t, f) => t + fs[f].length, 0)), tone: "" }, { v: String(chars), tone: "bad" }, { v: String(liveChars), tone: liveChars < chars ? "good" : "bad" }],
+          ["References returned as file:line", found(0), { v: `none: ${refs} lines buried in whole files`, tone: "bad" }, found(expected.length - missing.length)],
+          ["Scoped to Python files", "by name only", yes(true), yes(scoped)],
+          ["grep through Bash", yes(false, false), yes(false, false), yes(bashGrep, false)],
+        ],
+        note: "Same repo, same question. Callers are lines inside files: only a content search finds them directly, and Grep's glob plus output_mode content returns them as file:line without loading whole files or going through a shell.",
+      },
       checks: [
         E.check(`Claude used the built-in Grep with pattern ${HELPER} (${greps.length} call${greps.length === 1 ? "" : "s"})`, greps.length >= 1),
         E.check("Grep was scoped to Python files (a *.py glob or type py) with output_mode content", scoped),

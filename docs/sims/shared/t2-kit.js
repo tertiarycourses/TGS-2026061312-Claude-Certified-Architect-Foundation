@@ -35,6 +35,7 @@ export async function oneShot(s, E, o) {
     isError = !!(result && typeof result === "object" && result.isError);
     s.log(`  <- ${isError ? "!! " : ""}${E.short(result, 150)}`, isError ? "error" : "result");
     Object.assign(t.tools[0], { result, isError });
+    s.agent?.({ event: "tool", label: o.label || "", name: use.name, input: use.input, result, isError });
   }
   await s.step("stop");
   s.agent?.({ event: "end", label: o.label || "", stop_reason: resp.stop_reason, turns: 1, calls: use ? 1 : 0, denied: 0 });

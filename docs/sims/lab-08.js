@@ -46,6 +46,28 @@ export default {
   see: "The catch-all analyze_document tool sends only document_text, operation and format, so the validator gets no invoice fields and the verify request carries no excerpt, while the split set calls extract_invoice on every document with a payload the validator accepts and quotes DOC-01 when verifying the claim.",
   explain: "A catch-all analyze_document tool forces Claude to guess the workflow from an operation parameter, and its input_schema has no field that can carry invoice data or a source excerpt, so the validator receives nothing it can use. Split tools give each job its own description, including when NOT to use it, and its own input_schema, so the choice is clear and extract_invoice delivers a schema-valid payload. strict: true keeps the input on the schema; the arithmetic check on the totals is still the pipeline's job. Each step here is a single call: the pipeline takes the tool_use input and hands it to the validator, so it never calls Claude a second time.",
   try: "In this file, delete the line \"Do NOT use it when a downstream system expects structured fields\" from summarize_document's description and run it again: watch whether any document drifts into a summary.",
+  // The scenario board (assets/scene.js): the accounts-payable pipeline, run once per tool set.
+  scene: {
+    title: "Accounts payable: three documents, one validator, one audit claim",
+    caption: "Both runs send the same three documents, the same system prompt and the same two asks. Only the tool set Claude is offered changes.",
+    lanes: [
+      { key: "in", label: "The inputs", sub: "the same for both tool sets", stages: [
+        { id: "docs", icon: "📄", t: "3 AP documents", s: "invoice INV-2041 · receipt R-7781 · credit note CN-118" },
+        { id: "asks", icon: "🗣", t: "Two asks", s: "extract fields from each · check \"the total is 160.00\"" },
+        { id: "contract", icon: "📐", t: "The validator's contract", s: "invoice.schema.json: 15 required fields" } ] },
+      { key: "A", label: "One catch-all tool", sub: "analyze_document(document_text, operation, format)", tone: "trap", on: /Phase 1/, stages: [
+        { id: "atools", icon: "🧰", t: "1 tool: analyze_document", s: "three jobs behind an operation enum", diff: true, tools: ["analyze_document"] },
+        { id: "aclaude", icon: "🤖", t: "Claude, one call per job", s: "picks a tool and fills its input", claude: true },
+        { id: "aval", icon: "✅", t: "AP validator", s: "want: invoice fields accepted on 3/3", out: true },
+        { id: "aver", icon: "🔍", t: "Audit: is it 160.00?", s: "want: an excerpt quoted from DOC-01", out: true } ] },
+      { key: "B", label: "Three split tools", sub: "each with its own description and input_schema", tone: "fix", on: /Phase 2/, stages: [
+        { id: "btools", icon: "🧰", t: "3 tools, one job each", s: "extract_invoice · summarize_document · verify_claim…", diff: true,
+          tools: ["extract_invoice", "summarize_document", "verify_claim_against_source"] },
+        { id: "bclaude", icon: "🤖", t: "Claude, one call per job", s: "picks a tool and fills its input", claude: true },
+        { id: "bval", icon: "✅", t: "AP validator", s: "want: invoice fields accepted on 3/3", out: true },
+        { id: "bver", icon: "🔍", t: "Audit: is it 160.00?", s: "want: an excerpt quoted from DOC-01", out: true } ] },
+    ],
+  },
   slide: {
     title: "Split the catch-all tool into jobs Claude can tell apart",
     code: `# before: one tool, three jobs behind a parameter
@@ -100,27 +122,67 @@ verify_claim_against_source(claim, source_excerpt) # KEY 4
     const norm = (t) => String(t || "").replace(/\s+/g, " ").trim();
 
     const tally = {};
+    const chose = (r) => `${r.doc} ${r.tool || "prose"}${r.operation ? "/" + r.operation : ""}`;
+    const verifyText = (v) => `${v.tool || "prose"}${v.operation ? "/" + v.operation : ""} · ${v.quoted ? "excerpt quoted" : v.excerpt ? "excerpt not verbatim" : "no excerpt"}`;
+    s.show("docs", DOCS.map((d) => d.id).join(", "), "done");
+    s.show("asks", `${DOCS.length} extractions + 1 claim check`, "done");
+    s.show("contract", `${INVOICE_SCHEMA.required.length} required fields, ≥1 line item`, "done");
     for (const [phase, tools, title] of [["generic", generic, "the catch-all analyze_document tool"], ["split", split, "three non-overlapping tools"]]) {
-      s.log(`\n== Phase ${phase === "generic" ? 1 : 2}: ${title} [${Object.keys(tools).join(", ")}]`, "note");
+      const P = phase === "generic" ? "a" : "b";
+      s.log(`== Phase ${phase === "generic" ? 1 : 2}: ${title} [${Object.keys(tools).join(", ")}]`, "note");
+      s.show(`${P}tools`, `${Object.keys(tools).length} tool${Object.keys(tools).length === 1 ? "" : "s"} offered`, "hot");
       const rows = [];
       for (const d of DOCS) {
         const r = await oneShot(s, E, { label: `P${phase === "generic" ? 1 : 2} ${d.id}`, system: SYSTEM, prompt: EXTRACT_ASK(d.text), tools, tool_choice: { type: "auto" }, max_tokens: 1500 });
         rows.push({ doc: d.id, tool: r.name, operation: r.input?.operation, accepted: !!(r.result && r.result.validator === "accepted") });
+        s.show(`${P}claude`, rows.map(chose).join(" · "), "hot");
       }
       const v = await oneShot(s, E, { label: `P${phase === "generic" ? 1 : 2} verify`, system: SYSTEM, prompt: VERIFY_ASK(DOCS[0].text), tools, tool_choice: { type: "auto" }, max_tokens: 800 });
       const excerpt = v.input?.source_excerpt;
       tally[phase] = { rows, verify: { tool: v.name, operation: v.input?.operation, excerpt, quoted: !!excerpt && norm(DOCS[0].text).includes(norm(excerpt)) } };
       const ok = rows.filter((r) => r.accepted).length;
       s.log(`Phase ${phase === "generic" ? 1 : 2} result: the validator accepted invoice fields on ${ok}/${DOCS.length} documents ` +
-            `(tools chosen: ${rows.map((r) => `${r.doc} ${r.tool || "prose"}${r.operation ? "/" + r.operation : ""}`).join(", ")}); ` +
+            `(tools chosen: ${rows.map(chose).join(", ")}); ` +
             `verify request: ${v.name || "prose"}${excerpt ? " with a source excerpt" : " with NO source excerpt"}.`, "note");
+      s.show(`${P}tools`, null, "done");
+      s.show(`${P}claude`, `${rows.map(chose).join(" · ")} · verify ${v.name || "prose"}`, "done");
+      s.show(`${P}val`, `accepted ${ok}/${DOCS.length}`, ok === DOCS.length ? "good" : "bad");
+      s.show(`${P}ver`, verifyText(tally[phase].verify), tally[phase].verify.quoted ? "good" : "bad");
+      if (phase === "generic") {
+        await s.pause({
+          title: "The catch-all tool finished: 3 documents and 1 claim through analyze_document",
+          outcome: `The validator accepted invoice fields on **${ok}/${DOCS.length}** documents (Claude chose ${rows.map(chose).join(", ")}). ` +
+                   `The verify request went to \`${v.name || "prose"}\`${excerpt ? (tally[phase].verify.quoted ? " and quoted DOC-01." : " with an excerpt that is not verbatim.") : " with **no** source excerpt to check against."}`,
+          next: "Run the same asks with three split tools: extract_invoice, summarize_document, verify_claim_against_source",
+        });
+      }
     }
 
     const g = tally.generic, sp = tally.split;
     const gOk = g.rows.filter((r) => r.accepted).length;
     const spPicked = sp.rows.filter((r) => r.tool === "extract_invoice").length;
     const spOk = sp.rows.filter((r) => r.accepted).length;
+    const yes = (ok) => ({ v: ok ? "yes" : "no", tone: ok ? "good" : "bad" });
+    const frac = (n) => ({ v: `${n}/${DOCS.length}`, tone: n === DOCS.length ? "good" : "bad" });
     return {
+      compare: {
+        cols: [
+          { title: "One catch-all tool: analyze_document", short: "Catch-all", tone: "trap",
+            verdict: gOk === DOCS.length && g.verify.quoted ? "Got through this time, but only by luck: nothing in its schema asks for invoice fields or an excerpt."
+              : `The validator accepted **${gOk}/${DOCS.length}**: \`document_text, operation, format\` has no field for invoice data${g.verify.excerpt ? "" : ", and the claim check carried no excerpt"}.` },
+          { title: "Three split tools", short: "Split tools", tone: "fix",
+            verdict: spOk === DOCS.length && sp.verify.quoted ? `\`extract_invoice\` on every document, all ${DOCS.length} accepted, and the claim check quoted DOC-01 verbatim.`
+              : `extract_invoice chosen on ${spPicked}/${DOCS.length}, accepted on ${spOk}/${DOCS.length}; claim check: ${verifyText(sp.verify)}. Read the live output: Claude writes each run fresh.` },
+        ],
+        rows: [
+          ["Tools Claude was offered", "1: `analyze_document`", "3: `extract_invoice`, `summarize_document`, `verify_claim_against_source`"],
+          ["Tool chosen per document", g.rows.map(chose).join(", "), sp.rows.map(chose).join(", ")],
+          ["Invoice fields the validator accepted", frac(gOk), frac(spOk)],
+          ["Tool used for the 160.00 claim", `${g.verify.tool || "prose"}${g.verify.operation ? "/" + g.verify.operation : ""}`, sp.verify.tool || "prose"],
+          ["Source excerpt quoted from DOC-01", yes(g.verify.quoted), yes(sp.verify.quoted)],
+        ],
+        note: "Same documents, same system prompt, same asks. Only the tool set changed: one tool with an operation parameter, versus three tools whose descriptions say when (and when not) to use them and whose schemas carry the fields each job needs.",
+      },
       final: `Catch-all analyze_document: the validator accepted invoice fields on ${gOk}/${DOCS.length} documents; the verify request carried ${g.verify.excerpt ? "an" : "no"} excerpt.\n` +
              `Split tools: extract_invoice chosen on ${spPicked}/${DOCS.length}, accepted by the validator on ${spOk}/${DOCS.length}; verify_claim_against_source ${sp.verify.quoted ? `quoted "${E.short(sp.verify.excerpt, 80)}"` : "did not quote the document"}.`,
       checks: [

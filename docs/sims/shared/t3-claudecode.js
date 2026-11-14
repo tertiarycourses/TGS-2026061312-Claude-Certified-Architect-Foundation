@@ -203,6 +203,7 @@ export async function agentLoop(s, E, o) {
       }
       rec.result = out; rec.isError = isError; calls.push(rec);
       Object.assign(t.tools[i], { result: out, isError, denied: rec.denied });
+      s.agent?.({ event: "tool", label: o.label || "", name: u.name, input: u.input, result: out, isError, denied: rec.denied });
       results.push({ type: "tool_result", tool_use_id: u.id, content: typeof out === "string" ? out : JSON.stringify(out), ...(isError ? { is_error: true } : {}) });
     }
     await s.step("append");

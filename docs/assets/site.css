@@ -98,3 +98,47 @@ details.loopdet{margin:-4px 0 12px}details.loopdet>summary{font-weight:600}
 .loopsvg .n rect,.loopsvg .n polygon,.loopsvg path{transition:fill .25s,stroke .25s}
 .loopsvg .n.hot rect,.loopsvg .n.hot polygon{filter:drop-shadow(0 0 6px rgba(201,96,58,.55))}
 .crumb{display:inline-block;font-size:.85em;font-weight:600;margin-bottom:8px;text-decoration:none}.crumb:hover{text-decoration:underline}
+/* the scenario board: one lane per method (the trap, then the fix), one box per stage of the story */
+.box.scene{border-left:6px solid var(--orange)}
+.lane{display:flex;align-items:stretch;gap:12px;padding:9px 8px;margin:6px 0;border-radius:8px;border:1.5px solid transparent;transition:opacity .3s,background .3s}
+.lane.wait{opacity:.5}.lane.active{background:#FBF1EA;border-color:#E9C2AE}.lane.paused{background:#FFF8E6;border-color:var(--gold)}
+.lane .ln{width:160px;min-width:160px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.lane .ln b{font-size:.95em;line-height:1.25}.lane .ln small{font-size:.8em;color:var(--grey);line-height:1.3}
+.lane .chip{align-self:flex-start;font-size:.7em;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:10px;padding:1px 8px}
+.lane.tone-trap .chip{background:var(--rose);color:var(--red)}.lane.tone-fix .chip{background:var(--mint);color:var(--teal)}
+.lane .pz{font-size:.75em;font-weight:700;color:var(--gold)}
+.lane .sts{flex:1;display:flex;align-items:stretch;flex-wrap:wrap;gap:6px 0}
+.lane .arw{align-self:center;font-style:normal;color:var(--grey);padding:0 5px;font-size:.95em}
+.st{position:relative;flex:1 1 0;min-width:118px;background:#fff;border:1.5px solid #5F5C56;border-radius:8px;padding:6px 9px;transition:background .25s,border-color .25s}
+.st .sh{display:flex;gap:6px;align-items:baseline}.st .ic{font-size:1.05em}.st b{font-size:.86em;line-height:1.25}
+.st small{display:block;font-size:.74em;color:var(--grey);line-height:1.3;margin-top:2px}
+.st .v{display:block;font-style:normal;font-size:.74em;font-family:Consolas,Menlo,monospace;line-height:1.35;margin-top:3px;color:var(--ink);word-break:break-word}
+.st .v:empty{display:none}
+.st.out{border-width:2px;border-style:dashed}
+.st.diff{box-shadow:0 0 0 3px #F3D9A6}.st .dtag{position:absolute;top:-9px;right:8px;background:var(--gold);color:#fff;font-size:.62em;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:0 6px;border-radius:8px}
+.st.hot{background:var(--orange);border-color:var(--orange);box-shadow:0 0 8px rgba(201,96,58,.55)}.st.hot *{color:#fff!important}
+.st.done{background:#F4F2EC;border-color:#8FB5B3}
+.st.good{background:var(--mint);border:2px solid var(--teal)}.st.good .v{color:var(--teal);font-weight:700}
+.st.bad{background:var(--rose);border:2px solid var(--red)}.st.bad .v{color:var(--red);font-weight:700}
+.rmkey .k.good{background:var(--mint);border-color:var(--teal)}.rmkey .k.bad{background:var(--rose);border-color:var(--red)}
+@media (max-width:900px){.lane{flex-direction:column}.lane .ln{width:auto}}
+/* the pause between the trap and the fix */
+.pausecard{background:#FFF8E6;border:1.5px solid var(--gold);border-left:6px solid var(--gold);border-radius:8px;padding:12px 16px;margin:10px 0}
+.pausecard .ph{font-weight:700;color:var(--gold);font-size:.85em;letter-spacing:.04em;text-transform:uppercase}
+.pausecard .po{margin:6px 0 10px}.pausecard button.primary{background:var(--teal);border-color:var(--teal)}
+/* side by side: the methods compared */
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:8px 0}
+.cmp .col{background:#fff;border:1px solid var(--line);border-top:6px solid var(--grey);border-radius:8px;padding:10px 14px}
+.cmp .col.trap{border-top-color:var(--red)}.cmp .col.fix{border-top-color:var(--teal)}
+.cmp .col .chip{font-size:.7em;font-weight:700;letter-spacing:.05em;text-transform:uppercase}.cmp .col.trap .chip{color:var(--red)}.cmp .col.fix .chip{color:var(--teal)}
+.cmp .col h5{margin:2px 0 6px;font-size:1em;font-family:Cambria,Georgia,serif}
+.cmp .col .verdict{font-weight:600;margin:4px 0}
+.cmp .col .said{font-size:.85em;color:var(--grey);border-left:3px solid var(--line);padding-left:8px;margin-top:6px;max-height:9.5em;overflow:auto;white-space:pre-wrap}
+table.cmpt td:first-child{font-weight:600;background:var(--sand);width:30%}
+table.cmpt td.bad{background:var(--rose)}table.cmpt td.good{background:var(--mint)}
+.phaseh{font-weight:700;font-size:.9em;margin:10px 0 2px;color:var(--orange)}
+.st.good .v::before{content:"✔ "}.st.bad .v::before{content:"✘ "}
+.st.good{box-shadow:0 0 0 3px #CBE6E3}.st.bad{box-shadow:0 0 0 3px #F1CFC9}
+.st b,.st small,.st .v{overflow-wrap:anywhere}
+@media (max-width:1350px){.lane{flex-direction:column;gap:6px}.lane .ln{width:auto;min-width:0;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:2px 10px}.lane .sts{flex-wrap:nowrap}.st{min-width:0}}
+@media (max-width:760px){.lane .sts{flex-wrap:wrap}.st{min-width:118px}}

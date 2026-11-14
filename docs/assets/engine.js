@@ -7,11 +7,17 @@ const API = "https://api.anthropic.com/v1/messages";
 const PRICE = { in: 0.10 / 1e6, out: 0.50 / 1e6 };       // Haiku 5.5, US$ per token
 
 export function makeSession(apiKey, log) {
-  const s = { apiKey, log: log || ((l) => console.log(l)), usage: { input: 0, output: 0, calls: 0 }, stopped: false,
-              trace: [],               // one entry per Claude turn: { label, turn, stop_reason, tools, text }
+  const out = log || ((l) => console.log(l));
+  const s = { apiKey, usage: { input: 0, output: 0, calls: 0 }, stopped: false,
+              phase: "",               // the current "== ..." phase: each lab's methods (the trap, then the fix) are phases
+              trace: [],               // one entry per Claude turn: { label, turn, stop_reason, tools, text, phase }
               requests: [],            // every request body sent, so the page can show each call as curl
               step: () => {},          // the page lights the loop box + code line that is running (awaited: it may pause so you can see it): "call" | "check" | "tool" | "append" | "stop"
-              agent: () => {} };       // the page draws each agent run: { event: "start" | "turn" | "end", label, ... }
+              agent: () => {},         // the page draws each agent run: { event: "start" | "turn" | "tool" | "end", label, ... }
+              show: () => {},          // the page's scenario board: show(stageId, text, state) with state "hot" | "done" | "good" | "bad"
+              pause: async () => {} }; // between two methods the page stops and waits for "Proceed"; in a terminal it carries straight on
+  s.log = (t, kind) => { const h = String(t).replace(/^\n+/, ""); if (kind === "note" && h.startsWith("== ")) s.phase = h.slice(3); out(t, kind); };
+  s.trace.push = (...xs) => { for (const x of xs) x.phase ??= s.phase; return Array.prototype.push.apply(s.trace, xs); };
   s.cost = () => s.usage.input * PRICE.in + s.usage.output * PRICE.out;
   return s;
 }
@@ -48,6 +54,7 @@ export async function callClaude(s, body) {
   s.usage.input += data.usage?.input_tokens || 0;
   s.usage.output += data.usage?.output_tokens || 0;
   s.usage.calls += 1;
+  s.onResponse?.(data);                                    // the page marks the call finished
   return data;
 }
 
@@ -117,6 +124,7 @@ export async function runAgent(s, o) {
       }
       rec.result = out; rec.isError = isError; calls.push(rec);
       Object.assign(t.tools[i], { result: out, isError, denied: rec.denied });
+      s.agent?.({ event: "tool", label: o.label || "", name: u.name, input: u.input, result: out, isError, denied: rec.denied });
       results.push({ type: "tool_result", tool_use_id: u.id, content: typeof out === "string" ? out : JSON.stringify(out), ...(isError ? { is_error: true } : {}) });
     }
     await s.step("append");
