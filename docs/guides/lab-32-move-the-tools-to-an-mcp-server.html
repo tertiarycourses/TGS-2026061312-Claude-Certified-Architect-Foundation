@@ -94,7 +94,15 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 </tbody>
 </table>
 <h2>Before you start</h2>
-<p>Keep working in your project folder from Lab 31. You need <code>tools.py</code> and <code>agent.py</code> working, and Mei Lin's $120 lamp refund passing. Didn't finish? Copy everything from Lab 31's <code>solution/</code> folder into an empty folder, add your <code>.env</code>, and start here.</p>
+<p>Keep working in your project folder from Lab 31. You need <code>tools.py</code> and <code>agent.py</code> working, and Mei Lin's $120 lamp refund passing. Didn't finish? Open your coding tool in an empty folder, paste this catch-up prompt, put your key in <code>.env</code> when it asks, and start here:</p>
+<pre><code class="language-text">Replace the code in this folder with the reference solution of Lab 31. Keep my .env and never open it.
+1. Get the file list from
+   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-31-build-the-customer-resolution-agent/solution
+   and download every file in it (each file's download_url) into this folder, replacing older copies.
+2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
+3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
+Then show me the file tree.
+</code></pre>
 <h2>Step 1 · Wrap the tools in an MCP server (15 minutes)</h2>
 <h3>Prompt 1</h3>
 <pre><code class="language-text">Add an MCP server for the four tools in tools.py. Follow AGENTS.md.
@@ -141,7 +149,7 @@ Run: uv run agent.py &quot;Hi, I'm meilin@example.com. My lamp in ORD-5501 arriv
 </code></pre>
 <p><strong>Checkpoint.</strong> The first line is <code>MCP tools: get_customer, lookup_order, process_refund, escalate_to_human</code>. The rest matches Lab 31: <code>get_customer</code> → <code>lookup_order</code> → <code>process_refund</code> <strong>$120</strong> → <code>end_turn</code>. Same behaviour, new plumbing.</p>
 <h2>Run it</h2>
-<p>From your project folder:</p>
+<p>From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: <command> and show me the output."</p>
 <table>
 <thead>
 <tr>
@@ -165,7 +173,15 @@ Run: uv run agent.py &quot;Hi, I'm meilin@example.com. My lamp in ORD-5501 arriv
 </tbody>
 </table>
 <p>You never start <code>support_server.py</code> by hand: the client starts it and talks to it over stdin and stdout. Run on its own, it just sits waiting for JSON-RPC (press Ctrl+C).</p>
-<p>To run our reference build, go into <code>solution/</code>, copy <code>.env.example</code> to <code>.env</code>, add your key, then run the same commands.</p>
+<p>To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in <code>.env</code> and run the same commands:</p>
+<pre><code class="language-text">Replace the code in this folder with the reference solution of Lab 32. Keep my .env and never open it.
+1. Get the file list from
+   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-32-move-the-tools-to-an-mcp-server/solution
+   and download every file in it (each file's download_url) into this folder, replacing older copies.
+2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
+3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
+Then show me the file tree.
+</code></pre>
 <h2>Stretch · Plug the same server into your coding tool (Day 1, Lab 11)</h2>
 <p>Same server, no code change. In your project folder, run the command for your tool:</p>
 <ul>

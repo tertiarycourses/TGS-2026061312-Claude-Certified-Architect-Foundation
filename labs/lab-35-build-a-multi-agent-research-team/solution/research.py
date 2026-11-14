@@ -42,6 +42,26 @@ def coverage(delegations):
     return sorted(s for s in searched if s), sorted(set(DATA["sectors"]) - searched)
 
 
+def known_sources():
+    """Every URL and document name in sources.json."""
+    urls = [h["url"] for hits in DATA["web"].values() for h in (hits["partial_results"] if isinstance(hits, dict) else hits)]
+    return urls + [d["name"] for d in DATA["documents"]]
+
+
+def check_provenance(report):
+    """A gate in code: a finding whose source names no URL or document from sources.json moves to gaps."""
+    known = known_sources()
+    kept, dropped = [], []
+    for f in report.get("findings", []):
+        (kept if any(k in str(f.get("source", "")) for k in known) else dropped).append(f)
+    for f in dropped:
+        print(f"  provenance check: dropped unsourced finding {f.get('claim', '')[:70]!r}")
+    if report:
+        report["findings"] = kept
+        report["gaps"] = report.get("gaps", []) + [f"Unsourced claim removed: {f.get('claim', '')}" for f in dropped]
+    return report
+
+
 def run_research(topic, plan=None):
     client = anthropic.Anthropic()
     system = SYSTEM
@@ -71,7 +91,7 @@ def run_research(topic, plan=None):
         print(f"  ({len(uses)} subagent(s) in {time.time() - t0:.0f}s)")
         messages.append({"role": "user", "content": results})
     synth = [d for d in delegations if d["agent"] == "synthesis"]
-    report = synth[-1]["json"] if synth and synth[-1]["json"] else {}
+    report = check_provenance(synth[-1]["json"] if synth and synth[-1]["json"] else {})
     searched, missing = coverage(delegations)
     return {"topic": topic, "summary": summary, "report": report, "delegations": delegations,
             "searched": searched, "missing": missing}

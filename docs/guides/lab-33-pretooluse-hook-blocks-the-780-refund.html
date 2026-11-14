@@ -95,7 +95,15 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 </tbody>
 </table>
 <h2>Before you start</h2>
-<p>Keep working in your project folder from Lab 32: <code>agent.py</code> must list the MCP tools and refund Mei Lin's $120 lamp. Didn't finish? Copy everything from Lab 32's <code>solution/</code> folder into an empty folder, add your <code>.env</code>, and start here.</p>
+<p>Keep working in your project folder from Lab 32: <code>agent.py</code> must list the MCP tools and refund Mei Lin's $120 lamp. Didn't finish? Open your coding tool in an empty folder, paste this catch-up prompt, put your key in <code>.env</code> when it asks, and start here:</p>
+<pre><code class="language-text">Replace the code in this folder with the reference solution of Lab 32. Keep my .env and never open it.
+1. Get the file list from
+   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-32-move-the-tools-to-an-mcp-server/solution
+   and download every file in it (each file's download_url) into this folder, replacing older copies.
+2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
+3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
+Then show me the file tree.
+</code></pre>
 <h2>Step 1 · Watch it go wrong first (5 minutes, no code change)</h2>
 <h3>Prompt 1</h3>
 <pre><code class="language-text">Do not change any code. Run this and show me the output:
@@ -121,7 +129,7 @@ Run the Arjun $780 case again and show me the output.
 <p><strong>Checkpoint.</strong> <code>PreToolUse DENY process_refund(... 780 ...)</code>. On the next turn Claude calls <code>escalate_to_human</code> with <code>refund_amount</code> <strong>780</strong>, and the reply says a human will approve the refund. No refund is issued. If Claude escalates without trying the refund first, that's safe too: the hook simply had nothing to block. Run it again to see the deny.</p>
 <p>Now run Mei Lin's $120 lamp: it still goes through. The hook only stops what breaks the rule.</p>
 <h2>Run it</h2>
-<p>From your project folder:</p>
+<p>From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: <command> and show me the output."</p>
 <table>
 <thead>
 <tr>
@@ -140,7 +148,15 @@ Run the Arjun $780 case again and show me the output.
 </tr>
 </tbody>
 </table>
-<p>To run our reference build, go into <code>solution/</code>, copy <code>.env.example</code> to <code>.env</code>, add your key, then run the same commands.</p>
+<p>To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in <code>.env</code> and run the same commands:</p>
+<pre><code class="language-text">Replace the code in this folder with the reference solution of Lab 33. Keep my .env and never open it.
+1. Get the file list from
+   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-33-pretooluse-hook-blocks-the-780-refund/solution
+   and download every file in it (each file's download_url) into this folder, replacing older copies.
+2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
+3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
+Then show me the file tree.
+</code></pre>
 <h2>Stretch · An identity gate (Day 1, Lab 4)</h2>
 <pre><code class="language-text">Add a second rule to pre_tool_use in hooks.py: deny lookup_order, process_refund and escalate_to_human until
 get_customer has succeeded in this conversation. The deny reason should tell Claude to verify the customer by email first.

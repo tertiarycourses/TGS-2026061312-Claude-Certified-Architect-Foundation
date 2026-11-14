@@ -44,7 +44,7 @@ On Day 1 you watched these failures in Lab 2 (a narrow plan), Lab 3 (searches th
 
 | File | What it is |
 |---|---|
-| `starter/sources.json` | the research sandbox: web results for four sectors (film always times out) and two internal PDFs. Every name, number and URL is invented. |
+| `starter/sources.json` | the research sandbox: web results for four sectors (film always times out) and two internal PDFs. Every name, number and URL is invented. Prompt 1 downloads it into your project. |
 | `starter/.env.example` | the one line your `.env` needs |
 | `prompts.html` | every prompt below, each with a Copy button |
 | `solution/` | our build from these prompts. Peek only when you're stuck. |
@@ -52,38 +52,47 @@ On Day 1 you watched these failures in Lab 2 (a narrow plan), Lab 3 (searches th
 
 ## Before you start (5 minutes)
 
-- **1. Use the same AI coding tool as Labs 31–34.** Claude Code, Codex, Antigravity, Cursor, Windsurf or GitHub Copilot agent mode all work.
-- **2. Make an empty project folder**, for example `research-team` in your home folder, and open it in your coding tool.
-- **3. Copy `starter/sources.json`** from this lab into that folder.
-- **4. Create `.env` yourself** in that folder with your key: `ANTHROPIC_API_KEY=sk-ant-...`. Never paste your key into the AI chat.
+- **1. Open your AI coding tool in a new, empty folder** called `research-team` (a new folder, not `orderly-agent`). In VS Code, Cursor, Windsurf or Antigravity: **File → Open Folder → New Folder**. Claude Code or Codex in a terminal: start it from that folder. Any agent that can create files and run terminal commands works; the prompts use no tool-specific feature.
+- **2. Have your Anthropic API key ready.** It starts with `sk-ant-`. You'll paste it into a file in Step 1, never into the chat.
+
+That's all. **Prompt 1 does the rest of the set-up:** it installs uv (the Python tool) if your computer doesn't have it, downloads the lab's data file and creates the project.
 
 One full research run makes about eight Claude calls with `claude-haiku-5-5`: a few US cents at most.
 
-**Tested on 14 Nov 2026.** We pasted these exact six prompts, in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed `test_research.py` 8/8 on a fresh re-run (6 to 8 minutes of tool time per run). Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.
+**Tested on 14 Nov 2026.** We pasted these exact six prompts, in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed `test_research.py` 8/8 on a fresh re-run (6 to 8 minutes of tool time per run). We ran them again after Prompt 1 took over the set-up and Prompt 4 gained the provenance check: 8 of 8 passed 8/8 again, and with uv removed from the computer, Prompt 1 installed it. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.
 
 ## Step 1 · Set up the project (5 minutes)
 
 ### Prompt 1
 
 ```text
-Set up a new Python project in this folder for a multi-agent research team. sources.json is already here; .env may be here too.
+Set up this folder as a new Python project for a multi-agent research team. Do each step, then tell me what you did.
 
-1. Use uv: run `uv init --bare`, then `uv add anthropic python-dotenv`. (If uv is not installed, stop and tell me.)
-2. Create .gitignore with: .env, .venv/, __pycache__/, report.json, report.md
-3. Create .env.example with one line: ANTHROPIC_API_KEY=paste-your-key-here
-   Never open, print or ask me for .env or my API key.
-4. Create AGENTS.md with these project rules for any AI coding assistant:
+1. Check uv with `uv --version`. If uv is missing, install it with its official installer:
+   macOS or Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
+   Windows (PowerShell): powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   If uv is still not found after installing, use its full path (~/.local/bin/uv, or %USERPROFILE%\.local\bin\uv.exe
+   on Windows) for the rest of this chat.
+2. If sources.json is not in this folder, download it into this folder from
+   https://raw.githubusercontent.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/master/labs/lab-35-build-a-multi-agent-research-team/starter/sources.json
+3. Run `uv init --bare`, then `uv add anthropic python-dotenv`. (uv installs Python itself if it needs to.)
+4. Create .gitignore with: .env, .venv/, __pycache__/, report.json, report.md
+5. Create .env.example with one line: ANTHROPIC_API_KEY=paste-your-key-here
+   If .env does not exist yet, create it with that same line. After that, never open, print or ask me for .env or my key.
+6. Create AGENTS.md with these project rules for any AI coding assistant:
    - Claude model: claude-haiku-5-5 through the official anthropic Python SDK, max_tokens 8000.
    - All research data comes from sources.json, a fictional sandbox. Never invent a source, URL or number.
    - A subagent sees only its task text. Never pass one agent's message history to another agent.
    - Run Python with `uv run`.
    - Never open, print or ask for .env or the API key.
-5. Create CLAUDE.md containing the single line @AGENTS.md so Claude Code reads the same rules.
+7. Create CLAUDE.md containing the single line @AGENTS.md so Claude Code reads the same rules.
 
-Then show me the file tree.
+Then show me the file tree, and tell me to open .env in the editor and replace paste-your-key-here with my API key.
 ```
 
 **Checkpoint.** You see `pyproject.toml`, `uv.lock`, `.gitignore`, `.env.example`, `AGENTS.md`, `CLAUDE.md` and `sources.json`.
+
+**Now the one thing you type yourself:** open `.env` in your editor, replace `paste-your-key-here` with your API key and save. Never paste the key into the AI chat: anything you type there is sent to the coding tool's servers. If Prompt 1 installed uv, restart your coding tool's terminal before you run commands yourself.
 
 ## Step 2 · Write the two tools (10 minutes)
 
@@ -179,8 +188,10 @@ Create research.py, the coordinator. It never searches or reads documents itself
   coordinator turn number).
 - coverage(delegations): the sectors that a search_web call actually hit (the result's sector, or sector_of the query
   when it failed) and the sectors in sources.json that were never searched.
-- run_research returns {"topic", "summary": the coordinator's final text, "report": the last synthesis JSON (or {}),
-  "delegations", "searched", "missing"}.
+- check_provenance(report), a gate in code: a finding whose source contains no URL or document name from
+  sources.json is removed from findings and added to gaps as "Unsourced claim removed: <claim>". Print each one.
+- run_research returns {"topic", "summary": the coordinator's final text, "report": the last synthesis JSON after
+  check_provenance (or {}), "delegations", "searched", "missing"}.
 - research.py run directly: uv run research.py "<topic>" [--plan "<a; b; c>"]. Print each coordinator turn with its
   stop_reason and number of delegations, each delegation with its agent, the first 90 characters of its task and its
   tool calls (ok or the error category), and how many seconds the turn's subagents took. Write report.json and
@@ -190,7 +201,7 @@ Create research.py, the coordinator. It never searches or reads documents itself
 Run: uv run research.py "Impact of AI on creative industries"
 ```
 
-**Checkpoint.** Coordinator turn 1 sends **five or more delegations at once**: one search per sector and one documents task. They finish in roughly the time of the slowest one, not the sum (Day 1, Lab 3). Turn 2 is one synthesis. Turn 3 is `end_turn`. `report.md` cites a URL or PDF page for every claim, flags BrightCanvas as a vendor poll, lists the film timeout under **Gaps**, and the last line says `never searched: none`.
+**Checkpoint.** Coordinator turn 1 sends **five or more delegations at once**: one search per sector and one documents task. They finish in roughly the time of the slowest one, not the sum (Day 1, Lab 3). Turn 2 is one synthesis. Turn 3 is `end_turn`. `report.md` cites a URL or PDF page for every claim (the provenance check removes any claim without one), flags BrightCanvas as a vendor poll, lists the film timeout under **Gaps**, and the last line says `never searched: none`.
 
 ## Step 5 · Replay the exam question's plan (5 minutes, no code change)
 
@@ -234,7 +245,7 @@ it again.
 
 ## Run it
 
-From your project folder:
+From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: <command> and show me the output."
 
 | What | Command |
 |---|---|
@@ -244,7 +255,18 @@ From your project folder:
 | The live tests: two runs, eight checks | `uv run test_research.py` |
 | The last report | open `report.md` |
 
-To run our reference build instead, go into this lab's `solution/` folder, copy `.env.example` to `.env`, put your key in it, then run the same commands. Our run is in `sample-output.txt`.
+To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in `.env` and run the same commands:
+
+```text
+Replace the code in this folder with the reference solution of Lab 35. Keep my .env and never open it.
+1. Get the file list from
+   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-35-build-a-multi-agent-research-team/solution
+   and download every file in it (each file's download_url) into this folder, replacing older copies.
+2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
+3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
+Then show me the file tree.
+```
+ Our run is in `sample-output.txt`.
 
 ## Stretch · The same team in the Claude Agent SDK
 
@@ -261,7 +283,7 @@ Compare the two. The SDK runs the loops and the Task tool for you, but the rules
 
 - **1.** In run B every subagent succeeded. Which agent caused the missing sectors, and which line of `research.py` would you change? (Day 1, Lab 2.)
 - **2.** The synthesis agent never saw the search agents' work. How did the findings reach it? What happens if the coordinator writes only "write the report"?
-- **3.** Why does `coverage()` look at the `search_web` calls instead of asking Claude whether the report is complete?
+- **3.** Why do `coverage()` and `check_provenance()` live in code instead of asking Claude whether the report is complete and cited?
 - **4.** The film search failed, yet one film finding reached the report. Where did it come from, and why is it marked as a gap too? (Day 1, Lab 27.)
 
 ## Troubleshooting

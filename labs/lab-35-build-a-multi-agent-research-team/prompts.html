@@ -51,29 +51,38 @@ pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-s
   report.json + report.md (every claim cited), and a coverage check in code</pre>
 <p>On Day 1 you watched these failures in Lab 2 (a narrow plan), Lab 3 (searches that ran one by one), Lab 27 (a timeout hidden as success) and Lab 30 (a vendor number treated like a peer-reviewed one). Today you build the system that avoids all four.</p>
 <h2 id="what-s-in-this-folder">What's in this folder</h2>
-<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>starter/sources.json</code></td><td>the research sandbox: web results for four sectors (film always times out) and two internal PDFs. Every name, number and URL is invented.</td></tr><tr><td><code>starter/.env.example</code></td><td>the one line your <code>.env</code> needs</td></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our build from these prompts. Peek only when you're stuck.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of <code>solution/research.py</code> and then <code>test_research.py</code> with 8/8 checks</td></tr></table></div>
+<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>starter/sources.json</code></td><td>the research sandbox: web results for four sectors (film always times out) and two internal PDFs. Every name, number and URL is invented. Prompt 1 downloads it into your project.</td></tr><tr><td><code>starter/.env.example</code></td><td>the one line your <code>.env</code> needs</td></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our build from these prompts. Peek only when you're stuck.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of <code>solution/research.py</code> and then <code>test_research.py</code> with 8/8 checks</td></tr></table></div>
 <h2 id="before-you-start-5-minutes">Before you start (5 minutes)</h2>
-<ul><li><strong>1. Use the same AI coding tool as Labs 31–34.</strong> Claude Code, Codex, Antigravity, Cursor, Windsurf or GitHub Copilot agent mode all work.</li><li><strong>2. Make an empty project folder</strong>, for example <code>research-team</code> in your home folder, and open it in your coding tool.</li><li><strong>3. Copy <code>starter/sources.json</code></strong> from this lab into that folder.</li><li><strong>4. Create <code>.env</code> yourself</strong> in that folder with your key: <code>ANTHROPIC_API_KEY=sk-ant-...</code>. Never paste your key into the AI chat.</li></ul>
+<ul><li><strong>1. Open your AI coding tool in a new, empty folder</strong> called <code>research-team</code> (a new folder, not <code>orderly-agent</code>). In VS Code, Cursor, Windsurf or Antigravity: <strong>File → Open Folder → New Folder</strong>. Claude Code or Codex in a terminal: start it from that folder. Any agent that can create files and run terminal commands works; the prompts use no tool-specific feature.</li><li><strong>2. Have your Anthropic API key ready.</strong> It starts with <code>sk-ant-</code>. You'll paste it into a file in Step 1, never into the chat.</li></ul>
+<p>That's all. <strong>Prompt 1 does the rest of the set-up:</strong> it installs uv (the Python tool) if your computer doesn't have it, downloads the lab's data file and creates the project.</p>
 <p>One full research run makes about eight Claude calls with <code>claude-haiku-5-5</code>: a few US cents at most.</p>
-<p><strong>Tested on 14 Nov 2026.</strong> We pasted these exact six prompts, in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed <code>test_research.py</code> 8/8 on a fresh re-run (6 to 8 minutes of tool time per run). Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.</p>
+<p><strong>Tested on 14 Nov 2026.</strong> We pasted these exact six prompts, in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed <code>test_research.py</code> 8/8 on a fresh re-run (6 to 8 minutes of tool time per run). We ran them again after Prompt 1 took over the set-up and Prompt 4 gained the provenance check: 8 of 8 passed 8/8 again, and with uv removed from the computer, Prompt 1 installed it. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.</p>
 <h2 id="step-1-set-up-the-project-5-minutes">Step 1 · Set up the project (5 minutes)</h2>
 <h3>Prompt 1</h3>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Set up a new Python project in this folder for a multi-agent research team. sources.json is already here; .env may be here too.
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Set up this folder as a new Python project for a multi-agent research team. Do each step, then tell me what you did.
 
-1. Use uv: run `uv init --bare`, then `uv add anthropic python-dotenv`. (If uv is not installed, stop and tell me.)
-2. Create .gitignore with: .env, .venv/, __pycache__/, report.json, report.md
-3. Create .env.example with one line: ANTHROPIC_API_KEY=paste-your-key-here
-   Never open, print or ask me for .env or my API key.
-4. Create AGENTS.md with these project rules for any AI coding assistant:
+1. Check uv with `uv --version`. If uv is missing, install it with its official installer:
+   macOS or Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
+   Windows (PowerShell): powershell -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;
+   If uv is still not found after installing, use its full path (~/.local/bin/uv, or %USERPROFILE%\.local\bin\uv.exe
+   on Windows) for the rest of this chat.
+2. If sources.json is not in this folder, download it into this folder from
+   https://raw.githubusercontent.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/master/labs/lab-35-build-a-multi-agent-research-team/starter/sources.json
+3. Run `uv init --bare`, then `uv add anthropic python-dotenv`. (uv installs Python itself if it needs to.)
+4. Create .gitignore with: .env, .venv/, __pycache__/, report.json, report.md
+5. Create .env.example with one line: ANTHROPIC_API_KEY=paste-your-key-here
+   If .env does not exist yet, create it with that same line. After that, never open, print or ask me for .env or my key.
+6. Create AGENTS.md with these project rules for any AI coding assistant:
    - Claude model: claude-haiku-5-5 through the official anthropic Python SDK, max_tokens 8000.
    - All research data comes from sources.json, a fictional sandbox. Never invent a source, URL or number.
    - A subagent sees only its task text. Never pass one agent&#x27;s message history to another agent.
    - Run Python with `uv run`.
    - Never open, print or ask for .env or the API key.
-5. Create CLAUDE.md containing the single line @AGENTS.md so Claude Code reads the same rules.
+7. Create CLAUDE.md containing the single line @AGENTS.md so Claude Code reads the same rules.
 
-Then show me the file tree.</pre></div>
+Then show me the file tree, and tell me to open .env in the editor and replace paste-your-key-here with my API key.</pre></div>
 <p class="check"><strong>Checkpoint.</strong> You see <code>pyproject.toml</code>, <code>uv.lock</code>, <code>.gitignore</code>, <code>.env.example</code>, <code>AGENTS.md</code>, <code>CLAUDE.md</code> and <code>sources.json</code>.</p>
+<p><strong>Now the one thing you type yourself:</strong> open <code>.env</code> in your editor, replace <code>paste-your-key-here</code> with your API key and save. Never paste the key into the AI chat: anything you type there is sent to the coding tool's servers. If Prompt 1 installed uv, restart your coding tool's terminal before you run commands yourself.</p>
 <h2 id="step-2-write-the-two-tools-10-minutes">Step 2 · Write the two tools (10 minutes)</h2>
 <h3>Prompt 2</h3>
 <div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p2">Copy prompt</button></div><pre id="p2">Read AGENTS.md and sources.json. Create research_tools.py with the research team&#x27;s two tools. Both read sources.json.
@@ -153,8 +162,10 @@ Run: uv run agents.py search &quot;Research how AI is affecting the film sector.
   coordinator turn number).
 - coverage(delegations): the sectors that a search_web call actually hit (the result&#x27;s sector, or sector_of the query
   when it failed) and the sectors in sources.json that were never searched.
-- run_research returns {&quot;topic&quot;, &quot;summary&quot;: the coordinator&#x27;s final text, &quot;report&quot;: the last synthesis JSON (or {}),
-  &quot;delegations&quot;, &quot;searched&quot;, &quot;missing&quot;}.
+- check_provenance(report), a gate in code: a finding whose source contains no URL or document name from
+  sources.json is removed from findings and added to gaps as &quot;Unsourced claim removed: &lt;claim&gt;&quot;. Print each one.
+- run_research returns {&quot;topic&quot;, &quot;summary&quot;: the coordinator&#x27;s final text, &quot;report&quot;: the last synthesis JSON after
+  check_provenance (or {}), &quot;delegations&quot;, &quot;searched&quot;, &quot;missing&quot;}.
 - research.py run directly: uv run research.py &quot;&lt;topic&gt;&quot; [--plan &quot;&lt;a; b; c&gt;&quot;]. Print each coordinator turn with its
   stop_reason and number of delegations, each delegation with its agent, the first 90 characters of its task and its
   tool calls (ok or the error category), and how many seconds the turn&#x27;s subagents took. Write report.json and
@@ -162,7 +173,7 @@ Run: uv run agents.py search &quot;Research how AI is affecting the film sector.
   &quot;Coverage: searched ...; never searched: ...&quot;, then the coordinator&#x27;s summary.
 
 Run: uv run research.py &quot;Impact of AI on creative industries&quot;</pre></div>
-<p class="check"><strong>Checkpoint.</strong> Coordinator turn 1 sends <strong>five or more delegations at once</strong>: one search per sector and one documents task. They finish in roughly the time of the slowest one, not the sum (Day 1, Lab 3). Turn 2 is one synthesis. Turn 3 is <code>end_turn</code>. <code>report.md</code> cites a URL or PDF page for every claim, flags BrightCanvas as a vendor poll, lists the film timeout under <strong>Gaps</strong>, and the last line says <code>never searched: none</code>.</p>
+<p class="check"><strong>Checkpoint.</strong> Coordinator turn 1 sends <strong>five or more delegations at once</strong>: one search per sector and one documents task. They finish in roughly the time of the slowest one, not the sum (Day 1, Lab 3). Turn 2 is one synthesis. Turn 3 is <code>end_turn</code>. <code>report.md</code> cites a URL or PDF page for every claim (the provenance check removes any claim without one), flags BrightCanvas as a vendor poll, lists the film timeout under <strong>Gaps</strong>, and the last line says <code>never searched: none</code>.</p>
 <h2 id="step-5-replay-the-exam-question-s-plan-5-minutes-no-code-change">Step 5 · Replay the exam question's plan (5 minutes, no code change)</h2>
 <h3>Prompt 5</h3>
 <div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p5">Copy prompt</button></div><pre id="p5">Do not change any code. Run the narrow plan from the exam question and show me the output:
@@ -192,20 +203,28 @@ Run `uv run test_research.py`. If a check fails, show me why and fix research.py
 it again.</pre></div>
 <p class="check"><strong>Checkpoint.</strong> <code>8/8 checks passed</code>. Take a screenshot of the final lines: that's your evidence for Bonus Topic B.</p>
 <h2 id="run-it">Run it</h2>
-<p>From your project folder:</p>
+<p>From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: &lt;command&gt; and show me the output."</p>
 <div class="tw"><table><tr><th>What</th><th>Command</th></tr><tr><td>The whole team on the topic</td><td><code>uv run research.py &quot;Impact of AI on creative industries&quot;</code></td></tr><tr><td>The exam question's narrow plan</td><td><code>uv run research.py &quot;Impact of AI on creative industries&quot; --plan &quot;AI in digital art creation; AI in graphic design; AI in photography&quot;</code></td></tr><tr><td>One subagent on its own</td><td><code>uv run agents.py search &quot;Research how AI is affecting the music sector.&quot;</code></td></tr><tr><td>The live tests: two runs, eight checks</td><td><code>uv run test_research.py</code></td></tr><tr><td>The last report</td><td>open <code>report.md</code></td></tr></table></div>
-<p>To run our reference build instead, go into this lab's <code>solution/</code> folder, copy <code>.env.example</code> to <code>.env</code>, put your key in it, then run the same commands. Our run is in <code>sample-output.txt</code>.</p>
+<p>To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in <code>.env</code> and run the same commands:</p>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p7">Copy prompt</button></div><pre id="p7">Replace the code in this folder with the reference solution of Lab 35. Keep my .env and never open it.
+1. Get the file list from
+   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-35-build-a-multi-agent-research-team/solution
+   and download every file in it (each file&#x27;s download_url) into this folder, replacing older copies.
+2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
+3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
+Then show me the file tree.</pre></div>
+<p>Our run is in <code>sample-output.txt</code>.</p>
 <h2 id="stretch-the-same-team-in-the-claude-agent-sdk">Stretch · The same team in the Claude Agent SDK</h2>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p7">Copy prompt</button></div><pre id="p7">Make sdk_team.py: the same research team built with the Claude Agent SDK (uv add claude-agent-sdk), model
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p8">Copy prompt</button></div><pre id="p8">Make sdk_team.py: the same research team built with the Claude Agent SDK (uv add claude-agent-sdk), model
 claude-haiku-5-5. Define &quot;search&quot;, &quot;documents&quot; and &quot;synthesis&quot; as AgentDefinition subagents with the same system
 prompts, expose search_web and read_document through an in-process SDK MCP server, give each subagent only its own
 tool, and let the coordinator spawn them with the Task tool. Run it on &quot;Impact of AI on creative industries&quot;.</pre></div>
 <p>Compare the two. The SDK runs the loops and the Task tool for you, but the rules don't change: a subagent knows only what its prompt says, and the coordinator owns the plan.</p>
 <h2 id="explain-it-back-with-your-trainer">Explain it back (with your trainer)</h2>
-<ul><li><strong>1.</strong> In run B every subagent succeeded. Which agent caused the missing sectors, and which line of <code>research.py</code> would you change? (Day 1, Lab 2.)</li><li><strong>2.</strong> The synthesis agent never saw the search agents' work. How did the findings reach it? What happens if the coordinator writes only "write the report"?</li><li><strong>3.</strong> Why does <code>coverage()</code> look at the <code>search_web</code> calls instead of asking Claude whether the report is complete?</li><li><strong>4.</strong> The film search failed, yet one film finding reached the report. Where did it come from, and why is it marked as a gap too? (Day 1, Lab 27.)</li></ul>
+<ul><li><strong>1.</strong> In run B every subagent succeeded. Which agent caused the missing sectors, and which line of <code>research.py</code> would you change? (Day 1, Lab 2.)</li><li><strong>2.</strong> The synthesis agent never saw the search agents' work. How did the findings reach it? What happens if the coordinator writes only "write the report"?</li><li><strong>3.</strong> Why do <code>coverage()</code> and <code>check_provenance()</code> live in code instead of asking Claude whether the report is complete and cited?</li><li><strong>4.</strong> The film search failed, yet one film finding reached the report. Where did it come from, and why is it marked as a gap too? (Day 1, Lab 27.)</li></ul>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <div class="tw"><table><tr><th>You see</th><th>Fix prompt</th></tr><tr><td>The delegations run one after another (turn time = the sum)</td><td>"Run every delegate call from one coordinator turn at the same time with a ThreadPoolExecutor."</td></tr><tr><td>The coordinator searches one sector per turn</td><td>"Rule 2 says delegate every search in ONE turn. Keep the system prompt exactly as given."</td></tr><tr><td><code>report.json</code> is <code>{}</code></td><td>"The synthesis agent's reply must parse as JSON: strip ``` fences, and set max_tokens to 8000."</td></tr><tr><td>A report URL isn't in sources.json</td><td>"The synthesis task must paste every finding with its exact source URL; the agents must never invent a source."</td></tr><tr><td>Run B still searches music</td><td>"With --plan, replace RULE_1 in the system prompt; don't add the plan to the user message."</td></tr><tr><td>The film timeout disappears</td><td>"On a failed search, keep partial_results as findings and add a gap; never return an empty success."</td></tr><tr><td><code>tool_use ids were found without tool_result blocks</code></td><td>"Send every delegate tool_result in one user message right after the coordinator turn."</td></tr></table></div>
-<p class="note">7 prompts on this page. Built from the lab's README.md.</p>
+<p class="note">8 prompts on this page. Built from the lab's README.md.</p>
 </main>
 <script>
 function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(t);return ok}

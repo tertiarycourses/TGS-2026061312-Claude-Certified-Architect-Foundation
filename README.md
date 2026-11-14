@@ -7,7 +7,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 | Course code | `TGS-2026061312` |
 | Programme | WSQ |
 | Duration | 2 days / 16 hours |
-| Courseware release | Trainer deck v3.2, Lesson Plan v3.0, Learner Guide v3.0 |
+| Courseware release | Trainer deck v3.3, Lesson Plan v3.1, Learner Guide v3.1 |
 | Day 1 simulator | [Run all 30 labs live in your browser](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html) |
 | Funding | Up to 70% course fee funding for eligible learners and employers. Eligibility and current terms apply. |
@@ -55,12 +55,12 @@ Open the **[Day 1 simulator](https://tertiarycourses.github.io/TGS-2026061312-Cl
 
 ### Day 2: vibe-code on your laptop
 
-You need [uv](https://docs.astral.sh/uv/), Git and an AI coding tool that can edit files and run commands: Claude Code, Codex, Antigravity, Cursor or similar.
+You only paste prompts. You need an AI coding tool that can edit files and run commands (Claude Code, Codex, Antigravity, Cursor or similar) and an Anthropic API key.
 
-1. Clone the repo: `git clone https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation.git`, or click **Code → Download ZIP**.
-2. Make an empty project folder, copy `labs/lab-31-build-the-customer-resolution-agent/starter/backend.json` into it, and create `.env` there with one line: `ANTHROPIC_API_KEY=sk-ant-...`. It is never committed.
-3. Open [Lab 31's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html), paste the prompts into your coding tool one at a time, and run what it builds: `uv run agent.py "your customer message"`. Labs 32 to 34 carry on in the same folder.
-4. For Lab 35, make a second empty folder, copy `labs/lab-35-build-a-multi-agent-research-team/starter/sources.json` and your `.env` into it, and follow [Lab 35's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-35.html): `uv run research.py "Impact of AI on creative industries"`.
+1. Open your coding tool in a new, empty folder called `orderly-agent`.
+2. Open [Lab 31's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html) and paste the prompts one at a time. Prompt 1 installs uv if you don't have it, downloads the lab's data and creates `.env` with a placeholder.
+3. Open `.env` in your editor and replace `paste-your-key-here` with your key: the one thing you type yourself, never into the chat. Labs 32 to 34 carry on in the same folder; each starts with a catch-up prompt if you fell behind.
+4. For Lab 35, open the coding tool in a second empty folder, `research-team`, and follow [Lab 35's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-35.html) the same way.
 
 The original Python simulators are still in `labs/simulators/` if you prefer to run Day 1 locally: double-click `labs/start-labs.command` (Mac) or `labs\start-labs.cmd` (Windows).
 
@@ -168,9 +168,9 @@ Questions come from the exam guide's task statements and official samples, and f
 
 ## In this repository
 
-- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.2.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.2.pdf)
-- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v3.0.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v3.0.pdf)
-- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v3.0.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v3.0.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v3.0.md)
+- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.3.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.3.pdf)
+- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v3.1.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v3.1.pdf)
+- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v3.1.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v3.1.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v3.1.md)
 - [The labs folder](labs/): 46 lab folders (30 Day 1, 5 Day 2, 11 optional code builds) and the six Python simulators
 - [`docs/`](docs/): the [Day 1 simulator](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) (GitHub Pages)
 

@@ -61,7 +61,7 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 </tbody>
 </table>
 <p>Bonus Topic B, Lab 35, builds a multi-agent research team in a project folder of its own.</p>
-<p>You build all four labs in <strong>one project folder</strong>. Each lab starts where the last one ended. If you fall behind, copy the previous lab's <code>solution/</code> folder and carry on.</p>
+<p>You build all four labs in <strong>one project folder</strong>. Each lab starts where the last one ended. If you fall behind, each lab starts with a catch-up prompt that downloads the previous lab's finished code.</p>
 <h2>What you'll build</h2>
 <pre><code>  customer message
         |
@@ -84,7 +84,7 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 <tbody>
 <tr>
 <td><code>starter/backend.json</code></td>
-<td>Orderly's customers and orders (Scenario 1). Copy it into your project.</td>
+<td>Orderly's customers and orders (Scenario 1). Prompt 1 downloads it into your project.</td>
 </tr>
 <tr>
 <td><code>starter/.env.example</code></td>
@@ -104,14 +104,12 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 </tr>
 </tbody>
 </table>
-<h2>Before you start (10 minutes)</h2>
+<h2>Before you start (5 minutes)</h2>
 <ul>
-<li><strong>1. Pick your AI coding tool.</strong> Any agent that can create files and run terminal commands works: Claude Code, Codex, Antigravity, Cursor, Windsurf, GitHub Copilot agent mode. The prompts don't use any tool-specific feature.</li>
-<li><strong>2. Install uv</strong> (https://docs.astral.sh/uv/) and check it in a terminal: <code>uv --version</code>.</li>
-<li><strong>3. Make an empty project folder</strong> outside the course repo, for example <code>orderly-agent</code> in your home folder, and open it in your coding tool.</li>
-<li><strong>4. Copy <code>starter/backend.json</code></strong> from this lab into that folder.</li>
-<li><strong>5. Create <code>.env</code> yourself</strong> in that folder with one line: <code>ANTHROPIC_API_KEY=sk-ant-...</code>. Type it in your editor. Never paste your key into the AI chat: the prompts tell the AI never to read it.</li>
+<li><strong>1. Open your AI coding tool in a new, empty folder</strong> called <code>orderly-agent</code> (Labs 31 to 34 all happen in this one folder). In VS Code, Cursor, Windsurf or Antigravity: <strong>File → Open Folder → New Folder</strong>. Claude Code or Codex in a terminal: start it from that folder. Any agent that can create files and run terminal commands works; the prompts use no tool-specific feature.</li>
+<li><strong>2. Have your Anthropic API key ready.</strong> It starts with <code>sk-ant-</code>. You'll paste it into a file in Step 1, never into the chat.</li>
 </ul>
+<p>That's all. <strong>Prompt 1 does the rest of the set-up:</strong> it installs uv (the Python tool) if your computer doesn't have it, downloads the lab's data file and creates the project.</p>
 <p>Every Claude call your agent makes uses <code>claude-haiku-5-5</code> and your key: a run costs a fraction of a US cent. Your coding tool's own model is separate.</p>
 <h2>How to vibe-code</h2>
 <ul>
@@ -120,25 +118,33 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 <li>When something is wrong, <strong>paste the error back</strong> and say what you expected, naming the file and the behaviour.</li>
 <li>If your tool can't run commands, run them yourself in a terminal and paste the output back.</li>
 </ul>
-<p><strong>Tested on 14 Nov 2026.</strong> We pasted these exact prompts, all ten across Labs 31 to 34 in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed <code>test_agent.py</code> 9/9 on a fresh re-run (7 to 9 minutes of tool time per run). Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.</p>
+<p><strong>Tested on 14 Nov 2026.</strong> We pasted these exact prompts, all ten across Labs 31 to 34 in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed <code>test_agent.py</code> 9/9 on a fresh re-run (7 to 9 minutes of tool time per run). When Prompt 1 took over the set-up (it installs uv if needed and downloads <code>backend.json</code>), we ran the whole series again with no data file provided: 8 of 8 builds passed 9/9 again. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.</p>
 <h2>Step 1 · Set up the project (5 minutes)</h2>
 <h3>Prompt 1</h3>
-<pre><code class="language-text">Set up a new Python project in this folder for a customer support agent. backend.json is already here; .env may be here too.
+<pre><code class="language-text">Set up this folder as a new Python project for a customer support agent. Do each step, then tell me what you did.
 
-1. Use uv: run `uv init --bare`, then `uv add anthropic python-dotenv`. (If uv is not installed, stop and tell me.)
-2. Create .gitignore with: .env, .venv/, __pycache__/, audit.log
-3. Create .env.example with one line: ANTHROPIC_API_KEY=paste-your-key-here
-   Never open, print or ask me for .env or my API key.
-4. Create AGENTS.md with these project rules for any AI coding assistant:
+1. Check uv with `uv --version`. If uv is missing, install it with its official installer:
+   macOS or Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
+   Windows (PowerShell): powershell -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;
+   If uv is still not found after installing, use its full path (~/.local/bin/uv, or %USERPROFILE%\.local\bin\uv.exe
+   on Windows) for the rest of this chat.
+2. If backend.json is not in this folder, download it into this folder from
+   https://raw.githubusercontent.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/master/labs/lab-31-build-the-customer-resolution-agent/starter/backend.json
+3. Run `uv init --bare`, then `uv add anthropic python-dotenv`. (uv installs Python itself if it needs to.)
+4. Create .gitignore with: .env, .venv/, __pycache__/, audit.log
+5. Create .env.example with one line: ANTHROPIC_API_KEY=paste-your-key-here
+   If .env does not exist yet, create it with that same line. After that, never open, print or ask me for .env or my key.
+6. Create AGENTS.md with these project rules for any AI coding assistant:
    - Claude model: claude-haiku-5-5 through the official anthropic Python SDK, max_tokens 4096.
    - All data comes from backend.json. Never invent customers or orders.
    - Run Python with `uv run`.
    - Never open, print or ask for .env or the API key.
-5. Create CLAUDE.md containing the single line @AGENTS.md so Claude Code reads the same rules.
+7. Create CLAUDE.md containing the single line @AGENTS.md so Claude Code reads the same rules.
 
-Then show me the file tree.
+Then show me the file tree, and tell me to open .env in the editor and replace paste-your-key-here with my API key.
 </code></pre>
 <p><strong>Checkpoint.</strong> You see <code>pyproject.toml</code>, <code>uv.lock</code>, <code>.gitignore</code>, <code>.env.example</code>, <code>AGENTS.md</code>, <code>CLAUDE.md</code> and <code>backend.json</code>.</p>
+<p><strong>Now the one thing you type yourself:</strong> open <code>.env</code> in your editor, replace <code>paste-your-key-here</code> with your API key and save. Never paste the key into the AI chat: anything you type there is sent to the coding tool's servers. If Prompt 1 installed uv, restart your coding tool's terminal before you run commands yourself.</p>
 <blockquote>
 <p>Why AGENTS.md? It is the shared rules file that Codex, Antigravity, Cursor and most other coding agents read. Claude Code reads CLAUDE.md, and <code>@AGENTS.md</code> imports the same rules. Write a rule once and every tool follows it (Day 1, Lab 13).</p>
 </blockquote>
@@ -205,7 +211,7 @@ Then tell me, in two sentences, what went wrong in each run.
 <li><strong>Mei Lin gets a vague answer.</strong> <code>lookup_order</code> returned <code>"status": 2</code> and <code>"placed_at": 1793318400</code>, and Claude has to guess what they mean (ours said it "can't translate it into a clear shipping update"). <strong>Lab 34</strong> cleans the data in a PostToolUse hook before Claude reads it.</li>
 </ul>
 <h2>Run it</h2>
-<p>From your project folder:</p>
+<p>From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: <command> and show me the output."</p>
 <table>
 <thead>
 <tr>
@@ -232,7 +238,15 @@ Then tell me, in two sentences, what went wrong in each run.
 </tr>
 </tbody>
 </table>
-<p>To run our reference build instead, go into this lab's <code>solution/</code> folder, copy <code>.env.example</code> to <code>.env</code>, put your key in it, then run the same commands. <code>uv run</code> installs the packages on first use.</p>
+<p>To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in <code>.env</code> and run the same commands:</p>
+<pre><code class="language-text">Replace the code in this folder with the reference solution of Lab 31. Keep my .env and never open it.
+1. Get the file list from
+   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-31-build-the-customer-resolution-agent/solution
+   and download every file in it (each file's download_url) into this folder, replacing older copies.
+2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
+3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
+Then show me the file tree.
+</code></pre>
 <h2>Explain it back (with your trainer)</h2>
 <ul>
 <li><strong>1.</strong> Which line in <code>agent.py</code> decides whether the loop goes round again? What else stops it?</li>
