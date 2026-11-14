@@ -1,12 +1,12 @@
 # Lab 34: Vibe-code a PostToolUse hook that cleans the data, then prove the agent works
 
-> Day 2 · Lab 34 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statement 1.5 · Vibe-coding lab · Claude Haiku 5.5 · 45 minutes
+> Day 2 · Bonus Topic A · Lab 34 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statement 1.5 · Vibe-coding lab · Claude Haiku 5.5 · 45 minutes
 
 **In Lab 31, Mei Lin asked where her monitor arm was, and Claude got `"status": 2` and a Unix timestamp. It had to guess. Clean every tool result in code before Claude reads it, log every hook decision, then prove the whole agent with nine live checks.**
 
 **Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab. Copy the prompts from [this lab's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-34.html), or from `prompts.html` in this folder.
 
-## Day 2: one agent, four labs
+## Bonus Topic A: one agent, four labs
 
 | Lab | You add | Exam tasks |
 |---|---|---|
@@ -14,6 +14,8 @@
 | 32 | an MCP server for the tools; the agent becomes an MCP client | 2.4, 2.2 |
 | 33 | a PreToolUse hook that blocks refunds above $500 | 1.5, 1.4 |
 | **34 (this lab)** | a PostToolUse hook that cleans raw data, and live tests | 1.5 |
+
+Bonus Topic B, Lab 35, builds a multi-agent research team in a project folder of its own.
 
 ## What you'll build
 
@@ -109,7 +111,7 @@ From your project folder:
 
 To run the finished reference agent, go into `solution/`, copy `.env.example` to `.env`, add your key, then run `uv run test_agent.py`. Our run is in `sample-output.txt`.
 
-## Stretch · The same hooks in the Claude Agent SDK (Bonus Lab 36)
+## Stretch · The same hooks in the Claude Agent SDK (Bonus Lab 37)
 
 ```text
 Make agent_sdk.py: the same agent built with the Claude Agent SDK (uv add claude-agent-sdk), model claude-haiku-5-5.

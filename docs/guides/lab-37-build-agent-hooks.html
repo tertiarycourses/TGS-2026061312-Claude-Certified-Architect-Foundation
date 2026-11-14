@@ -1,0 +1,195 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 37: Build the hooks that the prompt can&#x27;t be trusted with</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-37-build-agent-hooks">Open the folder on GitHub</a><a class="btn alt" href="lab-37-build-agent-hooks.pdf">Download the PDF</a></p><h1>Lab 37: Build the hooks that the prompt can't be trusted with</h1>
+<blockquote>
+<p>Extra code build (optional, not in the deck) · Topic 1: Agentic Architecture &amp; Orchestration · Task statement 1.5 · Code lab · Claude Haiku 5.5</p>
+</blockquote>
+<p><strong>A PreToolUse hook blocks a $780 refund before it runs; a PostToolUse hook cleans the data before Claude reads it.</strong></p>
+<p><strong>Lab page:</strong> <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/">the main lab page</a> lists every lab (Day 1 runs there live in your browser). This lab's guide online: <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-37-build-agent-hooks.html">https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-37-build-agent-hooks.html</a>.</p>
+<h2>What you'll do</h2>
+<p>Build an agent with the Claude Agent SDK (Python), give it three tools through an in-process MCP server, and register two hooks: PreToolUse denies refunds above $500 so Claude escalates, and PostToolUse normalises raw backend data (Unix timestamps, status codes) before Claude sees it.</p>
+<h2>What's in this folder</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hooks_agent.py</code></td>
+<td>the agent, its three tools and the two hooks</td>
+</tr>
+</tbody>
+</table>
+<h2>Before you start</h2>
+<ul>
+<li>Open a terminal in the labs folder. Windows: use Git Bash for the .sh scripts (it comes with Git); PowerShell is fine for the Python ones.</li>
+<li>Set your Anthropic API key once, if you haven't already. It is saved to labs/.env on your laptop and never uploaded. Run <code>uv run set_api_key.py</code>.</li>
+<li>Go into this lab's folder. Run <code>cd lab-37-build-agent-hooks</code>.</li>
+</ul>
+<p>You need uv (https://docs.astral.sh/uv/) for the Python scripts. Every call uses Claude Haiku 5.5 and costs a fraction of a US cent.</p>
+<h2>Steps</h2>
+<p><strong>Step 1.</strong> Run a $120 refund. The PreToolUse hook allows it; the PostToolUse hook rewrites the order's date and status first.</p>
+<pre><code>uv run hooks_agent.py
+</code></pre>
+<p><strong>Step 2.</strong> Run a $780 refund. The PreToolUse hook denies process_refund, and Claude escalates to a human instead.</p>
+<pre><code>uv run hooks_agent.py ORD-5502
+</code></pre>
+<p><strong>Step 3.</strong> Read the Hook log at the end of each run: every decision the hooks made, in order.</p>
+<h2>What you should see</h2>
+<p>From a live run on Claude Haiku 5.5 (your wording will differ; the behaviour should not):</p>
+<ul>
+<li><code>PostToolUse normalise lookup_order: placed_at 1790812800 -&gt; '2026-10-01T00:00:00Z', status 3 -&gt; 'delivered'</code></li>
+<li>PreToolUse  DENY  process_refund({'order_id': 'ORD-5502', 'amount': 780})  -&gt; Refunds above $500 need human approval.</li>
+<li><code>Claude then calls escalate_to_human with the reason and the $780 amount.</code></li>
+</ul>
+<p>The full output of our run is in <code>sample-output.txt</code>.</p>
+<h2>The key lines, explained</h2>
+<p>In <code>hooks_agent.py</code>, look for the <code>KEY</code> comments:</p>
+<ul>
+<li><strong>KEY 1.</strong> PreToolUse runs before the tool. Returning permissionDecision deny blocks the call and tells Claude why.</li>
+<li><strong>KEY 2.</strong> The $500 rule lives in code, so it holds even when the prompt forgets it.</li>
+<li><strong>KEY 3.</strong> PostToolUse runs after the tool and can replace the result Claude reads (updatedToolOutput).</li>
+<li><strong>KEY 4.</strong> Normalise once, in one place: every order reaches Claude in the same date and status format.</li>
+<li><strong>KEY 5.</strong> Register both hooks on ClaudeAgentOptions, matched to this server's tools.</li>
+</ul>
+<h2>The code: <code>hooks_agent.py</code></h2>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.10&quot;
+# dependencies = [&quot;claude-agent-sdk&gt;=0.2&quot;, &quot;python-dotenv&gt;=1.0&quot;]
+# ///
+&quot;&quot;&quot;Lab 37: build PreToolUse and PostToolUse hooks with the Claude Agent SDK (Python).
+  PreToolUse  runs BEFORE a tool: it can block the call. Here: refunds above $500 are denied, so Claude escalates.
+  PostToolUse runs AFTER a tool: it can rewrite the result. Here: raw backend data is normalised before Claude reads it.
+Run:  uv run hooks_agent.py              (ORD-5501, $120: allowed, dates normalised)
+      uv run hooks_agent.py ORD-5502     ($780: the PreToolUse hook blocks the refund)&quot;&quot;&quot;
+import asyncio
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from dotenv import find_dotenv, load_dotenv
+from claude_agent_sdk import (AssistantMessage, ClaudeAgentOptions, ClaudeSDKClient, HookMatcher, ResultMessage,
+                              TextBlock, ToolUseBlock, create_sdk_mcp_server, tool)
+
+load_dotenv(find_dotenv(usecwd=True))
+os.environ.pop(&quot;CLAUDECODE&quot;, None)
+MODEL = &quot;claude-haiku-5-5&quot;
+LIMIT = 500
+STATUS = {1: &quot;pending&quot;, 2: &quot;shipped&quot;, 3: &quot;delivered&quot;}
+ORDERS = {  # raw backend data: a Unix timestamp and a status code in one order, ISO and text in the other
+    &quot;ORD-5501&quot;: {&quot;order_id&quot;: &quot;ORD-5501&quot;, &quot;item&quot;: &quot;Ceramic table lamp&quot;, &quot;amount&quot;: 120.0, &quot;placed_at&quot;: 1790812800, &quot;status&quot;: 3, &quot;damage_photo&quot;: True},
+    &quot;ORD-5502&quot;: {&quot;order_id&quot;: &quot;ORD-5502&quot;, &quot;item&quot;: &quot;Standing desk&quot;, &quot;amount&quot;: 780.0, &quot;placed_at&quot;: &quot;2026-10-20T10:00:00Z&quot;, &quot;status&quot;: &quot;delivered&quot;, &quot;damage_photo&quot;: True},
+}
+LOG = []
+
+
+def reply(data):
+    return {&quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: json.dumps(data)}]}
+
+
+@tool(&quot;lookup_order&quot;, &quot;Look up one order by ID (ORD-NNNN): item, amount, placed_at, status, damage_photo.&quot;, {&quot;order_id&quot;: str})
+async def lookup_order(args):
+    return reply(ORDERS.get(args[&quot;order_id&quot;].upper(), {&quot;error&quot;: &quot;not found&quot;}))
+
+
+@tool(&quot;process_refund&quot;, &quot;Refund an order to the original payment method. Input: order_id, amount.&quot;, {&quot;order_id&quot;: str, &quot;amount&quot;: float})
+</code></pre>
+<pre><code class="language-python">async def process_refund(args):
+    return reply({&quot;refund_id&quot;: &quot;RF-20481&quot;, &quot;order_id&quot;: args[&quot;order_id&quot;], &quot;amount&quot;: args[&quot;amount&quot;], &quot;status&quot;: &quot;issued&quot;})
+
+
+@tool(&quot;escalate_to_human&quot;, &quot;Hand the case to a human approver with a reason and the amount.&quot;, {&quot;reason&quot;: str, &quot;amount&quot;: float})
+async def escalate_to_human(args):
+    return reply({&quot;ticket_id&quot;: &quot;HS-0007&quot;, &quot;status&quot;: &quot;queued&quot;, **args})
+
+
+async def pre_tool(input_data, tool_use_id, context):                          # KEY 1: runs BEFORE the tool
+    name, args = input_data[&quot;tool_name&quot;].split(&quot;__&quot;)[-1], input_data[&quot;tool_input&quot;]
+    if name == &quot;process_refund&quot; and float(args.get(&quot;amount&quot;, 0)) &gt; LIMIT:      # KEY 2: a rule in code, not in the prompt
+        reason = f&quot;Refunds above ${LIMIT} need human approval. Call escalate_to_human instead.&quot;
+        LOG.append(f&quot;PreToolUse  DENY  {name}({args})  -&gt; {reason}&quot;)
+        return {&quot;hookSpecificOutput&quot;: {&quot;hookEventName&quot;: &quot;PreToolUse&quot;,
+                                       &quot;permissionDecision&quot;: &quot;deny&quot;, &quot;permissionDecisionReason&quot;: reason}}
+    LOG.append(f&quot;PreToolUse  allow {name}({args})&quot;)
+    return {}
+
+
+async def post_tool(input_data, tool_use_id, context):                         # KEY 3: runs AFTER the tool
+    name = input_data[&quot;tool_name&quot;].split(&quot;__&quot;)[-1]
+    resp = input_data.get(&quot;tool_response&quot;)
+    content = resp.get(&quot;content&quot;, resp) if isinstance(resp, dict) else resp      # MCP tools: a list of content blocks
+    text = content[0].get(&quot;text&quot;) if isinstance(content, list) and content and isinstance(content[0], dict) else None
+    raw = json.loads(text) if text else None
+    if name != &quot;lookup_order&quot; or not raw or &quot;error&quot; in raw:
+        return {}
+    clean = dict(raw)
+    if isinstance(clean[&quot;placed_at&quot;], (int, float)):                            # KEY 4: one format for every order
+        clean[&quot;placed_at&quot;] = datetime.fromtimestamp(clean[&quot;placed_at&quot;], timezone.utc).strftime(&quot;%Y-%m-%dT%H:%M:%SZ&quot;)
+    clean[&quot;status&quot;] = STATUS.get(clean[&quot;status&quot;], clean[&quot;status&quot;])
+    LOG.append(f&quot;PostToolUse normalise {name}: placed_at {raw['placed_at']!r} -&gt; {clean['placed_at']!r}, status {raw['status']!r} -&gt; {clean['status']!r}&quot;)
+    return {&quot;hookSpecificOutput&quot;: {&quot;hookEventName&quot;: &quot;PostToolUse&quot;,
+                                   &quot;updatedToolOutput&quot;: {&quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: json.dumps(clean)}]}}}
+
+
+async def main(order_id):
+    server = create_sdk_mcp_server(name=&quot;shop&quot;, version=&quot;1.0.0&quot;, tools=[lookup_order, process_refund, escalate_to_human])
+    options = ClaudeAgentOptions(
+</code></pre>
+<pre><code class="language-python">        model=MODEL,
+        system_prompt=&quot;You are a refund agent. Look up the order, then refund damaged items with a photo in full.&quot;,
+        mcp_servers={&quot;shop&quot;: server}, tools=[],
+        allowed_tools=[&quot;mcp__shop__lookup_order&quot;, &quot;mcp__shop__process_refund&quot;, &quot;mcp__shop__escalate_to_human&quot;],
+        hooks={&quot;PreToolUse&quot;: [HookMatcher(matcher=&quot;^mcp__shop__&quot;, hooks=[pre_tool])],     # KEY 5: register the hooks
+               &quot;PostToolUse&quot;: [HookMatcher(matcher=&quot;^mcp__shop__&quot;, hooks=[post_tool])]},
+        permission_mode=&quot;bypassPermissions&quot;, max_turns=8, setting_sources=[],
+        env={&quot;ENABLE_CLAUDEAI_MCP_SERVERS&quot;: &quot;false&quot;, &quot;ENABLE_TOOL_SEARCH&quot;: &quot;false&quot;}, extra_args={&quot;strict-mcp-config&quot;: None},
+    )
+    async with ClaudeSDKClient(options=options) as client:
+        await client.query(f&quot;Order {order_id} arrived damaged; the photo is attached. Please refund it.&quot;)
+        async for m in client.receive_response():
+            if isinstance(m, AssistantMessage):
+                for b in m.content:
+                    if isinstance(b, ToolUseBlock):
+                        print(f&quot;Claude -&gt; {b.name.split('__')[-1]}({b.input})&quot;)
+                    elif isinstance(b, TextBlock) and b.text.strip():
+                        print(f&quot;Claude: {b.text.strip()}&quot;)
+            elif isinstance(m, ResultMessage):
+                print(f&quot;\n{m.num_turns} turns, cost ${m.total_cost_usd or 0:.4f}, stop: {m.subtype}&quot;)
+    print(&quot;\n== Hook log&quot;)
+    for line in LOG:
+        print(line)
+
+
+asyncio.run(main(sys.argv[1] if len(sys.argv) &gt; 1 else &quot;ORD-5501&quot;))
+</code></pre>
+<h2>Try this</h2>
+<p>Lower LIMIT to 100 and run ORD-5501 again. The hook now blocks the $120 refund too, without any change to the prompt.</p>
+<h2>How this shows up in the exam</h2>
+<p>Task 1.5: hooks enforce rules deterministically (PreToolUse to block or redirect, PostToolUse to normalise or audit). A firmer prompt is the tempting wrong answer when compliance must be guaranteed.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

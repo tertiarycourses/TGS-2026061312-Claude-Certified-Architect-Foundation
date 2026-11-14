@@ -1,12 +1,12 @@
 # Lab 31: Vibe-code the customer resolution agent with the Python SDK
 
-> Day 2 · Lab 31 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statements 1.1, 2.1 · Vibe-coding lab · Claude Haiku 5.5 · 45 minutes
+> Day 2 · Bonus Topic A · Lab 31 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statements 1.1, 2.1 · Vibe-coding lab · Claude Haiku 5.5 · 45 minutes
 
 **You don't write the code. You write the prompts, read what comes back, and run it. In 45 minutes you have a working support agent that verifies Mei Lin, checks her order and refunds her cracked $120 lamp. Then you watch it make two mistakes that Labs 33 and 34 will fix.**
 
 **Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab. Copy the prompts from [this lab's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html) (one Copy button per prompt), or from `prompts.html` in this folder.
 
-## Day 2: one agent, four labs
+## Bonus Topic A: one agent, four labs
 
 | Lab | You add | Exam tasks |
 |---|---|---|
@@ -14,6 +14,8 @@
 | 32 | an MCP server for the tools; the agent becomes an MCP client | 2.4, 2.2 |
 | 33 | a PreToolUse hook that blocks refunds above $500 | 1.5, 1.4 |
 | 34 | a PostToolUse hook that cleans raw data, and live tests | 1.5 |
+
+Bonus Topic B, Lab 35, builds a multi-agent research team in a project folder of its own.
 
 You build all four labs in **one project folder**. Each lab starts where the last one ended. If you fall behind, copy the previous lab's `solution/` folder and carry on.
 

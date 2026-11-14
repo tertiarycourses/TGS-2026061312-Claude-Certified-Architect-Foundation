@@ -1,12 +1,12 @@
 # Lab 32: Vibe-code an MCP server for the agent's tools
 
-> Day 2 · Lab 32 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statements 2.4, 2.2 · Vibe-coding lab · Claude Haiku 5.5 · 30 minutes
+> Day 2 · Bonus Topic A · Lab 32 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statements 2.4, 2.2 · Vibe-coding lab · Claude Haiku 5.5 · 30 minutes
 
 **Your four tools are stuck inside one Python program. Put them behind an MCP server and any agent can use them: your own, Claude Code, Codex or Antigravity. The agent's behaviour stays exactly the same: only where the tools live changes.**
 
 **Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab. Copy the prompts from [this lab's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-32.html), or from `prompts.html` in this folder.
 
-## Day 2: one agent, four labs
+## Bonus Topic A: one agent, four labs
 
 | Lab | You add | Exam tasks |
 |---|---|---|
@@ -14,6 +14,8 @@
 | **32 (this lab)** | an MCP server for the tools; the agent becomes an MCP client | 2.4, 2.2 |
 | 33 | a PreToolUse hook that blocks refunds above $500 | 1.5, 1.4 |
 | 34 | a PostToolUse hook that cleans raw data, and live tests | 1.5 |
+
+Bonus Topic B, Lab 35, builds a multi-agent research team in a project folder of its own.
 
 ## What you'll build
 

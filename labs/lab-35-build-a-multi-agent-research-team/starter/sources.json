@@ -1,0 +1,42 @@
+{
+  "note": "Fictional sandbox for TGS-2026061312 Lab 35. Every organisation, person, number and URL here is invented.",
+  "sectors": {
+    "film": ["film", "movie", "cinema", "screen", "animation", "vfx", "visual effects"],
+    "music": ["music", "musician", "song", "composer", "record label"],
+    "writing": ["writing", "writer", "author", "book", "publish", "novel", "journalis", "copywrit"],
+    "visual_arts": ["visual art", "digital art", "artist", "design", "photo", "illustrat", "graphic", "painting", "image"]
+  },
+  "web": {
+    "music": [
+      {"url": "https://example.org/northbridge-label-survey-2026", "title": "Northbridge Label Survey 2026", "published": "2026-03-19",
+       "excerpt": "62% of surveyed independent labels used generative AI tools in music production during 2025."},
+      {"url": "https://example.org/session-players-guild-poll", "title": "Session Players Guild member poll", "published": "2025-09-02",
+       "excerpt": "48% of member musicians used AI tools for composition or mixing at least once a month."}
+    ],
+    "writing": [
+      {"url": "https://example.org/freelance-writers-collective-income", "title": "Freelance Writers Collective income study", "published": "2026-01-14",
+       "excerpt": "Median freelance copywriting income fell 11% year over year; 6 in 10 respondents blamed AI drafting tools."},
+      {"url": "https://example.org/lanternhouse-ai-policy-tracker", "title": "Lanternhouse Publishers AI policy tracker", "published": "2026-04-02",
+       "excerpt": "19 of 25 surveyed book publishers now require authors to disclose AI assistance."}
+    ],
+    "visual_arts": [
+      {"url": "https://example.org/illustrators-circle-flash-poll", "title": "Illustrators Circle flash poll", "published": "2026-05-12",
+       "excerpt": "37% of member illustrators lost at least one commission to AI image tools in 2025."},
+      {"url": "https://example.org/design-studio-pulse-2026", "title": "Design Studio Pulse 2026", "published": "2026-02-20",
+       "excerpt": "71% of graphic design studios use AI image generation for concept work."}
+    ],
+    "film": {
+      "error": "timeout",
+      "partial_results": [
+        {"url": "https://example.org/indie-screen-council-vfx", "title": "Indie Screen Council VFX survey", "published": "2026-06-08",
+         "excerpt": "44% of independent film productions used AI for visual-effects cleanup in 2025."}
+      ]
+    }
+  },
+  "documents": [
+    {"name": "Halden-Rao-2026-Journal-of-Creative-Economies.pdf", "kind": "peer-reviewed journal article", "page": 112, "published": "2026-03-15",
+     "text": "Generative AI adoption among creative small firms reached 41% in 2025, up from 23% in 2023. Method: stratified random sample of 3,100 firms in 12 countries."},
+    {"name": "BrightCanvas-Customer-Benchmark-2026.pdf", "kind": "vendor benchmark", "page": 3, "published": "2026-06-01",
+     "text": "78% of creative studios use generative AI every week. Method: opt-in poll of 640 customers of BrightCanvas, which sells AI image tools."}
+  ]
+}

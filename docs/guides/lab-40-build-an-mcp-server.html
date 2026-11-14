@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 40: Build an MCP server once, plug it into any agent</title><style>
+:root{--cream:#FAF9F5;--ink:#21201C;--grey:#5F5C56;--orange:#C9603A;--teal:#2F6F6D;--line:#D9D4C8;--sand:#F6EEDD}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 -apple-system,"Segoe UI",Calibri,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:28px 0}header a{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:Cambria,Georgia,serif;line-height:1.25}h1{font-size:2.1em;margin:.2em 0}
+.kicker{color:var(--orange);font-weight:700;letter-spacing:.06em;font-size:.82em;text-transform:uppercase}
+header .kicker{color:#F0A58A}.lead{color:#E8E4DA;font-size:1.08em;max-width:780px}
+a{color:var(--teal)}nav.top{font-size:.95em;margin-top:10px}nav.top a{margin-right:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--c,var(--orange));padding:14px 16px}
+.card h3{margin:.1em 0 .3em;font-size:1.05em}.card p{margin:.2em 0;color:var(--grey);font-size:.95em}
+table{border-collapse:collapse;width:100%;background:#fff;margin:12px 0 26px;font-size:.95em}
+th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px}td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+td.n{width:56px;text-align:center;font-weight:700;background:var(--sand)}
+pre{background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;font-size:.86em;line-height:1.45}
+code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFEBE2;padding:1px 5px;border-radius:3px;font-size:.9em}
+.note{background:#FBEDE6;border-left:6px solid var(--orange);padding:12px 16px;margin:16px 0}
+.btn{display:inline-block;background:var(--orange);color:#fff;padding:9px 16px;text-decoration:none;font-weight:700;margin:6px 8px 6px 0}
+.btn.alt{background:var(--teal)}footer{color:var(--grey);font-size:.85em;padding:30px 0;border-top:1px solid var(--line);margin-top:40px}
+</style></head><body>
+<header><div class="wrap"><div class="kicker">TGS-2026061312 · Claude Certified Architect Foundation · Labs</div>
+<nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
+<main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-40-build-an-mcp-server">Open the folder on GitHub</a><a class="btn alt" href="lab-40-build-an-mcp-server.pdf">Download the PDF</a></p><h1>Lab 40: Build an MCP server once, plug it into any agent</h1>
+<blockquote>
+<p>Extra code build (optional, not in the deck) · Topic 2: Tool Design &amp; MCP Integration · Task statement 2.4 · Code lab · Claude Haiku 5.5</p>
+</blockquote>
+<p><strong>Write the order system's tools as an MCP server, then use it from your own Python agent AND from Claude Code without changing a line.</strong></p>
+<p><strong>Lab page:</strong> <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/">the main lab page</a> lists every lab (Day 1 runs there live in your browser). This lab's guide online: <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-40-build-an-mcp-server.html">https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-40-build-an-mcp-server.html</a>.</p>
+<h2>What you'll do</h2>
+<p>Build a stdio MCP server with two tools, one resource and structured errors; connect to it from a Python MCP client that drives Claude; then register it in .mcp.json for Claude Code.</p>
+<h2>What's in this folder</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>order_server.py</code></td>
+<td>the MCP server: lookup_order, process_refund, policy://refunds</td>
+</tr>
+<tr>
+<td><code>mcp_agent.py</code></td>
+<td>your own MCP client: discovers the tools and runs the Claude loop</td>
+</tr>
+<tr>
+<td><code>.mcp.json</code></td>
+<td>project registration for Claude Code; the token comes from the environment</td>
+</tr>
+<tr>
+<td><code>run_claude_code.sh</code></td>
+<td>Claude Code using the same server</td>
+</tr>
+</tbody>
+</table>
+<h2>Before you start</h2>
+<ul>
+<li>Open a terminal in the labs folder. Windows: use Git Bash for the .sh scripts (it comes with Git); PowerShell is fine for the Python ones.</li>
+<li>Set your Anthropic API key once, if you haven't already. It is saved to labs/.env on your laptop and never uploaded. Run <code>uv run set_api_key.py</code>.</li>
+<li>Go into this lab's folder. Run <code>cd lab-40-build-an-mcp-server</code>.</li>
+</ul>
+<p>You need uv (https://docs.astral.sh/uv/) for the Python scripts, Claude Code (<code>claude</code>) for the shell scripts. Every call uses Claude Haiku 5.5 and costs a fraction of a US cent.</p>
+<h2>Steps</h2>
+<p><strong>Step 1.</strong> Read order_server.py: two tools, one resource, and the fail() helper that returns structured errors.</p>
+<p><strong>Step 2.</strong> Run your own agent. It starts the server, lists its tools and refunds the lamp.</p>
+<pre><code>uv run mcp_agent.py
+</code></pre>
+<p><strong>Step 3.</strong> Ask for a refund that hits a timeout. Watch Claude retry once (isRetryable: true), then tell the truth.</p>
+<pre><code>uv run mcp_agent.py &quot;Please refund my wool rug, order ORD-5508, 480 dollars.&quot;
+</code></pre>
+<p><strong>Step 4.</strong> Use the same server from Claude Code. It reads the policy resource but is only allowed lookup_order.</p>
+<pre><code>./run_claude_code.sh
+</code></pre>
+<h2>What you should see</h2>
+<p>From a live run on Claude Haiku 5.5 (your wording will differ; the behaviour should not):</p>
+<ul>
+<li><code>MCP tools: ['lookup_order', 'process_refund']</code></li>
+<li><code>process_refund(...) -&gt; ERROR {"errorCategory": "transient", "isRetryable": true, ...}</code></li>
+<li><code>"I haven't been able to process your $480.00 refund... no refund has been issued."</code></li>
+</ul>
+<p>The full output of our run is in <code>sample-output.txt</code>.</p>
+<h2>The key lines, explained</h2>
+<p>In <code>order_server.py</code>, look for the <code>KEY</code> comments:</p>
+<ul>
+<li><strong>KEY 1.</strong> MCPServer('orders') names the server. Claude Code shows its tools as <code>mcp__orders__&lt;tool&gt;</code>.</li>
+<li><strong>KEY 2.</strong> Secrets come from the environment. .mcp.json is committed; the token never is.</li>
+<li><strong>KEY 3.</strong> A structured error: category, isRetryable and a message the agent can act on.</li>
+<li><strong>KEY 4.</strong> A resource is read-only context the client can load; a tool is an action.</li>
+<li><strong>KEY 5.</strong> stdio transport: the client starts the server as a child process and talks over stdin/stdout.</li>
+</ul>
+<p>In <code>mcp_agent.py</code>, look for the <code>KEY</code> comments:</p>
+<ul>
+<li><strong>KEY 1.</strong> How to start the server, and the environment it gets.</li>
+<li><strong>KEY 2.</strong> list_tools() discovers the tools at run time; nothing is hard-coded.</li>
+<li><strong>KEY 3.</strong> Claude asks for a tool; the MCP session runs it on the server.</li>
+<li><strong>KEY 4.</strong> Pass the server's error flag through as is_error, so Claude knows the call failed.</li>
+</ul>
+<h2>The code: <code>order_server.py</code></h2>
+<pre><code class="language-python"># /// script
+# requires-python = &quot;&gt;=3.10&quot;
+# dependencies = [&quot;mcp&gt;=2.3,&lt;3&quot;]
+# ///
+&quot;&quot;&quot;Lab 40: an MCP server for the support team's order system (stdio transport).
+Any MCP client can use these tools: Claude Code, Claude Desktop, or your own agent (mcp_agent.py).
+Run it through a client, not on its own: it talks JSON-RPC over stdin/stdout.&quot;&quot;&quot;
+import json
+import logging
+import os
+from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
+
+logging.disable(logging.INFO)                            # keep the server quiet: the client prints what matters
+mcp = MCPServer(&quot;orders&quot;)                                   # KEY 1: the server name clients see
+
+ORDERS = {&quot;ORD-5501&quot;: {&quot;customer&quot;: &quot;CUS-0042&quot;, &quot;item&quot;: &quot;Ceramic lamp&quot;, &quot;amount&quot;: 120.0, &quot;status&quot;: &quot;delivered&quot;, &quot;refunded&quot;: False},
+          &quot;ORD-5508&quot;: {&quot;customer&quot;: &quot;CUS-0042&quot;, &quot;item&quot;: &quot;Wool rug&quot;, &quot;amount&quot;: 480.0, &quot;status&quot;: &quot;delivered&quot;, &quot;refunded&quot;: False}}
+TOKEN = os.environ.get(&quot;ORDERS_API_TOKEN&quot;, &quot;&quot;)           # KEY 2: secrets come from the environment, never the code
+
+
+def fail(category, message, retryable):
+    &quot;&quot;&quot;KEY 3: a structured error the agent can act on, not 'Operation failed'.&quot;&quot;&quot;
+    raise ToolError(json.dumps({&quot;errorCategory&quot;: category, &quot;isRetryable&quot;: retryable, &quot;message&quot;: message}))
+
+
+@mcp.tool()
+def lookup_order(order_id: str) -&gt; dict:
+    &quot;&quot;&quot;Look up one order by ID (format ORD-NNNN). Returns customer, item, amount, status and whether it was refunded.&quot;&quot;&quot;
+    if order_id not in ORDERS:
+        fail(&quot;not_found&quot;, f&quot;No order {order_id}. Ask the customer to check the ID.&quot;, retryable=False)
+    return {&quot;order_id&quot;: order_id, **ORDERS[order_id]}
+
+
+@mcp.tool()
+def process_refund(order_id: str, amount: float) -&gt; dict:
+    &quot;&quot;&quot;Refund an order, in full or in part. Amounts above 500 need a human: the tool refuses them.&quot;&quot;&quot;
+    if not TOKEN:
+        fail(&quot;auth&quot;, &quot;ORDERS_API_TOKEN is not set for this server.&quot;, retryable=False)
+    if amount &gt; 500:
+</code></pre>
+<pre><code class="language-python">        fail(&quot;business_rule&quot;, &quot;Refunds above 500 need a human approver. Escalate.&quot;, retryable=False)
+    if order_id == &quot;ORD-5508&quot;:
+        fail(&quot;transient&quot;, &quot;Payments service timed out. Safe to retry once.&quot;, retryable=True)
+    ORDERS[order_id][&quot;refunded&quot;] = True
+    return {&quot;order_id&quot;: order_id, &quot;refunded&quot;: amount, &quot;status&quot;: &quot;refund issued&quot;}
+
+
+@mcp.resource(&quot;policy://refunds&quot;)                          # KEY 4: a resource is read-only context, not an action
+def refund_policy() -&gt; str:
+    return &quot;Refunds within 30 days of delivery. Above 500: human approval. Never promise a refund before it succeeds.&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    mcp.run()                                              # KEY 5: stdio by default
+</code></pre>
+<h2>Try this</h2>
+<p>Change process_refund so the timeout has isRetryable: false and run the ORD-5508 request again. Claude should stop retrying at once.</p>
+<h2>How this shows up in the exam</h2>
+<p>Task 2.4: shared servers go in the project's .mcp.json with ${ENV_VAR} for secrets; personal ones in ~/.claude.json. Task 2.2's structured errors travel through MCP as isError plus a readable payload.</p></main>
+<footer class="wrap">© Tertiary Infotech Academy Pte Ltd · UEN 201200696W · Every Claude call in these labs uses claude-haiku-5-5 with your own API key.
+Never paste your API key into a web page: it lives only in <code>labs/.env</code> on your laptop.</footer></body></html>

@@ -7,7 +7,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 | Course code | `TGS-2026061312` |
 | Programme | WSQ |
 | Duration | 2 days / 16 hours |
-| Courseware release | Trainer deck v3.1, Lesson Plan v2.9, Learner Guide v2.9 |
+| Courseware release | Trainer deck v3.2, Lesson Plan v3.0, Learner Guide v3.0 |
 | Day 1 simulator | [Run all 30 labs live in your browser](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html) |
 | Funding | Up to 70% course fee funding for eligible learners and employers. Eligibility and current terms apply. |
@@ -16,7 +16,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 
 ## About the course
 
-You learn architecture judgement for agentic systems: when a prompt is enough, when a rule must live in code, and how to prove a system stays useful when tools fail, context grows and confidence runs out. Day 1 covers the six exam scenarios and the five domains on a simulator that runs in your browser: for each of the 30 task statements you answer an exam-style question, press Simulate it live, watch the lab's own scenario board light up as the code runs (its real case, data and outcome, one row per method), together with a live diagram of its pattern (the agentic loop, the hook gates, a coordinator spawning its subagents, or separate passes and session forks). Where a lab has a trap and a fix, the run stops after the trap and shows its outcome until you press Proceed; then you read Claude's final output and the observation explained, with the two methods side by side. Day 2 is eleven hands-on Python builds: the API and the agent loop, PreToolUse/PostToolUse hooks, subagents, tool design, an MCP server, a skill, Claude Code in CI, structured output, batches, caching and error handling.
+You learn architecture judgement for agentic systems: when a prompt is enough, when a rule must live in code, and how to prove a system stays useful when tools fail, context grows and confidence runs out. Day 1 covers the six exam scenarios and the five domains on a simulator that runs in your browser: for each of the 30 task statements you answer an exam-style question, press Simulate it live, watch the lab's own scenario board light up as the code runs (its real case, data and outcome, one row per method), together with a live diagram of its pattern (the agentic loop, the hook gates, a coordinator spawning its subagents, or separate passes and session forks). Where a lab has a trap and a fix, the run stops after the trap and shows its outcome until you press Proceed; then you read Claude's final output and the observation explained, with the two methods side by side. Day 2 is two bonus topics that you vibe-code: you paste prompts into your AI coding tool and run what it builds. Bonus Topic A grows one Scenario 1 customer resolution agent in four labs (the loop, an MCP server for its tools, a PreToolUse and a PostToolUse hook); Bonus Topic B builds a Scenario 3 multi-agent research team, with parallel subagents and a coverage check. Then the bonus practice exam. Eleven hand-written code builds stay in the repo as optional extras.
 
 ## Learning outcomes
 
@@ -53,13 +53,14 @@ Each simulator is one official exam scenario. On Day 1 you run all six in the br
 
 Open the **[Day 1 simulator](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/)**, paste your Anthropic API key (it starts with `sk-ant-`) into the sidebar (the eye icon in the field shows or hides it), press **Save**, then **Test**. The key stays in your browser and is sent only to Anthropic. Every lab calls `claude-haiku-5-5`, so a whole lab usually costs under one US cent.
 
-### Day 2: vibe-code one agent on your laptop
+### Day 2: vibe-code on your laptop
 
 You need [uv](https://docs.astral.sh/uv/), Git and an AI coding tool that can edit files and run commands: Claude Code, Codex, Antigravity, Cursor or similar.
 
 1. Clone the repo: `git clone https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation.git`, or click **Code → Download ZIP**.
 2. Make an empty project folder, copy `labs/lab-31-build-the-customer-resolution-agent/starter/backend.json` into it, and create `.env` there with one line: `ANTHROPIC_API_KEY=sk-ant-...`. It is never committed.
 3. Open [Lab 31's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html), paste the prompts into your coding tool one at a time, and run what it builds: `uv run agent.py "your customer message"`. Labs 32 to 34 carry on in the same folder.
+4. For Lab 35, make a second empty folder, copy `labs/lab-35-build-a-multi-agent-research-team/starter/sources.json` and your `.env` into it, and follow [Lab 35's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-35.html): `uv run research.py "Impact of AI on creative industries"`.
 
 The original Python simulators are still in `labs/simulators/` if you prefer to run Day 1 locally: double-click `labs/start-labs.command` (Mac) or `labs\start-labs.cmd` (Windows).
 
@@ -124,7 +125,7 @@ Every lab has its own folder with a step-by-step `README.md` and `README.pdf`. D
 | 29 | 5.5 | 6 | [The aggregate masks a segment: break it and watch](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=29) ([guide](labs/lab-29-the-aggregate-masks-a-segment-break-it/)) |
 | 30 | 5.6 | 3 | [A vendor benchmark isn't a peer-reviewed study](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab.html?n=30) ([guide](labs/lab-30-a-vendor-benchmark-isn-t-a-peer-reviewed/)) |
 
-### Day 2: vibe-code one customer resolution agent, in four labs
+### Day 2 · Bonus Topic A: build a customer resolution agent with MCP and hooks
 
 You paste prompts, read the code your AI coding tool writes, and run it. Each lab has a prompt page with a Copy button on every prompt, a `solution/` folder and a real run in `sample-output.txt`.
 
@@ -135,32 +136,42 @@ You paste prompts, read the code your AI coding tool writes, and run it. Each la
 | 33 | 1.5, 1.4 | [Vibe-code a PreToolUse hook that blocks the $780 refund](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-33.html) ([folder](labs/lab-33-pretooluse-hook-blocks-the-780-refund/)) |
 | 34 | 1.5 | [Vibe-code a PostToolUse hook that cleans the data, then prove the agent works](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-34.html) ([folder](labs/lab-34-posttooluse-hook-cleans-the-data/)) |
 
-### Bonus: hand-written code builds
-
-Optional builds in curl, the Python SDK and Claude Code (save your key once in `labs/` with `uv run set_api_key.py`; Labs 40 and 41 also need Claude Code). The [practice exam](https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations) is a bonus too.
+### Day 2 · Bonus Topic B: build a multi-agent research team
 
 | Lab | Tasks | What you build |
 |---|---|---|
-| 35 | 1.1 | [From one API call to a working agent loop](labs/lab-35-first-api-call-to-agent-loop/) |
-| 36 | 1.5 | [Build the hooks that the prompt can't be trusted with](labs/lab-36-build-agent-hooks/) |
-| 37 | 1.2, 1.3 | [Be the coordinator: brief your subagents or they work blind](labs/lab-37-coordinator-and-subagents/) |
-| 38 | 2.1, 2.3 | [Write the tool description Claude actually reads](labs/lab-38-tool-design-and-tool-choice/) |
-| 39 | 2.4 | [Build an MCP server once, plug it into any agent](labs/lab-39-build-an-mcp-server/) |
-| 40 | 3.2, 3.3 | [Teach Claude Code your repo: a /review skill and a rule that loads only for tests](labs/lab-40-skills-and-path-rules/) |
-| 41 | 3.6 | [Put Claude Code in the pipeline and let the exit code decide](labs/lab-41-claude-code-in-ci/) |
-| 42 | 4.3 | [Valid JSON is the floor: check the meaning yourself](labs/lab-42-structured-output/) |
-| 43 | 4.5 | [Half price, no hurry: triage tickets with the Batches API](labs/lab-43-message-batches/) |
-| 44 | 5.1 | [Keep the facts, cache the handbook](labs/lab-44-context-and-prompt-caching/) |
-| 45 | 5.3 | [When a subagent fails, tell the coordinator everything](labs/lab-45-error-propagation/) |
+| 35 | 1.2, 1.3, 5.3 | [Vibe-code a multi-agent research team](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-35.html) ([folder](labs/lab-35-build-a-multi-agent-research-team/)) |
+
+### Bonus practice exam
+
+Sit the [practice exam](https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations) in Practice mode.
+
+### Extra: hand-written code builds (optional)
+
+Optional builds in curl, the Python SDK and Claude Code (save your key once in `labs/` with `uv run set_api_key.py`; Labs 41 and 42 also need Claude Code).
+
+| Lab | Tasks | What you build |
+|---|---|---|
+| 36 | 1.1 | [From one API call to a working agent loop](labs/lab-36-first-api-call-to-agent-loop/) |
+| 37 | 1.5 | [Build the hooks that the prompt can't be trusted with](labs/lab-37-build-agent-hooks/) |
+| 38 | 1.2, 1.3 | [Be the coordinator: brief your subagents or they work blind](labs/lab-38-coordinator-and-subagents/) |
+| 39 | 2.1, 2.3 | [Write the tool description Claude actually reads](labs/lab-39-tool-design-and-tool-choice/) |
+| 40 | 2.4 | [Build an MCP server once, plug it into any agent](labs/lab-40-build-an-mcp-server/) |
+| 41 | 3.2, 3.3 | [Teach Claude Code your repo: a /review skill and a rule that loads only for tests](labs/lab-41-skills-and-path-rules/) |
+| 42 | 3.6 | [Put Claude Code in the pipeline and let the exit code decide](labs/lab-42-claude-code-in-ci/) |
+| 43 | 4.3 | [Valid JSON is the floor: check the meaning yourself](labs/lab-43-structured-output/) |
+| 44 | 4.5 | [Half price, no hurry: triage tickets with the Batches API](labs/lab-44-message-batches/) |
+| 45 | 5.1 | [Keep the facts, cache the handbook](labs/lab-45-context-and-prompt-caching/) |
+| 46 | 5.3 | [When a subagent fails, tell the coordinator everything](labs/lab-46-error-propagation/) |
 
 Questions come from the exam guide's task statements and official samples, and from SkillCertPro's Part 1 practice exam (third-party and unofficial, so treat them as practice material, never as real exam items). After the course, sit the [practice exam](https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations) under timed conditions.
 
 ## In this repository
 
-- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.1.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.1.pdf)
-- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v2.9.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v2.9.pdf)
-- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v2.9.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v2.9.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v2.9.md)
-- [The labs folder](labs/): 45 lab folders (30 Day 1, 4 Day 2, 11 bonus) and the six Python simulators
+- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.2.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.2.pdf)
+- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v3.0.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v3.0.pdf)
+- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v3.0.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v3.0.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v3.0.md)
+- [The labs folder](labs/): 46 lab folders (30 Day 1, 5 Day 2, 11 optional code builds) and the six Python simulators
 - [`docs/`](docs/): the [Day 1 simulator](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) (GitHub Pages)
 
 ## What isn't here

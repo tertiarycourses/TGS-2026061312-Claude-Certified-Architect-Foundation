@@ -9,6 +9,7 @@
   ],
   "short": "The agent loop, Python SDK",
   "core": true,
+  "group": "A",
   "prompts": "lab-31.html"
  },
  {
@@ -21,6 +22,7 @@
   ],
   "short": "MCP server for the tools",
   "core": true,
+  "group": "A",
   "prompts": "lab-32.html"
  },
  {
@@ -33,6 +35,7 @@
   ],
   "short": "PreToolUse hook",
   "core": true,
+  "group": "A",
   "prompts": "lab-33.html"
  },
  {
@@ -44,11 +47,26 @@
   ],
   "short": "PostToolUse hook + tests",
   "core": true,
+  "group": "A",
   "prompts": "lab-34.html"
  },
  {
   "id": 35,
-  "slug": "lab-35-first-api-call-to-agent-loop",
+  "slug": "lab-35-build-a-multi-agent-research-team",
+  "title": "Vibe-code a multi-agent research team",
+  "tasks": [
+   "1.2",
+   "1.3",
+   "5.3"
+  ],
+  "short": "Multi-agent research team",
+  "core": true,
+  "group": "B",
+  "prompts": "lab-35.html"
+ },
+ {
+  "id": 36,
+  "slug": "lab-36-first-api-call-to-agent-loop",
   "title": "From one API call to a working agent loop",
   "tasks": [
    "1.1"
@@ -57,8 +75,8 @@
   "short": "API call to a working agent loop"
  },
  {
-  "id": 36,
-  "slug": "lab-36-build-agent-hooks",
+  "id": 37,
+  "slug": "lab-37-build-agent-hooks",
   "title": "Build the hooks that the prompt can't be trusted with",
   "tasks": [
    "1.5"
@@ -67,8 +85,8 @@
   "short": "Build the hooks that the prompt can't "
  },
  {
-  "id": 37,
-  "slug": "lab-37-coordinator-and-subagents",
+  "id": 38,
+  "slug": "lab-38-coordinator-and-subagents",
   "title": "Be the coordinator: brief your subagents or they work blind",
   "tasks": [
    "1.2",
@@ -78,8 +96,8 @@
   "short": "coordinator: brief your subagents or t"
  },
  {
-  "id": 38,
-  "slug": "lab-38-tool-design-and-tool-choice",
+  "id": 39,
+  "slug": "lab-39-tool-design-and-tool-choice",
   "title": "Write the tool description Claude actually reads",
   "tasks": [
    "2.1",
@@ -89,8 +107,8 @@
   "short": "tool description Claude actually reads"
  },
  {
-  "id": 39,
-  "slug": "lab-39-build-an-mcp-server",
+  "id": 40,
+  "slug": "lab-40-build-an-mcp-server",
   "title": "Build an MCP server once, plug it into any agent",
   "tasks": [
    "2.4"
@@ -99,8 +117,8 @@
   "short": "MCP server once, plug it into any agen"
  },
  {
-  "id": 40,
-  "slug": "lab-40-skills-and-path-rules",
+  "id": 41,
+  "slug": "lab-41-skills-and-path-rules",
   "title": "Teach Claude Code your repo: a /review skill and a rule that loads only for tests",
   "tasks": [
    "3.2",
@@ -110,8 +128,8 @@
   "short": "a /review skill and a rule that loads "
  },
  {
-  "id": 41,
-  "slug": "lab-41-claude-code-in-ci",
+  "id": 42,
+  "slug": "lab-42-claude-code-in-ci",
   "title": "Put Claude Code in the pipeline and let the exit code decide",
   "tasks": [
    "3.6"
@@ -120,8 +138,8 @@
   "short": "Claude Code in the pipeline and let th"
  },
  {
-  "id": 42,
-  "slug": "lab-42-structured-output",
+  "id": 43,
+  "slug": "lab-43-structured-output",
   "title": "Valid JSON is the floor: check the meaning yourself",
   "tasks": [
    "4.3"
@@ -130,8 +148,8 @@
   "short": "check the meaning yourself"
  },
  {
-  "id": 43,
-  "slug": "lab-43-message-batches",
+  "id": 44,
+  "slug": "lab-44-message-batches",
   "title": "Half price, no hurry: triage tickets with the Batches API",
   "tasks": [
    "4.5"
@@ -140,8 +158,8 @@
   "short": "triage tickets with the Batches API"
  },
  {
-  "id": 44,
-  "slug": "lab-44-context-and-prompt-caching",
+  "id": 45,
+  "slug": "lab-45-context-and-prompt-caching",
   "title": "Keep the facts, cache the handbook",
   "tasks": [
    "5.1"
@@ -150,8 +168,8 @@
   "short": "cache the handbook"
  },
  {
-  "id": 45,
-  "slug": "lab-45-error-propagation",
+  "id": 46,
+  "slug": "lab-46-error-propagation",
   "title": "When a subagent fails, tell the coordinator everything",
   "tasks": [
    "5.3"

@@ -24,11 +24,11 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 <nav class="top"><a href="../index.html">All labs</a><a href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation">GitHub repo</a><a href="https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations">Practice exam</a></nav></div></header>
 <main class="wrap"><p><a class="btn" href="https://github.com/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/tree/master/labs/lab-34-posttooluse-hook-cleans-the-data">Open the folder on GitHub</a><a class="btn alt" href="../lab-34.html">Copy the prompts</a><a class="btn alt" href="lab-34-posttooluse-hook-cleans-the-data.pdf">Download the PDF</a></p><h1>Lab 34: Vibe-code a PostToolUse hook that cleans the data, then prove the agent works</h1>
 <blockquote>
-<p>Day 2 · Lab 34 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statement 1.5 · Vibe-coding lab · Claude Haiku 5.5 · 45 minutes</p>
+<p>Day 2 · Bonus Topic A · Lab 34 of 4 (one agent, built in four steps) · Scenario 1: Customer Support Resolution Agent · Task statement 1.5 · Vibe-coding lab · Claude Haiku 5.5 · 45 minutes</p>
 </blockquote>
 <p><strong>In Lab 31, Mei Lin asked where her monitor arm was, and Claude got <code>"status": 2</code> and a Unix timestamp. It had to guess. Clean every tool result in code before Claude reads it, log every hook decision, then prove the whole agent with nine live checks.</strong></p>
 <p><strong>Lab page:</strong> <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/">the main lab page</a> lists every lab. Copy the prompts from <a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-34.html">this lab's prompt page</a>, or from <code>prompts.html</code> in this folder.</p>
-<h2>Day 2: one agent, four labs</h2>
+<h2>Bonus Topic A: one agent, four labs</h2>
 <table>
 <thead>
 <tr>
@@ -60,6 +60,7 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 </tr>
 </tbody>
 </table>
+<p>Bonus Topic B, Lab 35, builds a multi-agent research team in a project folder of its own.</p>
 <h2>What you'll build</h2>
 <pre><code>  customer message
         |
@@ -169,7 +170,7 @@ Run `uv run test_agent.py`. If a check fails, show me why and fix agent.py or ho
 </tbody>
 </table>
 <p>To run the finished reference agent, go into <code>solution/</code>, copy <code>.env.example</code> to <code>.env</code>, add your key, then run <code>uv run test_agent.py</code>. Our run is in <code>sample-output.txt</code>.</p>
-<h2>Stretch · The same hooks in the Claude Agent SDK (Bonus Lab 36)</h2>
+<h2>Stretch · The same hooks in the Claude Agent SDK (Bonus Lab 37)</h2>
 <pre><code class="language-text">Make agent_sdk.py: the same agent built with the Claude Agent SDK (uv add claude-agent-sdk), model claude-haiku-5-5.
 Connect support_server.py as an external stdio MCP server, and register the two rules from hooks.py as a PreToolUse
 HookMatcher (deny process_refund above 500) and a PostToolUse HookMatcher (normalise placed_at and status).

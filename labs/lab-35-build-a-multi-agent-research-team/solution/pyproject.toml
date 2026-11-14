@@ -1,0 +1,6 @@
+[project]
+name = "research-team"
+version = "0.1.0"
+description = "A multi-agent research team: coordinator + subagents (TGS-2026061312 Day 2, Lab 35)"
+requires-python = ">=3.10"
+dependencies = ["anthropic>=2.0", "python-dotenv>=1.0"]
