@@ -16,7 +16,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 
 ## About the course
 
-You learn architecture judgement for agentic systems: when a prompt is enough, when a rule must live in code, and how to prove a system stays useful when tools fail, context grows and confidence runs out. Day 1 covers the six exam scenarios and the five domains on a simulator that runs in your browser: for each of the 30 task statements you answer an exam-style question, press Simulate it live, watch the code run, read Claude's final output and the observation explained. Day 2 is eleven hands-on Python builds: the API and the agent loop, PreToolUse/PostToolUse hooks, subagents, tool design, an MCP server, a skill, Claude Code in CI, structured output, batches, caching and error handling.
+You learn architecture judgement for agentic systems: when a prompt is enough, when a rule must live in code, and how to prove a system stays useful when tools fail, context grows and confidence runs out. Day 1 covers the six exam scenarios and the five domains on a simulator that runs in your browser: for each of the 30 task statements you answer an exam-style question, press Simulate it live, watch the code run and a live diagram of the lab's own pattern (the agentic loop, the hook gates, a coordinator spawning its subagents, or separate passes and session forks), then read Claude's final output and the observation explained. Day 2 is eleven hands-on Python builds: the API and the agent loop, PreToolUse/PostToolUse hooks, subagents, tool design, an MCP server, a skill, Claude Code in CI, structured output, batches, caching and error handling.
 
 ## Learning outcomes
 

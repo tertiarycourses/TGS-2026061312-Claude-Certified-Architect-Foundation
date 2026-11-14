@@ -65,22 +65,22 @@ messages.append([run(b) for b in r.content
     // 2. The agentic loop.
     for (let turn = 1; turn <= 10; turn++) {                 // a hard cap: a confused loop stops at 10 turns
       s.log(`Turn ${turn}: POST ${API_URL} · model ${MODEL} · ${messages.length} message${messages.length > 1 ? "s" : ""}`, "turn");
-      s.step("call");
+      await s.step("call");                                 // light the "Claude" box while the POST is in flight
       r = await callClaude(messages);
       messages.push({ role: "assistant", content: r.content }); // keep Claude's whole turn
       const uses = r.content.filter((b) => b.type === "tool_use");
-      s.step("check");
+      await s.step("check");
       s.trace.push({ label: "", turn, stop_reason: r.stop_reason, tools: uses.map((u) => ({ name: u.name, input: u.input })), text: E.textOf(r.content) });
       if (r.stop_reason !== "tool_use") {                     // end_turn: Claude has finished
-        s.step("stop");
+        await s.step("stop");
         s.log(`  stop_reason: ${r.stop_reason} -> STOP: Claude has finished (model replied: ${r.model})`, "stop");
         break;
       }
       s.log(`  stop_reason: tool_use -> CONTINUE: run the tool, append the result, call Claude again`, "stop");
       const results = [];
       for (const [i, u] of uses.entries()) {
-        s.step("tool");
         s.log(`  -> ${u.name}(${E.short(u.input, 120)})`, "call");
+        await s.step("tool");                                 // light "Run the tool" (the page pauses so you see it)
         const out = tools[u.name].run(u.input);
         const isError = !!out?.isError;
         s.log(`  <- ${isError ? "!! error: " : "result: "}${E.short(out, 150)}`, isError ? "error" : "result");
@@ -88,7 +88,7 @@ messages.append([run(b) for b in r.content
         calls.push({ name: u.name, input: u.input, result: out });
         results.push({ type: "tool_result", tool_use_id: u.id, content: JSON.stringify(out), ...(isError ? { is_error: true } : {}) });
       }
-      s.step("append");
+      await s.step("append");
       messages.push({ role: "user", content: results });      // every result goes back, in one message
     }
 

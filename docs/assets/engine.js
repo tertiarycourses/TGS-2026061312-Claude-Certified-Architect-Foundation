@@ -10,7 +10,8 @@ export function makeSession(apiKey, log) {
   const s = { apiKey, log: log || ((l) => console.log(l)), usage: { input: 0, output: 0, calls: 0 }, stopped: false,
               trace: [],               // one entry per Claude turn: { label, turn, stop_reason, tools, text }
               requests: [],            // every request body sent, so the page can show each call as curl
-              step: () => {} };        // the page highlights the loop line that is running: "call" | "check" | "tool" | "append" | "stop"
+              step: () => {},          // the page lights the loop box + code line that is running (awaited: it may pause so you can see it): "call" | "check" | "tool" | "append" | "stop"
+              agent: () => {} };       // the page draws each agent run: { event: "start" | "turn" | "end", label, ... }
   s.cost = () => s.usage.input * PRICE.in + s.usage.output * PRICE.out;
   return s;
 }
@@ -68,9 +69,10 @@ export async function runAgent(s, o) {
   const calls = [];
   const maxTurns = o.maxTurns || 8;
   let resp = null, turn = 0;
+  s.agent?.({ event: "start", label: o.label || "" });
   for (turn = 1; turn <= maxTurns; turn++) {
     s.log(`${indent}${tag}Turn ${turn}: POST /v1/messages · model ${MODEL} · ${messages.length} message${messages.length > 1 ? "s" : ""}${turn > 1 ? " (tool results appended)" : ""}`, "turn");
-    s.step("call");
+    await s.step("call");
     resp = await callClaude(s, {
       system: o.system, messages,
       ...(toolDefs.length ? { tools: toolDefs } : {}),
@@ -82,11 +84,12 @@ export async function runAgent(s, o) {
     const said = textOf(resp.content).trim();
     if (said && resp.stop_reason === "tool_use") s.log(`${indent}  Claude: ${short(said, 160)}`, "text");
     const uses = resp.content.filter((b) => b.type === "tool_use");
-    s.step("check");
+    await s.step("check");
     const t = { label: o.label || "", turn, stop_reason: resp.stop_reason, tools: uses.map((u) => ({ name: u.name, input: u.input })), text: said };
     s.trace.push(t);
+    s.agent?.({ event: "turn", ...t });
     if (resp.stop_reason !== "tool_use") {
-      s.step("stop");
+      await s.step("stop");
       s.log(`${indent}  stop_reason: ${resp.stop_reason} -> STOP: Claude has finished${o.label ? " (the subagent returns its answer)" : ""}`, "stop");
       break;
     }
@@ -94,32 +97,35 @@ export async function runAgent(s, o) {
     const results = [];
     for (const [i, u] of uses.entries()) {
       s.log(`${indent}  -> ${u.name}(${short(u.input, 120)})`, "call");
-      s.step("tool");
       const rec = { name: u.name, input: u.input, turn };
       let out, isError = false;
+      if (o.preToolUse) await s.step("pre");
       const verdict = o.preToolUse ? await o.preToolUse(u.name, u.input, o.ctx) : null;
       if (verdict && verdict.deny) {
+        await s.step("deny");
         out = { isError: true, blocked_by: "hook", reason: verdict.deny }; isError = true; rec.denied = verdict.deny;
         s.log(`${indent}  !! hook blocked ${u.name}: ${verdict.deny}`, "deny");
       } else {
+        await s.step("tool");
         const tool = o.tools[u.name];
         try {
           out = tool ? await tool.run(u.input, o.ctx) : { isError: true, message: `No tool called ${u.name}` };
         } catch (e) { out = { isError: true, message: String(e.message || e) }; }
         isError = !!(out && typeof out === "object" && out.isError);
-        if (o.postToolUse) { const changed = await o.postToolUse(u.name, u.input, out, o.ctx); if (changed !== undefined) out = changed; }
+        if (o.postToolUse) { await s.step("post"); const changed = await o.postToolUse(u.name, u.input, out, o.ctx); if (changed !== undefined) out = changed; }
         s.log(`${indent}  <- ${isError ? "!! error: " : "result: "}${short(out, 150)}`, isError ? "error" : "result");
       }
       rec.result = out; rec.isError = isError; calls.push(rec);
       Object.assign(t.tools[i], { result: out, isError, denied: rec.denied });
       results.push({ type: "tool_result", tool_use_id: u.id, content: typeof out === "string" ? out : JSON.stringify(out), ...(isError ? { is_error: true } : {}) });
     }
-    s.step("append");
+    await s.step("append");
     messages.push({ role: "user", content: results });
     if (turn === maxTurns) s.log(`${indent}  Turn cap of ${maxTurns} reached: the loop stops here, so a confused agent can't run forever.`, "stop");
   }
   const text = textOf(resp?.content);
   if (text.trim()) s.log(`${indent}${o.label ? tag + "answer" : "Reply"}: ${short(text, o.label ? 220 : 600)}`, "reply");
+  s.agent?.({ event: "end", label: o.label || "", stop_reason: resp?.stop_reason, turns: Math.min(turn, maxTurns), calls: calls.length, denied: calls.filter((c) => c.denied).length });
   return { messages, text, calls, turns: Math.min(turn, maxTurns), stop_reason: resp?.stop_reason };
 }
 

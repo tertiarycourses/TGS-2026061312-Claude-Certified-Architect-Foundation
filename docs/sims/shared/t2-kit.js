@@ -9,7 +9,8 @@ export async function oneShot(s, E, o) {
   const toolDefs = Object.entries(o.tools || {}).map(([name, t]) => ({ name, description: t.description, input_schema: t.input_schema, ...(t.strict ? { strict: true } : {}) }));
   s.log(`${tag}One call: sending the request to Claude with ${toolDefs.length} tool${toolDefs.length === 1 ? "" : "s"} [${toolDefs.map((t) => t.name).join(", ")}]` +
         `${o.tool_choice ? `, tool_choice ${JSON.stringify(o.tool_choice)}` : ""}`, "turn");
-  s.step("call");
+  s.agent?.({ event: "start", label: o.label || "" });
+  await s.step("call");
   const resp = await E.callClaude(s, {
     ...(o.system ? { system: o.system } : {}),
     messages: [{ role: "user", content: o.prompt }],
@@ -17,24 +18,26 @@ export async function oneShot(s, E, o) {
     ...(o.tool_choice ? { tool_choice: o.tool_choice } : {}),
     max_tokens: o.max_tokens || 2048,
   });
-  s.step("check");
+  await s.step("check");
   const text = E.textOf(resp.content).trim();
   const use = resp.content.find((b) => b.type === "tool_use");
   const t = { label: o.label || "", turn: 1, stop_reason: resp.stop_reason, tools: use ? [{ name: use.name, input: use.input }] : [], text };
   s.trace.push(t);
+  s.agent?.({ event: "turn", ...t });
   s.log(`  stop_reason: ${resp.stop_reason}${use ? "" : " (no tool call: Claude answered in prose)"}`, "stop");
   if (text) s.log(`  Claude: ${E.short(text, 200)}`, "text");
   let result = null, isError = false;
   if (use) {
     s.log(`  -> ${use.name}(${E.short(use.input, 140)})`, "call");
-    s.step("tool");
+    await s.step("tool");
     const tool = o.tools[use.name];
     result = tool && tool.run ? await tool.run(use.input) : { received: true };
     isError = !!(result && typeof result === "object" && result.isError);
     s.log(`  <- ${isError ? "!! " : ""}${E.short(result, 150)}`, isError ? "error" : "result");
     Object.assign(t.tools[0], { result, isError });
   }
-  s.step("stop");
+  await s.step("stop");
+  s.agent?.({ event: "end", label: o.label || "", stop_reason: resp.stop_reason, turns: 1, calls: use ? 1 : 0, denied: 0 });
   return { name: use ? use.name : null, input: use ? use.input : null, result, text, stop_reason: resp.stop_reason };
 }
 

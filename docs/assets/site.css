@@ -61,3 +61,39 @@ pre.code.wrap{white-space:pre-wrap;word-break:break-word}
 .loopsvg path{fill:none;stroke:#5F5C56;stroke-width:1.6}
 .loopsvg .n.hot rect,.loopsvg .n.hot polygon{fill:#C9603A;stroke:#C9603A}.loopsvg .n.hot text{fill:#fff}
 .loopsvg .n.done rect{fill:#2F6F6D;stroke:#2F6F6D}.loopsvg .n.done text{fill:#fff}
+
+/* the agentic loop: the path taken this turn stays shaded */
+.loopsvg .n.trail rect,.loopsvg .n.trail polygon{fill:#F6E3D9}
+.loopsvg .n.hot rect,.loopsvg .n.hot polygon{fill:#C9603A;stroke:#C9603A}.loopsvg .n.hot text{fill:#fff}
+.loopsvg .n.deny.trail rect{fill:#F4D4D0;stroke:#B3261E}
+.loopsvg .n.deny.hot rect{fill:#B3261E;stroke:#B3261E}
+details.loopdet{margin:-4px 0 12px}details.loopdet>summary{font-weight:600}
+/* the live run map: one row per phase, one box per Claude run */
+.runmap{display:flex;flex-direction:column;gap:12px;margin:8px 0 4px}
+.rmphase .ph{font-size:.82em;font-weight:700;color:var(--muted,#5F5C56);margin-bottom:5px}
+.rmrow{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+.rmgroup{display:flex;align-items:center;gap:0;flex-wrap:wrap}
+.rm{background:#fff;border:1.5px solid #5F5C56;border-radius:8px;padding:7px 11px;min-width:150px;max-width:250px;transition:background .2s}
+.rm .tag{display:block;font-size:.68em;text-transform:uppercase;letter-spacing:.06em;color:#5F5C56}
+.rm b{display:block;font-size:.9em;line-height:1.25}
+.rm small{display:block;font-size:.74em;color:#5F5C56;margin-top:3px;font-family:Consolas,Menlo,monospace}
+.rm.main{border-width:2px;min-width:170px}
+.rm.ghost{border-style:dashed;opacity:.7}
+.rm.hot{background:#C9603A;border-color:#C9603A}.rm.hot *{color:#fff!important}
+.rm.wait{background:#F6E3D9;border-color:#C9603A}
+.rm.done{background:#2F6F6D;border-color:#2F6F6D}.rm.done *{color:#fff!important}
+.rm.warn{background:#fff;border-color:#B3261E}
+.rmkids{display:flex;align-items:center}.rmkids.none{display:none}
+.rmlink{font-size:.7em;color:#2F6F6D;font-weight:700;text-align:center;padding:0 8px;border-top:1.5px solid #2F6F6D;margin:0 2px;white-space:nowrap;line-height:1.5;padding-top:3px}
+.rmsubs{display:flex;flex-direction:column;gap:6px;border-left:2px solid #2F6F6D;padding-left:8px}
+.rmsubs .rm{min-width:170px}
+.rmkey{white-space:nowrap}.rmkey .k{display:inline-block;width:11px;height:11px;border-radius:3px;margin:0 3px 0 10px;vertical-align:-1px;border:1.5px solid #5F5C56}
+.rmkey .k.hot{background:#C9603A;border-color:#C9603A}.rmkey .k.done{background:#2F6F6D;border-color:#2F6F6D}.rmkey .k.wait{background:#F6E3D9;border-color:#C9603A}
+.loopsvg .n.done rect,.loopsvg .n.done.trail rect{fill:#2F6F6D;stroke:#2F6F6D}.loopsvg .n.done text{fill:#fff}
+/* the arrow being followed right now, and the arrows taken this turn */
+.loopsvg path.trail{stroke:#E2B19B}
+.loopsvg path.hot{stroke:#C9603A;stroke-width:3}
+.loopsvg path.hot[marker-end]{marker-end:url(#ar-hot)}
+.loopsvg.hk path.hot[marker-end]{marker-end:url(#arh-hot)}
+.loopsvg .n rect,.loopsvg .n polygon,.loopsvg path{transition:fill .25s,stroke .25s}
+.loopsvg .n.hot rect,.loopsvg .n.hot polygon{filter:drop-shadow(0 0 6px rgba(201,96,58,.55))}

@@ -164,20 +164,22 @@ export async function agentLoop(s, E, o) {
   const messages = o.messages ? [...o.messages] : [{ role: "user", content: o.prompt }];
   const calls = [], maxTurns = o.maxTurns || 8;
   let resp = null, turn = 0;
+  s.agent?.({ event: "start", label: o.label || "" });
   for (turn = 1; turn <= maxTurns; turn++) {
     s.log(`${indent}${tag}Turn ${turn}: sending the conversation to Claude${turn > 1 ? ", with the tool results appended" : ""}`, "turn");
-    s.step("call");
+    await s.step("call");
     resp = await E.callClaude(s, { system: o.system, messages, ...(toolDefs.length ? { tools: toolDefs } : {}),
       ...(o.output_config ? { output_config: o.output_config } : {}), ...(o.max_tokens ? { max_tokens: o.max_tokens } : {}) });
     messages.push({ role: "assistant", content: resp.content });
     const said = E.textOf(resp.content).trim();
     if (said && resp.stop_reason === "tool_use") s.log(`${indent}  Claude: ${E.short(said, 160)}`, "text");
     const uses = resp.content.filter((b) => b.type === "tool_use");
-    s.step("check");
+    await s.step("check");
     const t = { label: o.label || "", turn, stop_reason: resp.stop_reason, tools: uses.map((u) => ({ name: u.name, input: u.input })), text: said };
     s.trace.push(t);
+    s.agent?.({ event: "turn", ...t });
     if (resp.stop_reason !== "tool_use") {
-      s.step("stop");
+      await s.step("stop");
       s.log(`${indent}  stop_reason: ${resp.stop_reason} -> STOP: Claude has finished${o.label ? " (the subagent returns its answer)" : ""}`, "stop");
       break;
     }
@@ -185,7 +187,7 @@ export async function agentLoop(s, E, o) {
     const results = [], attach = [];
     for (const [i, u] of uses.entries()) {
       s.log(`${indent}  -> ${u.name}(${E.short(u.input, 120)})`, "call");
-      s.step("tool");
+      await s.step("tool");
       const rec = { name: u.name, input: u.input, turn };
       let out, isError = false;
       const verdict = o.preToolUse ? await o.preToolUse(u.name, u.input) : null;
@@ -203,12 +205,13 @@ export async function agentLoop(s, E, o) {
       Object.assign(t.tools[i], { result: out, isError, denied: rec.denied });
       results.push({ type: "tool_result", tool_use_id: u.id, content: typeof out === "string" ? out : JSON.stringify(out), ...(isError ? { is_error: true } : {}) });
     }
-    s.step("append");
+    await s.step("append");
     messages.push({ role: "user", content: [...results, ...attach.map((text) => ({ type: "text", text }))] });
     if (turn === maxTurns) s.log(`${indent}  Turn cap of ${maxTurns} reached: the loop stops here, so a confused agent can't run forever.`, "stop");
   }
   const text = E.textOf(resp?.content);
   if (text.trim()) s.log(`${indent}${o.label ? tag + "answer" : "Reply"}: ${E.short(text, o.label ? 220 : 600)}`, "reply");
+  s.agent?.({ event: "end", label: o.label || "", stop_reason: resp?.stop_reason, turns: Math.min(turn, maxTurns), calls: calls.length, denied: calls.filter((c) => c.denied).length });
   return { messages, text, calls, turns: Math.min(turn, maxTurns), stop_reason: resp?.stop_reason };
 }
 
