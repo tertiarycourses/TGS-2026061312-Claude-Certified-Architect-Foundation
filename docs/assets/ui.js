@@ -1,5 +1,8 @@
 // Page layer for the simulator site: sidebar (API key + the five topics), the home page and each lab page.
 import * as E from "./engine.js";
+// Eye icons for the API key field (show / hide the key).
+const EYE = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>';
 
 const KEY = "ccarf_anthropic_key";
 const COL = { 1: "#C9603A", 2: "#2F6F6D", 3: "#A84F2E", 4: "#A06A12", 5: "#A93F32" };
@@ -59,7 +62,7 @@ function sidebar(D, here) {
     <div class="course">Claude Certified Architect Foundation</div>
     <div class="keybox">
       <div>Anthropic API key: <span class="keystate"></span></div>
-      <div class="keyrow"><input type="password" id="key" placeholder="sk-ant-..." autocomplete="off" spellcheck="false"><button id="show" title="Show or hide the key">Show</button></div>
+      <div class="keyrow"><input type="password" id="key" placeholder="sk-ant-..." autocomplete="off" spellcheck="false"><button id="show" class="eye" type="button" title="Show the key" aria-label="Show the key">${EYE}</button></div>
       <div class="row"><button id="save">Save</button><button id="test">Test</button><button id="clear">Clear</button></div>
       <div id="keymsg" class="keymsg"></div>
       <div class="caption" style="margin-top:6px">Saved only in this browser and sent only to Anthropic. Every lab calls <code>claude-haiku-5-5</code>.</div>
@@ -71,7 +74,7 @@ function sidebar(D, here) {
   const msg = (text, ok) => { const m = $("#keymsg"); m.textContent = text; m.className = "keymsg " + (ok === undefined ? "" : ok ? "ok" : "no"); };
   const show = () => { const k = getKey(); const st = $(".keystate"); st.textContent = k ? "saved" : "not set"; st.className = "keystate " + (k ? "ok" : "no"); $("#key").value = k; };
   show();
-  $("#show").onclick = () => { const i = $("#key"); const hidden = i.type === "password"; i.type = hidden ? "text" : "password"; $("#show").textContent = hidden ? "Hide" : "Show"; };
+  $("#show").onclick = () => { const i = $("#key"); const hidden = i.type === "password"; i.type = hidden ? "text" : "password"; const b = $("#show"); b.innerHTML = hidden ? EYE_OFF : EYE; b.title = hidden ? "Hide the key" : "Show the key"; b.setAttribute("aria-label", b.title); };
   $("#save").onclick = () => {
     const v = $("#key").value.trim();
     if (!v.startsWith("sk-ant-")) { msg("That doesn't look like an Anthropic API key. It starts with sk-ant-.", false); return; }

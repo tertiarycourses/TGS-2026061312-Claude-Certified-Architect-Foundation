@@ -49,7 +49,7 @@ footer{color:var(--grey);font-size:.8em;margin-top:40px;border-top:1px solid var
 @media (max-width:860px){body{display:block}aside{width:auto;height:auto;position:static}main{padding:18px}}
 
 pre.code.wrap{white-space:pre-wrap;word-break:break-word}
-.keyrow{display:flex;gap:6px;align-items:center}.keyrow input{flex:1;margin:6px 0;font-family:Consolas,Menlo,monospace;font-size:.85em}.keyrow button{padding:7px 9px}
+.keyrow{position:relative;margin:6px 0}.keyrow input{display:block;width:100%;box-sizing:border-box;margin:0;padding:8px 38px 8px 9px;font-family:Consolas,Menlo,monospace;font-size:.85em}.keybox .keyrow button.eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);flex:none;width:30px;height:28px;padding:0;border:0;background:transparent;color:#666;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:4px}.keybox .keyrow button.eye:hover{color:var(--teal);background:#f2f2ee}
 .keybox .row button{padding:6px 4px}
 .keymsg{margin-top:6px;font-size:.88em;min-height:1.2em}.keymsg.ok{color:var(--teal);font-weight:600}.keymsg.no{color:var(--red);font-weight:600}
 .apibox{border-left:6px solid var(--orange)}
