@@ -40,7 +40,7 @@ By the end of the course, you will be able to:
 
 ## Six simulators
 
-Each simulator is one official exam scenario, written in Python on the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) and run with [uv](https://docs.astral.sh/uv/). It runs on your laptop with your own Anthropic API key, and every Claude call uses `claude-haiku-5-5`. The customers and data are fake. Claude is real.
+Each simulator is one official exam scenario. On Day 1 you run all six in the browser on the [Day 1 simulator](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/), with nothing to install. The folders below hold the same scenarios as optional local Python versions on the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview), run with [uv](https://docs.astral.sh/uv/). Either way you use your own Anthropic API key, and every Claude call goes to `claude-haiku-5-5`. The customers and data are fake. Claude is real.
 
 1. **[Customer Support Resolution Agent](labs/simulators/simulator-1-customer-support/)**: Your agent has refund powers. Prove it knows when not to use them.
 2. **[Code Generation with Claude Code](labs/simulators/simulator-2-code-generation/)**: Claude Code, configured so the whole team gets the same teammate.
@@ -51,7 +51,7 @@ Each simulator is one official exam scenario, written in Python on the [Claude A
 
 ### Day 1: nothing to install
 
-Open the **[Day 1 simulator](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/)**, paste your Anthropic API key (it starts with `sk-ant-`) into the sidebar, press **Save**, then **Test**. The key stays in your browser and is sent only to Anthropic. Every lab calls `claude-haiku-5-5`, so a whole lab usually costs under one US cent.
+Open the **[Day 1 simulator](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/)**, paste your Anthropic API key (it starts with `sk-ant-`) into the sidebar (the eye icon in the field shows or hides it), press **Save**, then **Test**. The key stays in your browser and is sent only to Anthropic. Every lab calls `claude-haiku-5-5`, so a whole lab usually costs under one US cent.
 
 ### Day 2: Python on your laptop
 

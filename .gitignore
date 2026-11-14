@@ -25,3 +25,9 @@
 **/my_cases/
 **/work/
 **/node_modules/
+
+# Distribution archives (rebuildable, never pushed to GitHub)
+*.zip
+
+# Source material the course was derived from, at any depth
+**/reference/
