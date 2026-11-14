@@ -4,6 +4,8 @@
 
 **Commit a skill and a path-scoped rule, and every teammate who clones the repo gets the same reviewer.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-36-skills-and-path-rules.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-36-skills-and-path-rules.html).
+
 ## What you'll do
 
 Run a project skill (/review) in Claude Code, then prove that a rule in .claude/rules/ with a paths: glob loads only when a matching file is in play.

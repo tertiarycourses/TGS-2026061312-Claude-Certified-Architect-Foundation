@@ -4,6 +4,8 @@
 
 **'search failed' got a blind retry and lost a source. A structured error got no wasted retry and an honest gap.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-41-error-propagation.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-41-error-propagation.html).
+
 ## What you'll do
 
 Make one of three search subagents time out, and compare a structured error (what failed, what was tried, partial results, retryable) with a generic one.

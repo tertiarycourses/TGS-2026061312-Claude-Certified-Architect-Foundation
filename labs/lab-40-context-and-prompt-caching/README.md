@@ -4,6 +4,8 @@
 
 **A 1,402-token policy is cached once and read back at a tenth of the price, while the case facts ride along every turn.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-40-context-and-prompt-caching.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-40-context-and-prompt-caching.html).
+
 ## What you'll do
 
 Run a three-turn support chat that caches a long policy handbook, restates a case-facts block every turn, and trims a 40-field tool record to the 5 fields that matter.

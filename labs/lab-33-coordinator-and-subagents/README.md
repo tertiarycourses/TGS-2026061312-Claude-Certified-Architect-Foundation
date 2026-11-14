@@ -4,6 +4,8 @@
 
 **A subagent starts with an empty head. Whatever the coordinator leaves out of the brief, the subagent never knows.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-33-coordinator-and-subagents.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-33-coordinator-and-subagents.html).
+
 ## What you'll do
 
 Build a coordinator that launches subagents as tool calls, runs them in parallel, and combines their findings. Then starve the subagents of context and watch what they lose.

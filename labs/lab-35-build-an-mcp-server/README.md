@@ -4,6 +4,8 @@
 
 **Write the order system's tools as an MCP server, then use it from your own Python agent AND from Claude Code without changing a line.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-35-build-an-mcp-server.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-35-build-an-mcp-server.html).
+
 ## What you'll do
 
 Build a stdio MCP server with two tools, one resource and structured errors; connect to it from a Python MCP client that drives Claude; then register it in .mcp.json for Claude Code.

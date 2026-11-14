@@ -4,6 +4,8 @@
 
 **Ten lines of loop are the whole agent. Write them yourself and watch stop_reason drive every turn.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-31-first-api-call-to-agent-loop.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-31-first-api-call-to-agent-loop.html).
+
 ## What you'll do
 
 Call Claude Haiku 5.5 three ways (curl, Python, TypeScript), read stop_reason, then write the agentic loop by hand: tool_use means run the tool and go round again, end_turn means stop.

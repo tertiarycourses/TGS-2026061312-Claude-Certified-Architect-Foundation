@@ -4,6 +4,8 @@
 
 **Same tools, same questions: vague descriptions got 2 of 4 wrong, clear ones got 0. Then take control with tool_choice.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-34-tool-design-and-tool-choice.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-34-tool-design-and-tool-choice.html).
+
 ## What you'll do
 
 Measure how tool descriptions change which tool Claude picks, then use tool_choice to decide who decides: Claude (auto), any tool (any) or one named tool (tool).

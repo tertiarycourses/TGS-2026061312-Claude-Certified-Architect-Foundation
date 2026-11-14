@@ -97,3 +97,4 @@ details.loopdet{margin:-4px 0 12px}details.loopdet>summary{font-weight:600}
 .loopsvg.hk path.hot[marker-end]{marker-end:url(#arh-hot)}
 .loopsvg .n rect,.loopsvg .n polygon,.loopsvg path{transition:fill .25s,stroke .25s}
 .loopsvg .n.hot rect,.loopsvg .n.hot polygon{filter:drop-shadow(0 0 6px rgba(201,96,58,.55))}
+.crumb{display:inline-block;font-size:.85em;font-weight:600;margin-bottom:8px;text-decoration:none}.crumb:hover{text-decoration:underline}

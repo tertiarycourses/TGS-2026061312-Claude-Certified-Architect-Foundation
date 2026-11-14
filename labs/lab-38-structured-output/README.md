@@ -4,6 +4,8 @@
 
 **The schema guarantees the shape. It cannot tell you the lines don't add up to the total.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-38-structured-output.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-38-structured-output.html).
+
 ## What you'll do
 
 Extract three invoices into one Pydantic schema, first with forced strict tool use, then with messages.parse; then catch a missing field and a wrong total in your own code.

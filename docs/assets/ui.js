@@ -129,6 +129,7 @@ export async function lab() {
   const prev = D.labs.find((x) => x.id === n - 1), next = D.labs.find((x) => x.id === n + 1);
   document.title = `Lab ${n}: ${l.title}`;
   $("main").innerHTML = `
+    <a class="crumb" href="index.html">◀ All labs: the main lab page</a>
     <div class="kicker" style="color:${COL[l.topic]}">Topic ${l.topic}: ${esc(l.topic_name)} · Simulator ${l.sim}: ${esc(l.sim_name)}</div>
     <h1>Lab ${n}: ${esc(l.title)}</h1>
     <div class="task-card" style="--c:${COL[l.topic]}"><div class="lbl">Task statement ${l.task}</div><div><b>${esc(l.task_title)}</b></div></div>

@@ -4,6 +4,8 @@
 
 **No keyboard in CI: claude -p, a JSON schema, a turn cap, and a gate that fails the build on a high finding.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-37-claude-code-in-ci.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-37-claude-code-in-ci.html).
+
 ## What you'll do
 
 Run Claude Code non-interactively, get schema-checked findings as JSON, and turn them into a pass/fail exit code your CI acts on.

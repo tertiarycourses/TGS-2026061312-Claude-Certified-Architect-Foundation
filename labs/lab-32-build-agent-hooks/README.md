@@ -4,6 +4,8 @@
 
 **A PreToolUse hook blocks a $780 refund before it runs; a PostToolUse hook cleans the data before Claude reads it.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-32-build-agent-hooks.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-32-build-agent-hooks.html).
+
 ## What you'll do
 
 Build an agent with the Claude Agent SDK (Python), give it three tools through an in-process MCP server, and register two hooks: PreToolUse denies refunds above $500 so Claude escalates, and PostToolUse normalises raw backend data (Unix timestamps, status codes) before Claude sees it.

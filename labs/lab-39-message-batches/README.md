@@ -4,6 +4,8 @@
 
 **Five tickets, one batch, results in a couple of minutes at 50% off, keyed by custom_id because they arrive in any order.**
 
+**Lab page:** [the main lab page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) lists every lab (Day 1 runs there live in your browser). This lab's guide online: [https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-39-message-batches.html](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/guides/lab-39-message-batches.html).
+
 ## What you'll do
 
 Submit a batch of classification requests, poll until it ends, and match each result to its ticket by custom_id.
