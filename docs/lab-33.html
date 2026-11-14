@@ -40,25 +40,18 @@ pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-s
         +-- MCP client == stdio ==&gt; support_server.py (4 tools)</pre>
 <p>The $500 limit lives in <code>hooks.py</code> only: not in the system prompt, not in the tool descriptions and not in the server. The hook decides, every time, whatever the model thinks.</p>
 <h2 id="what-s-in-this-folder">What's in this folder</h2>
-<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our build at the end of this lab. Copy it in if you didn't finish Lab 32.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of the $780 case from <code>solution/</code></td></tr></table></div>
+<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our finished code, for your trainer. You don't need it: build your own with the prompts.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of the $780 case from <code>solution/</code></td></tr></table></div>
 <h2 id="before-you-start">Before you start</h2>
-<p>Keep working in your project folder from Lab 32: <code>agent.py</code> must list the MCP tools and refund Mei Lin's $120 lamp. Didn't finish? Open your coding tool in an empty folder, paste this catch-up prompt, put your key in <code>.env</code> when it asks, and start here:</p>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Replace the code in this folder with the reference solution of Lab 32. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-32-move-the-tools-to-an-mcp-server/solution
-   and download every file in it (each file&#x27;s download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.</pre></div>
+<p>Keep working in your project folder from Lab 32: <code>agent.py</code> must list the MCP tools and refund Mei Lin's $120 lamp. Stuck? Ask your trainer.</p>
 <h2 id="step-1-watch-it-go-wrong-first-5-minutes-no-code-change">Step 1 · Watch it go wrong first (5 minutes, no code change)</h2>
 <h3>Prompt 1</h3>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p2">Copy prompt</button></div><pre id="p2">Do not change any code. Run this and show me the output:
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Do not change any code. Run this and show me the output:
 uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;
 Then tell me how much money left the company and who approved it.</pre></div>
 <p class="check"><strong>Checkpoint.</strong> <code>process_refund</code> runs for <strong>$780</strong>. Nobody approved it. This is Day 1 Lab 5, Phase 1, now in your own code.</p>
 <h2 id="step-2-add-the-pretooluse-hook-25-minutes">Step 2 · Add the PreToolUse hook (25 minutes)</h2>
 <h3>Prompt 2</h3>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p3">Copy prompt</button></div><pre id="p3">Create hooks.py with a PreToolUse hook and wire it into agent.py.
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p2">Copy prompt</button></div><pre id="p2">Create hooks.py with a PreToolUse hook and wire it into agent.py.
 
 - pre_tool_use(tool_name, tool_input) runs before EVERY tool call. It returns {&quot;decision&quot;: &quot;allow&quot;} or
   {&quot;decision&quot;: &quot;deny&quot;, &quot;reason&quot;: &quot;...&quot;}.
@@ -75,16 +68,8 @@ Run the Arjun $780 case again and show me the output.</pre></div>
 <h2 id="run-it">Run it</h2>
 <p>From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: &lt;command&gt; and show me the output."</p>
 <div class="tw"><table><tr><th>What</th><th>Command</th></tr><tr><td>Arjun's $780 desk: denied, then escalated</td><td><code>uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;</code></td></tr><tr><td>Mei Lin's $120 lamp: still allowed</td><td><code>uv run agent.py &quot;Hi, I&#x27;m meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;</code></td></tr></table></div>
-<p>To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in <code>.env</code> and run the same commands:</p>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p4">Copy prompt</button></div><pre id="p4">Replace the code in this folder with the reference solution of Lab 33. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-33-pretooluse-hook-blocks-the-780-refund/solution
-   and download every file in it (each file&#x27;s download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.</pre></div>
 <h2 id="stretch-an-identity-gate-day-1-lab-4">Stretch · An identity gate (Day 1, Lab 4)</h2>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p5">Copy prompt</button></div><pre id="p5">Add a second rule to pre_tool_use in hooks.py: deny lookup_order, process_refund and escalate_to_human until
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p3">Copy prompt</button></div><pre id="p3">Add a second rule to pre_tool_use in hooks.py: deny lookup_order, process_refund and escalate_to_human until
 get_customer has succeeded in this conversation. The deny reason should tell Claude to verify the customer by email first.
 Run: uv run agent.py &quot;Where is order ORD-5504?&quot; and show me the output.</pre></div>
 <p>Claude can't skip verification any more, however the customer words the request.</p>
@@ -92,7 +77,7 @@ Run: uv run agent.py &quot;Where is order ORD-5504?&quot; and show me the output
 <ul><li><strong>1.</strong> Why does a PreToolUse hook hold the $500 rule when a line in the prompt doesn't?</li><li><strong>2.</strong> What does Claude see when the hook denies a call, and why does the reason tell it what to do next?</li><li><strong>3.</strong> Could a PostToolUse hook do the same job? (Hint: when does it run?)</li></ul>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <div class="tw"><table><tr><th>You see</th><th>Fix prompt</th></tr><tr><td>The $780 refund still goes through</td><td>"pre_tool_use must run before session.call_tool, and a deny must skip the call."</td></tr><tr><td><code>tool_use ids were found without tool_result blocks</code></td><td>"A denied call still needs a tool_result, in the same user message as the others."</td></tr><tr><td>Claude retries process_refund again and again</td><td>"Send the deny reason as the tool_result content with is_error true."</td></tr><tr><td>Mei Lin's $120 refund is blocked too</td><td>"Deny only when amount &gt; 500."</td></tr></table></div>
-<p class="note">5 prompts on this page. Built from the lab's README.md.</p>
+<p class="note">3 prompts on this page. Built from the lab's README.md.</p>
 </main>
 <script>
 function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(t);return ok}

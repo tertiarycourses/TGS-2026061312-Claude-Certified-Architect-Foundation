@@ -30,7 +30,7 @@ pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-s
 <h2 id="bonus-topic-a-one-agent-four-labs">Bonus Topic A: one agent, four labs</h2>
 <div class="tw"><table><tr><th>Lab</th><th>You add</th><th>Exam tasks</th></tr><tr><td><strong>31 (this lab)</strong></td><td>the agentic loop and four tools, with the Anthropic Python SDK</td><td>1.1, 2.1</td></tr><tr><td>32</td><td>an MCP server for the tools; the agent becomes an MCP client</td><td>2.4, 2.2</td></tr><tr><td>33</td><td>a PreToolUse hook that blocks refunds above $500</td><td>1.5, 1.4</td></tr><tr><td>34</td><td>a PostToolUse hook that cleans raw data, and live tests</td><td>1.5</td></tr></table></div>
 <p>Bonus Topic B, Lab 35, builds a multi-agent research team in a project folder of its own.</p>
-<p>You build all four labs in <strong>one project folder</strong>. Each lab starts where the last one ended. If you fall behind, each lab starts with a catch-up prompt that downloads the previous lab's finished code.</p>
+<p>You build all four labs in <strong>one project folder</strong>. Each lab starts where the last one ended. If you get stuck, ask your trainer.</p>
 <h2 id="what-you-ll-build">What you'll build</h2>
 <pre class="plain">  customer message
         |
@@ -42,7 +42,7 @@ pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-s
                       (reads backend.json: Orderly&#x27;s customers and orders)</pre>
 <p>On Day 1 you watched this loop in Lab 1 and saw why tool descriptions matter in Lab 8. Today you build it.</p>
 <h2 id="what-s-in-this-folder">What's in this folder</h2>
-<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>starter/backend.json</code></td><td>Orderly's customers and orders (Scenario 1). Prompt 1 downloads it into your project.</td></tr><tr><td><code>starter/.env.example</code></td><td>the one line your <code>.env</code> needs</td></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our build at the end of this lab, made from these prompts. Peek only when you're stuck.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of <code>solution/agent.py</code> on the three customers</td></tr></table></div>
+<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>starter/backend.json</code></td><td>Orderly's customers and orders (Scenario 1). Prompt 1 downloads it into your project.</td></tr><tr><td><code>starter/.env.example</code></td><td>the one line your <code>.env</code> needs</td></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our finished code, for your trainer. You don't need it: build your own with the prompts.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of <code>solution/agent.py</code> on the three customers</td></tr></table></div>
 <h2 id="before-you-start-5-minutes">Before you start (5 minutes)</h2>
 <ul><li><strong>1. Open your AI coding tool in a new, empty folder</strong> called <code>orderly-agent</code> (Labs 31 to 34 all happen in this one folder). In VS Code, Cursor, Windsurf or Antigravity: <strong>File → Open Folder → New Folder</strong>. Claude Code or Codex in a terminal: start it from that folder. Any agent that can create files and run terminal commands works; the prompts use no tool-specific feature.</li><li><strong>2. Have your Anthropic API key ready.</strong> It starts with <code>sk-ant-</code>. You'll paste it into a file in Step 1, never into the chat.</li></ul>
 <p>That's all. <strong>Prompt 1 does the rest of the set-up:</strong> it installs uv (the Python tool) if your computer doesn't have it, downloads the lab's data file and creates the project.</p>
@@ -135,19 +135,11 @@ Then tell me, in two sentences, what went wrong in each run.</pre></div>
 <h2 id="run-it">Run it</h2>
 <p>From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: &lt;command&gt; and show me the output."</p>
 <div class="tw"><table><tr><th>What</th><th>Command</th></tr><tr><td>Run the agent on any message</td><td><code>uv run agent.py &quot;your customer message&quot;</code></td></tr><tr><td>Mei Lin's $120 lamp</td><td><code>uv run agent.py &quot;Hi, I&#x27;m meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;</code></td></tr><tr><td>Arjun's $780 desk</td><td><code>uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;</code></td></tr><tr><td>Mei Lin's monitor arm</td><td><code>uv run agent.py &quot;meilin@example.com here. Where is my monitor arm, order ORD-5504?&quot;</code></td></tr></table></div>
-<p>To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in <code>.env</code> and run the same commands:</p>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p5">Copy prompt</button></div><pre id="p5">Replace the code in this folder with the reference solution of Lab 31. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-31-build-the-customer-resolution-agent/solution
-   and download every file in it (each file&#x27;s download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.</pre></div>
 <h2 id="explain-it-back-with-your-trainer">Explain it back (with your trainer)</h2>
 <ul><li><strong>1.</strong> Which line in <code>agent.py</code> decides whether the loop goes round again? What else stops it?</li><li><strong>2.</strong> Why does every <code>tool_result</code> go back in one user message, and why must a failed tool still send one?</li><li><strong>3.</strong> Claude called <code>get_customer</code> first. Did the system prompt make it do that, or the tool description? Delete one, run it again and see.</li></ul>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <div class="tw"><table><tr><th>You see</th><th>Fix prompt</th></tr><tr><td><code>authentication_error</code> / 401</td><td>Check <code>.env</code> yourself: one line, no quotes, no spaces. Don't paste the key into the chat.</td></tr><tr><td><code>stop_reason=max_tokens</code> or an empty reply</td><td>"Set max_tokens to 4096 (Haiku 5.5 thinks before it answers)."</td></tr><tr><td><code>tool_use ids were found without tool_result blocks</code></td><td>"Send every tool_result in one user message right after the assistant turn."</td></tr><tr><td>The loop never stops</td><td>"Stop when stop_reason is not tool_use, and after 10 turns at most."</td></tr><tr><td>Claude invents an order</td><td>"Tools must read backend.json only. Check AGENTS.md."</td></tr></table></div>
-<p class="note">5 prompts on this page. Built from the lab's README.md.</p>
+<p class="note">4 prompts on this page. Built from the lab's README.md.</p>
 </main>
 <script>
 function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(t);return ok}

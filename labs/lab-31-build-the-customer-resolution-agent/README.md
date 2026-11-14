@@ -17,7 +17,7 @@
 
 Bonus Topic B, Lab 35, builds a multi-agent research team in a project folder of its own.
 
-You build all four labs in **one project folder**. Each lab starts where the last one ended. If you fall behind, each lab starts with a catch-up prompt that downloads the previous lab's finished code.
+You build all four labs in **one project folder**. Each lab starts where the last one ended. If you get stuck, ask your trainer.
 
 ## What you'll build
 
@@ -41,7 +41,7 @@ On Day 1 you watched this loop in Lab 1 and saw why tool descriptions matter in 
 | `starter/backend.json` | Orderly's customers and orders (Scenario 1). Prompt 1 downloads it into your project. |
 | `starter/.env.example` | the one line your `.env` needs |
 | `prompts.html` | every prompt below, each with a Copy button |
-| `solution/` | our build at the end of this lab, made from these prompts. Peek only when you're stuck. |
+| `solution/` | our finished code, for your trainer. You don't need it: build your own with the prompts. |
 | `sample-output.txt` | a live run of `solution/agent.py` on the three customers |
 
 ## Before you start (5 minutes)
@@ -182,19 +182,6 @@ From your project folder. Run them yourself in a terminal, or paste one into you
 | Mei Lin's $120 lamp | `uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."` |
 | Arjun's $780 desk | `uv run agent.py "This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount."` |
 | Mei Lin's monitor arm | `uv run agent.py "meilin@example.com here. Where is my monitor arm, order ORD-5504?"` |
-
-To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in `.env` and run the same commands:
-
-```text
-Replace the code in this folder with the reference solution of Lab 31. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-31-build-the-customer-resolution-agent/solution
-   and download every file in it (each file's download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.
-```
-
 
 ## Explain it back (with your trainer)
 

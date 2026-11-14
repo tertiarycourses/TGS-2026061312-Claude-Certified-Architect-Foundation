@@ -35,22 +35,12 @@ The agent no longer imports the tools. It starts the server, asks it which tools
 | File | What it is |
 |---|---|
 | `prompts.html` | every prompt below, each with a Copy button |
-| `solution/` | our build at the end of this lab. Copy it in if you didn't finish Lab 31. |
+| `solution/` | our finished code, for your trainer. You don't need it: build your own with the prompts. |
 | `sample-output.txt` | a live run of `check_server.py` and `agent.py` from `solution/` |
 
 ## Before you start
 
-Keep working in your project folder from Lab 31. You need `tools.py` and `agent.py` working, and Mei Lin's $120 lamp refund passing. Didn't finish? Open your coding tool in an empty folder, paste this catch-up prompt, put your key in `.env` when it asks, and start here:
-
-```text
-Replace the code in this folder with the reference solution of Lab 31. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-31-build-the-customer-resolution-agent/solution
-   and download every file in it (each file's download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.
-```
+Keep working in your project folder from Lab 31. You need `tools.py` and `agent.py` working, and Mei Lin's $120 lamp refund passing. Stuck? Ask your trainer.
 
 ## Step 1 · Wrap the tools in an MCP server (15 minutes)
 
@@ -116,19 +106,6 @@ From your project folder. Run them yourself in a terminal, or paste one into you
 | Mei Lin's $120 lamp | `uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."` |
 
 You never start `support_server.py` by hand: the client starts it and talks to it over stdin and stdout. Run on its own, it just sits waiting for JSON-RPC (press Ctrl+C).
-
-To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in `.env` and run the same commands:
-
-```text
-Replace the code in this folder with the reference solution of Lab 32. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-32-move-the-tools-to-an-mcp-server/solution
-   and download every file in it (each file's download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.
-```
-
 
 ## Stretch · Plug the same server into your coding tool (Day 1, Lab 11)
 

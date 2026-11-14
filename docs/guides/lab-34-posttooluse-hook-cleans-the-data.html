@@ -93,7 +93,7 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 </tr>
 <tr>
 <td><code>solution/</code></td>
-<td>the finished agent: <code>tools.py</code>, <code>support_server.py</code>, <code>hooks.py</code>, <code>agent.py</code>, <code>test_agent.py</code></td>
+<td>our finished code, for your trainer. You don't need it: build your own with the prompts.</td>
 </tr>
 <tr>
 <td><code>sample-output.txt</code></td>
@@ -102,15 +102,7 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 </tbody>
 </table>
 <h2>Before you start</h2>
-<p>Keep working in your project folder from Lab 33: the $780 refund must be denied and escalated. Didn't finish? Open your coding tool in an empty folder, paste this catch-up prompt, put your key in <code>.env</code> when it asks, and start here:</p>
-<pre><code class="language-text">Replace the code in this folder with the reference solution of Lab 33. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-33-pretooluse-hook-blocks-the-780-refund/solution
-   and download every file in it (each file's download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.
-</code></pre>
+<p>Keep working in your project folder from Lab 33: the $780 refund must be denied and escalated. Stuck? Ask your trainer.</p>
 <h2>Step 1 · Add the PostToolUse hook and an audit log (20 minutes)</h2>
 <h3>Prompt 1</h3>
 <pre><code class="language-text">Add a PostToolUse hook to hooks.py and wire it into agent.py.
@@ -177,15 +169,6 @@ Run `uv run test_agent.py`. If a check fails, show me why and fix agent.py or ho
 </tr>
 </tbody>
 </table>
-<p>To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in <code>.env</code> and run the same commands:</p>
-<pre><code class="language-text">Replace the code in this folder with the reference solution of Lab 34. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-34-posttooluse-hook-cleans-the-data/solution
-   and download every file in it (each file's download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.
-</code></pre>
 <p>Our run is in <code>sample-output.txt</code>.</p>
 <h2>Stretch · The same hooks in the Claude Agent SDK (Extra Lab 37)</h2>
 <pre><code class="language-text">Make agent_sdk.py: the same agent built with the Claude Agent SDK (uv add claude-agent-sdk), model claude-haiku-5-5.

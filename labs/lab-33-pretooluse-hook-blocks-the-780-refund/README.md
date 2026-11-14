@@ -36,22 +36,12 @@ The $500 limit lives in `hooks.py` only: not in the system prompt, not in the to
 | File | What it is |
 |---|---|
 | `prompts.html` | every prompt below, each with a Copy button |
-| `solution/` | our build at the end of this lab. Copy it in if you didn't finish Lab 32. |
+| `solution/` | our finished code, for your trainer. You don't need it: build your own with the prompts. |
 | `sample-output.txt` | a live run of the $780 case from `solution/` |
 
 ## Before you start
 
-Keep working in your project folder from Lab 32: `agent.py` must list the MCP tools and refund Mei Lin's $120 lamp. Didn't finish? Open your coding tool in an empty folder, paste this catch-up prompt, put your key in `.env` when it asks, and start here:
-
-```text
-Replace the code in this folder with the reference solution of Lab 32. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-32-move-the-tools-to-an-mcp-server/solution
-   and download every file in it (each file's download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.
-```
+Keep working in your project folder from Lab 32: `agent.py` must list the MCP tools and refund Mei Lin's $120 lamp. Stuck? Ask your trainer.
 
 ## Step 1 · Watch it go wrong first (5 minutes, no code change)
 
@@ -96,19 +86,6 @@ From your project folder. Run them yourself in a terminal, or paste one into you
 |---|---|
 | Arjun's $780 desk: denied, then escalated | `uv run agent.py "This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount."` |
 | Mei Lin's $120 lamp: still allowed | `uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."` |
-
-To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in `.env` and run the same commands:
-
-```text
-Replace the code in this folder with the reference solution of Lab 33. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-33-pretooluse-hook-blocks-the-780-refund/solution
-   and download every file in it (each file's download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.
-```
-
 
 ## Stretch · An identity gate (Day 1, Lab 4)
 

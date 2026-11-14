@@ -47,7 +47,7 @@ On Day 1 you watched these failures in Lab 2 (a narrow plan), Lab 3 (searches th
 | `starter/sources.json` | the research sandbox: web results for four sectors (film always times out) and two internal PDFs. Every name, number and URL is invented. Prompt 1 downloads it into your project. |
 | `starter/.env.example` | the one line your `.env` needs |
 | `prompts.html` | every prompt below, each with a Copy button |
-| `solution/` | our build from these prompts. Peek only when you're stuck. |
+| `solution/` | our finished code, for your trainer. You don't need it: build your own with the prompts. |
 | `sample-output.txt` | a live run of `solution/research.py` and then `test_research.py` with 8/8 checks |
 
 ## Before you start (5 minutes)
@@ -255,17 +255,6 @@ From your project folder. Run them yourself in a terminal, or paste one into you
 | The live tests: two runs, eight checks | `uv run test_research.py` |
 | The last report | open `report.md` |
 
-To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in `.env` and run the same commands:
-
-```text
-Replace the code in this folder with the reference solution of Lab 35. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-35-build-a-multi-agent-research-team/solution
-   and download every file in it (each file's download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.
-```
  Our run is in `sample-output.txt`.
 
 ## Stretch · The same team in the Claude Agent SDK

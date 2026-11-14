@@ -95,7 +95,7 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 </tr>
 <tr>
 <td><code>solution/</code></td>
-<td>our build from these prompts. Peek only when you're stuck.</td>
+<td>our finished code, for your trainer. You don't need it: build your own with the prompts.</td>
 </tr>
 <tr>
 <td><code>sample-output.txt</code></td>
@@ -294,15 +294,6 @@ it again.
 </tr>
 </tbody>
 </table>
-<p>To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in <code>.env</code> and run the same commands:</p>
-<pre><code class="language-text">Replace the code in this folder with the reference solution of Lab 35. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-35-build-a-multi-agent-research-team/solution
-   and download every file in it (each file's download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.
-</code></pre>
 <p>Our run is in <code>sample-output.txt</code>.</p>
 <h2>Stretch · The same team in the Claude Agent SDK</h2>
 <pre><code class="language-text">Make sdk_team.py: the same research team built with the Claude Agent SDK (uv add claude-agent-sdk), model

@@ -39,19 +39,12 @@ pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-s
                                       (each wraps the same function in tools.py)</pre>
 <p>The agent no longer imports the tools. It starts the server, asks it which tools exist (<code>list_tools</code>) and hands that list to Claude. A new tool on the server shows up in the agent with no change to <code>agent.py</code>.</p>
 <h2 id="what-s-in-this-folder">What's in this folder</h2>
-<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our build at the end of this lab. Copy it in if you didn't finish Lab 31.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of <code>check_server.py</code> and <code>agent.py</code> from <code>solution/</code></td></tr></table></div>
+<div class="tw"><table><tr><th>File</th><th>What it is</th></tr><tr><td><code>prompts.html</code></td><td>every prompt below, each with a Copy button</td></tr><tr><td><code>solution/</code></td><td>our finished code, for your trainer. You don't need it: build your own with the prompts.</td></tr><tr><td><code>sample-output.txt</code></td><td>a live run of <code>check_server.py</code> and <code>agent.py</code> from <code>solution/</code></td></tr></table></div>
 <h2 id="before-you-start">Before you start</h2>
-<p>Keep working in your project folder from Lab 31. You need <code>tools.py</code> and <code>agent.py</code> working, and Mei Lin's $120 lamp refund passing. Didn't finish? Open your coding tool in an empty folder, paste this catch-up prompt, put your key in <code>.env</code> when it asks, and start here:</p>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Replace the code in this folder with the reference solution of Lab 31. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-31-build-the-customer-resolution-agent/solution
-   and download every file in it (each file&#x27;s download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.</pre></div>
+<p>Keep working in your project folder from Lab 31. You need <code>tools.py</code> and <code>agent.py</code> working, and Mei Lin's $120 lamp refund passing. Stuck? Ask your trainer.</p>
 <h2 id="step-1-wrap-the-tools-in-an-mcp-server-15-minutes">Step 1 · Wrap the tools in an MCP server (15 minutes)</h2>
 <h3>Prompt 1</h3>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p2">Copy prompt</button></div><pre id="p2">Add an MCP server for the four tools in tools.py. Follow AGENTS.md.
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Add an MCP server for the four tools in tools.py. Follow AGENTS.md.
 
 1. Run `uv add &quot;mcp&gt;=2.3,&lt;3&quot;`.
 2. Add these rules to AGENTS.md:
@@ -74,7 +67,7 @@ Run `uv run check_server.py` and show me the output.</pre></div>
 <p class="note">If you see <code>No module named &#x27;mcp.server.fastmcp&#x27;</code>, your AI wrote MCP v1 code. Reply: "Use MCPServer from mcp.server.mcpserver (MCP SDK v2). Check AGENTS.md."</p>
 <h2 id="step-2-make-the-agent-an-mcp-client-15-minutes">Step 2 · Make the agent an MCP client (15 minutes)</h2>
 <h3>Prompt 2</h3>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p3">Copy prompt</button></div><pre id="p3">Change agent.py so it gets its tools from the MCP server instead of importing tools.py. Follow AGENTS.md.
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p2">Copy prompt</button></div><pre id="p2">Change agent.py so it gets its tools from the MCP server instead of importing tools.py. Follow AGENTS.md.
 
 - Make run_agent(message) async. It starts support_server.py over stdio (StdioServerParameters, command = sys.executable),
   initialises a ClientSession, calls list_tools, and turns each tool into an Anthropic tool definition
@@ -90,25 +83,17 @@ Run: uv run agent.py &quot;Hi, I&#x27;m meilin@example.com. My lamp in ORD-5501 
 <p>From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: &lt;command&gt; and show me the output."</p>
 <div class="tw"><table><tr><th>What</th><th>Command</th></tr><tr><td>Check the server on its own</td><td><code>uv run check_server.py</code></td></tr><tr><td>Run the agent (it starts the server for you)</td><td><code>uv run agent.py &quot;your customer message&quot;</code></td></tr><tr><td>Mei Lin's $120 lamp</td><td><code>uv run agent.py &quot;Hi, I&#x27;m meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;</code></td></tr></table></div>
 <p>You never start <code>support_server.py</code> by hand: the client starts it and talks to it over stdin and stdout. Run on its own, it just sits waiting for JSON-RPC (press Ctrl+C).</p>
-<p>To run our reference build instead, open your coding tool in an empty folder and paste this prompt, then put your key in <code>.env</code> and run the same commands:</p>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p4">Copy prompt</button></div><pre id="p4">Replace the code in this folder with the reference solution of Lab 32. Keep my .env and never open it.
-1. Get the file list from
-   https://api.github.com/repos/tertiarycourses/TGS-2026061312-Claude-Certified-Architect-Foundation/contents/labs/lab-32-move-the-tools-to-an-mcp-server/solution
-   and download every file in it (each file&#x27;s download_url) into this folder, replacing older copies.
-2. If .env does not exist, create it with the line ANTHROPIC_API_KEY=paste-your-key-here.
-3. Run `uv sync`. If uv is missing, install it first with its official installer (https://docs.astral.sh/uv/).
-Then show me the file tree.</pre></div>
 <h2 id="stretch-plug-the-same-server-into-your-coding-tool-day-1-lab-11">Stretch · Plug the same server into your coding tool (Day 1, Lab 11)</h2>
 <p>Same server, no code change. In your project folder, run the command for your tool:</p>
 <ul><li>Claude Code: <code>claude mcp add orderly -- uv run --directory &quot;$PWD&quot; support_server.py</code></li><li>Codex: <code>codex mcp add orderly -- uv run --directory &quot;$PWD&quot; support_server.py</code></li><li>Antigravity, Cursor and other IDEs: open the tool's MCP settings and add the server to its <code>mcpServers</code> JSON: <code>&quot;orderly&quot;: {&quot;command&quot;: &quot;uv&quot;, &quot;args&quot;: [&quot;run&quot;, &quot;--directory&quot;, &quot;/full/path/to/orderly-agent&quot;, &quot;support_server.py&quot;]}</code></li></ul>
 <p>Then ask your coding tool:</p>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p5">Copy prompt</button></div><pre id="p5">Use the orderly MCP tools to verify meilin@example.com and tell me the status of order ORD-5504.</pre></div>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p3">Copy prompt</button></div><pre id="p3">Use the orderly MCP tools to verify meilin@example.com and tell me the status of order ORD-5504.</pre></div>
 <p>Your coding tool now calls the same four tools your agent uses. It reads the raw <code>&quot;status&quot;: 2</code>: cleaning that up is Lab 34's job, and it will live in your agent, not in the server.</p>
 <h2 id="explain-it-back-with-your-trainer">Explain it back (with your trainer)</h2>
 <ul><li><strong>1.</strong> What did <code>agent.py</code> lose, and what did it gain? Why is that worth it when a second team builds a second agent?</li><li><strong>2.</strong> Why must an MCP stdio server never <code>print()</code>?</li><li><strong>3.</strong> A tool fails. What does Claude receive, and how does <code>errorCategory</code> help it decide what to do next?</li></ul>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <div class="tw"><table><tr><th>You see</th><th>Fix prompt</th></tr><tr><td><code>No module named &#x27;mcp.server.fastmcp&#x27;</code></td><td>"Use MCPServer from mcp.server.mcpserver: this is MCP SDK v2. Check AGENTS.md."</td></tr><tr><td><code>list_tools() got an unexpected keyword argument &#x27;cursor&#x27;</code></td><td>"This is MCP SDK v2: call session.list_tools() with no arguments."</td></tr><tr><td>The agent hangs on start-up or the JSON is garbled</td><td>"support_server.py must never print to stdout. Remove the print calls."</td></tr><tr><td><code>ModuleNotFoundError: No module named &#x27;mcp&#x27;</code></td><td>"Run uv add "mcp&gt;=2.3,&lt;3" and start everything with uv run."</td></tr><tr><td>Tool errors arrive as a crash, not a tool_result</td><td>"Catch ToolFailure in support_server.py and raise ToolError with the JSON fields."</td></tr></table></div>
-<p class="note">5 prompts on this page. Built from the lab's README.md.</p>
+<p class="note">3 prompts on this page. Built from the lab's README.md.</p>
 </main>
 <script>
 function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(t);return ok}
