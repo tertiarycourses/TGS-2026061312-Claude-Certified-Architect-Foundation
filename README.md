@@ -7,7 +7,7 @@ Run six real agent systems on your own laptop, break them on purpose, and learn 
 | Course code | `TGS-2026061312` |
 | Programme | WSQ |
 | Duration | 2 days / 16 hours |
-| Courseware release | Trainer deck v3.6, Lesson Plan v3.4, Learner Guide v3.4 |
+| Courseware release | Trainer deck v3.7, Lesson Plan v3.5, Learner Guide v3.5 |
 | Day 1 simulator | [Run all 30 labs live in your browser](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/wsq-claude-certified-architect-foundation.html) |
 | Funding | Up to 70% course fee funding for eligible learners and employers. Eligibility and current terms apply. |
@@ -168,9 +168,9 @@ Questions come from the exam guide's task statements and official samples, and f
 
 ## In this repository
 
-- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.6.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.6.pdf)
-- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v3.4.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v3.4.pdf)
-- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v3.4.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v3.4.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v3.4.md)
+- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.7.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.7.pdf)
+- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v3.5.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v3.5.pdf)
+- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v3.5.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v3.5.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v3.5.md)
 - [The labs folder](labs/): 46 lab folders (30 Day 1, 5 Day 2, 11 optional code builds) and the six Python simulators
 - [`docs/`](docs/): the [Day 1 simulator](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) (GitHub Pages)
 
