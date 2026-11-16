@@ -45,19 +45,19 @@ Keep working in your project folder from Lab 32: `agent.py` must list the MCP to
 
 ## Step 1 · Watch it go wrong first (5 minutes, no code change)
 
-### Prompt 1
+No prompt yet, and no code change. **Run it in your terminal**, in your project folder:
 
-```text
-Do not change any code. Run this and show me the output:
+```bash
 uv run agent.py "This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount."
-Then tell me how much money left the company and who approved it.
 ```
+
+Read the output. How much money left the company, and who approved it?
 
 **Checkpoint.** `process_refund` runs for **$780**. Nobody approved it. This is Day 1 Lab 5, Phase 1, now in your own code.
 
 ## Step 2 · Add the PreToolUse hook (25 minutes)
 
-### Prompt 2
+### Prompt 1
 
 ```text
 Create hooks.py with a PreToolUse hook and wire it into agent.py.
@@ -70,13 +70,21 @@ Create hooks.py with a PreToolUse hook and wire it into agent.py.
   is_error true and the reason as its content, add the call to the calls list with "denied": True, and print
   "PreToolUse DENY <tool>(<input>): <reason>".
 - Keep the $500 limit in hooks.py only. Do not add it to the system prompt, the tool descriptions or the server.
+```
 
-Run the Arjun $780 case again and show me the output.
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run agent.py "This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount."
 ```
 
 **Checkpoint.** `PreToolUse DENY process_refund(... 780 ...)`. On the next turn Claude calls `escalate_to_human` with `refund_amount` **780**, and the reply says a human will approve the refund. No refund is issued. If Claude escalates without trying the refund first, that's safe too: the hook simply had nothing to block. Run it again to see the deny.
 
 Now run Mei Lin's $120 lamp: it still goes through. The hook only stops what breaks the rule.
+
+```bash
+uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."
+```
 
 ## Run it
 
@@ -92,7 +100,12 @@ From your project folder. Run them yourself in a terminal, or paste one into you
 ```text
 Add a second rule to pre_tool_use in hooks.py: deny lookup_order, process_refund and escalate_to_human until
 get_customer has succeeded in this conversation. The deny reason should tell Claude to verify the customer by email first.
-Run: uv run agent.py "Where is order ORD-5504?" and show me the output.
+```
+
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run agent.py "Where is order ORD-5504?"
 ```
 
 Claude can't skip verification any more, however the customer words the request.

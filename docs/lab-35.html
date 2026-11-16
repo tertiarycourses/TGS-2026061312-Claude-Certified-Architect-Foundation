@@ -19,6 +19,9 @@ pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-s
 .prompt{border:1px solid var(--teal);border-radius:10px;background:#fff;margin:10px 0 14px;overflow:hidden}
 .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--mint);padding:6px 10px;font-size:13px;color:var(--grey)}
 .copy{font:600 13.5px system-ui,sans-serif;background:var(--teal);color:#fff;border:0;border-radius:7px;padding:7px 14px;cursor:pointer}
+.cmd{border-color:var(--ink)} .cmd .bar{background:#2B2A26;color:#E8E4DA} .cmd pre{background:#21201C;color:#F4F1EA}
+.cmd .copy{background:var(--orange)} .cmd .copy:hover{background:#a94f2f}
+.powered-by{text-align:center;color:var(--grey);font-size:13px;padding:18px 16px 28px;border-top:1px solid var(--line)}
 .copy:hover{background:#24585a} .copy:focus-visible{outline:3px solid var(--orange);outline-offset:2px} .copy.done{background:var(--orange)}
 </style></head><body>
 <nav aria-label="Lab sections"><a class="home" href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/">All labs</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html">Lab 31</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-32.html">Lab 32</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-33.html">Lab 33</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-34.html">Lab 34</a><a href="https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-35.html" aria-current=page>Lab 35</a><span>|</span><a href="#before-you-start-5-minutes">Before you start</a><a href="#step-1-set-up-the-project-5-minutes">Step 1</a><a href="#step-2-write-the-two-tools-10-minutes">Step 2</a><a href="#step-3-write-the-three-subagents-15-minutes">Step 3</a><a href="#step-4-write-the-coordinator-15-minutes">Step 4</a><a href="#step-5-replay-the-exam-question-s-plan-5-minutes-no-code-change">Step 5</a><a href="#step-6-prove-it-with-live-tests-10-minutes">Step 6</a><a href="#stretch-the-same-team-in-the-claude-agent-sdk">Stretch</a><a href="#troubleshooting">Troubleshooting</a></nav>
@@ -56,7 +59,8 @@ pre.plain{background:#fff;border:1px solid var(--line);border-radius:8px;white-s
 <ul><li><strong>1. Open your AI coding tool in a new, empty folder</strong> called <code>research-team</code> (a new folder, not <code>orderly-agent</code>). In VS Code, Cursor, Windsurf or Antigravity: <strong>File → Open Folder → New Folder</strong>. Claude Code or Codex in a terminal: start it from that folder. Any agent that can create files and run terminal commands works; the prompts use no tool-specific feature.</li><li><strong>2. Have your Anthropic API key ready.</strong> It starts with <code>sk-ant-</code>. You'll paste it into a file in Step 1, never into the chat.</li></ul>
 <p>That's all. <strong>Prompt 1 does the rest of the set-up:</strong> it installs uv (the Python tool) if your computer doesn't have it, downloads the lab's data file and creates the project.</p>
 <p>One full research run makes about eight Claude calls with <code>claude-haiku-5-5</code>: a few US cents at most.</p>
-<p><strong>Tested on 14 Nov 2026.</strong> We pasted these exact six prompts, in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed <code>test_research.py</code> 8/8 on a fresh re-run (6 to 8 minutes of tool time per run). We ran them again after Prompt 1 took over the set-up and Prompt 4 gained the provenance check: 8 of 8 passed 8/8 again, and with uv removed from the computer, Prompt 1 installed it. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.</p>
+<p><strong>You run the code yourself.</strong> A prompt writes the code; the command under <strong>Run it in your terminal</strong> runs it, with its own Copy button. Open a terminal in your project folder: in VS Code, Cursor, Windsurf or Antigravity, <strong>Terminal → New Terminal</strong>; in Claude Code you can also type <code>!</code> and then the command. If the output doesn't match the Checkpoint, paste it back into the chat.</p>
+<p><strong>Tested on 17 Nov 2026</strong>, after the run commands moved out of the prompts. We pasted these exact five prompts, in one conversation, into Claude Code 2.1.325, four runs. All 4 builds passed <code>test_research.py</code> 8/8 on a fresh run, and every <code>check_tools.py</code> printed the Checkpoint's results. Codex was not re-run on this version (its sign-in had expired); the previous version of these prompts passed in 4 of 4 Codex 0.167.0 runs on 14 Nov 2026. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.</p>
 <h2 id="step-1-set-up-the-project-5-minutes">Step 1 · Set up the project (5 minutes)</h2>
 <h3>Prompt 1</h3>
 <div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p1">Copy prompt</button></div><pre id="p1">Set up this folder as a new Python project for a multi-agent research team. Do each step, then tell me what you did.
@@ -101,8 +105,11 @@ Then show me the file tree, and tell me to open .env in the editor and replace p
 - Add TOOLS: a dict from tool name to its Anthropic tool definition (name, description, input_schema).
 - Add run_tool(name, args) that returns (result, is_error). On ToolFailure it returns the error fields and True.
 
-Then run a quick check with uv: search_web &quot;AI in music production&quot;, search_web &quot;AI in film production&quot;,
-sector_of &quot;AI in graphic design&quot;, and read_document &quot;BrightCanvas-Customer-Benchmark-2026.pdf&quot;. Show me the results.</pre></div>
+- Create check_tools.py: it calls run_tool for search_web &quot;AI in music production&quot;, search_web &quot;AI in film production&quot;
+  and read_document &quot;BrightCanvas-Customer-Benchmark-2026.pdf&quot;, calls sector_of &quot;AI in graphic design&quot;, and prints
+  each result on one line.</pre></div>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<div class="prompt cmd"><div class="bar"><span>Terminal</span><button type="button" class="copy" data-for="c1">Copy command</button></div><pre id="c1">uv run check_tools.py</pre></div>
 <p class="check"><strong>Checkpoint.</strong> Music returns two results. Film returns <code>is_error True</code> with <code>errorCategory: timeout</code> <strong>and</strong> one <code>partial_results</code> hit: a failure that still tells you what it found (Day 1, Lab 27). Graphic design maps to <code>visual_arts</code>.</p>
 <h2 id="step-3-write-the-three-subagents-15-minutes">Step 3 · Write the three subagents (15 minutes)</h2>
 <h3>Prompt 3</h3>
@@ -132,9 +139,9 @@ sector_of &quot;AI in graphic design&quot;, and read_document &quot;BrightCanvas
   or after 6 turns. Refuse any tool that is not in the agent&#x27;s list with an error tool_result.
   Return {&quot;agent&quot;, &quot;task&quot;, &quot;text&quot;: the final text, &quot;json&quot;: the JSON object parsed from the text (strip ``` fences;
   None if it does not parse), &quot;calls&quot;: every tool call with tool, input, result and is_error}.
-- agents.py run directly: uv run agents.py &lt;agent&gt; &quot;&lt;task&gt;&quot; prints each tool call, then the final text.
-
-Run: uv run agents.py search &quot;Research how AI is affecting the film sector.&quot;</pre></div>
+- agents.py run directly: uv run agents.py &lt;agent&gt; &quot;&lt;task&gt;&quot; prints each tool call, then the final text.</pre></div>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<div class="prompt cmd"><div class="bar"><span>Terminal</span><button type="button" class="copy" data-for="c2">Copy command</button></div><pre id="c2">uv run agents.py search &quot;Research how AI is affecting the film sector.&quot;</pre></div>
 <p class="check"><strong>Checkpoint.</strong> The film search agent makes one or two <code>search_web</code> calls, both <code>timeout</code>. Its JSON still holds the Indie Screen Council finding from <code>partial_results</code>, plus a gap saying the film search timed out. It didn't crash, and it didn't pretend the search worked.</p>
 <h2 id="step-4-write-the-coordinator-15-minutes">Step 4 · Write the coordinator (15 minutes)</h2>
 <h3>Prompt 4</h3>
@@ -170,20 +177,18 @@ Run: uv run agents.py search &quot;Research how AI is affecting the film sector.
   stop_reason and number of delegations, each delegation with its agent, the first 90 characters of its task and its
   tool calls (ok or the error category), and how many seconds the turn&#x27;s subagents took. Write report.json and
   report.md (title, summary, one bullet per finding with its source, then the gaps). Print report.md, then
-  &quot;Coverage: searched ...; never searched: ...&quot;, then the coordinator&#x27;s summary.
-
-Run: uv run research.py &quot;Impact of AI on creative industries&quot;</pre></div>
+  &quot;Coverage: searched ...; never searched: ...&quot;, then the coordinator&#x27;s summary.</pre></div>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<div class="prompt cmd"><div class="bar"><span>Terminal</span><button type="button" class="copy" data-for="c3">Copy command</button></div><pre id="c3">uv run research.py &quot;Impact of AI on creative industries&quot;</pre></div>
 <p class="check"><strong>Checkpoint.</strong> Coordinator turn 1 sends <strong>five or more delegations at once</strong>: one search per sector and one documents task. They finish in roughly the time of the slowest one, not the sum (Day 1, Lab 3). Turn 2 is one synthesis. Turn 3 is <code>end_turn</code>. <code>report.md</code> cites a URL or PDF page for every claim (the provenance check removes any claim without one), flags BrightCanvas as a vendor poll, lists the film timeout under <strong>Gaps</strong>, and the last line says <code>never searched: none</code>.</p>
 <h2 id="step-5-replay-the-exam-question-s-plan-5-minutes-no-code-change">Step 5 · Replay the exam question's plan (5 minutes, no code change)</h2>
-<h3>Prompt 5</h3>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p5">Copy prompt</button></div><pre id="p5">Do not change any code. Run the narrow plan from the exam question and show me the output:
-uv run research.py &quot;Impact of AI on creative industries&quot; --plan &quot;AI in digital art creation; AI in graphic design; AI in photography&quot;
-Then compare it with the last run in three sentences: did any subagent fail, what is missing from the report, and
-which agent caused it?</pre></div>
+<p>No prompt this time, and no code change. Run the narrow plan from the exam question. <strong>Run it in your terminal</strong>, in your project folder:</p>
+<div class="prompt cmd"><div class="bar"><span>Terminal</span><button type="button" class="copy" data-for="c4">Copy command</button></div><pre id="c4">uv run research.py &quot;Impact of AI on creative industries&quot; --plan &quot;AI in digital art creation; AI in graphic design; AI in photography&quot;</pre></div>
+<p>Compare it with the last run. Did any subagent fail? What is missing from the report, and which agent caused it?</p>
 <p class="check"><strong>Checkpoint.</strong> Every subagent succeeds. The report is tidy, cited and confident, and it covers only visual arts. The coverage line says <code>never searched: film, music, writing</code>. No subagent did anything wrong: <strong>the coordinator's decomposition was too narrow</strong> (Day 1, Lab 2, answer B). That's why the coverage check lives in code. A report can look complete without being complete.</p>
 <h2 id="step-6-prove-it-with-live-tests-10-minutes">Step 6 · Prove it with live tests (10 minutes)</h2>
-<h3>Prompt 6</h3>
-<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p6">Copy prompt</button></div><pre id="p6">Write test_research.py. It imports run_research from research.py, does two live runs, prints PASS or FAIL for each
+<h3>Prompt 5</h3>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p5">Copy prompt</button></div><pre id="p5">Write test_research.py. It imports run_research from research.py, does two live runs, prints PASS or FAIL for each
 check, prints &quot;N/8 checks passed&quot; and exits 1 if any check fails. Check the recorded delegations and tool calls,
 not Claude&#x27;s wording.
 
@@ -198,34 +203,40 @@ Run A: run_research(&quot;Impact of AI on creative industries&quot;)
 Run B: run_research(&quot;Impact of AI on creative industries&quot;,
                     plan=&quot;AI in digital art creation; AI in graphic design; AI in photography&quot;)
   8. &quot;missing&quot; includes music, writing and film
-
-Run `uv run test_research.py`. If a check fails, show me why and fix research.py or agents.py, not the test. Then run
-it again.</pre></div>
+</pre></div>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<div class="prompt cmd"><div class="bar"><span>Terminal</span><button type="button" class="copy" data-for="c5">Copy command</button></div><pre id="c5">uv run test_research.py</pre></div>
+<p>If a check fails, paste this into your AI coding tool:</p>
+<div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p6">Copy prompt</button></div><pre id="p6">test_research.py has a failing check. Run uv run test_research.py, show me which check fails and why, and fix
+research.py or agents.py, not the test. Then run it again.</pre></div>
 <p class="check"><strong>Checkpoint.</strong> <code>8/8 checks passed</code>. Take a screenshot of the final lines: that's your evidence for Bonus Topic B.</p>
 <h2 id="run-it">Run it</h2>
 <p>From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: &lt;command&gt; and show me the output."</p>
-<div class="tw"><table><tr><th>What</th><th>Command</th></tr><tr><td>The whole team on the topic</td><td><code>uv run research.py &quot;Impact of AI on creative industries&quot;</code></td></tr><tr><td>The exam question's narrow plan</td><td><code>uv run research.py &quot;Impact of AI on creative industries&quot; --plan &quot;AI in digital art creation; AI in graphic design; AI in photography&quot;</code></td></tr><tr><td>One subagent on its own</td><td><code>uv run agents.py search &quot;Research how AI is affecting the music sector.&quot;</code></td></tr><tr><td>The live tests: two runs, eight checks</td><td><code>uv run test_research.py</code></td></tr><tr><td>The last report</td><td>open <code>report.md</code></td></tr></table></div>
+<div class="tw"><table><tr><th>What</th><th>Command</th></tr><tr><td>Check the tools on their own</td><td><code>uv run check_tools.py</code></td></tr><tr><td>The whole team on the topic</td><td><code>uv run research.py &quot;Impact of AI on creative industries&quot;</code></td></tr><tr><td>The exam question's narrow plan</td><td><code>uv run research.py &quot;Impact of AI on creative industries&quot; --plan &quot;AI in digital art creation; AI in graphic design; AI in photography&quot;</code></td></tr><tr><td>One subagent on its own</td><td><code>uv run agents.py search &quot;Research how AI is affecting the music sector.&quot;</code></td></tr><tr><td>The live tests: two runs, eight checks</td><td><code>uv run test_research.py</code></td></tr><tr><td>The last report</td><td>open <code>report.md</code></td></tr></table></div>
 <p>Our run is in <code>sample-output.txt</code>.</p>
 <h2 id="stretch-the-same-team-in-the-claude-agent-sdk">Stretch · The same team in the Claude Agent SDK</h2>
 <div class="prompt"><div class="bar"><span>Paste into your AI coding tool's chat</span><button type="button" class="copy" data-for="p7">Copy prompt</button></div><pre id="p7">Make sdk_team.py: the same research team built with the Claude Agent SDK (uv add claude-agent-sdk), model
 claude-haiku-5-5. Define &quot;search&quot;, &quot;documents&quot; and &quot;synthesis&quot; as AgentDefinition subagents with the same system
 prompts, expose search_web and read_document through an in-process SDK MCP server, give each subagent only its own
-tool, and let the coordinator spawn them with the Task tool. Run it on &quot;Impact of AI on creative industries&quot;.</pre></div>
+tool, and let the coordinator spawn them with the Task tool. sdk_team.py takes the topic as its first argument.</pre></div>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<div class="prompt cmd"><div class="bar"><span>Terminal</span><button type="button" class="copy" data-for="c6">Copy command</button></div><pre id="c6">uv run sdk_team.py &quot;Impact of AI on creative industries&quot;</pre></div>
 <p>Compare the two. The SDK runs the loops and the Task tool for you, but the rules don't change: a subagent knows only what its prompt says, and the coordinator owns the plan.</p>
 <h2 id="explain-it-back-with-your-trainer">Explain it back (with your trainer)</h2>
 <ul><li><strong>1.</strong> In run B every subagent succeeded. Which agent caused the missing sectors, and which line of <code>research.py</code> would you change? (Day 1, Lab 2.)</li><li><strong>2.</strong> The synthesis agent never saw the search agents' work. How did the findings reach it? What happens if the coordinator writes only "write the report"?</li><li><strong>3.</strong> Why do <code>coverage()</code> and <code>check_provenance()</code> live in code instead of asking Claude whether the report is complete and cited?</li><li><strong>4.</strong> The film search failed, yet one film finding reached the report. Where did it come from, and why is it marked as a gap too? (Day 1, Lab 27.)</li></ul>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <div class="tw"><table><tr><th>You see</th><th>Fix prompt</th></tr><tr><td>The delegations run one after another (turn time = the sum)</td><td>"Run every delegate call from one coordinator turn at the same time with a ThreadPoolExecutor."</td></tr><tr><td>The coordinator searches one sector per turn</td><td>"Rule 2 says delegate every search in ONE turn. Keep the system prompt exactly as given."</td></tr><tr><td><code>report.json</code> is <code>{}</code></td><td>"The synthesis agent's reply must parse as JSON: strip ``` fences, and set max_tokens to 8000."</td></tr><tr><td>A report URL isn't in sources.json</td><td>"The synthesis task must paste every finding with its exact source URL; the agents must never invent a source."</td></tr><tr><td>Run B still searches music</td><td>"With --plan, replace RULE_1 in the system prompt; don't add the plan to the user message."</td></tr><tr><td>The film timeout disappears</td><td>"On a failed search, keep partial_results as findings and add a gap; never return an empty success."</td></tr><tr><td><code>tool_use ids were found without tool_result blocks</code></td><td>"Send every delegate tool_result in one user message right after the coordinator turn."</td></tr></table></div>
-<p class="note">7 prompts on this page. Built from the lab's README.md.</p>
+<p class="note">7 prompts and 6 terminal commands on this page. Built from the lab's README.md.</p>
 </main>
+<footer class="powered-by">Powered by <a href="https://www.tertiaryinfotech.com/" target="_blank" rel="noopener">Tertiary Infotech Academy Pte Ltd</a></footer>
 <script>
 function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(t);return ok}
-document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{
+document.querySelectorAll('.copy').forEach(b=>{b.dataset.label=b.textContent;b.addEventListener('click',async()=>{
   const text=document.getElementById(b.dataset.for).innerText; let ok=false;
   try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch(e){}
   if(!ok) ok=fallbackCopy(text);
   b.textContent=ok?'Copied ✓':'Press Ctrl+C'; b.classList.add('done');
   if(!ok){const r=document.createRange();r.selectNodeContents(document.getElementById(b.dataset.for));const s=getSelection();s.removeAllRanges();s.addRange(r)}
-  setTimeout(()=>{b.textContent='Copy prompt';b.classList.remove('done')},1800);
-}));
+  setTimeout(()=>{b.textContent=b.dataset.label;b.classList.remove('done')},1800);
+})});
 </script></body></html>

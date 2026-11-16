@@ -113,8 +113,9 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 4. Create check_server.py: an MCP client that starts support_server.py over stdio (command = sys.executable),
    lists the tools, then calls get_customer with meilin@example.com, lookup_order with ORD-5501 and C-1001,
    and lookup_order with ORD-5502 and C-1001. Print each result on one line.
-
-Run `uv run check_server.py` and show me the output.
+</code></pre>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<pre><code class="language-bash">uv run check_server.py
 </code></pre>
 <p><strong>Checkpoint.</strong></p>
 <ul>
@@ -136,8 +137,9 @@ Run `uv run check_server.py` and show me the output.
   result's is_error flag through to the tool_result. Parse successful results from JSON for the calls list.
 - agent.py must not import tools.py any more. Keep the system prompt, the 10-turn cap, the printing and the return
   value {&quot;text&quot;, &quot;calls&quot;} exactly as they are. Run it with asyncio.run when started from the command line.
-
-Run: uv run agent.py &quot;Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;
+</code></pre>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<pre><code class="language-bash">uv run agent.py &quot;Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;
 </code></pre>
 <p><strong>Checkpoint.</strong> The first line is <code>MCP tools: get_customer, lookup_order, process_refund, escalate_to_human</code>. The rest matches Lab 31: <code>get_customer</code> → <code>lookup_order</code> → <code>process_refund</code> <strong>$120</strong> → <code>end_turn</code>. Same behaviour, new plumbing.</p>
 <h2>Run it</h2>

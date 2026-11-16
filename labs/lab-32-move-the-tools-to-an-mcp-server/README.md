@@ -63,8 +63,12 @@ Add an MCP server for the four tools in tools.py. Follow AGENTS.md.
 4. Create check_server.py: an MCP client that starts support_server.py over stdio (command = sys.executable),
    lists the tools, then calls get_customer with meilin@example.com, lookup_order with ORD-5501 and C-1001,
    and lookup_order with ORD-5502 and C-1001. Print each result on one line.
+```
 
-Run `uv run check_server.py` and show me the output.
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run check_server.py
 ```
 
 **Checkpoint.**
@@ -89,8 +93,12 @@ Change agent.py so it gets its tools from the MCP server instead of importing to
   result's is_error flag through to the tool_result. Parse successful results from JSON for the calls list.
 - agent.py must not import tools.py any more. Keep the system prompt, the 10-turn cap, the printing and the return
   value {"text", "calls"} exactly as they are. Run it with asyncio.run when started from the command line.
+```
 
-Run: uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."
 ```
 
 **Checkpoint.** The first line is `MCP tools: get_customer, lookup_order, process_refund, escalate_to_human`. The rest matches Lab 31: `get_customer` → `lookup_order` → `process_refund` **$120** → `end_turn`. Same behaviour, new plumbing.

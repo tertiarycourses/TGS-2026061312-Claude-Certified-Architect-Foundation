@@ -116,9 +116,9 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 <li>Paste <strong>one prompt at a time</strong>, in order. Don't move on until your output matches the <strong>Checkpoint</strong>.</li>
 <li><strong>Read the code the AI writes.</strong> At the end your trainer asks you to explain it.</li>
 <li>When something is wrong, <strong>paste the error back</strong> and say what you expected, naming the file and the behaviour.</li>
-<li>If your tool can't run commands, run them yourself in a terminal and paste the output back.</li>
+<li><strong>You run the code yourself.</strong> A prompt writes the code; the command under <strong>Run it in your terminal</strong> runs it, with its own Copy button. Open a terminal in your project folder: in VS Code, Cursor, Windsurf or Antigravity, <strong>Terminal → New Terminal</strong>; in Claude Code you can also type <code>!</code> and then the command. If the output doesn't match the Checkpoint, paste it back into the chat.</li>
 </ul>
-<p><strong>Tested on 14 Nov 2026.</strong> We pasted these exact prompts, all ten across Labs 31 to 34 in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed <code>test_agent.py</code> 9/9 on a fresh re-run (7 to 9 minutes of tool time per run). When Prompt 1 took over the set-up (it installs uv if needed and downloads <code>backend.json</code>), we ran the whole series again with no data file provided: 8 of 8 builds passed 9/9 again. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.</p>
+<p><strong>Tested on 17 Nov 2026</strong>, after the run commands moved out of the prompts. We pasted these exact prompts, all eight across Labs 31 to 34 in one conversation, into Claude Code 2.1.325, four runs. All 4 builds passed <code>test_agent.py</code> 9/9 on a fresh run, and every <code>check_tools.py</code> printed the Checkpoint's two results. Codex was not re-run on this version (its sign-in had expired); the previous version of these prompts passed in 4 of 4 Codex 0.167.0 runs on 14 Nov 2026. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.</p>
 <h2>Step 1 · Set up the project (5 minutes)</h2>
 <h3>Prompt 1</h3>
 <pre><code class="language-text">Set up this folder as a new Python project for a customer support agent. Do each step, then tell me what you did.
@@ -168,8 +168,11 @@ Then show me the file tree, and tell me to open .env in the editor and replace p
 - Add run_tool(name, args) that calls the right function and returns (result, is_error). On ToolFailure it returns
   the error fields as the result and is_error True.
 
-Then run a quick check with uv: call run_tool for get_customer with meilin@example.com, and for lookup_order with
-ORD-5502 and C-1001. Show me both results.
+- Create check_tools.py: it calls run_tool for get_customer with meilin@example.com, and for lookup_order with
+  ORD-5502 and C-1001, and prints each result on one line.
+</code></pre>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<pre><code class="language-bash">uv run check_tools.py
 </code></pre>
 <p><strong>Checkpoint.</strong> <code>get_customer</code> returns <code>C-1001</code> (Mei Lin Tan). The ORD-5502 lookup returns <code>is_error True</code> with <code>errorCategory: permission</code>: that order belongs to Arjun, not Mei Lin. You get a structured error, not a crash (Day 1, Lab 9).</p>
 <h2>Step 3 · Write the agentic loop (15 minutes)</h2>
@@ -194,17 +197,18 @@ ORD-5502 and C-1001. Show me both results.
 - Print each turn's number and stop_reason, each tool call with its input and result, then the final reply.
 - Put the loop in a function run_agent(message) that returns {&quot;text&quot;: the reply, &quot;calls&quot;: a list of every tool call
   with tool, input, result and is_error}. agent.py takes the customer message as its first argument.
-
-Run: uv run agent.py &quot;Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;
+</code></pre>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<pre><code class="language-bash">uv run agent.py &quot;Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;
 </code></pre>
 <p><strong>Checkpoint.</strong> About four turns: <code>get_customer</code> → <code>lookup_order</code> → <code>process_refund</code> for <strong>$120</strong> → <code>stop_reason=end_turn</code>, then a short reply with a refund ID. The loop, not you, decided each step: <code>stop_reason</code> drove it (Day 1, Lab 1).</p>
 <h2>Step 4 · Two more customers (10 minutes, no code change)</h2>
-<h3>Prompt 4</h3>
-<pre><code class="language-text">Do not change any code. Run these two and show me the output of each:
-uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;
-uv run agent.py &quot;meilin@example.com here. Where is my monitor arm, order ORD-5504?&quot;
-Then tell me, in two sentences, what went wrong in each run.
+<p>No prompt this time, and no code change. <strong>Run it in your terminal</strong>, in your project folder:</p>
+<pre><code class="language-bash">uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;
 </code></pre>
+<pre><code class="language-bash">uv run agent.py &quot;meilin@example.com here. Where is my monitor arm, order ORD-5504?&quot;
+</code></pre>
+<p>Read both outputs. What went wrong in each run?</p>
 <p><strong>Checkpoint.</strong> Two problems, both on purpose:</p>
 <ul>
 <li><strong>Arjun gets $780 back with no human approval.</strong> Orderly's rule is that a human approves any refund above $500, but that rule is written nowhere, so nothing stops it. <strong>Lab 33</strong> puts it in a PreToolUse hook.</li>
@@ -220,6 +224,10 @@ Then tell me, in two sentences, what went wrong in each run.
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>Check the tools on their own</td>
+<td><code>uv run check_tools.py</code></td>
+</tr>
 <tr>
 <td>Run the agent on any message</td>
 <td><code>uv run agent.py "your customer message"</code></td>

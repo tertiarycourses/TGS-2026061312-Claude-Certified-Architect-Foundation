@@ -59,7 +59,9 @@ That's all. **Prompt 1 does the rest of the set-up:** it installs uv (the Python
 
 One full research run makes about eight Claude calls with `claude-haiku-5-5`: a few US cents at most.
 
-**Tested on 14 Nov 2026.** We pasted these exact six prompts, in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed `test_research.py` 8/8 on a fresh re-run (6 to 8 minutes of tool time per run). We ran them again after Prompt 1 took over the set-up and Prompt 4 gained the provenance check: 8 of 8 passed 8/8 again, and with uv removed from the computer, Prompt 1 installed it. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.
+**You run the code yourself.** A prompt writes the code; the command under **Run it in your terminal** runs it, with its own Copy button. Open a terminal in your project folder: in VS Code, Cursor, Windsurf or Antigravity, **Terminal → New Terminal**; in Claude Code you can also type `!` and then the command. If the output doesn't match the Checkpoint, paste it back into the chat.
+
+**Tested on 17 Nov 2026**, after the run commands moved out of the prompts. We pasted these exact five prompts, in one conversation, into Claude Code 2.1.325, four runs. All 4 builds passed `test_research.py` 8/8 on a fresh run, and every `check_tools.py` printed the Checkpoint's results. Codex was not re-run on this version (its sign-in had expired); the previous version of these prompts passed in 4 of 4 Codex 0.167.0 runs on 14 Nov 2026. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.
 
 ## Step 1 · Set up the project (5 minutes)
 
@@ -115,8 +117,15 @@ Read AGENTS.md and sources.json. Create research_tools.py with the research team
 - Add TOOLS: a dict from tool name to its Anthropic tool definition (name, description, input_schema).
 - Add run_tool(name, args) that returns (result, is_error). On ToolFailure it returns the error fields and True.
 
-Then run a quick check with uv: search_web "AI in music production", search_web "AI in film production",
-sector_of "AI in graphic design", and read_document "BrightCanvas-Customer-Benchmark-2026.pdf". Show me the results.
+- Create check_tools.py: it calls run_tool for search_web "AI in music production", search_web "AI in film production"
+  and read_document "BrightCanvas-Customer-Benchmark-2026.pdf", calls sector_of "AI in graphic design", and prints
+  each result on one line.
+```
+
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run check_tools.py
 ```
 
 **Checkpoint.** Music returns two results. Film returns `is_error True` with `errorCategory: timeout` **and** one `partial_results` hit: a failure that still tells you what it found (Day 1, Lab 27). Graphic design maps to `visual_arts`.
@@ -153,8 +162,12 @@ Create agents.py with three subagents and one function that runs any of them. Fo
   Return {"agent", "task", "text": the final text, "json": the JSON object parsed from the text (strip ``` fences;
   None if it does not parse), "calls": every tool call with tool, input, result and is_error}.
 - agents.py run directly: uv run agents.py <agent> "<task>" prints each tool call, then the final text.
+```
 
-Run: uv run agents.py search "Research how AI is affecting the film sector."
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run agents.py search "Research how AI is affecting the film sector."
 ```
 
 **Checkpoint.** The film search agent makes one or two `search_web` calls, both `timeout`. Its JSON still holds the Indie Screen Council finding from `partial_results`, plus a gap saying the film search timed out. It didn't crash, and it didn't pretend the search worked.
@@ -197,28 +210,31 @@ Create research.py, the coordinator. It never searches or reads documents itself
   tool calls (ok or the error category), and how many seconds the turn's subagents took. Write report.json and
   report.md (title, summary, one bullet per finding with its source, then the gaps). Print report.md, then
   "Coverage: searched ...; never searched: ...", then the coordinator's summary.
+```
 
-Run: uv run research.py "Impact of AI on creative industries"
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run research.py "Impact of AI on creative industries"
 ```
 
 **Checkpoint.** Coordinator turn 1 sends **five or more delegations at once**: one search per sector and one documents task. They finish in roughly the time of the slowest one, not the sum (Day 1, Lab 3). Turn 2 is one synthesis. Turn 3 is `end_turn`. `report.md` cites a URL or PDF page for every claim (the provenance check removes any claim without one), flags BrightCanvas as a vendor poll, lists the film timeout under **Gaps**, and the last line says `never searched: none`.
 
 ## Step 5 · Replay the exam question's plan (5 minutes, no code change)
 
-### Prompt 5
+No prompt this time, and no code change. Run the narrow plan from the exam question. **Run it in your terminal**, in your project folder:
 
-```text
-Do not change any code. Run the narrow plan from the exam question and show me the output:
+```bash
 uv run research.py "Impact of AI on creative industries" --plan "AI in digital art creation; AI in graphic design; AI in photography"
-Then compare it with the last run in three sentences: did any subagent fail, what is missing from the report, and
-which agent caused it?
 ```
+
+Compare it with the last run. Did any subagent fail? What is missing from the report, and which agent caused it?
 
 **Checkpoint.** Every subagent succeeds. The report is tidy, cited and confident, and it covers only visual arts. The coverage line says `never searched: film, music, writing`. No subagent did anything wrong: **the coordinator's decomposition was too narrow** (Day 1, Lab 2, answer B). That's why the coverage check lives in code. A report can look complete without being complete.
 
 ## Step 6 · Prove it with live tests (10 minutes)
 
-### Prompt 6
+### Prompt 5
 
 ```text
 Write test_research.py. It imports run_research from research.py, does two live runs, prints PASS or FAIL for each
@@ -237,8 +253,19 @@ Run B: run_research("Impact of AI on creative industries",
                     plan="AI in digital art creation; AI in graphic design; AI in photography")
   8. "missing" includes music, writing and film
 
-Run `uv run test_research.py`. If a check fails, show me why and fix research.py or agents.py, not the test. Then run
-it again.
+```
+
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run test_research.py
+```
+
+If a check fails, paste this into your AI coding tool:
+
+```text
+test_research.py has a failing check. Run uv run test_research.py, show me which check fails and why, and fix
+research.py or agents.py, not the test. Then run it again.
 ```
 
 **Checkpoint.** `8/8 checks passed`. Take a screenshot of the final lines: that's your evidence for Bonus Topic B.
@@ -249,6 +276,7 @@ From your project folder. Run them yourself in a terminal, or paste one into you
 
 | What | Command |
 |---|---|
+| Check the tools on their own | `uv run check_tools.py` |
 | The whole team on the topic | `uv run research.py "Impact of AI on creative industries"` |
 | The exam question's narrow plan | `uv run research.py "Impact of AI on creative industries" --plan "AI in digital art creation; AI in graphic design; AI in photography"` |
 | One subagent on its own | `uv run agents.py search "Research how AI is affecting the music sector."` |
@@ -263,7 +291,13 @@ From your project folder. Run them yourself in a terminal, or paste one into you
 Make sdk_team.py: the same research team built with the Claude Agent SDK (uv add claude-agent-sdk), model
 claude-haiku-5-5. Define "search", "documents" and "synthesis" as AgentDefinition subagents with the same system
 prompts, expose search_web and read_document through an in-process SDK MCP server, give each subagent only its own
-tool, and let the coordinator spawn them with the Task tool. Run it on "Impact of AI on creative industries".
+tool, and let the coordinator spawn them with the Task tool. sdk_team.py takes the topic as its first argument.
+```
+
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run sdk_team.py "Impact of AI on creative industries"
 ```
 
 Compare the two. The SDK runs the loops and the Task tool for you, but the rules don't change: a subagent knows only what its prompt says, and the coordinator owns the plan.

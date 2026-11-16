@@ -58,9 +58,9 @@ Every Claude call your agent makes uses `claude-haiku-5-5` and your key: a run c
 - Paste **one prompt at a time**, in order. Don't move on until your output matches the **Checkpoint**.
 - **Read the code the AI writes.** At the end your trainer asks you to explain it.
 - When something is wrong, **paste the error back** and say what you expected, naming the file and the behaviour.
-- If your tool can't run commands, run them yourself in a terminal and paste the output back.
+- **You run the code yourself.** A prompt writes the code; the command under **Run it in your terminal** runs it, with its own Copy button. Open a terminal in your project folder: in VS Code, Cursor, Windsurf or Antigravity, **Terminal → New Terminal**; in Claude Code you can also type `!` and then the command. If the output doesn't match the Checkpoint, paste it back into the chat.
 
-**Tested on 14 Nov 2026.** We pasted these exact prompts, all ten across Labs 31 to 34 in one conversation, into Claude Code 2.1.325 and Codex 0.167.0, four runs each. All 8 builds passed `test_agent.py` 9/9 on a fresh re-run (7 to 9 minutes of tool time per run). When Prompt 1 took over the set-up (it installs uv if needed and downloads `backend.json`), we ran the whole series again with no data file provided: 8 of 8 builds passed 9/9 again. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.
+**Tested on 17 Nov 2026**, after the run commands moved out of the prompts. We pasted these exact prompts, all eight across Labs 31 to 34 in one conversation, into Claude Code 2.1.325, four runs. All 4 builds passed `test_agent.py` 9/9 on a fresh run, and every `check_tools.py` printed the Checkpoint's two results. Codex was not re-run on this version (its sign-in had expired); the previous version of these prompts passed in 4 of 4 Codex 0.167.0 runs on 14 Nov 2026. Not a benchmark: your tool, model and wording will differ. Antigravity has no headless mode, so we couldn't machine-test it; the prompts use no tool-specific features.
 
 ## Step 1 · Set up the project (5 minutes)
 
@@ -119,8 +119,14 @@ Read AGENTS.md and backend.json. Create tools.py with Orderly's four support too
 - Add run_tool(name, args) that calls the right function and returns (result, is_error). On ToolFailure it returns
   the error fields as the result and is_error True.
 
-Then run a quick check with uv: call run_tool for get_customer with meilin@example.com, and for lookup_order with
-ORD-5502 and C-1001. Show me both results.
+- Create check_tools.py: it calls run_tool for get_customer with meilin@example.com, and for lookup_order with
+  ORD-5502 and C-1001, and prints each result on one line.
+```
+
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run check_tools.py
 ```
 
 **Checkpoint.** `get_customer` returns `C-1001` (Mei Lin Tan). The ORD-5502 lookup returns `is_error True` with `errorCategory: permission`: that order belongs to Arjun, not Mei Lin. You get a structured error, not a crash (Day 1, Lab 9).
@@ -150,22 +156,29 @@ Build agent.py, the customer resolution agent. Follow AGENTS.md.
 - Print each turn's number and stop_reason, each tool call with its input and result, then the final reply.
 - Put the loop in a function run_agent(message) that returns {"text": the reply, "calls": a list of every tool call
   with tool, input, result and is_error}. agent.py takes the customer message as its first argument.
+```
 
-Run: uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."
 ```
 
 **Checkpoint.** About four turns: `get_customer` → `lookup_order` → `process_refund` for **$120** → `stop_reason=end_turn`, then a short reply with a refund ID. The loop, not you, decided each step: `stop_reason` drove it (Day 1, Lab 1).
 
 ## Step 4 · Two more customers (10 minutes, no code change)
 
-### Prompt 4
+No prompt this time, and no code change. **Run it in your terminal**, in your project folder:
 
-```text
-Do not change any code. Run these two and show me the output of each:
+```bash
 uv run agent.py "This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount."
-uv run agent.py "meilin@example.com here. Where is my monitor arm, order ORD-5504?"
-Then tell me, in two sentences, what went wrong in each run.
 ```
+
+```bash
+uv run agent.py "meilin@example.com here. Where is my monitor arm, order ORD-5504?"
+```
+
+Read both outputs. What went wrong in each run?
 
 **Checkpoint.** Two problems, both on purpose:
 
@@ -178,6 +191,7 @@ From your project folder. Run them yourself in a terminal, or paste one into you
 
 | What | Command |
 |---|---|
+| Check the tools on their own | `uv run check_tools.py` |
 | Run the agent on any message | `uv run agent.py "your customer message"` |
 | Mei Lin's $120 lamp | `uv run agent.py "Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please."` |
 | Arjun's $780 desk | `uv run agent.py "This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount."` |

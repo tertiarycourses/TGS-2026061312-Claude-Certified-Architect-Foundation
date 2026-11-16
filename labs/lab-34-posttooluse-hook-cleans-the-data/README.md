@@ -65,9 +65,18 @@ Add a PostToolUse hook to hooks.py and wire it into agent.py.
   each change, for example "PostToolUse normalised status 2 -> shipped".
 - Both hooks also append one JSON line per decision to audit.log: time, hook name, tool, input, and the decision
   or the changes.
+```
 
-Run: uv run agent.py "meilin@example.com here. Where is my monitor arm, order ORD-5504?"
-Show me the output, then the last 4 lines of audit.log.
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run agent.py "meilin@example.com here. Where is my monitor arm, order ORD-5504?"
+```
+
+Then look at the last 4 lines of the audit log (Windows PowerShell: `Get-Content audit.log -Tail 4`):
+
+```bash
+tail -n 4 audit.log
 ```
 
 **Checkpoint.** `PostToolUse normalised placed_at 1793318400 -> 2026-10-30T00:00:00Z` and `status 2 -> shipped`. This time the reply says the monitor arm has **shipped**, with an ETA of 18 November 2026: no guessing. `audit.log` has a PreToolUse line and a PostToolUse line for every tool call.
@@ -93,10 +102,22 @@ Case C: "meilin@example.com here. Where is my monitor arm, order ORD-5504?"
   - the reply says the order has shipped
   - no refund and no escalation
 
-Run `uv run test_agent.py`. If a check fails, show me why and fix agent.py or hooks.py, not the test. Then run it again.
 ```
 
-**Checkpoint.** `9/9 checks passed`. Take a screenshot of the final lines: that is your evidence for Day 2. In our tests (14 Nov 2026), Claude Code and Codex each reached 9/9 in 4 out of 4 runs of the full Lab 31–34 prompt series. Not a benchmark.
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run test_agent.py
+```
+
+If a check fails, paste this into your AI coding tool:
+
+```text
+test_agent.py has a failing check. Run uv run test_agent.py, show me which check fails and why, and fix agent.py or
+hooks.py, not the test. Then run it again.
+```
+
+**Checkpoint.** `9/9 checks passed`. Take a screenshot of the final lines: that is your evidence for Day 2. In our tests (17 Nov 2026), Claude Code reached 9/9 in 4 out of 4 runs of the full Lab 31–34 prompt series; Codex reached 9/9 in 4 out of 4 runs of the previous version (14 Nov 2026). Not a benchmark.
 
 ## Run it
 
@@ -117,7 +138,13 @@ From your project folder. Run them yourself in a terminal, or paste one into you
 Make agent_sdk.py: the same agent built with the Claude Agent SDK (uv add claude-agent-sdk), model claude-haiku-5-5.
 Connect support_server.py as an external stdio MCP server, and register the two rules from hooks.py as a PreToolUse
 HookMatcher (deny process_refund above 500) and a PostToolUse HookMatcher (normalise placed_at and status).
-Run it on the Arjun $780 case and show me the output.
+agent_sdk.py takes the customer message as its first argument.
+```
+
+**Run it in your terminal**, in your project folder:
+
+```bash
+uv run agent_sdk.py "This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount."
 ```
 
 Compare the two: the SDK runs the loop for you, but the hook contract is the same. Deny before the call, rewrite after it.

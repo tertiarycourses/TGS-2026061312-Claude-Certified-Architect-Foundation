@@ -97,14 +97,13 @@ code{font-family:Consolas,Menlo,monospace}p code,li code,td code{background:#EFE
 <h2>Before you start</h2>
 <p>Keep working in your project folder from Lab 32: <code>agent.py</code> must list the MCP tools and refund Mei Lin's $120 lamp. Stuck? Ask your trainer.</p>
 <h2>Step 1 · Watch it go wrong first (5 minutes, no code change)</h2>
-<h3>Prompt 1</h3>
-<pre><code class="language-text">Do not change any code. Run this and show me the output:
-uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;
-Then tell me how much money left the company and who approved it.
+<p>No prompt yet, and no code change. <strong>Run it in your terminal</strong>, in your project folder:</p>
+<pre><code class="language-bash">uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;
 </code></pre>
+<p>Read the output. How much money left the company, and who approved it?</p>
 <p><strong>Checkpoint.</strong> <code>process_refund</code> runs for <strong>$780</strong>. Nobody approved it. This is Day 1 Lab 5, Phase 1, now in your own code.</p>
 <h2>Step 2 · Add the PreToolUse hook (25 minutes)</h2>
-<h3>Prompt 2</h3>
+<h3>Prompt 1</h3>
 <pre><code class="language-text">Create hooks.py with a PreToolUse hook and wire it into agent.py.
 
 - pre_tool_use(tool_name, tool_input) runs before EVERY tool call. It returns {&quot;decision&quot;: &quot;allow&quot;} or
@@ -115,11 +114,14 @@ Then tell me how much money left the company and who approved it.
   is_error true and the reason as its content, add the call to the calls list with &quot;denied&quot;: True, and print
   &quot;PreToolUse DENY &lt;tool&gt;(&lt;input&gt;): &lt;reason&gt;&quot;.
 - Keep the $500 limit in hooks.py only. Do not add it to the system prompt, the tool descriptions or the server.
-
-Run the Arjun $780 case again and show me the output.
+</code></pre>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<pre><code class="language-bash">uv run agent.py &quot;This is arjun@example.com. The standing desk in ORD-5502 arrived with a bent frame, photos attached. Refund the full amount.&quot;
 </code></pre>
 <p><strong>Checkpoint.</strong> <code>PreToolUse DENY process_refund(... 780 ...)</code>. On the next turn Claude calls <code>escalate_to_human</code> with <code>refund_amount</code> <strong>780</strong>, and the reply says a human will approve the refund. No refund is issued. If Claude escalates without trying the refund first, that's safe too: the hook simply had nothing to block. Run it again to see the deny.</p>
 <p>Now run Mei Lin's $120 lamp: it still goes through. The hook only stops what breaks the rule.</p>
+<pre><code class="language-bash">uv run agent.py &quot;Hi, I'm meilin@example.com. My lamp in ORD-5501 arrived cracked, photo attached. Refund please.&quot;
+</code></pre>
 <h2>Run it</h2>
 <p>From your project folder. Run them yourself in a terminal, or paste one into your coding tool's chat as "Run: <command> and show me the output."</p>
 <table>
@@ -143,7 +145,9 @@ Run the Arjun $780 case again and show me the output.
 <h2>Stretch · An identity gate (Day 1, Lab 4)</h2>
 <pre><code class="language-text">Add a second rule to pre_tool_use in hooks.py: deny lookup_order, process_refund and escalate_to_human until
 get_customer has succeeded in this conversation. The deny reason should tell Claude to verify the customer by email first.
-Run: uv run agent.py &quot;Where is order ORD-5504?&quot; and show me the output.
+</code></pre>
+<p><strong>Run it in your terminal</strong>, in your project folder:</p>
+<pre><code class="language-bash">uv run agent.py &quot;Where is order ORD-5504?&quot;
 </code></pre>
 <p>Claude can't skip verification any more, however the customer words the request.</p>
 <h2>Explain it back (with your trainer)</h2>

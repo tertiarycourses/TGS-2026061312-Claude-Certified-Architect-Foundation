@@ -7,7 +7,7 @@ Prepare for Anthropic's CCAR-F exam task statement by task statement: answer eac
 | Course code | `TGS-2026061312` |
 | Programme | WSQ |
 | Duration | 2 days / 16 hours (14 hours of training, 2 hours of assessment) |
-| Courseware release | Trainer slides v3.7, Lesson Plan v3.5, Learner Guide v3.5 |
+| Courseware release | Trainer slides v3.8, Lesson Plan v3.6, Learner Guide v3.6 (17 Nov 2026) |
 | Official exam guide | [Anthropic's CCAR-F Exam Guide v1.0 (PDF, 39 pages)](exam-guide/Claude-Certified-Architect-Foundations-Exam-Guide-v1.0.pdf) |
 | Exam-question labs | [Run all 30 labs live in your browser](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) |
 | Practice exam | [60 questions, scored by domain](https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations) |
@@ -83,10 +83,10 @@ Open the **[lab site](https://tertiarycourses.github.io/TGS-2026061312-Claude-Ce
 
 ### Day 2: vibe-code on your laptop
 
-You only paste prompts. You need an AI coding tool that can edit files and run commands (Claude Code, Codex, Antigravity, Cursor or similar) and an Anthropic API key.
+Prompts write the code; you run it. You need an AI coding tool that can edit files and run commands (Claude Code, Codex, Antigravity, Cursor or similar) and an Anthropic API key.
 
 1. Open your coding tool in a new, empty folder called `orderly-agent`.
-2. Open [Lab 31's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html) and paste the prompts one at a time. Prompt 1 installs uv if you don't have it, downloads the lab's data and creates `.env` with a placeholder.
+2. Open [Lab 31's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-31.html) and paste the prompts one at a time. Under each prompt, a dark **Terminal** card holds the command that runs the code: copy it into a terminal in your project folder (in your editor, **Terminal → New Terminal**; in Claude Code you can also type `!` and the command). Prompt 1 installs uv if you don't have it, downloads the lab's data and creates `.env` with a placeholder.
 3. Open `.env` in your editor and replace `paste-your-key-here` with your key. Type it there yourself, never into the chat. Labs 32 to 34 carry on in the same folder.
 4. For Lab 35, open the coding tool in a second empty folder, `research-team`, and follow [Lab 35's prompt page](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/lab-35.html) the same way.
 
@@ -155,7 +155,7 @@ Every lab has its own folder with a step-by-step `README.md` and `README.pdf`.
 
 ### Day 2 · Bonus Topic A: build a customer resolution agent with MCP and hooks
 
-You paste prompts, read the code your AI coding tool writes, and run it. Each lab has a prompt page with a Copy button on every prompt, a `solution/` folder and a real run in `sample-output.txt`.
+You paste prompts, read the code your AI coding tool writes, and run it. Each lab has a prompt page with a Copy button on every prompt and every terminal command, a `solution/` folder and a real run in `sample-output.txt`.
 
 | Lab | Task statements | What you build |
 |---|---|---|
@@ -195,9 +195,9 @@ Optional builds in curl, the Python SDK and Claude Code, for task statements you
 ## In this repository
 
 - [Anthropic's CCAR-F Exam Guide v1.0, PDF](exam-guide/Claude-Certified-Architect-Foundations-Exam-Guide-v1.0.pdf)
-- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.7.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.7.pdf)
-- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v3.5.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v3.5.pdf)
-- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v3.5.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v3.5.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v3.5.md)
+- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.8.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.8.pdf)
+- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v3.6.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v3.6.pdf)
+- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v3.6.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v3.6.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v3.6.md)
 - [The labs folder](labs/): 46 lab folders (30 Day 1, 5 Day 2, 11 optional code builds) and the six Python simulators
 - [`docs/`](docs/): the source of the [lab site](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) (GitHub Pages)
 
