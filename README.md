@@ -7,7 +7,7 @@ Prepare for Anthropic's CCAR-F exam task statement by task statement: answer eac
 | Course code | `TGS-2026061312` |
 | Programme | WSQ |
 | Duration | 2 days / 16 hours (14 hours of training, 2 hours of assessment) |
-| Courseware release | Trainer slides v3.8, Lesson Plan v3.6, Learner Guide v3.6 (17 Nov 2026) |
+| Courseware release | Trainer slides v3.9, Lesson Plan v3.7, Learner Guide v3.7 (19 Nov 2026) |
 | Official exam guide | [Anthropic's CCAR-F Exam Guide v1.0 (PDF, 39 pages)](exam-guide/Claude-Certified-Architect-Foundations-Exam-Guide-v1.0.pdf) |
 | Exam-question labs | [Run all 30 labs live in your browser](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) |
 | Practice exam | [60 questions, scored by domain](https://exams.tertiaryinfotech.com/practice-exams/anthropic/anthropic-cca-foundations) |
@@ -195,9 +195,9 @@ Optional builds in curl, the Python SDK and Claude Code, for task statements you
 ## In this repository
 
 - [Anthropic's CCAR-F Exam Guide v1.0, PDF](exam-guide/Claude-Certified-Architect-Foundations-Exam-Guide-v1.0.pdf)
-- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.8.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.8.pdf)
-- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v3.6.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v3.6.pdf)
-- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v3.6.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v3.6.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v3.6.md)
+- [Trainer slides, PowerPoint](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.9.pptx) and [PDF](courseware/TGS-2026061312-Claude-Certified-Architect-Foundation-Trainer-Slides-v3.9.pdf)
+- [Lesson Plan, Word](courseware/LP-Claude-Certified-Architect-Foundation-v3.7.docx) and [PDF](courseware/LP-Claude-Certified-Architect-Foundation-v3.7.pdf)
+- [Learner Guide, Word](courseware/LG-Claude-Certified-Architect-Foundation-v3.7.docx), [PDF](courseware/LG-Claude-Certified-Architect-Foundation-v3.7.pdf) and [Markdown](courseware/LG-Claude-Certified-Architect-Foundation-v3.7.md)
 - [The labs folder](labs/): 46 lab folders (30 Day 1, 5 Day 2, 11 optional code builds) and the six Python simulators
 - [`docs/`](docs/): the source of the [lab site](https://tertiarycourses.github.io/TGS-2026061312-Claude-Certified-Architect-Foundation/) (GitHub Pages)
 

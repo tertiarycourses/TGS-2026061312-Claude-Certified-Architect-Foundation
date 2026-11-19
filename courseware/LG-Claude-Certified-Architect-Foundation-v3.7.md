@@ -103,17 +103,17 @@ Five pages from the exam guide that change how you revise: how the domains conne
 
 The exam guide weights five domains at 27, 18, 20, 20 and 15 per cent. They aren't separate subjects. An agent (Domain 1) is only as good as the errors its tools return (Domain 2), and those errors decide when it escalates (Domain 5). Claude Code in CI (Domain 3) emits findings against a JSON schema (Domain 4), and review output is calibrated before people trust it (Domain 5). Many questions sit on these seams.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image96.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image96.jpg)
 
-Trainer deck v3.8, slide 17
+Trainer deck v3.9, slide 17
 
 ### Which domains each scenario tests
 
 Four of the six official scenarios appear on your exam, drawn at random. Each draws on two or three domains. Context and reliability (Domain 5) is only 15% of the score but appears in Scenarios 1, 2, 3 and 6, so at least two of your four scenarios will lean on it.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image97.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image97.jpg)
 
-Trainer deck v3.8, slide 20
+Trainer deck v3.9, slide 20
 
 ### What the exam won't ask
 
@@ -228,9 +228,9 @@ Official exam scenario: You are building a customer support resolution agent usi
 
 **How the pieces connect: Refund powers, three guard rails.** The loop decides, a hook enforces identity first, and every failure tells Claude what to do next.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image98.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image98.jpg)
 
-Trainer deck v3.8, slide 23
+Trainer deck v3.9, slide 23
 
 **Best answer vs tempting answer: Gate it in code, escalate on criteria, ask when names collide.** Situations from the official scenario: the right call, and the distractor written to look like it.
 
@@ -285,9 +285,9 @@ Official exam scenario: You are using Claude Code to accelerate software develop
 
 **How the pieces connect: Clone the repo, get the teammate. Your home folder stays yours.** Anything the team needs lives in git. Anything in ~/.claude stays on one laptop.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image99.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image99.jpg)
 
-Trainer deck v3.8, slide 25
+Trainer deck v3.9, slide 25
 
 **Best answer vs tempting answer: Shared means in the repo. Big means plan first. Noisy means fork.** Every wrong answer here works for one developer and fails for the team.
 
@@ -341,9 +341,9 @@ Official exam scenario: You are building a multi-agent research system using the
 
 **How the pieces connect: Each subagent knows only what the coordinator writes into its prompt.** Subagents start with an empty context. The coordinator's prompt is everything they get.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image100.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image100.jpg)
 
-Trainer deck v3.8, slide 27
+Trainer deck v3.9, slide 27
 
 **Best answer vs tempting answer: Thin report? Fix the coordinator, not the workers.** Most research-system bugs start in what the coordinator asked for, or passed on.
 
@@ -394,9 +394,9 @@ Official exam scenario: You are building developer productivity tools using the 
 
 **How the pieces connect: Explore a legacy repo the way a senior engineer would.** Grep for the entry points, Read to trace. Don't read every file up front.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image101.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image101.jpg)
 
-Trainer deck v3.8, slide 29
+Trainer deck v3.9, slide 29
 
 **Best answer vs tempting answer: Grep for contents, Glob for names, and never retry a failed Edit as is.** Pick the tool by what you're searching, and the fix by what actually failed.
 
@@ -447,9 +447,9 @@ Official exam scenario: You are integrating Claude Code into your Continuous Int
 
 **How the pieces connect: Each stage removes one reason developers ignore the reviewer.** Drop any one of them and the review still runs, but nobody reads it.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image102.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image102.jpg)
 
-Trainer deck v3.8, slide 31
+Trainer deck v3.9, slide 31
 
 **Best answer vs tempting answer: The reviewer gets ignored for reasons a bigger model won't fix.** Each tempting answer adds horsepower. Each right one removes a cause.
 
@@ -501,9 +501,9 @@ Official exam scenario: You are building a structured data extraction system usi
 
 **How the pieces connect: Valid JSON is the floor. Meaning is checked after it.** Four gates between a messy document and a record someone downstream will trust.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image103.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image103.jpg)
 
-Trainer deck v3.8, slide 33
+Trainer deck v3.9, slide 33
 
 **Best answer vs tempting answer: Syntax is the schema's job. Meaning and missing data are yours.** The distractors make the schema stricter. The right answers check what the schema can't.
 
@@ -523,7 +523,7 @@ Loops, coordinators, hooks, sessions: how the agent decides and what stops it. T
 
 Exam task statement: Design and implement agentic loops for autonomous task execution. Parse the prose for "done" and your agent stops when it feels like stopping. Slides 38–44.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image5.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image5.jpg)
 
 Claude does not decide when your loop ends. stop_reason does. When it reads tool_use, run every requested tool, append the assistant turn and every tool_result to the history, and call again. When it reads end_turn, stop. Claude picks the next tool from the evidence so far. A hard-coded sequence decided before any evidence arrived.
 
@@ -539,15 +539,15 @@ Claude does not decide when your loop ends. stop_reason does. When it reads tool
 
 **Claude remembers nothing. The transcript is the memory.** Every call resends the whole conversation, and each lap makes it longer.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image105.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image105.jpg)
 
-Trainer deck v3.8, slide 40
+Trainer deck v3.9, slide 40
 
 **Let the model pick the next tool. Don't write the tree.** A hard-coded if/elif works until a customer writes something you didn't plan for.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image106.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image106.jpg)
 
-Trainer deck v3.8, slide 41
+Trainer deck v3.9, slide 41
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -563,7 +563,7 @@ Trainer deck v3.8, slide 41
 
 **Goal.** Task statement 1.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 42 to 44.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image122.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image122.png)
 
 Lab 1 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -635,7 +635,7 @@ messages.append([run(b) for b in r.content
 
 Exam task statement: Orchestrate multi-agent systems with coordinator-subagent patterns. The coordinator picks which subtopics get searched. Leave one out and no subagent will ever cover it. Slides 45–49.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image8.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image8.jpg)
 
 Picture a hub with spokes. The coordinator breaks the job down, picks only the subagents this query needs, routes every message and handles every error. Subagents never talk to each other, and that is exactly why you can watch, retry and reroute them.
 
@@ -649,9 +649,9 @@ Picture a hub with spokes. The coordinator breaks the job down, picks only the s
 
 **Spokes never talk to each other.** Every result goes back through the coordinator, so you can see it, retry it and reroute it.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image107.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image107.jpg)
 
-Trainer deck v3.8, slide 46
+Trainer deck v3.9, slide 46
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -671,7 +671,7 @@ Trainer deck v3.8, slide 46
 
 **Goal.** Task statement 1.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 47 to 49.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image123.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image123.png)
 
 Lab 2 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -743,7 +743,7 @@ covered = {c.sector for c in all_search_calls}   # KEY 4
 
 Exam task statement: Configure subagent invocation, context passing, and spawning. No "Task" in allowedTools means no subagents. A subagent sees only your prompt. Slides 50–55.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image11.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image11.jpg)
 
 Two facts carry this task. A coordinator spawns subagents with the Task tool, so allowedTools must include "Task". And a subagent sees only the prompt you hand it: no parent history, no memory of earlier calls.
 
@@ -761,15 +761,15 @@ Two facts carry this task. A coordinator spawns subagents with the Task tool, so
 
 **“Synthesise the findings.” Which findings?** A subagent sees only the prompt you write. Paste in everything it needs.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image108.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image108.jpg)
 
-Trainer deck v3.8, slide 51
+Trainer deck v3.9, slide 51
 
 **Hand over the source with the finding.** Keep URL, document and page beside every claim, or the final report has nothing to cite.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image109.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image109.jpg)
 
-Trainer deck v3.8, slide 52
+Trainer deck v3.9, slide 52
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -781,7 +781,7 @@ Trainer deck v3.8, slide 52
 
 **Goal.** Task statement 1.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 53 to 55.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image124.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image124.png)
 
 Lab 3 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -855,7 +855,7 @@ query("/parallel-review src/utils/quantity.js",
 
 Exam task statement: Implement multi-step workflows with enforcement and handoff patterns. A prompt rule has a non-zero failure rate. A gate has none. Slides 56–61.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image16.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image16.jpg)
 
 A prompt that says "verify identity first" fails some of the time. The exam guide's own sample puts the skip rate at 12% of cases. When money or identity is at stake, write a gate: code that blocks process_refund until get_customer has returned a verified ID.
 
@@ -869,15 +869,15 @@ A prompt that says "verify identity first" fails some of the time. The exam guid
 
 **Does this rule need a guarantee?** Prompts steer most of the time. Code enforces every time. Choose by what a miss would cost.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image110.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image110.jpg)
 
-Trainer deck v3.8, slide 57
+Trainer deck v3.9, slide 57
 
 **The human never saw the chat.** Escalate with a summary they can act on in thirty seconds, not a transcript they don't have.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image111.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image111.jpg)
 
-Trainer deck v3.8, slide 58
+Trainer deck v3.9, slide 58
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -897,7 +897,7 @@ Trainer deck v3.8, slide 58
 
 **Goal.** Task statement 1.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 59 to 61.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image125.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image125.png)
 
 Lab 4 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -973,7 +973,7 @@ def post_tool_use(name, result):
 
 Exam task statement: Apply Agent SDK hooks for tool call interception and data normalization. One hook stands before the tool, one after it, and neither depends on Claude's mood. Slides 62–66.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image20.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image20.jpg)
 
 | Hook | When it fires | What you use it for |
 |---|---|---|
@@ -992,7 +992,7 @@ Reach for a hook whenever a business rule must hold every time. A prompt gives y
 
 **Goal.** Task statement 1.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 64 to 66.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image126.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image126.png)
 
 Lab 5 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -1066,7 +1066,7 @@ run_agent(system=SYSTEM_NOGUARD,                # KEY 4
 
 Exam task statement: Design task decomposition strategies for complex workflows. Pick by whether you can list the steps before you start. Slides 67–70.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image24.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image24.jpg)
 
 Ask one question: can you list the steps before you start? If yes, chain them. If no, write a plan that changes as you learn.
 
@@ -1090,7 +1090,7 @@ Ask one question: can you list the steps before you start? If yes, chain them. I
 
 **Goal.** Task statement 1.6. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 68 to 70.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image127.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image127.png)
 
 Lab 6 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -1165,7 +1165,7 @@ for r in records:                               # KEY 2
 
 Exam task statement: Manage session state, resumption, and forking. A resumed session trusts its old tool results, even when the code has moved on. Slides 71–75.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image26.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image26.jpg)
 
 | What you find | What you do |
 |---|---|
@@ -1180,9 +1180,9 @@ Long runs must also survive a restart. A checkpoint stores stable task state and
 
 **Resume, fork or start fresh.** Three ways back into a session. Each one suits a different morning.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image113.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image113.jpg)
 
-Trainer deck v3.8, slide 72
+Trainer deck v3.9, slide 72
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -1198,7 +1198,7 @@ Trainer deck v3.8, slide 72
 
 **Goal.** Task statement 1.7. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 73 to 75.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image128.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image128.png)
 
 Lab 7 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -1268,7 +1268,7 @@ assert len({saved_id, a.session_id,
 
 ### Topic 1 in one page
 
-Seven task statements, each cut to the rule you apply and the option you cross out first. The thread through all seven: a prompt asks, code enforces. If a row does not ring a bell, rerun its lab. Trainer deck v3.8, slide 76.
+Seven task statements, each cut to the rule you apply and the option you cross out first. The thread through all seven: a prompt asks, code enforces. If a row does not ring a bell, rerun its lab. Trainer deck v3.9, slide 76.
 
 | Task | Do this | Reject this answer |
 |---|---|---|
@@ -1288,7 +1288,7 @@ Tools are the agent's only hands. Describe them well and fail them clearly, and 
 
 Exam task statement: Design effective tool interfaces with clear descriptions and boundaries. Claude picks tools from what you wrote about them. Say little and it guesses. Slides 79–84.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image29.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image29.jpg)
 
 Claude picks a tool by reading what you wrote about it. Write little and it guesses, especially between near twins like analyze_content and analyze_document.
 
@@ -1306,15 +1306,15 @@ Claude picks a tool by reading what you wrote about it. Write little and it gues
 
 **Claude reads the description, not your code.** Name, description, input schema: the description decides which tool gets called.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image114.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image114.jpg)
 
-Trainer deck v3.8, slide 80
+Trainer deck v3.9, slide 80
 
 **Fix the description first. Then reshape the toolset.** Merge steps the agent always chains, split a tool that hides three jobs, prefix by service.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image115.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image115.jpg)
 
-Trainer deck v3.8, slide 81
+Trainer deck v3.9, slide 81
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -1330,7 +1330,7 @@ Trainer deck v3.8, slide 81
 
 **Goal.** Task statement 2.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 82 to 84.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image129.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image129.png)
 
 Lab 8 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -1403,7 +1403,7 @@ verify_claim_against_source(claim, source_excerpt) # KEY 4
 
 Exam task statement: Implement structured error responses for MCP tools. Name the failure, and the agent knows whether to retry, explain or escalate. Slides 85–89.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image31.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image31.jpg)
 
 "Operation failed" tells the agent nothing it can use. Set isError, then add errorCategory, isRetryable and a description a human can read. Success gets a shape too: ok or a status, plus the ID you created.
 
@@ -1429,7 +1429,7 @@ Exam task statement: Implement structured error responses for MCP tools. Name th
 
 **Goal.** Task statement 2.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 87 to 89.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image130.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image130.png)
 
 Lab 9 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -1500,7 +1500,7 @@ def process_refund(order_id, amount):
 
 Exam task statement: Distribute tools appropriately across agents and configure tool choice. A synthesis agent holding a web-search tool will use it. Don't hand it one. Slides 90–94.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image34.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image34.jpg)
 
 Give an agent 18 tools and it chooses worse than with 4 or 5. Give a synthesis agent web search and it will search. Scope each agent to its role.
 
@@ -1530,7 +1530,7 @@ Give an agent 18 tools and it chooses worse than with 4 or 5. Give a synthesis a
 
 **Goal.** Task statement 2.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 5: Claude Code for Continuous Integration, and read the code that runs it. Slides 92 to 94.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image131.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image131.png)
 
 Lab 10 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -1621,7 +1621,7 @@ Exam task statement: Integrate MCP servers into Claude Code and agent workflows.
 
 **Name check.** People often call the remote mode “SSE”. The older SSE-only transport is deprecated: today's remote transport is Streamable HTTP, which still streams over SSE, and a server that offers only the old endpoint may need --transport sse. In Lab 32 your agent.py is the host and holds the client; support_server.py is a local server over stdio. Whichever transport a team server uses, its entry goes in .mcp.json with a ${TOKEN} placeholder (Lab 11).
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image37.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image37.jpg)
 
 Commit the server. Never commit the token. Project scope goes in .mcp.json, shared with the team. Personal and experimental servers go in ~/.claude.json.
 
@@ -1640,15 +1640,15 @@ Commit the server. Never commit the token. Project scope goes in .mcp.json, shar
 
 **The host holds the client. Each client talks to one server. Model Context Protocol has three roles: know who sits where.**
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image117.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image117.jpg)
 
-Trainer deck v3.8, slide 95
+Trainer deck v3.9, slide 95
 
 **Same machine: stdio. Remote site: HTTP, streamed with SSE. Where the server runs picks the transport.**
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image163.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image163.jpg)
 
-Trainer deck v3.8, slide 96
+Trainer deck v3.9, slide 96
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -1664,7 +1664,7 @@ Trainer deck v3.8, slide 96
 
 **Goal.** Task statement 2.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 98 to 100.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image132.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image132.png)
 
 Lab 11 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -1738,7 +1738,7 @@ export SENTRY_TOKEN=sntrys_...
 
 Exam task statement: Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively. Reading every file up front is how you burn the context window on day one. Slides 101–104.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image40.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image40.jpg)
 
 | You need to | Reach for |
 |---|---|
@@ -1765,7 +1765,7 @@ Don't read everything up front. Grep for the entry point, then Read along the im
 
 **Goal.** Task statement 2.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 4: Developer Productivity with Claude, and read the code that runs it. Slides 102 to 104.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image133.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image133.png)
 
 Lab 12 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -1835,7 +1835,7 @@ Glob("**/calculate_total.py")  # -> no files       KEY 4
 
 ### Topic 2 in one page
 
-Five rows on what Claude can reach and how it chooses. When a tool question stumps you, ask what the agent would do next with the answer shown. Trainer deck v3.8, slide 105.
+Five rows on what Claude can reach and how it chooses. When a tool question stumps you, ask what the agent would do next with the answer shown. Trainer deck v3.9, slide 105.
 
 | Task | Do this | Reject this answer |
 |---|---|---|
@@ -1853,7 +1853,7 @@ Configure once, and every teammate and CI job gets the same Claude. This domain 
 
 Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization. "Works on my machine" now applies to instructions. /memory shows what loaded. Slides 108–111.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image43.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image43.jpg)
 
 | Level | Where it lives | Who gets it |
 |---|---|---|
@@ -1885,7 +1885,7 @@ Exam task statement: Configure CLAUDE.md files with appropriate hierarchy, scopi
 
 **Goal.** Task statement 3.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 109 to 111.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image134.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image134.png)
 
 Lab 13 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -1959,7 +1959,7 @@ Name tests it("<verb> <outcome> when <condition>")
 
 Exam task statement: Create and configure custom slash commands and skills. Put verbose workflows in a skill with context: fork, and your main session stays clean. Slides 112–116.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image45.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image45.jpg)
 
 CLAUDE.md is always loaded, so it holds universal standards. A skill loads on demand, so it holds task-specific workflows. Commands in .claude/commands/ reach the whole team through version control. Those in ~/.claude/commands/ stay yours.
 
@@ -1978,9 +1978,9 @@ CLAUDE.md is always loaded, so it holds universal standards. A skill loads on de
 
 **context: fork hides the work, not the answer.** Same audit, same result. What changes is whose transcript the grep hits land in.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image118.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image118.jpg)
 
-Trainer deck v3.8, slide 113
+Trainer deck v3.9, slide 113
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -1996,7 +1996,7 @@ Trainer deck v3.8, slide 113
 
 **Goal.** Task statement 3.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 114 to 116.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image135.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image135.png)
 
 Lab 14 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2068,7 +2068,7 @@ argument-hint: [case-id]                  # KEY 4
 
 Exam task statement: Apply path-specific rules for conditional convention loading. A paths: pattern follows the file. A folder CLAUDE.md stays stuck in its folder. Slides 117–120.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image48.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image48.jpg)
 
 Test files live everywhere, so a folder's CLAUDE.md can't follow them. A glob can. A rule in .claude/rules/ with a paths field loads only when you edit a matching file, which saves context and tokens.
 
@@ -2087,7 +2087,7 @@ Scope conventions separately: Python rules to Python paths, documentation rules 
 
 **Goal.** Task statement 3.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 118 to 120.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image136.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image136.png)
 
 Lab 15 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2159,7 +2159,7 @@ paths: ["**/*.test.ts"]                  # KEY 2
 
 Exam task statement: Determine when to use plan mode vs direct execution. A guard clause in one function needs no plan. An auth migration across 45 files does. Slides 121–124.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image50.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image50.jpg)
 
 | The request | The mode |
 |---|---|
@@ -2187,7 +2187,7 @@ The deciding factors are ambiguity and blast radius. Plan mode lets you explore 
 
 **Goal.** Task statement 3.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 122 to 124.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image137.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image137.png)
 
 Lab 16 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2258,7 +2258,7 @@ files hashed before == after
 
 Exam task statement: Apply iterative refinement techniques for progressive improvement. Examples, failing tests and questions from Claude beat a longer paragraph when prose keeps getting misread. Slides 125–128.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image54.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image54.jpg)
 
 - Prose read inconsistently? Show two or three concrete input and output examples.
 
@@ -2284,7 +2284,7 @@ Exam task statement: Apply iterative refinement techniques for progressive impro
 
 **Goal.** Task statement 3.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 126 to 128.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image138.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image138.png)
 
 Lab 17 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2355,7 +2355,7 @@ claude --permission-mode plan                  # KEY 1
 
 Exam task statement: Integrate Claude Code into CI/CD pipelines. Without print mode the job waits for an answer nobody will type, until the runner dies. Slides 129–133.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image57.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image57.jpg)
 
 CI has no keyboard. Without -p, the job waits for an answer nobody will type. Add --output-format json and --json-schema so the pipeline can parse findings and post them as inline comments.
 
@@ -2383,7 +2383,7 @@ CI has no keyboard. Without -p, the job waits for an answer nobody will type. Ad
 
 **Goal.** Task statement 3.6. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 5: Claude Code for Continuous Integration, and read the code that runs it. Slides 131 to 133.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image139.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image139.png)
 
 Lab 18 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2453,7 +2453,7 @@ jq -r .structured_output.verdict out.json
 
 ### Topic 3 in one page
 
-Six rows on where an instruction lives. Before you pick an option, ask who needs it and when it should load. Trainer deck v3.8, slide 134.
+Six rows on where an instruction lives. Before you pick an option, ask who needs it and when it should load. Trainer deck v3.9, slide 134.
 
 | Task | Do this | Reject this answer |
 |---|---|---|
@@ -2472,7 +2472,7 @@ Criteria, examples, schemas, validators: the path from a nice answer to a reliab
 
 Exam task statement: Design prompts with explicit criteria to improve precision and reduce false positives. Name what to report and what to skip. One noisy category poisons trust in the rest. Slides 137–140.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image60.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image60.jpg)
 
 | Vague | Testable |
 |---|---|
@@ -2496,7 +2496,7 @@ One noisy category teaches developers to ignore the accurate ones. Switch that c
 
 **Goal.** Task statement 4.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 5: Claude Code for Continuous Integration, and read the code that runs it. Slides 138 to 140.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image140.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image140.png)
 
 Lab 19 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2569,7 +2569,7 @@ for prompt in (vague, rules):                  # KEY 4
 
 Exam task statement: Apply few-shot prompting to improve output consistency and quality. Show the ambiguous case and the reasoning. Claude generalises to cases you never listed. Slides 141–144.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image63.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image63.jpg)
 
 When detailed instructions still give inconsistent output, two to four targeted examples draw the line prose can't. Show the reasoning, and Claude generalises to cases you never listed.
 
@@ -2595,7 +2595,7 @@ When detailed instructions still give inconsistent output, two to four targeted 
 
 **Goal.** Task statement 4.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 2: Code Generation with Claude Code, and read the code that runs it. Slides 142 to 144.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image141.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image141.png)
 
 Lab 20 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2666,7 +2666,7 @@ Request: $ARGUMENTS                            # KEY 3
 
 Exam task statement: Enforce structured output using tool use and JSON schemas. Strict tool use ends JSON syntax errors. Totals that don't add up still get through. Slides 145–149.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image65.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image65.jpg)
 
 tool_use with a JSON schema is the most reliable way to get schema-compliant output. Syntax errors disappear. Wrong meaning does not: line items that don't sum to the total, or a value in the wrong field, pass the schema without complaint.
 
@@ -2703,7 +2703,7 @@ A recommendation pipeline needs all five of those fields. Without evidence and c
 
 **Goal.** Task statement 4.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 147 to 149.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image142.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image142.png)
 
 Lab 21 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2777,7 +2777,7 @@ if block is None: raise NoExtraction(r)
 
 Exam task statement: Implement validation, retry, and feedback loops for extraction quality. No prompt can recover a schedule that was never attached. Slides 150–153.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image68.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image68.jpg)
 
 | What failed | Will a retry help? |
 |---|---|
@@ -2798,7 +2798,7 @@ A useful retry sends the original document, the failed extraction and the exact 
 
 **Goal.** Task statement 4.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 151 to 153.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image143.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image143.png)
 
 Lab 22 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2870,7 +2870,7 @@ return human_review(ext)                       # cap hit
 
 Exam task statement: Design efficient batch processing strategies. Message Batches suit work nobody is waiting for. Prove the prompt before you scale it. Slides 154–158.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image71.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image71.jpg)
 
 Three numbers define the Message Batches API: 50% cheaper, up to 24 hours, no latency guarantee. Overnight reports, weekly audits and nightly test generation fit. A blocking pre-merge check does not.
 
@@ -2888,9 +2888,9 @@ Three numbers define the Message Batches API: 50% cheaper, up to 24 hours, no la
 
 **custom_id is the only thread back to your request.** Batch results come back in any order. Match on the id, and resubmit only what failed.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image119.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image119.jpg)
 
-Trainer deck v3.8, slide 155
+Trainer deck v3.9, slide 155
 
 **Check yourself.** Answer each before you run the labs below, then check the answer.
 
@@ -2906,7 +2906,7 @@ Trainer deck v3.8, slide 155
 
 **Goal.** Task statement 4.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 156 to 158.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image144.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image144.png)
 
 Lab 23 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -2978,7 +2978,7 @@ client.messages.batches.create(requests=batch)  # KEY 4
 
 Exam task statement: Design multi-instance and multi-pass review architectures. Fresh eyes and focused passes catch what self-review and longer thinking miss. Slides 159–162.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image75.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image75.jpg)
 
 The session that wrote the draft still holds its reasoning, so it defends its own decisions. Asking it to self-review, or to think for longer, doesn't fix that. A second instance without that context does, because its errors are no longer correlated with the author's.
 
@@ -3002,7 +3002,7 @@ The session that wrote the draft still holds its reasoning, so it defends its ow
 
 **Goal.** Task statement 4.6. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 5: Claude Code for Continuous Integration, and read the code that runs it. Slides 160 to 162.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image145.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image145.png)
 
 Lab 24 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -3072,7 +3072,7 @@ sys.exit(1 if blocking else 0)                 # KEY 4
 
 ### Topic 4 in one page
 
-Six rows on getting the output you meant. The left column shapes the answer; the validator behind it catches the rest. Trainer deck v3.8, slide 163.
+Six rows on getting the output you meant. The left column shapes the answer; the validator behind it catches the rest. Trainer deck v3.9, slide 163.
 
 | Task | Do this | Reject this answer |
 |---|---|---|
@@ -3091,7 +3091,7 @@ Long sessions forget. Multi-agent runs lie by omission. Here is how to stop both
 
 Exam task statement: Manage conversation context to preserve critical information across long interactions. "About $45" is how a refund lands on the wrong order. Slides 166–169.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image79.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image79.jpg)
 
 A summary turns an exact refund into "about $45", and a refund lands on the wrong order. Keep transactional facts (amounts, dates, order numbers, statuses) in a persistent case facts block, included in every prompt, outside the summarised history.
 
@@ -3119,7 +3119,7 @@ A summary turns an exact refund into "about $45", and a refund lands on the wron
 
 **Goal.** Task statement 5.1. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 167 to 169.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image146.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image146.png)
 
 Lab 25 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -3192,7 +3192,7 @@ run_agent(SYSTEM, prompt, tools)                # KEY 4
 
 Exam task statement: Design effective escalation and ambiguity resolution patterns. Anger and a confidence score predict nothing. Three triggers do. Slides 170–173.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image83.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image83.jpg)
 
 | The situation | What the agent does |
 |---|---|
@@ -3218,7 +3218,7 @@ Sentiment and self-reported confidence don't predict how complex a case is. Put 
 
 **Goal.** Task statement 5.2. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 1: Customer Support Resolution Agent, and read the code that runs it. Slides 171 to 173.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image147.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image147.png)
 
 Lab 26 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -3292,7 +3292,7 @@ escalate_to_human(root_cause, refund_amount=0)  # KEY 4
 
 Exam task statement: Implement error propagation strategies across multi-agent systems. A blank result pretending to be success is the most expensive bug in a pipeline. Slides 174–177.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image85.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image85.jpg)
 
 Send the coordinator four things: the failure type, what you attempted, the partial results you still hold, and the alternatives. "Search unavailable" hides all four.
 
@@ -3318,7 +3318,7 @@ Send the coordinator four things: the failure type, what you attempted, the part
 
 **Goal.** Task statement 5.3. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 175 to 177.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image148.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image148.png)
 
 Lab 27 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -3391,7 +3391,7 @@ except Timeout:
 
 Exam task statement: Manage context effectively in large codebase exploration. When answers drift to "typical patterns", your context has already degraded. Slides 178–181.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image87.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image87.jpg)
 
 When answers drift towards "typical patterns" and away from the classes you found earlier, your context has already degraded. Delegate the noise and keep the signal.
 
@@ -3419,7 +3419,7 @@ When answers drift towards "typical patterns" and away from the classes you foun
 
 **Goal.** Task statement 5.4. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 4: Developer Productivity with Claude, and read the code that runs it. Slides 179 to 181.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image149.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image149.png)
 
 Lab 28 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -3493,7 +3493,7 @@ prompt = ("Find every caller of calculate_total "
 
 Exam task statement: Design human review workflows and confidence calibration. Slice accuracy by document type and field before you remove a single reviewer. Slides 182–185.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image91.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image91.jpg)
 
 97% overall can hide one document type or one field that fails badly. Check accuracy by document type and by field before you remove a single reviewer.
 
@@ -3519,7 +3519,7 @@ Exam task statement: Design human review workflows and confidence calibration. S
 
 **Goal.** Task statement 5.5. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 6: Structured Data Extraction, and read the code that runs it. Slides 183 to 185.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image150.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image150.png)
 
 Lab 29 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -3593,7 +3593,7 @@ sample = stratified(docs, by="type", rate=0.1)  # KEY 4
 
 Exam task statement: Preserve information provenance and handle uncertainty in multi-source synthesis. Summaries drop attribution first. Structured claim records can't lose it. Slides 186–189.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image94.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image94.jpg)
 
 Summaries drop attribution first, so make the source travel with the claim. Have subagents output structured claim-source mappings (URL or document name, relevant excerpt) and require synthesis to preserve and merge them.
 
@@ -3619,7 +3619,7 @@ Summaries drop attribution first, so make the source travel with the claim. Have
 
 **Goal.** Task statement 5.6. Answer one exam-style question, then watch the right answer work live in your browser on Simulator 3: Multi-Agent Research System, and read the code that runs it. Slides 187 to 189.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image151.png)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image151.png)
 
 Lab 30 on the simulator site: the task statement, the question, Simulate it live and the lab's scenario board.
 
@@ -3689,7 +3689,7 @@ handoff = {"findings": [RECORD, ...]}  # not prose
 
 ### Topic 5 in one page
 
-Six rows on what long sessions and many agents drop without telling you: exact figures, sources and failures. Trainer deck v3.8, slide 190.
+Six rows on what long sessions and many agents drop without telling you: exact figures, sources and failures. Trainer deck v3.9, slide 190.
 
 | Task | Do this | Reject this answer |
 |---|---|---|
@@ -3995,9 +3995,9 @@ When two options both work, pick the one that fixes the stated root cause with t
 
 The 40 questions in SkillCertPro's practice exam, Part 1 (an unofficial third-party set, and the source of 40 of this course's labs) split 11, 4, 9, 10 and 6 across Domains 1 to 5. Domain 2 is 18% of the exam but only 4 of the 40. Labs 8 to 12 cover all five Domain 2 task statements: practise them on purpose.
 
-![](LG-Claude-Certified-Architect-Foundation-v3.6-images/image121.jpg)
+![](LG-Claude-Certified-Architect-Foundation-v3.7-images/image121.jpg)
 
-Trainer deck v3.8, slide 205
+Trainer deck v3.9, slide 205
 
 ### A five-week study plan
 
